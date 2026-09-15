@@ -6,18 +6,18 @@
     <meta name="theme-color" content="#f7faf9" />
     <meta
       name="description"
-      content="Tedd.Voxtree is a compact .NET voxel storage library for allocation-conscious octrees, multi-channel chunks, and persisted streamed worlds."
+      content="Tedd.Voxtree encodes fixed-width voxel data into contiguous octrees with explicit dense layouts, ownership, chunk persistence, and signed 64-bit world addressing."
     />
     <meta
       property="og:title"
-      content="Tedd.Voxtree — compact voxel storage for .NET"
+      content="Tedd.Voxtree — explicit voxel storage for .NET"
     />
     <meta
       property="og:description"
-      content="Build from dense voxels, store uniform regions compactly, and query owned or caller-backed encoded data."
+      content="Build versioned voxel octrees from linear or Morton-encoded input, then query owned or caller-backed bytes without expanding the tree."
     />
     <meta property="og:type" content="website" />
-    <title>Tedd.Voxtree — compact voxel storage for .NET</title>
+    <title>Tedd.Voxtree — explicit voxel storage for .NET</title>
     <link rel="icon" href="assets/voxtree-icon.svg" type="image/svg+xml" />
     <script>
       document.documentElement.classList.add("js");
@@ -34,9 +34,9 @@
         <span>TEDD<span class="brand-slash">/</span>VOXTREE</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="#model">Data model</a>
+        <a href="#layout">Memory layout</a>
+        <a href="#model">Types</a>
         <a href="#capabilities">Capabilities</a>
-        <a href="#example">Example</a>
         <a href="https://github.com/tedd/Tedd.Voxtree">Documentation</a>
         <a class="nav-cta" href="https://www.nuget.org/packages/Tedd.Voxtree"
           >NuGet</a
@@ -48,12 +48,14 @@
       <section class="hero" id="top">
         <div class="hero-grid" aria-hidden="true"></div>
         <div class="hero-copy">
-          <p class="eyebrow"><span></span> Compact spatial storage for .NET</p>
-          <h1>Build dense.<br />Store <em>sparse.</em></h1>
+          <p class="eyebrow"><span></span> Voxel octree storage for .NET</p>
+          <h1>Encode voxel data.<br />Query it <em>in place.</em></h1>
           <p class="lede">
-            Encode voxel chunks into contiguous octrees, retain hot data in
-            Morton order, and route signed world coordinates through
-            independently persisted multi-channel chunks.
+            Tedd.Voxtree encodes one cubic voxel channel as a versioned,
+            contiguous byte sequence. Build from z-fastest linear input or
+            Morton Encoding (also known as the <strong>Z-order curve</strong> or
+            Lebesgue curve), then query owned or caller-managed storage without
+            expanding the tree first.
           </p>
           <div class="hero-actions">
             <a
@@ -220,33 +222,85 @@
 
       <section class="proof-strip" aria-label="Technical characteristics">
         <p>
-          <strong>0 allocations</strong
-          ><span>Caller-buffer build and valid span-query paths</span>
+          <strong>Levels 0–9</strong
+          ><span>Power-of-two sides from 1 to 512 voxels</span>
         </p>
         <p>
-          <strong>1–16 bytes</strong
-          ><span>Exact-width unmanaged voxel values</span>
+          <strong>1, 2, 4, 8, or 16 B</strong
+          ><span>Exact-width unmanaged voxel value types</span>
         </p>
         <p>
-          <strong>Int64 space</strong
-          ><span>Signed global coordinates for streamed worlds</span>
+          <strong>0 managed allocations</strong
+          ><span>Caller-buffer build and valid OctreeSpan lookup paths</span>
         </p>
         <p>
-          <strong>5 codecs</strong
-          ><span>Brotli, Deflate, GZip, ZLib, and Zstandard</span>
+          <strong>Signed Int64 coordinates</strong
+          ><span>Power-of-two chunk routing for streamed worlds</span>
         </p>
+      </section>
+
+      <section class="layout section-shell" id="layout">
+        <div class="section-intro reveal">
+          <div>
+            <p class="eyebrow">Memory layout and format invariants</p>
+            <h2>Input order and storage lifetime are explicit contracts.</h2>
+          </div>
+          <p>
+            The encoder accepts a complete cubic channel. It does not infer
+            dimensions, strides, component packing, or buffer ownership.
+          </p>
+        </div>
+
+        <div class="spec-grid">
+          <article class="spec-card reveal">
+            <p class="card-kicker">Dimensions</p>
+            <h3><code>side = 1 &lt;&lt; levels</code></h3>
+            <p>
+              The source length must equal <code>side³</code>. Partial volumes
+              and non-power-of-two sides are rejected. The maximum single
+              channel is <code>512³</code> values.
+            </p>
+          </article>
+          <article class="spec-card reveal">
+            <p class="card-kicker">Linear indexing</p>
+            <h3><code>(x × side²) + (y × side) + z</code></h3>
+            <p>
+              <code>z</code> changes fastest, followed by <code>y</code>, then
+              <code>x</code>. This order is the
+              <code>DenseVoxelLayout.Linear</code> input contract.
+            </p>
+          </article>
+          <article class="spec-card reveal">
+            <p class="card-kicker">Morton indexing</p>
+            <h3><code>DenseVoxelLayout.Morton</code></h3>
+            <p>
+              Morton encoding maps three-dimensional coordinates to a
+              one-dimensional index by interleaving coordinate bits. Conversion
+              writes to caller-provided spans.
+            </p>
+          </article>
+          <article class="spec-card reveal">
+            <p class="card-kicker">Encoded representation</p>
+            <h3>One contiguous byte sequence</h3>
+            <p>
+              Uniform regions collapse to value leaves. If a tree would not be
+              smaller, the encoder selects a dense payload. The format contains
+              offsets and no process-local pointers.
+            </p>
+          </article>
+        </div>
       </section>
 
       <section class="model section-shell" id="model">
         <div class="section-intro reveal">
           <div>
-            <p class="eyebrow">One model, four operating layers</p>
-            <h2>Move from voxels to worlds without changing representation.</h2>
+            <p class="eyebrow">Type and ownership model</p>
+            <h2>Each layer has one storage responsibility.</h2>
           </div>
           <p>
-            Each layer has a narrow responsibility. Dense buffers support bulk
-            work; octrees encode one channel; chunks group channels; worlds
-            route and retain chunks.
+            Dense buffers hold uncompressed values. An octree encodes one
+            channel. A chunk publishes related channels. A world maps chunk
+            addresses to memory and persistent storage.
           </p>
         </div>
 
@@ -259,8 +313,9 @@
             <p class="card-kicker">Edit</p>
             <h3>Dense buffers</h3>
             <p>
-              Use linear or Morton order for generation, conversion, extraction,
-              and intensive edits.
+              Use z-fastest linear storage or Morton encoding.
+              <code>DenseVoxelBlockSpan</code> overlays caller-owned,
+              channel-major memory.
             </p>
           </li>
           <li class="flow-arrow" aria-hidden="true">→</li>
@@ -272,8 +327,9 @@
             <p class="card-kicker">Encode</p>
             <h3>Octree / OctreeSpan</h3>
             <p>
-              Own the encoded bytes or borrow validated caller storage through a
-              stack-bound zero-copy view.
+              <code>Octree&lt;T&gt;</code> owns its encoded byte array.
+              <code>OctreeSpan&lt;T&gt;</code> is a stack-bound view over borrowed,
+              immutable bytes.
             </p>
           </li>
           <li class="flow-arrow" aria-hidden="true">→</li>
@@ -285,8 +341,8 @@
             <p class="card-kicker">Compose</p>
             <h3>OctreeChunk</h3>
             <p>
-              Publish immutable multi-channel snapshots and rebuild only the
-              channels that changed.
+              Publish an immutable set of independently encoded channels with
+              common dimensions. Rebuild one channel while retaining the others.
             </p>
           </li>
           <li class="flow-arrow" aria-hidden="true">→</li>
@@ -298,8 +354,8 @@
             <p class="card-kicker">Stream</p>
             <h3>WorldEntity</h3>
             <p>
-              Route signed coordinates, load persisted chunks on demand, and
-              trim resident data to a soft byte target.
+              Map signed global coordinates to power-of-two chunks by arithmetic
+              shift. Load absent residents from configured storage on demand.
             </p>
           </li>
         </ol>
@@ -308,64 +364,65 @@
       <section class="capabilities section-shell" id="capabilities">
         <div class="section-intro reveal">
           <div>
-            <p class="eyebrow">Built for read-heavy voxel systems</p>
-            <h2>Compact at rest. Deliberate while hot.</h2>
+            <p class="eyebrow">Read and mutation paths</p>
+            <h2>Read encoded data. Expand only for bulk mutation.</h2>
           </div>
           <p>
-            Keep immutable encoded snapshots on read paths. Promote a chunk to
-            dense Morton storage only while repeated edits justify it, then
-            encode once on commit.
+            Point and region queries traverse immutable encoded bytes. Repeated
+            edits use a temporary dense Morton-encoded buffer and publish one
+            replacement snapshot on commit.
           </p>
         </div>
         <div class="feature-grid">
           <article class="feature-card featured reveal">
             <span class="feature-icon">⌁</span>
             <p class="card-kicker">Borrowed storage</p>
-            <h3>Zero-copy span views</h3>
+            <h3>Borrowed packet lookup</h3>
             <p>
-              Validate existing packets and query them through
-              <code>OctreeSpan&lt;T&gt;</code> without copying their encoded
-              bytes.
+              Use <code>OctreeSpan&lt;T&gt;.TryCreate</code>, then call
+              <code>IsWellFormed()</code> before querying untrusted input. The
+              backing bytes must remain alive and unchanged.
             </p>
           </article>
           <article class="feature-card reveal">
             <span class="feature-icon">⋮⋮</span>
-            <h3>Morton hot chunks</h3>
+            <h3>Exclusive hot-chunk editing</h3>
             <p>
-              Retain channel-major Morton data during intensive editing and
-              reject stale commits before publication.
+              <code>HotOctreeChunk&lt;T&gt;</code> owns channel-major,
+              Morton-encoded values. One worker owns the editor; stale commits
+              are rejected.
             </p>
           </article>
           <article class="feature-card reveal">
             <span class="feature-icon">▱</span>
-            <h3>Multi-channel snapshots</h3>
+            <h3>Selective channel rebuild</h3>
             <p>
-              Group independently encoded material, lighting, occupancy, or
-              application-defined channels.
+              Store material, lighting, occupancy, or application-defined
+              channels independently. Reuse unchanged channel encodings.
             </p>
           </article>
           <article class="feature-card reveal">
             <span class="feature-icon">↧</span>
-            <h3>Automatic residency</h3>
+            <h3>Persistence and residency</h3>
             <p>
-              Load missing residents on demand, atomically save dirty chunks,
-              and evict older data against a soft target.
+              Load missing chunks, track dirty snapshots, write files atomically,
+              and evict older residents against a soft serialized-byte target.
             </p>
           </article>
           <article class="feature-card reveal">
             <span class="feature-icon">◎</span>
-            <h3>Spatial query set</h3>
+            <h3>Bounded spatial queries</h3>
             <p>
-              Perform point lookup, filters, bounded enumeration, counts, region
-              decode, and nearest-match search.
+              Perform point lookup, filtered existence tests and counts, bounded
+              hit enumeration, region decode, and nearest-match search.
             </p>
           </article>
           <article class="feature-card reveal">
             <span class="feature-icon">≋</span>
-            <h3>Independent LOD layers</h3>
+            <h3>Addressed LOD namespaces</h3>
             <p>
-              Store application-generated power-of-two LOD chunks in distinct
-              memory and disk namespaces.
+              Address application-generated power-of-two LOD chunks by shift and
+              retain each LOD in an independent memory and disk namespace.
             </p>
           </article>
         </div>
@@ -373,25 +430,27 @@
 
       <section class="example section-shell" id="example">
         <div class="example-copy reveal">
-          <p class="eyebrow">A streamed world in a few explicit steps</p>
-          <h2>Persist chunks. Bound residency. Load on demand.</h2>
+          <p class="eyebrow">Synchronous world persistence</p>
+          <h2>Configure storage and make I/O behavior explicit.</h2>
           <p>
-            Storage configuration is attached to the world. Dirty snapshots are
-            written before release; reads load the addressed chunk when it is
-            not resident.
+            With storage configured, <code>Get</code> may synchronously load a
+            nonresident chunk. <code>UnloadChunk</code> writes a dirty chunk
+            before release. <code>SaveAllChunks</code> writes dirty residents
+            only.
           </p>
           <ul>
             <li>
-              <strong>Coordinate-safe.</strong> Negative global coordinates
-              resolve through arithmetic shifts.
+              <strong>Signed addressing.</strong> Negative global coordinates
+              resolve to chunk and local coordinates by arithmetic shift.
             </li>
             <li>
-              <strong>Format-aware.</strong> Chunk files carry codec, address,
-              length, format version, and CRC32 metadata.
+              <strong>Self-describing files.</strong> Chunk files contain codec,
+              LOD, coordinates, lengths, format version, and CRC32 metadata.
             </li>
             <li>
-              <strong>Policy-neutral.</strong> Your application controls
-              generation, LOD selection, and unloaded-space semantics.
+              <strong>Defined accounting.</strong>
+              <code>EstimatedResidentBytes</code> counts serialized packet bytes,
+              not CLR object or process memory.
             </li>
           </ul>
         </div>
@@ -402,7 +461,7 @@
           </div>
           <pre><code><span class="kw">var</span> storage = <span class="kw">new</span> <span class="type">ChunkStorageOptions</span>(<span class="str">"world/chunks"</span>)
 {
-    Compression = <span class="type">ChunkCompression</span>.Zstandard,
+    Compression = <span class="type">ChunkCompression</span>.Brotli,
     CompressionLevel = <span class="type">CompressionLevel</span>.Fastest
 };
 
@@ -423,36 +482,38 @@ world.UnloadChunk(-<span class="num">1</span>, <span class="num">0</span>, <span
 
       <section class="choice-band">
         <div class="choice-intro reveal">
-          <p class="eyebrow">Choose the ownership contract</p>
-          <h2>Owned convenience or caller-controlled memory.</h2>
+          <p class="eyebrow">Ownership and lifetime</p>
+          <h2>Buffer lifetime is part of the API contract.</h2>
         </div>
         <div class="choice-list reveal">
           <div>
             <strong>Octree&lt;T&gt;</strong
             ><span
-              >Owns one final encoded byte array and supports lock-free
-              replacement.</span
+              >Owns one final encoded byte array. Builds atomically publish a
+              new immutable array; concurrent reads retain a valid snapshot.</span
             >
           </div>
           <div>
             <strong>OctreeSpan&lt;T&gt;</strong
             ><span
-              >Reads validated caller-owned memory without copying or managed
-              allocation.</span
+              >Borrows caller memory. As a <code>ref struct</code>, it cannot
+              cross <code>await</code> or <code>yield</code>, or be stored on the
+              managed heap.</span
             >
           </div>
           <div>
             <strong>HotOctreeChunk&lt;T&gt;</strong
             ><span
-              >Owns mutable dense Morton storage for an exclusive edit
-              session.</span
+              >Owns mutable, channel-major, Morton-encoded values for one
+              exclusive edit session.</span
             >
           </div>
           <div>
             <strong>OctreeWorld&lt;T&gt;</strong
             ><span
-              >Represents a bounded sparse region with explicit unloaded and
-              known-empty states.</span
+              >Represents a bounded sparse region, distinguishes unloaded from
+              known-air space, and synchronizes access with reader/writer
+              locking.</span
             >
           </div>
         </div>
@@ -460,20 +521,25 @@ world.UnloadChunk(-<span class="num">1</span>, <span class="num">0</span>, <span
 
       <section class="boundaries section-shell">
         <div class="boundaries-title reveal">
-          <p class="eyebrow">Operational boundaries</p>
-          <h2>Storage mechanics are included. World policy remains yours.</h2>
+          <p class="eyebrow">Operational constraints</p>
+          <h2>Know which guarantees are provided.</h2>
         </div>
         <div class="boundaries-copy reveal">
           <p>
-            Tedd.Voxtree does not generate LOD data, select an LOD, simulate
-            entities, or infer whether unloaded space is air. Those decisions
-            depend on the application.
+            Tedd.Voxtree does not generate or select LOD data, simulate entities,
+            or define the meaning of unloaded space. The application owns those
+            policies.
           </p>
           <p>
-            <code>WorldEntity</code> is not thread-safe. Use its immutable
-            published chunks within an application-defined synchronization
-            model, or use <code>OctreeWorld</code> where its bounded,
-            synchronized semantics fit.
+            <code>WorldEntity</code> and <code>HotOctreeChunk</code> are not
+            thread-safe. <code>OctreeWorld</code> uses a
+            <code>ReaderWriterLockSlim</code> and provides explicit read and write
+            batches.
+          </p>
+          <p>
+            One encoded channel is limited to levels 0 through 9: a maximum side
+            length of 512 and <code>134,217,728</code> dense values. World depth
+            and chunk addressing are separate from this per-channel limit.
           </p>
           <a href="https://github.com/tedd/Tedd.Voxtree#supported-capabilities"
             >Review the complete capability matrix ↗</a
@@ -484,10 +550,10 @@ world.UnloadChunk(-<span class="num">1</span>, <span class="num">0</span>, <span
       <section class="final-cta">
         <div class="cta-grid" aria-hidden="true"></div>
         <p class="eyebrow">Tedd.Voxtree 2.x</p>
-        <h2>Put spatial structure<br /><span>inside the data.</span></h2>
+        <h2>Start with an explicit<br /><span>storage contract.</span></h2>
         <p>
-          Install the package, build a dense chunk, and choose the ownership
-          model that fits its lifetime.
+          Select the dense layout, value width, ownership model, and world
+          synchronization policy before integrating the query path.
         </p>
         <div class="hero-actions centered">
           <a
@@ -513,7 +579,7 @@ world.UnloadChunk(-<span class="num">1</span>, <span class="num">0</span>, <span
           alt=""
         /><span>TEDD/VOXTREE</span></a
       >
-      <p>Compact voxel storage for .NET.</p>
+      <p>Explicit voxel-octree storage for .NET.</p>
       <div>
         <a href="https://www.nuget.org/packages/Tedd.Voxtree">NuGet</a
         ><a href="https://github.com/tedd/Tedd.Voxtree">Source</a
