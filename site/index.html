@@ -93,131 +93,58 @@
           </ul>
         </div>
 
-        <figure class="hero-product" aria-label="Voxel octree encoding diagram">
+        <figure
+          class="hero-product"
+          aria-label="Voxel chunk inspector showing layout, storage, regions, and a point-query result"
+        >
           <div class="window-bar">
-            <span></span><span></span><span></span><b>chunk / channel 0</b
-            ><i>encoded</i>
+            <span></span><span></span><span></span><b>Tedd.Voxtree · Chunk inspector</b
+            ><i>immutable snapshot</i>
           </div>
-          <div class="voxel-scene">
-            <svg
-              viewBox="0 0 760 560"
-              role="img"
-              aria-labelledby="voxel-title voxel-desc"
-            >
-              <title id="voxel-title">
-                A voxel volume divided into octants
-              </title>
-              <desc id="voxel-desc">
-                An isometric voxel cube with compact uniform regions and one
-                highlighted queried cell.
-              </desc>
-              <defs>
-                <linearGradient id="cubeTop" x1="0" y1="0" x2="1" y2="1">
-                  <stop stop-color="#3ed1c1" />
-                  <stop offset="1" stop-color="#12988e" />
-                </linearGradient>
-                <linearGradient id="cubeLeft" x1="0" y1="0" x2="1" y2="1">
-                  <stop stop-color="#087f78" />
-                  <stop offset="1" stop-color="#075f5c" />
-                </linearGradient>
-                <linearGradient id="cubeRight" x1="0" y1="0" x2="1" y2="1">
-                  <stop stop-color="#126f70" />
-                  <stop offset="1" stop-color="#0d4e54" />
-                </linearGradient>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="8" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-              <g
-                class="scene-grid"
-                stroke="#3a6268"
-                stroke-width="1"
-                opacity=".28"
-              >
-                <path d="M70 470 380 292 690 470 380 648Z" />
-                <path d="M70 410 380 232 690 410" />
-                <path d="M70 350 380 172 690 350" />
-                <path d="M173 529 483 351" />
-                <path d="M277 589 587 411" />
-                <path d="M587 529 277 351" />
-                <path d="M483 589 173 411" />
-              </g>
-              <g class="main-cube">
-                <polygon
-                  points="380,72 650,228 380,384 110,228"
-                  fill="url(#cubeTop)"
-                />
-                <polygon
-                  points="110,228 380,384 380,494 110,338"
-                  fill="url(#cubeLeft)"
-                />
-                <polygon
-                  points="650,228 380,384 380,494 650,338"
-                  fill="url(#cubeRight)"
-                />
-                <g fill="none" stroke="#b8f3eb" stroke-width="2" opacity=".62">
-                  <path d="M245 150 515 306 515 416" />
-                  <path d="M515 150 245 306 245 416" />
-                  <path d="M110 283 380 439 650 283" />
-                  <path d="M380 72 380 384 380 494" />
-                </g>
-                <g fill="none" stroke="#74d8cd" stroke-width="1" opacity=".45">
-                  <path d="M177.5 189 447.5 345" />
-                  <path d="M312.5 111 582.5 267" />
-                  <path d="M582.5 189 312.5 345" />
-                  <path d="M447.5 111 177.5 267" />
-                </g>
-              </g>
-              <g class="selected-voxel" filter="url(#glow)">
-                <polygon
-                  points="515,306 582.5,345 515,384 447.5,345"
-                  fill="#f0a45d"
-                />
-                <polygon
-                  points="447.5,345 515,384 515,423 447.5,384"
-                  fill="#b65e28"
-                />
-                <polygon
-                  points="582.5,345 515,384 515,423 582.5,384"
-                  fill="#8e431e"
-                />
-              </g>
-              <g class="callout" font-family="DM Sans, Segoe UI, sans-serif">
-                <path
-                  d="M576 366 C635 366 637 413 680 413"
-                  fill="none"
-                  stroke="#f0a45d"
-                  stroke-width="2"
-                />
-                <circle cx="680" cy="413" r="4" fill="#f0a45d" />
-                <text
-                  x="675"
-                  y="445"
-                  fill="#e9f7f5"
-                  font-size="17"
-                  text-anchor="end"
-                >
-                  value 42
-                </text>
-                <text
-                  x="675"
-                  y="466"
-                  fill="#8cabb0"
-                  font-size="12"
-                  text-anchor="end"
-                >
-                  (13, 7, 21)
-                </text>
-              </g>
-            </svg>
+          <div class="chunk-dashboard">
+            <div class="chunk-heading">
+              <div>
+                <span>ENCODED CHANNEL</span>
+                <strong>Material · chunk (-1, 0, 2)</strong>
+              </div>
+              <code>Octree&lt;UInt32&gt;</code>
+            </div>
+
+            <div class="chunk-metrics" aria-label="Example chunk configuration">
+              <p><span>LEVELS</span><strong>5</strong><small>32³ voxels</small></p>
+              <p><span>INPUT LAYOUT</span><strong>Morton</strong><small>Z-order curve</small></p>
+              <p><span>STORAGE</span><strong>Tree</strong><small>Versioned bytes</small></p>
+            </div>
+
+            <div class="region-panel">
+              <div class="region-heading">
+                <div><span>REGION MAP</span><strong>Uniform leaves and subdivided regions</strong></div>
+                <code>channel 0</code>
+              </div>
+              <div class="region-map" aria-hidden="true">
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+              <div class="region-legend" aria-hidden="true">
+                <span><i></i>Uniform region</span>
+                <span><i></i>Subdivided region</span>
+                <span><i></i>Selected voxel</span>
+              </div>
+            </div>
+
+            <div class="query-readout">
+              <span>POINT QUERY</span>
+              <code>tree.Get(13, 7, 21)</code>
+              <strong>42</strong>
+            </div>
           </div>
           <figcaption>
-            <code>tree.Get(13, 7, 21)</code><strong>→ 42</strong
-            ><span>Direct lookup in versioned encoded storage</span>
+            <strong>Read the encoded snapshot directly.</strong>
+            <span>No dense expansion is required for point lookup.</span>
           </figcaption>
         </figure>
       </section>
