@@ -18,10 +18,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: |
             8.0.x
@@ -48,12 +48,12 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: |
             10.0.x
@@ -81,6 +81,7 @@ jobs:
       # instead of using the obsolete v1 tag.
       - name: Publish on version change
         id: publish_nuget
+        continue-on-error: true
         uses: tedd/publish-nuget-neo@1a65ed85a859c9f4905b61c58afe6b1dcbb74ae4
         with:
           NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
@@ -92,3 +93,28 @@ jobs:
           TAG_FORMAT: v*
           REBUILD_PROJECT: false
           LOG_LEVEL: INFO
+
+      # The action suppresses dotnet's server response when a push fails. Retrying
+      # here both handles a transient failure and preserves the diagnostic output.
+      - name: Retry failed publish
+        if: steps.publish_nuget.outcome == 'failure'
+        shell: pwsh
+        env:
+          NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
+          PACKAGE_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          $package = Get-Item -LiteralPath "src/Tedd.Voxtree/Tedd.Voxtree.$env:PACKAGE_VERSION.nupkg"
+          dotnet nuget push $package.FullName --source https://api.nuget.org/v3/index.json --api-key $env:NUGET_KEY --skip-duplicate
+          if ($LASTEXITCODE -ne 0) {
+            throw "NuGet publish failed with exit code $LASTEXITCODE."
+          }
+
+          $tag = "v$env:PACKAGE_VERSION"
+          git tag $tag
+          if ($LASTEXITCODE -ne 0) {
+            throw "Creating tag $tag failed."
+          }
+          git push origin $tag
+          if ($LASTEXITCODE -ne 0) {
+            throw "Pushing tag $tag failed."
+          }
