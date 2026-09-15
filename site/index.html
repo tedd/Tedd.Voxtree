@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#f7faf9" />
     <meta
       name="description"
-      content="Tedd.Voxtree encodes fixed-width voxel data into contiguous octrees with explicit dense layouts, ownership, chunk persistence, and signed 64-bit world addressing."
+      content="Sparse voxel octrees for .NET with SIMD-enabled scans, zero-copy, allocation-free query paths, independent channels, and thread-safe bounded worlds."
     />
     <meta
       property="og:title"
@@ -14,7 +14,7 @@
     />
     <meta
       property="og:description"
-      content="Build versioned voxel octrees from linear or Morton-encoded input, then query owned or caller-backed bytes without expanding the tree."
+      content="Use sparse voxel trees, SIMD-enabled scans, independent channels, immutable publication, and caller-owned buffers in read-heavy game systems."
     />
     <meta property="og:type" content="website" />
     <title>Tedd.Voxtree — explicit voxel storage for .NET</title>
@@ -55,7 +55,9 @@
             contiguous byte sequence. Build from z-fastest linear input or
             Morton Encoding (also known as the <strong>Z-order curve</strong> or
             Lebesgue curve), then query owned or caller-managed storage without
-            expanding the tree first.
+            expanding the tree first. Group independent channels in immutable
+            chunks, then place them in bounded sparse regions or signed 64-bit
+            streamed worlds.
           </p>
           <div class="hero-actions">
             <a
@@ -222,20 +224,20 @@
 
       <section class="proof-strip" aria-label="Technical characteristics">
         <p>
-          <strong>Levels 0–9</strong
-          ><span>Power-of-two sides from 1 to 512 voxels</span>
+          <strong>Sparse voxel tree</strong
+          ><span>Uniform octants collapse; incompressible data stays dense</span>
         </p>
         <p>
-          <strong>1, 2, 4, 8, or 16 B</strong
-          ><span>Exact-width unmanaged voxel value types</span>
+          <strong>SIMD-enabled paths</strong
+          ><span>Runtime-vectorized scans and equality operations on .NET 10/11</span>
         </p>
         <p>
-          <strong>0 managed allocations</strong
-          ><span>Caller-buffer build and valid OctreeSpan lookup paths</span>
+          <strong>Zero-copy / allocation-free</strong
+          ><span>Borrowed lookup and caller-buffer build paths</span>
         </p>
         <p>
-          <strong>Signed Int64 coordinates</strong
-          ><span>Power-of-two chunk routing for streamed worlds</span>
+          <strong>Concurrent read model</strong
+          ><span>Immutable publication and shared-lock world reads</span>
         </p>
       </section>
 
@@ -364,65 +366,109 @@
       <section class="capabilities section-shell" id="capabilities">
         <div class="section-intro reveal">
           <div>
-            <p class="eyebrow">Read and mutation paths</p>
-            <h2>Read encoded data. Expand only for bulk mutation.</h2>
+            <p class="eyebrow">Why choose it for engine code</p>
+            <h2>Predictable memory behavior without flattening the world.</h2>
           </div>
           <p>
-            Point and region queries traverse immutable encoded bytes. Repeated
-            edits use a temporary dense Morton-encoded buffer and publish one
-            replacement snapshot on commit.
+            Use Tedd.Voxtree when voxel data is read more often than it is
+            rewritten and chunk lifetime must be explicit. These guarantees
+            concern representation, ownership, and allocation; throughput
+            remains workload- and hardware-dependent.
           </p>
         </div>
         <div class="feature-grid">
           <article class="feature-card featured reveal">
-            <span class="feature-icon">⌁</span>
-            <p class="card-kicker">Borrowed storage</p>
-            <h3>Borrowed packet lookup</h3>
+            <span class="feature-icon">▦</span>
+            <p class="card-kicker">Sparse voxel encoding</p>
+            <h3>Sparse voxel tree with a dense fallback</h3>
             <p>
-              Use <code>OctreeSpan&lt;T&gt;.TryCreate</code>, then call
-              <code>IsWellFormed()</code> before querying untrusted input. The
-              backing bytes must remain alive and unchanged.
+              Uniform octants become value leaves in one pointer-free byte
+              sequence. When tree encoding would not be smaller, the encoder
+              selects a dense payload instead.
             </p>
           </article>
           <article class="feature-card reveal">
-            <span class="feature-icon">⋮⋮</span>
-            <h3>Exclusive hot-chunk editing</h3>
+            <span class="feature-icon">⨯</span>
+            <p class="card-kicker">SIMD-enabled paths</p>
+            <h3>Vectorized scans where the runtime supports them</h3>
             <p>
-              <code>HotOctreeChunk&lt;T&gt;</code> owns channel-major,
-              Morton-encoded values. One worker owns the editor; stale commits
-              are rejected.
+              The .NET 10 and .NET 11 builds use runtime-vectorized
+              uniform-region detection and equality search/count operations. The
+              .NET Standard 2.1 target uses portable scalar fallbacks with the
+              same format and API.
+            </p>
+          </article>
+          <article class="feature-card reveal">
+            <span class="feature-icon">⌁</span>
+            <p class="card-kicker">Zero-copy and allocation control</p>
+            <h3>Caller-owned build and query buffers</h3>
+            <p>
+              Build into <code>Span&lt;byte&gt;</code> and query borrowed bytes through
+              <code>OctreeSpan&lt;T&gt;</code>. Valid caller-buffer builds and spatial
+              queries allocate no managed heap memory; owned builds allocate one
+              final array.
+            </p>
+          </article>
+          <article class="feature-card reveal">
+            <span class="feature-icon">⇄</span>
+            <p class="card-kicker">Multi-threading contract</p>
+            <h3>Immutable publication with concurrent readers</h3>
+            <p>
+              <code>Octree&lt;T&gt;</code> publishes new immutable arrays lock-free.
+              <code>OctreeWorld&lt;T&gt;</code> permits concurrent readers, serializes
+              writers, and supplies batch scopes. Mutable editors remain
+              exclusive to one worker.
             </p>
           </article>
           <article class="feature-card reveal">
             <span class="feature-icon">▱</span>
-            <h3>Selective channel rebuild</h3>
+            <p class="card-kicker">Multiple channels</p>
+            <h3>Encode attributes independently</h3>
             <p>
-              Store material, lighting, occupancy, or application-defined
-              channels independently. Reuse unchanged channel encodings.
+              Keep material, collision, lighting, fluid, or application-defined
+              fields in separate encodings. A channel update can reuse every
+              unchanged channel and preserve their uniform regions.
+            </p>
+          </article>
+          <article class="feature-card reveal">
+            <span class="feature-icon">⋮⋮</span>
+            <p class="card-kicker">Bulk mutation</p>
+            <h3>Decode once and encode once</h3>
+            <p>
+              A hot chunk retains mutable, channel-major Morton-encoded values
+              across repeated edits. Readers retain the previous immutable
+              snapshot until commit; stale publication is rejected.
+            </p>
+          </article>
+          <article class="feature-card reveal">
+            <span class="feature-icon">⊞</span>
+            <p class="card-kicker">Sparse worlds</p>
+            <h3>Allocate chunks, not a world-sized array</h3>
+            <p>
+              <code>OctreeWorld&lt;T&gt;</code> stores sparse outer branches and
+              resident chunks without a complete chunk-reference grid. It also
+              distinguishes unloaded space from known air.
             </p>
           </article>
           <article class="feature-card reveal">
             <span class="feature-icon">↧</span>
-            <h3>Persistence and residency</h3>
+            <p class="card-kicker">Streaming and persistence</p>
+            <h3>Bound the resident working set</h3>
             <p>
-              Load missing chunks, track dirty snapshots, write files atomically,
-              and evict older residents against a soft serialized-byte target.
+              Load chunks on demand, track dirty snapshots, save atomically, and
+              evict older residents against a soft serialized-byte target.
+              Compression and LOD namespaces are explicit storage options.
             </p>
           </article>
           <article class="feature-card reveal">
             <span class="feature-icon">◎</span>
-            <h3>Bounded spatial queries</h3>
+            <p class="card-kicker">Encoded spatial queries</p>
+            <h3>Query regions without full expansion</h3>
             <p>
-              Perform point lookup, filtered existence tests and counts, bounded
-              hit enumeration, region decode, and nearest-match search.
-            </p>
-          </article>
-          <article class="feature-card reveal">
-            <span class="feature-icon">≋</span>
-            <h3>Addressed LOD namespaces</h3>
-            <p>
-              Address application-generated power-of-two LOD chunks by shift and
-              retain each LOD in an independent memory and disk namespace.
+              Execute point lookup, filtered existence and counts, bounded hit
+              enumeration, region decode, and nearest-match search directly
+              against encoded regions. Reusable neighborhood caches refresh only
+              entering slabs during local movement.
             </p>
           </article>
         </div>
@@ -534,7 +580,8 @@ world.UnloadChunk(-<span class="num">1</span>, <span class="num">0</span>, <span
             <code>WorldEntity</code> and <code>HotOctreeChunk</code> are not
             thread-safe. <code>OctreeWorld</code> uses a
             <code>ReaderWriterLockSlim</code> and provides explicit read and write
-            batches.
+            batches. The library does not create worker threads; the application
+            controls scheduling and partitions mutable editors by worker.
           </p>
           <p>
             One encoded channel is limited to levels 0 through 9: a maximum side
