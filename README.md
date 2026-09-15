@@ -28,13 +28,15 @@ The API and encoded byte format are identical across targets; runtime-specific
 performance must be measured on the deployment hardware.
 
 ```shell
-dotnet add package Tedd.Voxtree --version 2.0.0
+dotnet add package Tedd.Voxtree
 ```
 
-Or add the package reference directly:
+Or use a floating reference for the current 2.x release line, then pin the
+resolved version through the package lock file or your normal dependency update
+process:
 
 ```xml
-<PackageReference Include="Tedd.Voxtree" Version="2.0.0" />
+<PackageReference Include="Tedd.Voxtree" Version="2.*" />
 ```
 
 ## Supported capabilities

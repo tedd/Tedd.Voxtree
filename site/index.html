@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7faf9" />
+    <meta
+      name="description"
+      content="Tedd.Voxtree is a compact .NET voxel storage library for allocation-conscious octrees, multi-channel chunks, and persisted streamed worlds."
+    />
+    <meta
+      property="og:title"
+      content="Tedd.Voxtree — compact voxel storage for .NET"
+    />
+    <meta
+      property="og:description"
+      content="Build from dense voxels, store uniform regions compactly, and query owned or caller-backed encoded data."
+    />
+    <meta property="og:type" content="website" />
+    <title>Tedd.Voxtree — compact voxel storage for .NET</title>
+    <link rel="icon" href="assets/voxtree-icon.svg" type="image/svg+xml" />
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Tedd.Voxtree home">
+        <img src="assets/voxtree-icon.svg" width="34" height="34" alt="" />
+        <span>TEDD<span class="brand-slash">/</span>VOXTREE</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#model">Data model</a>
+        <a href="#capabilities">Capabilities</a>
+        <a href="#example">Example</a>
+        <a href="https://github.com/tedd/Tedd.Voxtree">Documentation</a>
+        <a class="nav-cta" href="https://www.nuget.org/packages/Tedd.Voxtree"
+          >NuGet</a
+        >
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="hero-grid" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span> Compact spatial storage for .NET</p>
+          <h1>Build dense.<br />Store <em>sparse.</em></h1>
+          <p class="lede">
+            Encode voxel chunks into contiguous octrees, retain hot data in
+            Morton order, and route signed world coordinates through
+            independently persisted multi-channel chunks.
+          </p>
+          <div class="hero-actions">
+            <a
+              class="button primary"
+              href="https://www.nuget.org/packages/Tedd.Voxtree"
+              >Get the package <span aria-hidden="true">↗</span></a
+            >
+            <a
+              class="button secondary"
+              href="https://github.com/tedd/Tedd.Voxtree#installation"
+              >Read the guide</a
+            >
+          </div>
+          <div
+            class="install-command"
+            role="group"
+            aria-label="NuGet installation command"
+          >
+            <code>dotnet add package Tedd.Voxtree</code>
+            <button
+              type="button"
+              data-copy="dotnet add package Tedd.Voxtree"
+              aria-label="Copy installation command"
+            >
+              Copy
+            </button>
+          </div>
+          <ul class="hero-checks">
+            <li>.NET Standard 2.1</li>
+            <li>.NET 10</li>
+            <li>.NET 11 preview</li>
+            <li>LGPL-2.1</li>
+          </ul>
+        </div>
+
+        <figure class="hero-product" aria-label="Voxel octree encoding diagram">
+          <div class="window-bar">
+            <span></span><span></span><span></span><b>chunk / channel 0</b
+            ><i>encoded</i>
+          </div>
+          <div class="voxel-scene">
+            <svg
+              viewBox="0 0 760 560"
+              role="img"
+              aria-labelledby="voxel-title voxel-desc"
+            >
+              <title id="voxel-title">
+                A voxel volume divided into octants
+              </title>
+              <desc id="voxel-desc">
+                An isometric voxel cube with compact uniform regions and one
+                highlighted queried cell.
+              </desc>
+              <defs>
+                <linearGradient id="cubeTop" x1="0" y1="0" x2="1" y2="1">
+                  <stop stop-color="#3ed1c1" />
+                  <stop offset="1" stop-color="#12988e" />
+                </linearGradient>
+                <linearGradient id="cubeLeft" x1="0" y1="0" x2="1" y2="1">
+                  <stop stop-color="#087f78" />
+                  <stop offset="1" stop-color="#075f5c" />
+                </linearGradient>
+                <linearGradient id="cubeRight" x1="0" y1="0" x2="1" y2="1">
+                  <stop stop-color="#126f70" />
+                  <stop offset="1" stop-color="#0d4e54" />
+                </linearGradient>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="8" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+              <g
+                class="scene-grid"
+                stroke="#3a6268"
+                stroke-width="1"
+                opacity=".28"
+              >
+                <path d="M70 470 380 292 690 470 380 648Z" />
+                <path d="M70 410 380 232 690 410" />
+                <path d="M70 350 380 172 690 350" />
+                <path d="M173 529 483 351" />
+                <path d="M277 589 587 411" />
+                <path d="M587 529 277 351" />
+                <path d="M483 589 173 411" />
+              </g>
+              <g class="main-cube">
+                <polygon
+                  points="380,72 650,228 380,384 110,228"
+                  fill="url(#cubeTop)"
+                />
+                <polygon
+                  points="110,228 380,384 380,494 110,338"
+                  fill="url(#cubeLeft)"
+                />
+                <polygon
+                  points="650,228 380,384 380,494 650,338"
+                  fill="url(#cubeRight)"
+                />
+                <g fill="none" stroke="#b8f3eb" stroke-width="2" opacity=".62">
+                  <path d="M245 150 515 306 515 416" />
+                  <path d="M515 150 245 306 245 416" />
+                  <path d="M110 283 380 439 650 283" />
+                  <path d="M380 72 380 384 380 494" />
+                </g>
+                <g fill="none" stroke="#74d8cd" stroke-width="1" opacity=".45">
+                  <path d="M177.5 189 447.5 345" />
+                  <path d="M312.5 111 582.5 267" />
+                  <path d="M582.5 189 312.5 345" />
+                  <path d="M447.5 111 177.5 267" />
+                </g>
+              </g>
+              <g class="selected-voxel" filter="url(#glow)">
+                <polygon
+                  points="515,306 582.5,345 515,384 447.5,345"
+                  fill="#f0a45d"
+                />
+                <polygon
+                  points="447.5,345 515,384 515,423 447.5,384"
+                  fill="#b65e28"
+                />
+                <polygon
+                  points="582.5,345 515,384 515,423 582.5,384"
+                  fill="#8e431e"
+                />
+              </g>
+              <g class="callout" font-family="DM Sans, Segoe UI, sans-serif">
+                <path
+                  d="M576 366 C635 366 637 413 680 413"
+                  fill="none"
+                  stroke="#f0a45d"
+                  stroke-width="2"
+                />
+                <circle cx="680" cy="413" r="4" fill="#f0a45d" />
+                <text
+                  x="675"
+                  y="445"
+                  fill="#e9f7f5"
+                  font-size="17"
+                  text-anchor="end"
+                >
+                  value 42
+                </text>
+                <text
+                  x="675"
+                  y="466"
+                  fill="#8cabb0"
+                  font-size="12"
+                  text-anchor="end"
+                >
+                  (13, 7, 21)
+                </text>
+              </g>
+            </svg>
+          </div>
+          <figcaption>
+            <code>tree.Get(13, 7, 21)</code><strong>→ 42</strong
+            ><span>Direct lookup in versioned encoded storage</span>
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="proof-strip" aria-label="Technical characteristics">
+        <p>
+          <strong>0 allocations</strong
+          ><span>Caller-buffer build and valid span-query paths</span>
+        </p>
+        <p>
+          <strong>1–16 bytes</strong
+          ><span>Exact-width unmanaged voxel values</span>
+        </p>
+        <p>
+          <strong>Int64 space</strong
+          ><span>Signed global coordinates for streamed worlds</span>
+        </p>
+        <p>
+          <strong>5 codecs</strong
+          ><span>Brotli, Deflate, GZip, ZLib, and Zstandard</span>
+        </p>
+      </section>
+
+      <section class="model section-shell" id="model">
+        <div class="section-intro reveal">
+          <div>
+            <p class="eyebrow">One model, four operating layers</p>
+            <h2>Move from voxels to worlds without changing representation.</h2>
+          </div>
+          <p>
+            Each layer has a narrow responsibility. Dense buffers support bulk
+            work; octrees encode one channel; chunks group channels; worlds
+            route and retain chunks.
+          </p>
+        </div>
+
+        <ol class="model-flow">
+          <li class="flow-card reveal">
+            <span class="flow-number">01</span>
+            <div class="flow-glyph dense-glyph" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <p class="card-kicker">Edit</p>
+            <h3>Dense buffers</h3>
+            <p>
+              Use linear or Morton order for generation, conversion, extraction,
+              and intensive edits.
+            </p>
+          </li>
+          <li class="flow-arrow" aria-hidden="true">→</li>
+          <li class="flow-card reveal">
+            <span class="flow-number">02</span>
+            <div class="flow-glyph tree-glyph" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <p class="card-kicker">Encode</p>
+            <h3>Octree / OctreeSpan</h3>
+            <p>
+              Own the encoded bytes or borrow validated caller storage through a
+              stack-bound zero-copy view.
+            </p>
+          </li>
+          <li class="flow-arrow" aria-hidden="true">→</li>
+          <li class="flow-card reveal">
+            <span class="flow-number">03</span>
+            <div class="flow-glyph channel-glyph" aria-hidden="true">
+              <i></i><i></i><i></i><i></i>
+            </div>
+            <p class="card-kicker">Compose</p>
+            <h3>OctreeChunk</h3>
+            <p>
+              Publish immutable multi-channel snapshots and rebuild only the
+              channels that changed.
+            </p>
+          </li>
+          <li class="flow-arrow" aria-hidden="true">→</li>
+          <li class="flow-card reveal">
+            <span class="flow-number">04</span>
+            <div class="flow-glyph world-glyph" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <p class="card-kicker">Stream</p>
+            <h3>WorldEntity</h3>
+            <p>
+              Route signed coordinates, load persisted chunks on demand, and
+              trim resident data to a soft byte target.
+            </p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="capabilities section-shell" id="capabilities">
+        <div class="section-intro reveal">
+          <div>
+            <p class="eyebrow">Built for read-heavy voxel systems</p>
+            <h2>Compact at rest. Deliberate while hot.</h2>
+          </div>
+          <p>
+            Keep immutable encoded snapshots on read paths. Promote a chunk to
+            dense Morton storage only while repeated edits justify it, then
+            encode once on commit.
+          </p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card featured reveal">
+            <span class="feature-icon">⌁</span>
+            <p class="card-kicker">Borrowed storage</p>
+            <h3>Zero-copy span views</h3>
+            <p>
+              Validate existing packets and query them through
+              <code>OctreeSpan&lt;T&gt;</code> without copying their encoded
+              bytes.
+            </p>
+          </article>
+          <article class="feature-card reveal">
+            <span class="feature-icon">⋮⋮</span>
+            <h3>Morton hot chunks</h3>
+            <p>
+              Retain channel-major Morton data during intensive editing and
+              reject stale commits before publication.
+            </p>
+          </article>
+          <article class="feature-card reveal">
+            <span class="feature-icon">▱</span>
+            <h3>Multi-channel snapshots</h3>
+            <p>
+              Group independently encoded material, lighting, occupancy, or
+              application-defined channels.
+            </p>
+          </article>
+          <article class="feature-card reveal">
+            <span class="feature-icon">↧</span>
+            <h3>Automatic residency</h3>
+            <p>
+              Load missing residents on demand, atomically save dirty chunks,
+              and evict older data against a soft target.
+            </p>
+          </article>
+          <article class="feature-card reveal">
+            <span class="feature-icon">◎</span>
+            <h3>Spatial query set</h3>
+            <p>
+              Perform point lookup, filters, bounded enumeration, counts, region
+              decode, and nearest-match search.
+            </p>
+          </article>
+          <article class="feature-card reveal">
+            <span class="feature-icon">≋</span>
+            <h3>Independent LOD layers</h3>
+            <p>
+              Store application-generated power-of-two LOD chunks in distinct
+              memory and disk namespaces.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="example section-shell" id="example">
+        <div class="example-copy reveal">
+          <p class="eyebrow">A streamed world in a few explicit steps</p>
+          <h2>Persist chunks. Bound residency. Load on demand.</h2>
+          <p>
+            Storage configuration is attached to the world. Dirty snapshots are
+            written before release; reads load the addressed chunk when it is
+            not resident.
+          </p>
+          <ul>
+            <li>
+              <strong>Coordinate-safe.</strong> Negative global coordinates
+              resolve through arithmetic shifts.
+            </li>
+            <li>
+              <strong>Format-aware.</strong> Chunk files carry codec, address,
+              length, format version, and CRC32 metadata.
+            </li>
+            <li>
+              <strong>Policy-neutral.</strong> Your application controls
+              generation, LOD selection, and unloaded-space semantics.
+            </li>
+          </ul>
+        </div>
+
+        <div class="code-window reveal">
+          <div class="window-bar">
+            <span></span><span></span><span></span><b>World.cs</b><i>C#</i>
+          </div>
+          <pre><code><span class="kw">var</span> storage = <span class="kw">new</span> <span class="type">ChunkStorageOptions</span>(<span class="str">"world/chunks"</span>)
+{
+    Compression = <span class="type">ChunkCompression</span>.Zstandard,
+    CompressionLevel = <span class="type">CompressionLevel</span>.Fastest
+};
+
+<span class="kw">var</span> world = <span class="kw">new</span> <span class="type">WorldEntity</span>(
+    chunkSize: <span class="num">32</span>,
+    channelCount: <span class="num">4</span>,
+    storage,
+    maxResidentBytes: <span class="num">512L</span> * <span class="num">1024</span> * <span class="num">1024</span>);
+
+world.SetChunk(-<span class="num">1</span>, <span class="num">0</span>, <span class="num">2</span>, chunk);
+world.SaveAllChunks();
+world.UnloadChunk(-<span class="num">1</span>, <span class="num">0</span>, <span class="num">2</span>);
+
+<span class="kw">uint</span> material = world.Get(
+    channel: <span class="num">0</span>, x: -<span class="num">1</span>, y: <span class="num">7</span>, z: <span class="num">64</span>);</code></pre>
+        </div>
+      </section>
+
+      <section class="choice-band">
+        <div class="choice-intro reveal">
+          <p class="eyebrow">Choose the ownership contract</p>
+          <h2>Owned convenience or caller-controlled memory.</h2>
+        </div>
+        <div class="choice-list reveal">
+          <div>
+            <strong>Octree&lt;T&gt;</strong
+            ><span
+              >Owns one final encoded byte array and supports lock-free
+              replacement.</span
+            >
+          </div>
+          <div>
+            <strong>OctreeSpan&lt;T&gt;</strong
+            ><span
+              >Reads validated caller-owned memory without copying or managed
+              allocation.</span
+            >
+          </div>
+          <div>
+            <strong>HotOctreeChunk&lt;T&gt;</strong
+            ><span
+              >Owns mutable dense Morton storage for an exclusive edit
+              session.</span
+            >
+          </div>
+          <div>
+            <strong>OctreeWorld&lt;T&gt;</strong
+            ><span
+              >Represents a bounded sparse region with explicit unloaded and
+              known-empty states.</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="boundaries section-shell">
+        <div class="boundaries-title reveal">
+          <p class="eyebrow">Operational boundaries</p>
+          <h2>Storage mechanics are included. World policy remains yours.</h2>
+        </div>
+        <div class="boundaries-copy reveal">
+          <p>
+            Tedd.Voxtree does not generate LOD data, select an LOD, simulate
+            entities, or infer whether unloaded space is air. Those decisions
+            depend on the application.
+          </p>
+          <p>
+            <code>WorldEntity</code> is not thread-safe. Use its immutable
+            published chunks within an application-defined synchronization
+            model, or use <code>OctreeWorld</code> where its bounded,
+            synchronized semantics fit.
+          </p>
+          <a href="https://github.com/tedd/Tedd.Voxtree#supported-capabilities"
+            >Review the complete capability matrix ↗</a
+          >
+        </div>
+      </section>
+
+      <section class="final-cta">
+        <div class="cta-grid" aria-hidden="true"></div>
+        <p class="eyebrow">Tedd.Voxtree 2.x</p>
+        <h2>Put spatial structure<br /><span>inside the data.</span></h2>
+        <p>
+          Install the package, build a dense chunk, and choose the ownership
+          model that fits its lifetime.
+        </p>
+        <div class="hero-actions centered">
+          <a
+            class="button primary"
+            href="https://www.nuget.org/packages/Tedd.Voxtree"
+            >Open on NuGet <span aria-hidden="true">↗</span></a
+          >
+          <a
+            class="button secondary"
+            href="https://github.com/tedd/Tedd.Voxtree"
+            >Browse the source</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand" href="#top"
+        ><img
+          src="assets/voxtree-icon.svg"
+          width="28"
+          height="28"
+          alt=""
+        /><span>TEDD/VOXTREE</span></a
+      >
+      <p>Compact voxel storage for .NET.</p>
+      <div>
+        <a href="https://www.nuget.org/packages/Tedd.Voxtree">NuGet</a
+        ><a href="https://github.com/tedd/Tedd.Voxtree">Source</a
+        ><a href="https://github.com/tedd/Tedd.Voxtree/blob/main/LICENSE"
+          >LGPL-2.1</a
+        >
+      </div>
+    </footer>
+  </body>
+</html>
