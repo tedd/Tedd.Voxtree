@@ -21,7 +21,7 @@ For successful, valid-input operations, the caller-buffer build path and `Octree
 
 The package includes `net11.0`, `net10.0`, and `netstandard2.1` assets. .NET 11
 is currently preview; the repository pins SDK `11.0.100-preview.7.26381.103`.
-The .NET 10/11 builds use runtime-vectorized uniform-region detection, equality
+The .NET 10/11 builds use runtime-vectorized uniform-region detection, equality and masked
 searches/counting, and uninitialized result-array allocation when every byte is
 subsequently written. The .NET Standard build uses portable scalar fallbacks.
 The API and encoded byte format are identical across targets; runtime-specific
@@ -667,6 +667,17 @@ The [synchronization benchmark](src/Tedd.Voxtree.Benchmark/Results/2026-09-05-th
 measured 26.1 ns per individual world read versus 19.9 ns in 1,024-operation read
 batches on .NET 10 / Ryzen 9 5950X, with zero warm-path allocation. These are
 uncontended measurements; batch size and writer latency remain workload-dependent.
+
+`Octree.CreateLookup()` captures an immutable UInt32 point-lookup snapshot.
+Compressed nodes use nine 32-bit words each (36 bytes) so reads can follow child
+indexes directly. Compilation validates the source and allocates the index once;
+dense snapshots share the source encoding and uniform snapshots retain one value.
+Use `StorageBytes` to inspect retained payload size, excluding CLR object headers.
+The snapshot supports concurrent reads and continues returning its captured values
+after the source octree is rebuilt. For a chunk channel, use
+`chunk.GetChannel(0).CreateLookup()`; this span API copies dense input so its
+backing storage can be reused after compilation. Dense channel spans remain
+suitable when contiguous scans or edits justify expanding every voxel.
 
 For dirty-block coalescing and publication scheduling, see
 [threading and deferred updates](docs/BULK_STREAMING.md#threading-and-deferred-updates).

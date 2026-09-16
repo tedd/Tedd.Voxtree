@@ -1,0 +1,42 @@
+```
+
+BenchmarkDotNet v0.16.0-preview.1, Windows 11 (10.0.26200.9445/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 5950X 3.40GHz, 1 CPU, 32 logical and 16 physical cores
+Memory: 127.91 GB Total, 67.2 GB Available
+.NET SDK 11.0.100-preview.7.26381.103
+  [Host]     : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+  Job-BZNPUE : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+
+IterationCount=5  IterationTime=200ms  LaunchCount=1
+WarmupCount=3
+
+```
+| Method           | Pattern   | Queries    | Mean      | Error      | StdDev    | Ratio | RatioSD | Allocated | Alloc Ratio |
+|----------------- |---------- |----------- |----------:|-----------:|----------:|------:|--------:|----------:|------------:|
+| **Encoded**          | **Sparse**    | **Sequential** | **23.877 ns** |  **1.1831 ns** | **0.3073 ns** |  **1.00** |    **0.00** |         **-** |          **NA** |
+| SingleByte       | Sparse    | Sequential | 25.456 ns |  1.9567 ns | 0.3028 ns |  1.07 |    0.02 |         - |          NA |
+| InlineSingleByte | Sparse    | Sequential | 36.286 ns |  5.8686 ns | 1.5241 ns |  1.52 |    0.06 |         - |          NA |
+| Indexed36        | Sparse    | Sequential |  7.796 ns |  2.2668 ns | 0.3508 ns |  0.33 |    0.01 |         - |          NA |
+| Aligned64        | Sparse    | Sequential |  9.352 ns |  1.9953 ns | 0.5182 ns |  0.39 |    0.02 |         - |          NA |
+| DenseSnapshot    | Sparse    | Sequential |  1.399 ns |  0.6779 ns | 0.1049 ns |  0.06 |    0.00 |         - |          NA |
+|                  |           |            |           |            |           |       |         |           |             |
+| **Encoded**          | **Sparse**    | **Random**     | **47.347 ns** |  **7.4559 ns** | **1.1538 ns** |  **1.00** |    **0.00** |         **-** |          **NA** |
+| SingleByte       | Sparse    | Random     | 56.302 ns | 19.4015 ns | 3.0024 ns |  1.19 |    0.06 |         - |          NA |
+| InlineSingleByte | Sparse    | Random     | 55.248 ns |  7.5493 ns | 1.9605 ns |  1.17 |    0.05 |         - |          NA |
+| Indexed36        | Sparse    | Random     |  7.524 ns |  0.3599 ns | 0.0557 ns |  0.16 |    0.00 |         - |          NA |
+| Aligned64        | Sparse    | Random     |  7.923 ns |  0.9309 ns | 0.2417 ns |  0.17 |    0.01 |         - |          NA |
+| DenseSnapshot    | Sparse    | Random     |  1.555 ns |  0.3609 ns | 0.0937 ns |  0.03 |    0.00 |         - |          NA |
+|                  |           |            |           |            |           |       |         |           |             |
+| **Encoded**          | **Clustered** | **Sequential** |  **7.464 ns** |  **0.5669 ns** | **0.0877 ns** |  **1.00** |    **0.00** |         **-** |          **NA** |
+| SingleByte       | Clustered | Sequential |  7.859 ns |  0.6244 ns | 0.1621 ns |  1.05 |    0.02 |         - |          NA |
+| InlineSingleByte | Clustered | Sequential |  7.613 ns |  1.1143 ns | 0.2894 ns |  1.02 |    0.04 |         - |          NA |
+| Indexed36        | Clustered | Sequential |  2.914 ns |  0.5406 ns | 0.1404 ns |  0.39 |    0.02 |         - |          NA |
+| Aligned64        | Clustered | Sequential |  2.690 ns |  0.0192 ns | 0.0030 ns |  0.36 |    0.00 |         - |          NA |
+| DenseSnapshot    | Clustered | Sequential |  1.430 ns |  0.2435 ns | 0.0632 ns |  0.19 |    0.01 |         - |          NA |
+|                  |           |            |           |            |           |       |         |           |             |
+| **Encoded**          | **Clustered** | **Random**     |  **9.896 ns** |  **0.0873 ns** | **0.0135 ns** |  **1.00** |    **0.00** |         **-** |          **NA** |
+| SingleByte       | Clustered | Random     | 12.738 ns |  1.6203 ns | 0.4208 ns |  1.29 |    0.04 |         - |          NA |
+| InlineSingleByte | Clustered | Random     | 14.357 ns |  2.7488 ns | 0.4254 ns |  1.45 |    0.04 |         - |          NA |
+| Indexed36        | Clustered | Random     |  3.310 ns |  0.3580 ns | 0.0554 ns |  0.33 |    0.01 |         - |          NA |
+| Aligned64        | Clustered | Random     |  3.326 ns |  0.3133 ns | 0.0485 ns |  0.34 |    0.00 |         - |          NA |
+| DenseSnapshot    | Clustered | Random     |  1.515 ns |  0.1587 ns | 0.0412 ns |  0.15 |    0.00 |         - |          NA |

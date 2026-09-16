@@ -1,0 +1,133 @@
+using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace Tedd.Voxtree;
+
+/// <summary>An immutable point-lookup snapshot with predecoded 32-bit child indexes.</summary>
+/// <remarks>
+/// Create with <see cref="Octree.CreateLookup"/> or <see cref="OctreeSpan.CreateLookup"/> when repeated reads justify compilation and
+/// extra memory. Tree nodes occupy 36 bytes each. Dense storage is borrowed from the immutable
+/// source snapshot when available; borrowed dense spans are copied. Uniform storage retains one value. Rebuilding the source does not change
+/// this snapshot. Concurrent reads need no locks. Serialized bytes retain their existing format.
+/// </remarks>
+public sealed class OctreeLookup
+{
+    private const int NodeWords = 9;
+    private readonly uint[]? _nodes;
+    private readonly ReadOnlyMemory<byte> _dense;
+    private readonly uint _uniform;
+
+    internal OctreeLookup(ReadOnlySpan<byte> encoded, ReadOnlyMemory<byte> ownedEncoding)
+    {
+        var view = new OctreeSpan(encoded);
+        if (!view.IsWellFormed()) throw new FormatException("The octree data is malformed.");
+        Levels = view.Levels;
+        var kind = OctreeCodec.GetStorageKindUnchecked(encoded);
+        if (kind == StorageKind.Dense)
+        {
+            _dense = ownedEncoding.IsEmpty ? encoded.ToArray() : ownedEncoding;
+            return;
+        }
+        if (kind == StorageKind.Uniform)
+        {
+            var cursor = OctreeCodec.HeaderSize;
+            OctreeCodec.TryReadVarUInt(encoded, ref cursor, out _uniform);
+            return;
+        }
+
+        var body = encoded[..^1];
+        var root = body.Length - encoded[^1];
+        _nodes = new uint[checked(CountNodes(body, root) * NodeWords)];
+        var next = 0;
+        Compile(body, root, _nodes, ref next);
+    }
+
+    /// <summary>The depth of the captured volume.</summary>
+    public int Levels { get; }
+    /// <summary>The number of voxels along each axis.</summary>
+    public int SideLength => 1 << Levels;
+    /// <summary>The number of represented voxels.</summary>
+    public int Count => 1 << (Levels * 3);
+    /// <summary>Backing payload bytes, excluding CLR object headers; dense bytes are shared with the source.</summary>
+    public int StorageBytes => _nodes is not null ? _nodes.Length * sizeof(uint) :
+        !_dense.IsEmpty ? _dense.Length : sizeof(uint);
+    /// <summary>Gets a value from this snapshot.</summary>
+    public uint this[int x, int y, int z] => Get(x, y, z);
+
+    /// <summary>Gets a value, throwing when a coordinate is outside the volume.</summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public uint Get(int x, int y, int z)
+    {
+        if ((uint)x >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(x), x);
+        if ((uint)y >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(y), y);
+        if ((uint)z >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(z), z);
+        return GetUnchecked(x, y, z);
+    }
+
+    /// <summary>Attempts a read, returning false for coordinates outside the volume.</summary>
+    public bool TryGet(int x, int y, int z, out uint value)
+    {
+        if ((uint)(x | y | z) >= (uint)SideLength)
+        {
+            value = default;
+            return false;
+        }
+        value = GetUnchecked(x, y, z);
+        return true;
+    }
+
+    private uint GetUnchecked(int x, int y, int z)
+    {
+        var nodes = _nodes;
+        if (nodes is null)
+        {
+            if (_dense.IsEmpty) return _uniform;
+            var index = ((x << Levels) + y) * SideLength + z;
+            return BinaryPrimitives.ReadUInt32LittleEndian(_dense.Span.Slice(
+                OctreeCodec.HeaderSize + index * sizeof(uint), sizeof(uint)));
+        }
+        // Each private node has nine words; compilation emits only complete-node indexes.
+        // Coordinates select children 0..7. Keep a managed reference so GC relocation is safe.
+        ref var first = ref MemoryMarshal.GetReference(nodes.AsSpan());
+        var offset = 0;
+        for (var bit = Levels - 1; bit >= 0; bit--)
+        {
+            var child = (((x >> bit) & 1) << 2) | (((y >> bit) & 1) << 1) | ((z >> bit) & 1);
+            var token = Unsafe.Add(ref first, offset + child + 1);
+            if ((Unsafe.Add(ref first, offset) & (1u << child)) != 0) return token;
+            offset = (int)token;
+        }
+        // Construction validates the complete source before compiling the private index.
+        return OctreeThrowHelper.ThrowMalformed();
+    }
+
+    private static int CountNodes(ReadOnlySpan<byte> body, int offset)
+    {
+        var cursor = offset;
+        var mask = body[cursor++];
+        var count = 1;
+        for (var child = 0; child < 8; child++)
+        {
+            OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
+            if ((mask & (1 << child)) == 0) count += CountNodes(body, offset - (int)token);
+        }
+        return count;
+    }
+
+    private static int Compile(ReadOnlySpan<byte> body, int offset, uint[] nodes, ref int next)
+    {
+        var result = next;
+        next += NodeWords;
+        var cursor = offset;
+        var mask = body[cursor++];
+        nodes[result] = mask;
+        for (var child = 0; child < 8; child++)
+        {
+            OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
+            nodes[result + child + 1] = (mask & (1 << child)) != 0
+                ? token : (uint)Compile(body, offset - (int)token, nodes, ref next);
+        }
+        return result;
+    }
+}

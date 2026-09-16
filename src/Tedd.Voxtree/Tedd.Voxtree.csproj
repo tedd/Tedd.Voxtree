@@ -18,7 +18,7 @@
     <RepositoryUrl>https://github.com/tedd/Tedd.Voxtree</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>octree;voxel;span;zero-allocation;performance;streaming;lod;zstandard</PackageTags>
-    <PackageReleaseNotes>Version 2 introduces span-backed builds/queries, Morton hot chunks, multi-channel chunks, automatic disk persistence, compressed LRU residency, caller-generated LOD layers, and bounded or effectively unbounded streamed worlds. Targets .NET 11 preview, .NET 10, and .NET Standard 2.1.</PackageReleaseNotes>
+    <PackageReleaseNotes>SIMD-accelerated masked and equality queries on .NET 10/11, immutable compiled UInt32 point-lookup snapshots via CreateLookup(), and reduced repeated span access in world traversal. Existing serialized formats and synchronization contracts are preserved.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IncludeSymbols>true</IncludeSymbols>

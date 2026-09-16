@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Tedd.Voxtree;
 
@@ -37,6 +38,19 @@ public readonly struct VoxelFilter<T> where T : unmanaged
     internal int CountIn(ReadOnlySpan<T> values)
     {
         if (IsZero(_mask)) return _negate ? 0 : values.Length;
+#if NET10_0_OR_GREATER
+        switch (Unsafe.SizeOf<T>())
+        {
+            case 1: return MaskedVoxelSearch<byte>.Count(MemoryMarshal.Cast<T, byte>(values),
+                Unsafe.BitCast<T, byte>(_mask), Unsafe.BitCast<T, byte>(_expected), _negate);
+            case 2: return MaskedVoxelSearch<ushort>.Count(MemoryMarshal.Cast<T, ushort>(values),
+                Unsafe.BitCast<T, ushort>(_mask), Unsafe.BitCast<T, ushort>(_expected), _negate);
+            case 4: return MaskedVoxelSearch<uint>.Count(MemoryMarshal.Cast<T, uint>(values),
+                Unsafe.BitCast<T, uint>(_mask), Unsafe.BitCast<T, uint>(_expected), _negate);
+            case 8: return MaskedVoxelSearch<ulong>.Count(MemoryMarshal.Cast<T, ulong>(values),
+                Unsafe.BitCast<T, ulong>(_mask), Unsafe.BitCast<T, ulong>(_expected), _negate);
+        }
+#endif
         var count = 0;
         foreach (var value in values)
             if (Matches(value)) count++;
@@ -46,6 +60,19 @@ public readonly struct VoxelFilter<T> where T : unmanaged
     internal bool AnyIn(ReadOnlySpan<T> values)
     {
         if (IsZero(_mask)) return !values.IsEmpty && !_negate;
+#if NET10_0_OR_GREATER
+        switch (Unsafe.SizeOf<T>())
+        {
+            case 1: return MaskedVoxelSearch<byte>.Any(MemoryMarshal.Cast<T, byte>(values),
+                Unsafe.BitCast<T, byte>(_mask), Unsafe.BitCast<T, byte>(_expected), _negate);
+            case 2: return MaskedVoxelSearch<ushort>.Any(MemoryMarshal.Cast<T, ushort>(values),
+                Unsafe.BitCast<T, ushort>(_mask), Unsafe.BitCast<T, ushort>(_expected), _negate);
+            case 4: return MaskedVoxelSearch<uint>.Any(MemoryMarshal.Cast<T, uint>(values),
+                Unsafe.BitCast<T, uint>(_mask), Unsafe.BitCast<T, uint>(_expected), _negate);
+            case 8: return MaskedVoxelSearch<ulong>.Any(MemoryMarshal.Cast<T, ulong>(values),
+                Unsafe.BitCast<T, ulong>(_mask), Unsafe.BitCast<T, ulong>(_expected), _negate);
+        }
+#endif
         foreach (var value in values)
             if (Matches(value)) return true;
         return false;

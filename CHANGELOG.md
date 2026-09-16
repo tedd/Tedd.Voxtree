@@ -2,6 +2,22 @@
 
 All notable changes to Tedd.Voxtree are documented here.
 
+## 2026-09-17
+
+### Added
+
+- Immutable `OctreeLookup` snapshots through `Octree.CreateLookup()` and `OctreeSpan.CreateLookup()`, with predecoded 32-bit child indexes for repeated UInt32 point reads.
+- Snapshot lookup metadata, checked `Get`/`TryGet` access, and ownership independent of subsequent source rebuilds or borrowed-buffer reuse.
+
+### Performance
+
+- SIMD masked counting and matching for 1-, 2-, 4-, and 8-byte generic values on .NET 10/11, with portable fallbacks and exact raw-bit semantics.
+- Specialized dense count/any paths that scan contiguous slabs or rows and preserve early matches.
+- Local node spans in generic and UInt32 world traversal, preserving checked indexing and existing locks.
+- BenchmarkDotNet access-pattern and bounds-check experiments, including archived results and rejected candidates.
+
+Serialized formats remain compatible with version 2.0.0.
+
 ## [2.0.0] - 2026-09-05
 
 ### Breaking changes

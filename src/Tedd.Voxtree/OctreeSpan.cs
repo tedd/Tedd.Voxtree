@@ -86,6 +86,18 @@ public readonly ref partial struct OctreeSpan
         return value;
     }
 
+    /// <summary>Compiles an independently owned immutable point-lookup snapshot.</summary>
+    /// <remarks>
+    /// The input must remain stable during compilation and may be reused afterward.
+    /// Tree metadata is expanded into direct indexes; dense bytes are copied. Uniform
+    /// snapshots retain one value. Use this on a chunk channel for repeated point reads.
+    /// </remarks>
+    public OctreeLookup CreateLookup()
+    {
+        if (!IsValid) throw new InvalidOperationException("The octree view is not initialized.");
+        return new OctreeLookup(_data, default);
+    }
+
     /// <summary>Attempts to get a value without throwing for a bad coordinate or malformed structure.</summary>
     public bool TryGet(int x, int y, int z, out uint value)
     {

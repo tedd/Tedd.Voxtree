@@ -128,6 +128,24 @@ internal static class OctreeQueries
             OctreeCodec.ReadDense(data[OctreeCodec.HeaderSize..], state.Values[..box.Count], levels, state.OutputLayout);
             return;
         }
+        if (BitConverter.IsLittleEndian && state.Kind == QueryKind.Count)
+        {
+            state.Count += CountDense(MemoryMarshal.Cast<byte, uint>(data[OctreeCodec.HeaderSize..]),
+                side, box, state.Filter);
+            return;
+        }
+        if (BitConverter.IsLittleEndian && state.Kind == QueryKind.Any)
+        {
+            var values = MemoryMarshal.Cast<byte, uint>(data[OctreeCodec.HeaderSize..]);
+            // Resolve immediate hits before entering the longer scan.
+            if (state.Filter.Matches(values[(box.MinX * side + box.MinY) * side + box.MinZ]) ||
+                AnyDense(values, side, box, state.Filter))
+            {
+                state.Count = 1;
+                state.Done = true;
+            }
+            return;
+        }
         for (var x = box.MinX; x < box.MaxX && !state.Done; x++)
         for (var y = box.MinY; y < box.MaxY && !state.Done; y++)
         {
@@ -136,20 +154,6 @@ internal static class OctreeQueries
             if (BitConverter.IsLittleEndian)
             {
                 var row = MemoryMarshal.Cast<byte, uint>(rowBytes);
-                if (state.Kind == QueryKind.Count)
-                {
-                    state.Count += state.Filter.CountIn(row);
-                    continue;
-                }
-                if (state.Kind == QueryKind.Any)
-                {
-                    if (state.Filter.AnyIn(row))
-                    {
-                        state.Count = 1;
-                        state.Done = true;
-                    }
-                    continue;
-                }
                 if (state.Kind == QueryKind.Copy)
                 {
                     state.CopyRow(x, y, box.MinZ, row);
@@ -162,6 +166,48 @@ internal static class OctreeQueries
                 state.Accept(new VoxelBox(x, y, z, x + 1, y + 1, z + 1), value);
             }
         }
+    }
+
+    // Coalesce complete rows/planes and dispatch the operation once per query.
+    private static int CountDense(ReadOnlySpan<uint> values, int side, VoxelBox box, VoxelFilter filter)
+    {
+        var width = box.MaxZ - box.MinZ;
+        var count = 0;
+        if (width == side)
+        {
+            if (box.MinY == 0 && box.MaxY == side)
+                return filter.CountIn(values.Slice(box.MinX * side * side, box.Count));
+            var length = (box.MaxY - box.MinY) * side;
+            for (var x = box.MinX; x < box.MaxX; x++)
+                count += filter.CountIn(values.Slice((x * side + box.MinY) * side, length));
+        }
+        else
+        {
+            for (var x = box.MinX; x < box.MaxX; x++)
+            for (var y = box.MinY; y < box.MaxY; y++)
+                count += filter.CountIn(values.Slice((x * side + y) * side + box.MinZ, width));
+        }
+        return count;
+    }
+
+    private static bool AnyDense(ReadOnlySpan<uint> values, int side, VoxelBox box, VoxelFilter filter)
+    {
+        var width = box.MaxZ - box.MinZ;
+        if (width == side)
+        {
+            if (box.MinY == 0 && box.MaxY == side)
+                return filter.AnyIn(values.Slice(box.MinX * side * side, box.Count));
+            var length = (box.MaxY - box.MinY) * side;
+            for (var x = box.MinX; x < box.MaxX; x++)
+                if (filter.AnyIn(values.Slice((x * side + box.MinY) * side, length))) return true;
+        }
+        else
+        {
+            for (var x = box.MinX; x < box.MaxX; x++)
+            for (var y = box.MinY; y < box.MaxY; y++)
+                if (filter.AnyIn(values.Slice((x * side + y) * side + box.MinZ, width))) return true;
+        }
+        return false;
     }
 
     internal ref struct State

@@ -1,0 +1,203 @@
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using BenchmarkDotNet.Attributes;
+
+namespace Tedd.Voxtree.Benchmark.Tests;
+
+// Reflection is setup-only: every variant traverses the same validated, private compiled index.
+[MemoryDiagnoser, DisassemblyDiagnoser(maxDepth: 3)]
+public class AccessBoundsTraversal
+{
+    private const int Operations = 1024;
+    private uint[] _nodes = null!;
+    private OctreeLookup _lookup = null!;
+    private int[] _x = null!, _y = null!, _z = null!;
+    private int _levels;
+
+    [Params(DataPattern.Clustered, DataPattern.Sparse)] public DataPattern Pattern { get; set; }
+    [Params(QueryPattern.Sequential, QueryPattern.Random)] public QueryPattern Queries { get; set; }
+
+    [GlobalSetup]
+    public void Setup()
+    {
+        _levels = 5;
+        var source = BenchmarkData.Create(_levels, Pattern);
+        _lookup = new Octree(_levels, source).CreateLookup();
+        _nodes = (uint[])typeof(OctreeLookup).GetField("_nodes", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(_lookup)!;
+        (_x, _y, _z, _) = BenchmarkData.CreateQueries(_levels, Queries, Operations);
+        for (var i = 0; i < source.Length; i++)
+        {
+            var x = i >> 10; var y = (i >> 5) & 31; var z = i & 31;
+            if (FieldGet(x, y, z) != source[i] || LocalGet(x, y, z) != source[i] ||
+                SliceGet(x, y, z) != source[i] || RefGet(x, y, z) != source[i])
+                throw new InvalidOperationException("Traversal parity failed.");
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = Operations)]
+    public uint FieldChecked()
+    {
+        uint sum = 0;
+        for (var i = 0; i < Operations; i++) sum += FieldGet(_x[i], _y[i], _z[i]);
+        return sum;
+    }
+
+    [Benchmark(Baseline = true, OperationsPerInvoke = Operations)]
+    public uint LocalChecked()
+    {
+        uint sum = 0;
+        for (var i = 0; i < Operations; i++) sum += LocalGet(_x[i], _y[i], _z[i]);
+        return sum;
+    }
+
+    [Benchmark(OperationsPerInvoke = Operations)]
+    public uint SliceChecked()
+    {
+        uint sum = 0;
+        for (var i = 0; i < Operations; i++) sum += SliceGet(_x[i], _y[i], _z[i]);
+        return sum;
+    }
+
+    [Benchmark(OperationsPerInvoke = Operations)]
+    public uint ManagedReference()
+    {
+        uint sum = 0;
+        for (var i = 0; i < Operations; i++) sum += RefGet(_x[i], _y[i], _z[i]);
+        return sum;
+    }
+
+    [Benchmark(OperationsPerInvoke = Operations)]
+    public uint Production()
+    {
+        uint sum = 0;
+        for (var i = 0; i < Operations; i++) sum += _lookup.Get(_x[i], _y[i], _z[i]);
+        return sum;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private uint FieldGet(int x, int y, int z)
+    {
+        if ((uint)(x | y | z) >= (uint)(1 << _levels)) throw new ArgumentOutOfRangeException();
+        var offset = 0;
+        for (var bit = _levels - 1; bit >= 0; bit--)
+        {
+            var child = (((x >> bit) & 1) << 2) | (((y >> bit) & 1) << 1) | ((z >> bit) & 1);
+            var token = _nodes[offset + child + 1];
+            if ((_nodes[offset] & (1u << child)) != 0) return token;
+            offset = (int)token;
+        }
+        throw new InvalidOperationException();
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private uint LocalGet(int x, int y, int z)
+    {
+        if ((uint)(x | y | z) >= (uint)(1 << _levels)) throw new ArgumentOutOfRangeException();
+        var nodes = _nodes;
+        var offset = 0;
+        for (var bit = _levels - 1; bit >= 0; bit--)
+        {
+            var child = (((x >> bit) & 1) << 2) | (((y >> bit) & 1) << 1) | ((z >> bit) & 1);
+            var token = nodes[offset + child + 1];
+            if ((nodes[offset] & (1u << child)) != 0) return token;
+            offset = (int)token;
+        }
+        throw new InvalidOperationException();
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private uint SliceGet(int x, int y, int z)
+    {
+        if ((uint)(x | y | z) >= (uint)(1 << _levels)) throw new ArgumentOutOfRangeException();
+        var nodes = _nodes;
+        var offset = 0;
+        for (var bit = _levels - 1; bit >= 0; bit--)
+        {
+            var child = (((x >> bit) & 1) << 2) | (((y >> bit) & 1) << 1) | ((z >> bit) & 1);
+            var node = nodes.AsSpan(offset, 9);
+            var token = node[child + 1];
+            if ((node[0] & (1u << child)) != 0) return token;
+            offset = (int)token;
+        }
+        throw new InvalidOperationException();
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private uint RefGet(int x, int y, int z)
+    {
+        if ((uint)(x | y | z) >= (uint)(1 << _levels)) throw new ArgumentOutOfRangeException();
+        ref var first = ref MemoryMarshal.GetReference(_nodes.AsSpan());
+        var offset = 0;
+        for (var bit = _levels - 1; bit >= 0; bit--)
+        {
+            var child = (((x >> bit) & 1) << 2) | (((y >> bit) & 1) << 1) | ((z >> bit) & 1);
+            var token = Unsafe.Add(ref first, offset + child + 1);
+            if ((Unsafe.Add(ref first, offset) & (1u << child)) != 0) return token;
+            offset = (int)token;
+        }
+        throw new InvalidOperationException();
+    }
+}
+
+[MemoryDiagnoser, DisassemblyDiagnoser(maxDepth: 1)]
+public class AccessBoundsLoops
+{
+    private uint[] _values = null!;
+    [Params(4096, 32768)] public int Count { get; set; }
+
+    [GlobalSetup]
+    public void Setup()
+    {
+        _values = Enumerable.Range(0, Count + 13).Select(i => (uint)i).ToArray();
+        if (FieldLength() != LocalLength() || CheckedPrefix() != SlicedPrefix() || CheckedPrefix() != RefPrefix())
+            throw new InvalidOperationException("Loop parity failed.");
+    }
+
+    [Benchmark(Baseline = true)]
+    public uint FieldLength()
+    {
+        uint sum = 0;
+        for (var i = 0; i < _values.Length; i++) sum += _values[i];
+        return sum;
+    }
+
+    [Benchmark]
+    public uint LocalLength()
+    {
+        var values = _values;
+        uint sum = 0;
+        for (var i = 0; i < values.Length; i++) sum += values[i];
+        return sum;
+    }
+
+    [Benchmark]
+    public uint CheckedPrefix()
+    {
+        var values = _values;
+        var count = Count;
+        if ((uint)count > (uint)values.Length) throw new ArgumentOutOfRangeException();
+        uint sum = 0;
+        for (var i = 0; i < count; i++) sum += values[i];
+        return sum;
+    }
+
+    [Benchmark]
+    public uint SlicedPrefix()
+    {
+        var values = _values.AsSpan(0, Count);
+        uint sum = 0;
+        for (var i = 0; i < values.Length; i++) sum += values[i];
+        return sum;
+    }
+
+    [Benchmark]
+    public uint RefPrefix()
+    {
+        var values = _values.AsSpan(0, Count);
+        ref var first = ref MemoryMarshal.GetReference(values);
+        uint sum = 0;
+        for (var i = 0; i < values.Length; i++) sum += Unsafe.Add(ref first, i);
+        return sum;
+    }
+}

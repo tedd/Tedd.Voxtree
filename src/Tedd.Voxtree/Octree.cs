@@ -42,6 +42,20 @@ public sealed partial class Octree
         Build(values);
     }
 
+
+    /// <summary>Compiles an immutable point-lookup snapshot with direct 32-bit child indexes.</summary>
+    /// <remarks>
+    /// Compilation validates and expands tree metadata once. It trades additional memory for
+    /// faster repeated reads; dense and uniform representations need no index. The result keeps
+    /// the captured state even if this octree is rebuilt.
+    /// </remarks>
+    public OctreeLookup CreateLookup()
+    {
+        var encoded = Volatile.Read(ref _data);
+        if (encoded.Length == 0) throw new InvalidOperationException("The octree has not been built.");
+        return new OctreeLookup(encoded, encoded);
+    }
+
     /// <summary>Gets whether this instance contains a completed build.</summary>
     public bool IsBuilt => Volatile.Read(ref _data).Length != 0;
 
