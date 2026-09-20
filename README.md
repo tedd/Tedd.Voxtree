@@ -48,6 +48,7 @@ process:
 | Spatial queries | Point lookup, filters, `Any`, match counts, bounded hit enumeration, rectangular decode, aligned block decode, and nearest-match search |
 | Multi-channel chunks | Immutable `OctreeChunk`/`OctreeChunk<T>` snapshots, selective channel rebuilds, full chunk packets, and borrowed channel encodings |
 | Intensive editing | `HotOctreeChunk`/`HotOctreeChunk<T>` retain channel-major dense Morton data and re-encode once on commit |
+| Sparse editing | `DeferredOctreeChunk`/`DeferredOctreeChunk<T>` retain pooled point edits; `DeferredChunkStore` tracks and synchronizes scheduled repackaging |
 | Bounded sparse worlds | `OctreeWorld`/`OctreeWorld<T>` distinguish unloaded, known-empty, and resident regions; support cross-chunk queries, extraction, manifests, fixed capacities, and caller-owned workspace |
 | Unbounded worlds | `WorldEntity`/`WorldEntity<T>` route signed 64-bit coordinates to power-of-two chunks with shifts and use a small LRU-assisted lookup cache before the chunk dictionary |
 | Persistence and residency | Automatic on-demand loads, clean implicit-zero chunks, dirty tracking, atomic saves, dirty flush on unload, `SaveAllChunks`, access sequencing, and a dynamic soft resident-byte target |
@@ -416,6 +417,57 @@ world regions remain unknown; the application decides whether to load or defer.
 Query and regional decode destinations must not overlap encoded
 bytes. Validate untrusted encoded data before spatial queries; malformed input
 may leave partial destination output.
+
+## Sparse edits and scheduled repackaging
+
+`DeferredOctreeChunk` and `DeferredOctreeChunk<T>` keep point edits beside an
+immutable compressed snapshot. Reads through the owner consult those edits
+first. Positions are shared across channels; writing the same position and
+channel overwrites its previous value, including explicit zero values.
+
+```csharp
+using var edits = new DeferredOctreeChunk(chunk, capacity: 256);
+edits[0, 1, 2, 3] = 43;
+uint current = edits[0, 1, 2, 3];
+OctreeChunk updated = edits.Repackage();
+```
+
+Capacity counts distinct positions, independently of channel count. Exceeding it
+promotes the chunk to dense Morton storage. `MakeHot()` explicitly promotes for
+bulk editing and returns a borrowed `HotOctreeChunk`; finish through the owner's
+`Repackage()`, and stop using borrowed spans afterward. The owner remains usable
+for further edits. Sparse repackaging rebuilds only changed channels and shares
+the other encodings. `GetChunk()`, `CopyBlockTo()`, `SerializedLength`, and
+`CopyEncodedTo()` apply pending edits before exposing complete content.
+
+For multiple chunks and a client-scheduled worker, use `DeferredChunkStore` or
+`DeferredChunkStore<T>`. All store operations are synchronized; the store owns
+its editors and exposes immutable snapshots only.
+
+```csharp
+using var edits = new DeferredChunkStore(capacity: 256);
+var address = new ChunkAddress(0, -1, 0, 2);
+edits.SetChunk(address, chunk);
+edits.Set(address, channel: 0, x: 1, y: 2, z: 3, value: 43);
+uint current = edits.Get(address, channel: 0, x: 1, y: 2, z: 3);
+
+ChunkAddress[] pending = edits.GetPendingRepackageChunks();
+int processed = edits.Repackage(maxChunks: 4); // May run on a client worker.
+OctreeChunk updated = edits.GetChunk(address); // Flushes this chunk if necessary.
+world.SetChunk(address, updated); // Publish explicitly into a WorldEntity.
+```
+
+Use the store as the authoritative read/write path while edits are pending.
+Existing worlds and previously returned snapshots retain their published values
+until explicitly replaced. The pending-address copy is advisory and deduplicated;
+another operation may repackage or remove an address before it is processed.
+Repackaging holds the store lock, so bound each batch to limit stalls. Publication
+into a `WorldEntity` requires the application's usual synchronization.
+
+Dispose owners and stores when finished to return pooled edit buffers. A
+standalone owner requires exclusive access; disposing it discards unpublished
+edits. Pool retention consumes memory even when managed allocation counters report
+no new array allocations.
 
 ## Repeated checks around moving entities
 
