@@ -13,16 +13,19 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
     private OctreeChunk<T> _snapshot;
     private HotOctreeChunk<T>? _hot;
     private SparseVoxelEdits<T>? _edits;
+    private readonly bool _deferredWritesEnabled;
     private bool _disposed;
 
     /// <summary>Retains an immutable source; capacity counts distinct edited positions across all channels.</summary>
     /// <param name="source">The immutable source snapshot.</param>
     /// <param name="capacity">Maximum sparse positions, 1..1,048,576. Overflow promotes to dense storage.</param>
-    public DeferredOctreeChunk(OctreeChunk<T> source, int capacity = 256)
+    /// <param name="deferredWritesEnabled">Whether point writes use sparse storage before dense promotion.</param>
+    public DeferredOctreeChunk(OctreeChunk<T> source, int capacity = 256, bool deferredWritesEnabled = true)
     {
         _snapshot = source ?? throw new ArgumentNullException(nameof(source));
         if (capacity < 1 || capacity > 1_048_576) throw new ArgumentOutOfRangeException(nameof(capacity));
         Capacity = Math.Min(capacity, OctreeCodec.GetVoxelCount(source.Levels));
+        _deferredWritesEnabled = deferredWritesEnabled;
     }
 
     /// <summary>The chunk depth.</summary>
@@ -33,6 +36,8 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
     public int ChannelCount => _snapshot.ChannelCount;
     /// <summary>The maximum number of distinct sparse positions before dense promotion.</summary>
     public int Capacity { get; }
+    /// <summary>Whether point writes use sparse storage before dense promotion.</summary>
+    public bool DeferredWritesEnabled => _deferredWritesEnabled;
     /// <summary>The number of distinct sparse positions; zero after dense promotion or repackaging.</summary>
     public int PendingPositionCount => _edits?.Count ?? 0;
     /// <summary>Whether this owner retains dense editing storage.</summary>
@@ -54,8 +59,17 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
         {
             var key = Validate(channel, x, y, z);
             if (_hot is not null) { _hot[channel, x, y, z] = value; return; }
-            _edits ??= new SparseVoxelEdits<T>(Levels, ChannelCount, Capacity);
-            if (!_edits.TrySet(channel, key, value)) MakeHot()[channel, x, y, z] = value;
+            var edits = _edits;
+            if (edits is null)
+            {
+                if (!_deferredWritesEnabled)
+                {
+                    MakeHot()[channel, x, y, z] = value;
+                    return;
+                }
+                _edits = edits = new SparseVoxelEdits<T>(Levels, ChannelCount, Capacity);
+            }
+            if (!edits.TrySet(channel, key, value)) MakeHot()[channel, x, y, z] = value;
         }
     }
 

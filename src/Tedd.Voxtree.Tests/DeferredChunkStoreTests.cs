@@ -5,6 +5,30 @@ public sealed class DeferredChunkStoreTests
     private static readonly ChunkAddress Address = new(0, -3, 4, 5);
 
     [Fact]
+    public void DeferredWritesCanBeDisabledForNewlyInstalledChunks()
+    {
+        using var defaultStore = new DeferredChunkStore();
+        using var store = new DeferredChunkStore(deferredWritesEnabled: false);
+        using var generic = new DeferredChunkStore<ulong>(deferredWritesEnabled: false);
+        Assert.True(defaultStore.DeferredWritesEnabled);
+        Assert.False(store.DeferredWritesEnabled);
+        Assert.False(generic.DeferredWritesEnabled);
+
+        store.SetChunk(Address, OctreeChunk.Empty(2, 1));
+        generic.SetChunk(Address, OctreeChunk<ulong>.Empty(2, 1));
+        Assert.Equal(0, store.PendingRepackageCount);
+        store.Set(Address, 0, 1, 2, 3, 45);
+        generic.Set(Address, 0, 3, 2, 1, ulong.MaxValue);
+        Assert.Equal(1, store.PendingRepackageCount);
+        Assert.Equal(45u, store.Get(Address, 0, 1, 2, 3));
+        Assert.Equal(ulong.MaxValue, generic.Get(Address, 0, 3, 2, 1));
+        Assert.Equal(1, store.Repackage());
+        Assert.Equal(1, generic.Repackage());
+        Assert.Equal(45u, store.GetChunk(Address).GetChannel(0).Get(1, 2, 3));
+        Assert.Equal(ulong.MaxValue, generic.GetChunk(Address).GetChannel(0).Get(3, 2, 1));
+    }
+
+    [Fact]
     public void PointReadsIncludeEditsAndSnapshotsRemainImmutable()
     {
         using var store = new DeferredChunkStore();

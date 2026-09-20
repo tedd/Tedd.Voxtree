@@ -5,6 +5,38 @@ namespace Tedd.Voxtree.Tests;
 public sealed class DeferredChunkTests
 {
     [Fact]
+    public void DeferredWritesCanBeDisabledWithoutChangingSnapshotSemantics()
+    {
+        var source = OctreeChunk.Empty(2, 2);
+        using var defaultOwner = new DeferredOctreeChunk(source);
+        using var owner = new DeferredOctreeChunk(source, deferredWritesEnabled: false);
+        using var generic = new DeferredOctreeChunk<ulong>(
+            OctreeChunk<ulong>.Empty(2, 2), deferredWritesEnabled: false);
+
+        Assert.True(defaultOwner.DeferredWritesEnabled);
+        Assert.False(owner.DeferredWritesEnabled);
+        Assert.False(generic.DeferredWritesEnabled);
+        Assert.False(owner.IsHot);
+
+        owner[0, 1, 2, 3] = 41;
+        generic[1, 3, 2, 1] = ulong.MaxValue;
+        Assert.True(owner.IsHot);
+        Assert.True(generic.IsHot);
+        Assert.Equal(0, owner.PendingPositionCount);
+        Assert.Equal(0, generic.PendingPositionCount);
+        Assert.Equal(41u, owner[0, 1, 2, 3]);
+        Assert.Equal(ulong.MaxValue, generic[1, 3, 2, 1]);
+        Assert.Equal(0u, source.GetChannel(0).Get(1, 2, 3));
+
+        var snapshot = owner.Repackage();
+        Assert.Equal(41u, snapshot.GetChannel(0).Get(1, 2, 3));
+        AssertClean(owner);
+        owner[1, 0, 0, 0] = 73;
+        Assert.True(owner.IsHot);
+        Assert.Equal(73u, owner.Repackage().GetChannel(1).Get(0, 0, 0));
+    }
+
+    [Fact]
     public void OneToTwentyWritesRemainSparseAndMatchDenseReference()
     {
         const int levels = 5, channels = 3, count = 32 * 32 * 32;

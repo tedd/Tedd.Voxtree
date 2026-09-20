@@ -142,3 +142,15 @@ snapshot. Store construction and initial containers are excluded equally.
 Use 1/20 positions with the same repeated second-channel overwrite. This tests
 single-thread, single-address throughput; contention and scheduler latency
 remain unmeasured. Run only after choosing the owner implementation.
+
+## H7: default-enabled runtime switch
+
+Add a construction-time switch to the owner and store, enabled by default. The
+enabled-path check belongs only in the first-write path that already allocates
+the sparse overlay; subsequent sparse writes and all reads must not test the
+option. Disabling it must preserve lazy ownership, then promote on the first
+write and after each repackage.
+
+Prediction: the default-enabled 1/5/20-write sessions remain within 5% of the
+same benchmark at `d37da0c`, with identical allocation. Repeat a noisy run and
+retain every raw result. Reject or redesign a repeatable regression above 5%.

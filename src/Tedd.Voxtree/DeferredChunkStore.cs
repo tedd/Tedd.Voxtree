@@ -14,16 +14,20 @@ public sealed class DeferredChunkStore : IDisposable
     private readonly HashSet<ChunkAddress> _pending = new();
     private bool _disposed;
 
-    /// <summary>Creates a store with a maximum number of sparse positions per chunk before dense promotion.</summary>
+    /// <summary>Creates a store with optional sparse point writes before dense promotion.</summary>
     /// <param name="capacity">Maximum sparse positions, 1..1,048,576, capped at each chunk's voxel count.</param>
-    public DeferredChunkStore(int capacity = 256)
+    /// <param name="deferredWritesEnabled">Whether point writes use sparse storage before dense promotion.</param>
+    public DeferredChunkStore(int capacity = 256, bool deferredWritesEnabled = true)
     {
         if (capacity < 1 || capacity > 1_048_576) throw new ArgumentOutOfRangeException(nameof(capacity));
         Capacity = capacity;
+        DeferredWritesEnabled = deferredWritesEnabled;
     }
 
     /// <summary>The sparse position capacity used by newly installed chunks.</summary>
     public int Capacity { get; }
+    /// <summary>Whether point writes use sparse storage before dense promotion.</summary>
+    public bool DeferredWritesEnabled { get; }
 
     /// <summary>The number of chunks with edits or dense storage awaiting repackaging.</summary>
     public int PendingRepackageCount
@@ -38,7 +42,7 @@ public sealed class DeferredChunkStore : IDisposable
         lock (_gate)
         {
             ThrowIfDisposed();
-            var replacement = new DeferredOctreeChunk(chunk, Capacity);
+            var replacement = new DeferredOctreeChunk(chunk, Capacity, DeferredWritesEnabled);
             if (_chunks.TryGetValue(address, out var previous)) previous.Dispose();
             _chunks[address] = replacement;
             _pending.Remove(address);
