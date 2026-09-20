@@ -426,7 +426,8 @@ first. Positions are shared across channels; writing the same position and
 channel overwrites its previous value, including explicit zero values.
 
 ```csharp
-using var edits = new DeferredOctreeChunk(chunk, capacity: 256);
+using var edits = new DeferredOctreeChunk(
+    chunk, capacity: 256, deferredWritesEnabled: true); // true is the default
 edits[0, 1, 2, 3] = 43;
 uint current = edits[0, 1, 2, 3];
 OctreeChunk updated = edits.Repackage();
@@ -440,12 +441,18 @@ for further edits. Sparse repackaging rebuilds only changed channels and shares
 the other encodings. `GetChunk()`, `CopyBlockTo()`, `SerializedLength`, and
 `CopyEncodedTo()` apply pending edits before exposing complete content.
 
+Set `deferredWritesEnabled: false` to retain the same owner and repackaging API
+while promoting to dense Morton storage on the first write. Construction remains
+lazy in both modes. The option is fixed for the owner's lifetime and is exposed
+through `DeferredWritesEnabled`.
+
 For multiple chunks and a client-scheduled worker, use `DeferredChunkStore` or
 `DeferredChunkStore<T>`. All store operations are synchronized; the store owns
 its editors and exposes immutable snapshots only.
 
 ```csharp
-using var edits = new DeferredChunkStore(capacity: 256);
+using var edits = new DeferredChunkStore(
+    capacity: 256, deferredWritesEnabled: true); // Applies to newly installed chunks.
 var address = new ChunkAddress(0, -1, 0, 2);
 edits.SetChunk(address, chunk);
 edits.Set(address, channel: 0, x: 1, y: 2, z: 3, value: 43);

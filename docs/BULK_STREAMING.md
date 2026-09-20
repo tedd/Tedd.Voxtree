@@ -157,6 +157,29 @@ OctreeChunk snapshot = hot.UnmarkHot(); // Encodes every channel once and closes
 The hot buffer is channel-major and always Morton ordered. It is exclusively
 owned mutable storage; `OctreeChunk` remains the immutable publication format.
 
+For isolated point writes, retain a sparse overlay and schedule repackaging:
+
+```csharp
+using var deferred = new DeferredOctreeChunk(
+    chunk, capacity: 256, deferredWritesEnabled: true); // true is the default
+deferred[0, 1, 2, 3] = 44;
+uint pendingValue = deferred[0, 1, 2, 3];
+OctreeChunk deferredSnapshot = deferred.Repackage();
+
+using var pendingChunks = new DeferredChunkStore(capacity: 256);
+var address = new ChunkAddress(0, -1, 0, 2);
+pendingChunks.SetChunk(address, chunk);
+pendingChunks.Set(address, 0, 1, 2, 3, 45);
+ChunkAddress[] scheduled = pendingChunks.GetPendingRepackageChunks();
+pendingChunks.Repackage(maxChunks: 4);
+```
+
+The store synchronizes its owners and deduplicates scheduled addresses. Publish
+the returned immutable chunks into a world explicitly. Set
+`deferredWritesEnabled: false` on either constructor to promote on the first
+write while retaining the same lifetime and repackaging contract. Construction
+does not decode the chunk in either mode.
+
 `DenseVoxelBlockSpan` is a mutable ref struct: its storage remains caller-owned
 and exclusive while editing. `OctreeChunk` snapshots are immutable. Each dense
 factory allocates encoded output arrays plus chunk/descriptors; it does not claim

@@ -2,6 +2,29 @@
 
 All notable changes to Tedd.Voxtree are documented here.
 
+## 2026-09-20
+
+### Added
+
+- Pooled sparse point-edit owners through `DeferredOctreeChunk` and
+  `DeferredOctreeChunk<T>`, with shared position keys across channels, immediate
+  read-your-writes behavior, dense promotion, and changed-channel repackaging.
+- Synchronized `DeferredChunkStore` and `DeferredChunkStore<T>` collections with
+  deduplicated pending-address snapshots and bounded repackaging batches.
+- `deferredWritesEnabled` constructor options on deferred owners and stores.
+  Sparse writes are enabled by default; disabling them promotes on the first
+  write while retaining lazy construction and the same repackaging API.
+
+### Performance
+
+- Deferred 1–20 point-write sessions avoid dense chunk expansion until required.
+  Benchmark hypotheses, raw results, rejected SIMD candidates, and confirmation
+  runs are archived under `src/Tedd.Voxtree.Benchmark/Results/2026-09-20-*`.
+- The default-enabled option path remained within the preregistered 5% noise
+  threshold in every measured 1-, 5-, and 20-write workload.
+
+Serialized formats remain compatible with version 2.0.0.
+
 ## 2026-09-17
 
 ### Added

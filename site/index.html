@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#f7faf9" />
     <meta
       name="description"
-      content="Sparse voxel octrees for .NET with SIMD-enabled scans, zero-copy, allocation-free query paths, independent channels, and thread-safe bounded worlds."
+      content="Sparse voxel octrees for .NET with deferred point edits, SIMD-enabled scans, zero-copy query paths, independent channels, and thread-safe bounded worlds."
     />
     <meta
       property="og:title"
@@ -368,6 +368,17 @@
             </p>
           </article>
           <article class="feature-card reveal">
+            <span class="feature-icon">✣</span>
+            <p class="card-kicker">Deferred point edits</p>
+            <h3>Keep small writes beside compressed chunks</h3>
+            <p>
+              <code>DeferredOctreeChunk&lt;T&gt;</code> retains pooled point edits and
+              rebuilds changed channels when requested. A synchronized store
+              exposes deduplicated chunks for bounded worker repackaging. Sparse
+              mode is configurable and enabled by default.
+            </p>
+          </article>
+          <article class="feature-card reveal">
             <span class="feature-icon">⊞</span>
             <p class="card-kicker">Sparse worlds</p>
             <h3>Allocate chunks, not a world-sized array</h3>
@@ -482,6 +493,14 @@ world.UnloadChunk(-<span class="num">1</span>, <span class="num">0</span>, <span
             >
           </div>
           <div>
+            <strong>DeferredOctreeChunk&lt;T&gt;</strong
+            ><span
+              >Owns a compressed snapshot plus pooled point edits. It promotes
+              to dense Morton storage at capacity or on the first write when
+              deferred writes are disabled.</span
+            >
+          </div>
+          <div>
             <strong>OctreeWorld&lt;T&gt;</strong
             ><span
               >Represents a bounded sparse region, distinguishes unloaded from
@@ -504,8 +523,10 @@ world.UnloadChunk(-<span class="num">1</span>, <span class="num">0</span>, <span
             policies.
           </p>
           <p>
-            <code>WorldEntity</code> and <code>HotOctreeChunk</code> are not
-            thread-safe. <code>OctreeWorld</code> uses a
+            <code>WorldEntity</code>, <code>HotOctreeChunk</code>, and standalone
+            <code>DeferredOctreeChunk</code> owners are not thread-safe.
+            <code>DeferredChunkStore</code> synchronizes its operations, while
+            <code>OctreeWorld</code> uses a
             <code>ReaderWriterLockSlim</code> and provides explicit read and write
             batches. The library does not create worker threads; the application
             controls scheduling and partitions mutable editors by worker.

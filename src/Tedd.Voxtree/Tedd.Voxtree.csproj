@@ -18,7 +18,7 @@
     <RepositoryUrl>https://github.com/tedd/Tedd.Voxtree</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>octree;voxel;span;zero-allocation;performance;streaming;lod;zstandard</PackageTags>
-    <PackageReleaseNotes>SIMD-accelerated masked and equality queries on .NET 10/11, immutable compiled UInt32 point-lookup snapshots via CreateLookup(), and reduced repeated span access in world traversal. Existing serialized formats and synchronization contracts are preserved.</PackageReleaseNotes>
+    <PackageReleaseNotes>Pooled sparse point edits through DeferredOctreeChunk, synchronized scheduling and bounded repackaging through DeferredChunkStore, and a default-enabled deferredWritesEnabled switch for choosing sparse or first-write dense editing. Existing serialized formats remain compatible.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IncludeSymbols>true</IncludeSymbols>

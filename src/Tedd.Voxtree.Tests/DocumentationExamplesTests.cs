@@ -73,6 +73,27 @@ public class DocumentationExamplesTests
             hot.GetChannelSpan(3).Clear();
             OctreeChunk hotSnapshot = hot.UnmarkHot();
 
+            // Retain sparse point writes beside the compressed snapshot, then repackage.
+            using var deferred = new DeferredOctreeChunk(
+                chunk, capacity: 256, deferredWritesEnabled: true);
+            deferred[0, 1, 2, 3] = 44;
+            uint pendingValue = deferred[0, 1, 2, 3];
+            OctreeChunk deferredSnapshot = deferred.Repackage();
+
+            // A store synchronizes multiple owners and exposes scheduled addresses.
+            using var pendingChunks = new DeferredChunkStore(capacity: 256);
+            var pendingAddress = new ChunkAddress(0, -1, 0, 2);
+            pendingChunks.SetChunk(pendingAddress, chunk);
+            pendingChunks.Set(pendingAddress, 0, 1, 2, 3, 45);
+            ChunkAddress[] scheduled = pendingChunks.GetPendingRepackageChunks();
+            pendingChunks.Repackage(maxChunks: 4);
+
+            // Disable sparse overlays when the workload should become dense immediately.
+            using var immediate = new DeferredOctreeChunk(
+                chunk, capacity: 256, deferredWritesEnabled: false);
+            immediate[0, 1, 2, 3] = 46;
+            OctreeChunk immediateSnapshot = immediate.Repackage();
+
             // These memories must remain alive and immutable while the chunk is retained.
             var encodings = new ReadOnlyMemory<byte>[channels];
             for (int c = 0; c < channels; c++)
@@ -183,6 +204,11 @@ public class DocumentationExamplesTests
             Assert.Equal(42u, value);
             Assert.Equal(42u, globalMaterial);
             Assert.Equal(43u, hotSnapshot.GetChannel(0).Get(1, 2, 3));
+            Assert.Equal(44u, pendingValue);
+            Assert.Equal(44u, deferredSnapshot.GetChannel(0).Get(1, 2, 3));
+            Assert.Equal(new[] { pendingAddress }, scheduled);
+            Assert.Equal(45u, pendingChunks.Get(pendingAddress, 0, 1, 2, 3));
+            Assert.Equal(46u, immediateSnapshot.GetChannel(0).Get(1, 2, 3));
             Assert.Equal(44u, globalWorld.Get(0, -31, 2, 67));
         }
         finally { File.Delete(packetPath); }
