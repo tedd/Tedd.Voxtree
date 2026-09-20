@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Tedd.Voxtree.Benchmark.Tests.DeferredChunkReads-20260920-101717</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.16.0-preview.1, Windows 11 (10.0.26200.9457/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 5950X 3.40GHz, 1 CPU, 32 logical and 16 physical cores
+Memory: 127.91 GB Total, 98.27 GB Available
+.NET SDK 11.0.100-preview.7.26381.103
+  [Host]     : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+  Job-ZNVNAZ : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code>IterationCount=5  IterationTime=100ms  LaunchCount=1  
+WarmupCount=3  
+</code></pre>
+
+<table>
+<thead><tr><th>Method    </th><th>Categories</th><th>PendingCount</th><th>Pattern</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Ratio</th><th>RatioSD</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>HotHits</td><td>Hit</td><td>1</td><td>Uniform</td><td>4.530 ns</td><td>0.1415 ns</td><td>0.0367 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>DeferredHits</td><td>Hit</td><td>1</td><td>Uniform</td><td>5.530 ns</td><td>0.1552 ns</td><td>0.0403 ns</td><td>1.22</td><td>0.01</td><td>-</td><td>NA</td>
+</tr><tr><td>HotHits</td><td>Hit</td><td>1</td><td>Terrain</td><td>4.554 ns</td><td>0.0328 ns</td><td>0.0051 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>DeferredHits</td><td>Hit</td><td>1</td><td>Terrain</td><td>5.520 ns</td><td>0.1874 ns</td><td>0.0290 ns</td><td>1.21</td><td>0.01</td><td>-</td><td>NA</td>
+</tr><tr><td>HotHits</td><td>Hit</td><td>20</td><td>Uniform</td><td>4.512 ns</td><td>0.0258 ns</td><td>0.0040 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>DeferredHits</td><td>Hit</td><td>20</td><td>Uniform</td><td>6.417 ns</td><td>0.1427 ns</td><td>0.0371 ns</td><td>1.42</td><td>0.01</td><td>-</td><td>NA</td>
+</tr><tr><td>HotHits</td><td>Hit</td><td>20</td><td>Terrain</td><td>4.537 ns</td><td>0.1126 ns</td><td>0.0292 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>DeferredHits</td><td>Hit</td><td>20</td><td>Terrain</td><td>6.400 ns</td><td>0.0927 ns</td><td>0.0144 ns</td><td>1.41</td><td>0.01</td><td>-</td><td>NA</td>
+</tr><tr><td>CompressedMisses</td><td>Miss</td><td>1</td><td>Uniform</td><td>4.566 ns</td><td>0.0385 ns</td><td>0.0060 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>DeferredMisses</td><td>Miss</td><td>1</td><td>Uniform</td><td>12.054 ns</td><td>0.0148 ns</td><td>0.0023 ns</td><td>2.64</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>CompressedMisses</td><td>Miss</td><td>1</td><td>Terrain</td><td>18.314 ns</td><td>0.4435 ns</td><td>0.0686 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>DeferredMisses</td><td>Miss</td><td>1</td><td>Terrain</td><td>25.361 ns</td><td>0.4843 ns</td><td>0.0749 ns</td><td>1.38</td><td>0.01</td><td>-</td><td>NA</td>
+</tr><tr><td>CompressedMisses</td><td>Miss</td><td>20</td><td>Uniform</td><td>4.505 ns</td><td>0.0362 ns</td><td>0.0056 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>DeferredMisses</td><td>Miss</td><td>20</td><td>Uniform</td><td>12.359 ns</td><td>0.0354 ns</td><td>0.0055 ns</td><td>2.74</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>CompressedMisses</td><td>Miss</td><td>20</td><td>Terrain</td><td>19.133 ns</td><td>1.9275 ns</td><td>0.2983 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>DeferredMisses</td><td>Miss</td><td>20</td><td>Terrain</td><td>26.257 ns</td><td>0.5340 ns</td><td>0.1387 ns</td><td>1.37</td><td>0.02</td><td>-</td><td>NA</td>
+</tr></tbody></table>
+</body>
+</html>

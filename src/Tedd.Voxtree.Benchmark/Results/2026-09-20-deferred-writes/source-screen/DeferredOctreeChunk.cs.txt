@@ -8,7 +8,7 @@ namespace Tedd.Voxtree;
 /// returned immutable snapshots retain their original values. Dispose returns sparse buffers.
 /// Do not access this owner while modifying storage borrowed from MakeHot.
 /// </remarks>
-public sealed class DeferredOctreeChunk : IDisposable
+public sealed class DeferredOctreeChunk : IDisposable 
 {
     private OctreeChunk _snapshot;
     private HotOctreeChunk? _hot;
@@ -114,18 +114,10 @@ public sealed class DeferredOctreeChunk : IDisposable
                 for (var channel = 0; channel < ChannelCount; channel++)
                 {
                     if (!_edits.HasChannel(channel)) continue;
-                    _snapshot.GetChannel(channel).CopyBlockTo(0, 0, 0, Levels, dense, DenseVoxelLayout.Morton);
+                    _snapshot.GetChannel(channel).CopyBlockTo(0, 0, 0, Levels, dense);
                     for (var i = 0; i < _edits.Count; i++)
-                    {
-                        if (!_edits.HasValue(channel, i)) continue;
-                        var key = _edits.Key(i);
-                        var mask = SideLength - 1;
-                        var x = key >> (Levels * 2);
-                        var y = (key >> Levels) & mask;
-                        var z = key & mask;
-                        dense[DenseVoxel.Index(x, y, z, SideLength, DenseVoxelLayout.Morton)] = _edits.Value(channel, i);
-                    }
-                    snapshot = snapshot.WithDenseChannel(channel, dense, DenseVoxelLayout.Morton);
+                        if (_edits.HasValue(channel, i)) dense[_edits.Key(i)] = _edits.Value(channel, i);
+                    snapshot = snapshot.WithDenseChannel(channel, dense);
                 }
                 _snapshot = snapshot;
                 ReleaseEdits();

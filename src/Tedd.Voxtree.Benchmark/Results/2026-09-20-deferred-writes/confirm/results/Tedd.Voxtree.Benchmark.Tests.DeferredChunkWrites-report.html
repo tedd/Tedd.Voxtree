@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Tedd.Voxtree.Benchmark.Tests.DeferredChunkWrites-20260920-102800</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.16.0-preview.1, Windows 11 (10.0.26200.9457/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 5950X 3.40GHz, 1 CPU, 32 logical and 16 physical cores
+Memory: 127.91 GB Total, 98.32 GB Available
+.NET SDK 11.0.100-preview.7.26381.103
+  [Host]     : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+  Job-MIBMUQ : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code>IterationCount=9  IterationTime=250ms  LaunchCount=1  
+WarmupCount=5  
+</code></pre>
+
+<table>
+<thead><tr><th>Method        </th><th>Categories</th><th>WriteCount</th><th>Pattern</th><th>Mean  </th><th>Error </th><th>StdDev</th><th>Ratio</th><th>RatioSD</th><th>Gen0</th><th>Gen1</th><th>Gen2</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>MarkHotEdits</td><td>Edits</td><td>1</td><td>Uniform</td><td>89,455.6 ns</td><td>7,000.44 ns</td><td>4,165.85 ns</td><td>1.000</td><td>0.00</td><td>83.2346</td><td>83.2346</td><td>83.2346</td><td>262360 B</td><td>1.000</td>
+</tr><tr><td>DeferredEdits</td><td>Edits</td><td>1</td><td>Uniform</td><td>179.0 ns</td><td>35.54 ns</td><td>21.15 ns</td><td>0.002</td><td>0.00</td><td>0.0089</td><td>-</td><td>-</td><td>152 B</td><td>0.001</td>
+</tr><tr><td>MarkHotEdits</td><td>Edits</td><td>1</td><td>Terrain</td><td>151,773.3 ns</td><td>20,228.50 ns</td><td>12,037.66 ns</td><td>1.000</td><td>0.00</td><td>83.1653</td><td>83.1653</td><td>83.1653</td><td>262360 B</td><td>1.000</td>
+</tr><tr><td>DeferredEdits</td><td>Edits</td><td>1</td><td>Terrain</td><td>174.0 ns</td><td>36.12 ns</td><td>21.49 ns</td><td>0.001</td><td>0.00</td><td>0.0087</td><td>-</td><td>-</td><td>152 B</td><td>0.001</td>
+</tr><tr><td>MarkHotEdits</td><td>Edits</td><td>5</td><td>Uniform</td><td>85,813.6 ns</td><td>6,836.29 ns</td><td>3,575.51 ns</td><td>1.000</td><td>0.00</td><td>83.2317</td><td>83.2317</td><td>83.2317</td><td>262360 B</td><td>1.000</td>
+</tr><tr><td>DeferredEdits</td><td>Edits</td><td>5</td><td>Uniform</td><td>202.0 ns</td><td>20.56 ns</td><td>12.24 ns</td><td>0.002</td><td>0.00</td><td>0.0089</td><td>-</td><td>-</td><td>152 B</td><td>0.001</td>
+</tr><tr><td>MarkHotEdits</td><td>Edits</td><td>5</td><td>Terrain</td><td>154,930.9 ns</td><td>15,556.41 ns</td><td>9,257.37 ns</td><td>1.000</td><td>0.00</td><td>83.0078</td><td>83.0078</td><td>83.0078</td><td>262359 B</td><td>1.000</td>
+</tr><tr><td>DeferredEdits</td><td>Edits</td><td>5</td><td>Terrain</td><td>210.2 ns</td><td>29.65 ns</td><td>17.64 ns</td><td>0.001</td><td>0.00</td><td>0.0085</td><td>-</td><td>-</td><td>152 B</td><td>0.001</td>
+</tr><tr><td>MarkHotEdits</td><td>Edits</td><td>20</td><td>Uniform</td><td>94,512.1 ns</td><td>7,343.90 ns</td><td>4,370.24 ns</td><td>1.000</td><td>0.00</td><td>83.0314</td><td>83.0314</td><td>83.0314</td><td>262360 B</td><td>1.000</td>
+</tr><tr><td>DeferredEdits</td><td>Edits</td><td>20</td><td>Uniform</td><td>389.0 ns</td><td>31.34 ns</td><td>18.65 ns</td><td>0.004</td><td>0.00</td><td>0.0088</td><td>-</td><td>-</td><td>152 B</td><td>0.001</td>
+</tr><tr><td>MarkHotEdits</td><td>Edits</td><td>20</td><td>Terrain</td><td>157,877.3 ns</td><td>17,422.88 ns</td><td>10,368.08 ns</td><td>1.000</td><td>0.00</td><td>83.1693</td><td>83.1693</td><td>83.1693</td><td>262360 B</td><td>1.000</td>
+</tr><tr><td>DeferredEdits</td><td>Edits</td><td>20</td><td>Terrain</td><td>416.1 ns</td><td>70.25 ns</td><td>41.81 ns</td><td>0.003</td><td>0.00</td><td>0.0090</td><td>-</td><td>-</td><td>152 B</td><td>0.001</td>
+</tr><tr><td>MarkHotAndCommit</td><td>Repackage</td><td>1</td><td>Uniform</td><td>103,596.9 ns</td><td>5,563.97 ns</td><td>3,311.03 ns</td><td>1.00</td><td>0.00</td><td>82.9802</td><td>82.9802</td><td>82.9802</td><td>262599 B</td><td>1.000</td>
+</tr><tr><td>DeferredAndRepackage</td><td>Repackage</td><td>1</td><td>Uniform</td><td>15,158.8 ns</td><td>2,953.53 ns</td><td>1,757.60 ns</td><td>0.15</td><td>0.02</td><td>-</td><td>-</td><td>-</td><td>480 B</td><td>0.002</td>
+</tr><tr><td>MarkHotAndCommit</td><td>Repackage</td><td>1</td><td>Terrain</td><td>296,399.3 ns</td><td>51,726.88 ns</td><td>27,054.16 ns</td><td>1.00</td><td>0.00</td><td>82.3864</td><td>82.3864</td><td>82.3864</td><td>271102 B</td><td>1.00</td>
+</tr><tr><td>DeferredAndRepackage</td><td>Repackage</td><td>1</td><td>Terrain</td><td>193,548.9 ns</td><td>15,908.80 ns</td><td>8,320.61 ns</td><td>0.66</td><td>0.06</td><td>-</td><td>-</td><td>-</td><td>8984 B</td><td>0.03</td>
+</tr><tr><td>MarkHotAndCommit</td><td>Repackage</td><td>5</td><td>Uniform</td><td>107,487.1 ns</td><td>8,881.94 ns</td><td>4,645.43 ns</td><td>1.00</td><td>0.00</td><td>83.2163</td><td>83.2163</td><td>83.2163</td><td>262688 B</td><td>1.000</td>
+</tr><tr><td>DeferredAndRepackage</td><td>Repackage</td><td>5</td><td>Uniform</td><td>16,481.9 ns</td><td>1,514.59 ns</td><td>901.31 ns</td><td>0.15</td><td>0.01</td><td>-</td><td>-</td><td>-</td><td>568 B</td><td>0.002</td>
+</tr><tr><td>MarkHotAndCommit</td><td>Repackage</td><td>5</td><td>Terrain</td><td>325,598.7 ns</td><td>39,555.06 ns</td><td>20,688.06 ns</td><td>1.00</td><td>0.00</td><td>82.6923</td><td>82.6923</td><td>82.6923</td><td>271183 B</td><td>1.00</td>
+</tr><tr><td>DeferredAndRepackage</td><td>Repackage</td><td>5</td><td>Terrain</td><td>228,376.2 ns</td><td>61,302.36 ns</td><td>36,480.05 ns</td><td>0.70</td><td>0.11</td><td>-</td><td>-</td><td>-</td><td>9064 B</td><td>0.03</td>
+</tr><tr><td>MarkHotAndCommit</td><td>Repackage</td><td>20</td><td>Uniform</td><td>116,074.0 ns</td><td>5,740.47 ns</td><td>3,416.06 ns</td><td>1.00</td><td>0.00</td><td>83.2078</td><td>83.2078</td><td>83.2078</td><td>263120 B</td><td>1.000</td>
+</tr><tr><td>DeferredAndRepackage</td><td>Repackage</td><td>20</td><td>Uniform</td><td>26,896.7 ns</td><td>3,506.89 ns</td><td>2,086.89 ns</td><td>0.23</td><td>0.02</td><td>-</td><td>-</td><td>-</td><td>1000 B</td><td>0.004</td>
+</tr><tr><td>MarkHotAndCommit</td><td>Repackage</td><td>20</td><td>Terrain</td><td>329,110.7 ns</td><td>70,966.13 ns</td><td>42,230.81 ns</td><td>1.00</td><td>0.00</td><td>82.6923</td><td>82.6923</td><td>82.6923</td><td>271527 B</td><td>1.00</td>
+</tr><tr><td>DeferredAndRepackage</td><td>Repackage</td><td>20</td><td>Terrain</td><td>190,428.3 ns</td><td>38,318.79 ns</td><td>20,041.47 ns</td><td>0.59</td><td>0.10</td><td>-</td><td>-</td><td>-</td><td>9408 B</td><td>0.03</td>
+</tr></tbody></table>
+</body>
+</html>

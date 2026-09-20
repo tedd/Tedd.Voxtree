@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Tedd.Voxtree.Benchmark.Tests.DeferredPositionLookup-20260920-101506</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.16.0-preview.1, Windows 11 (10.0.26200.9457/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 5950X 3.40GHz, 1 CPU, 32 logical and 16 physical cores
+Memory: 127.91 GB Total, 98.15 GB Available
+.NET SDK 11.0.100-preview.7.26381.103
+  [Host]     : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+  Job-ZNVNAZ : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code>IterationCount=5  IterationTime=100ms  LaunchCount=1  
+WarmupCount=3  
+</code></pre>
+
+<table>
+<thead><tr><th>Method     </th><th>Count</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Ratio</th><th>RatioSD</th><th>Code Size</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>Scalar</td><td>1</td><td>0.6328 ns</td><td>0.0094 ns</td><td>0.0024 ns</td><td>1.00</td><td>0.00</td><td>127 B</td><td>-</td><td>NA</td>
+</tr><tr><td>SpanIndexOf</td><td>1</td><td>2.5641 ns</td><td>0.0687 ns</td><td>0.0178 ns</td><td>4.05</td><td>0.03</td><td>1,725 B</td><td>-</td><td>NA</td>
+</tr><tr><td>ExplicitVector256</td><td>1</td><td>0.9329 ns</td><td>0.0319 ns</td><td>0.0083 ns</td><td>1.47</td><td>0.01</td><td>272 B</td><td>-</td><td>NA</td>
+</tr><tr><td>PaddedVector256</td><td>1</td><td>1.5574 ns</td><td>0.0344 ns</td><td>0.0053 ns</td><td>2.46</td><td>0.01</td><td>254 B</td><td>-</td><td>NA</td>
+</tr><tr><td>Scalar</td><td>5</td><td>2.1252 ns</td><td>0.2184 ns</td><td>0.0567 ns</td><td>1.00</td><td>0.00</td><td>127 B</td><td>-</td><td>NA</td>
+</tr><tr><td>SpanIndexOf</td><td>5</td><td>3.3529 ns</td><td>0.0134 ns</td><td>0.0021 ns</td><td>1.58</td><td>0.04</td><td>1,187 B</td><td>-</td><td>NA</td>
+</tr><tr><td>ExplicitVector256</td><td>5</td><td>2.3866 ns</td><td>0.1066 ns</td><td>0.0277 ns</td><td>1.12</td><td>0.03</td><td>259 B</td><td>-</td><td>NA</td>
+</tr><tr><td>PaddedVector256</td><td>5</td><td>1.5528 ns</td><td>0.0596 ns</td><td>0.0155 ns</td><td>0.73</td><td>0.02</td><td>257 B</td><td>-</td><td>NA</td>
+</tr><tr><td>Scalar</td><td>20</td><td>6.3646 ns</td><td>0.2222 ns</td><td>0.0344 ns</td><td>1.00</td><td>0.00</td><td>127 B</td><td>-</td><td>NA</td>
+</tr><tr><td>SpanIndexOf</td><td>20</td><td>3.5187 ns</td><td>0.0741 ns</td><td>0.0193 ns</td><td>0.55</td><td>0.00</td><td>1,314 B</td><td>-</td><td>NA</td>
+</tr><tr><td>ExplicitVector256</td><td>20</td><td>2.6794 ns</td><td>0.0407 ns</td><td>0.0106 ns</td><td>0.42</td><td>0.00</td><td>270 B</td><td>-</td><td>NA</td>
+</tr><tr><td>PaddedVector256</td><td>20</td><td>2.4031 ns</td><td>0.2049 ns</td><td>0.0532 ns</td><td>0.38</td><td>0.01</td><td>266 B</td><td>-</td><td>NA</td>
+</tr><tr><td>Scalar</td><td>256</td><td>53.6614 ns</td><td>2.3073 ns</td><td>0.5992 ns</td><td>1.00</td><td>0.00</td><td>130 B</td><td>-</td><td>NA</td>
+</tr><tr><td>SpanIndexOf</td><td>256</td><td>8.7398 ns</td><td>0.6214 ns</td><td>0.1614 ns</td><td>0.16</td><td>0.00</td><td>1,300 B</td><td>-</td><td>NA</td>
+</tr><tr><td>ExplicitVector256</td><td>256</td><td>11.1323 ns</td><td>0.2180 ns</td><td>0.0566 ns</td><td>0.21</td><td>0.00</td><td>264 B</td><td>-</td><td>NA</td>
+</tr><tr><td>PaddedVector256</td><td>256</td><td>10.8925 ns</td><td>0.3103 ns</td><td>0.0806 ns</td><td>0.20</td><td>0.00</td><td>280 B</td><td>-</td><td>NA</td>
+</tr></tbody></table>
+</body>
+</html>

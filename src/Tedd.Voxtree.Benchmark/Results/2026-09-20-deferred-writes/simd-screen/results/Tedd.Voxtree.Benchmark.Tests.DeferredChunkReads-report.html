@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Tedd.Voxtree.Benchmark.Tests.DeferredChunkReads-20260920-102300</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.16.0-preview.1, Windows 11 (10.0.26200.9457/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 5950X 3.40GHz, 1 CPU, 32 logical and 16 physical cores
+Memory: 127.91 GB Total, 97.62 GB Available
+.NET SDK 11.0.100-preview.7.26381.103
+  [Host]     : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+  Job-GJBZFV : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code>IterationCount=7  IterationTime=150ms  LaunchCount=1  
+WarmupCount=3  
+</code></pre>
+
+<table>
+<thead><tr><th>Method  </th><th>Categories</th><th>PendingCount</th><th>Pattern</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Code Size</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>DeferredHits</td><td>Hit</td><td>1</td><td>Uniform</td><td>4.445 ns</td><td>0.4766 ns</td><td>0.2116 ns</td><td>7,116 B</td><td>-</td>
+</tr><tr><td>DeferredHits</td><td>Hit</td><td>1</td><td>Terrain</td><td>5.039 ns</td><td>1.3682 ns</td><td>0.6075 ns</td><td>7,161 B</td><td>-</td>
+</tr><tr><td>DeferredHits</td><td>Hit</td><td>20</td><td>Uniform</td><td>5.961 ns</td><td>1.0403 ns</td><td>0.4619 ns</td><td>7,134 B</td><td>-</td>
+</tr><tr><td>DeferredHits</td><td>Hit</td><td>20</td><td>Terrain</td><td>6.820 ns</td><td>3.2915 ns</td><td>1.4614 ns</td><td>7,182 B</td><td>-</td>
+</tr><tr><td>DeferredMisses</td><td>Miss</td><td>1</td><td>Uniform</td><td>16.078 ns</td><td>1.9912 ns</td><td>0.7101 ns</td><td>5,866 B</td><td>-</td>
+</tr><tr><td>DeferredMisses</td><td>Miss</td><td>1</td><td>Terrain</td><td>30.865 ns</td><td>5.9794 ns</td><td>2.1323 ns</td><td>5,951 B</td><td>-</td>
+</tr><tr><td>DeferredMisses</td><td>Miss</td><td>20</td><td>Uniform</td><td>17.865 ns</td><td>3.0398 ns</td><td>1.3497 ns</td><td>5,891 B</td><td>-</td>
+</tr><tr><td>DeferredMisses</td><td>Miss</td><td>20</td><td>Terrain</td><td>30.912 ns</td><td>0.3070 ns</td><td>0.1095 ns</td><td>5,976 B</td><td>-</td>
+</tr></tbody></table>
+</body>
+</html>

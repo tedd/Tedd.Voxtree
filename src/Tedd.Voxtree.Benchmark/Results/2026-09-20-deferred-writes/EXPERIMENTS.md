@@ -1,6 +1,7 @@
 # Deferred sparse chunk writes: preregistered experiments
 
-Status: hypotheses and fixtures prepared; no performance results recorded yet.
+Status: experiments completed. This file preserves the hypotheses and budgets;
+executed results and decisions are in [README.md](README.md).
 
 ## Contract and cost model
 
@@ -99,3 +100,45 @@ count where variability obscures the preregistered thresholds. .NET 8, .NET 11,
 ARM64, hardware counters, concurrent readers/writers, world scheduling overhead,
 working sets beyond cache and real game captures are outside this first matrix;
 do not imply they have been measured.
+
+## H4: integrated short-list SIMD candidate
+
+After the lookup screen, test a production hybrid: direct comparison for one
+position, padded Vector256 equality for 2–32 short keys, and Span.IndexOf for
+larger/wide-key lists. These thresholds are experimental, not claimed optimal.
+Use byte mask extraction and divide the first matching bit index by two, since
+each ushort contributes two adjacent equal bytes. Initialize a newly searchable
+16-position block with an invalid ushort sentinel before publishing its first
+key. The pooled key rental explicitly reserves the rounded size. Keep the
+netstandard/nonaccelerated fallback and initialized logical-length bounds.
+
+Prediction: reduce 20-position hit-read time by at least 10% compared with the
+initial Span.IndexOf implementation while worsening no prioritized write or
+read case by more than 10% beyond run variation. Charge padding initialization,
+pool rental, insertion, and dispatch in complete edit sessions. Compare the same
+H1/H3 inputs, retain only after an independent confirmation, and reject the
+candidate if integrated measurements do not support the lookup microbenchmark.
+
+## H5: preserve Morton order during sparse repackaging
+
+The initial complete-cycle measurement rejects linear-buffer repackaging for
+terrain: 402–451 us versus 232–240 us for MarkHot+Commit (1.73–1.87x).
+Foreground sparse edits still take only 129–323 ns versus 77–126 us. Before
+changing lookup, isolate layout: decode changed channels into a pooled Morton
+buffer, convert only edited position keys, and encode directly from Morton order.
+Prediction: eliminate the full-volume layout conversion and reduce terrain
+complete-cycle time enough to satisfy H1's 15% regression budget. Preserve
+unchanged-channel sharing, pooling, values and snapshot semantics. Compare all
+six full-cycle cells against the same baseline; keep SIMD unchanged for this run.
+
+## H6: synchronized store total cost
+
+On warm two-channel 32³ terrain chunks, deferred editing should retain at least
+20% foreground benefit through DeferredChunkStore and stay within the 15%
+complete-cycle regression budget versus immediate store.MakeHot. Include
+replacement/disposal, locks, dictionary lookup, pending tracking, writes and
+checksum reads. Complete cycles also drain one queued chunk and obtain a
+snapshot. Store construction and initial containers are excluded equally.
+Use 1/20 positions with the same repeated second-channel overwrite. This tests
+single-thread, single-address throughput; contention and scheduler latency
+remain unmeasured. Run only after choosing the owner implementation.
