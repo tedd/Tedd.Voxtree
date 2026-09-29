@@ -96,3 +96,84 @@
 - Falsification: growth causes more than 5% regression in priority workloads, introduces pool-return or validity defects, or retained memory does not fall as predicted.
 - Change: sparse key and value buffers begin at `min(32, Capacity)` and double to the unchanged logical limit; presence metadata grows only when its word stride changes.
 - State: implemented; validation and candidate measurement pending.
+
+## H-013 — AVX2 batched key probes
+
+- Claim: probing several requested positions together can amortize key-vector loads when callers issue spatially clustered reads or writes.
+- Mechanism: compare one loaded `Vector256<ushort>` key block against several broadcast keys before advancing to the next block.
+- Prediction: a new batch lookup kernel improves 8–32-position batches by at least 20% at overlay counts of 64–256 without regressing scalar access.
+- Falsification: callers cannot supply batches, key broadcasts dominate, or the integrated batch remains within 10% of repeated `Span.IndexOf`.
+- State: pending; requires a batch API workload and is not applicable to the existing scalar indexer by itself.
+
+## H-014 — presence-bitmask sparse application
+
+- Claim: iterating set bits for each channel is faster than scanning every shared key during materialization and repackaging.
+- Mechanism: read each channel's `ulong` presence words, use trailing-zero count to enumerate present indexes, and skip absent positions in groups of 64.
+- Prediction: applying sparse edits improves by at least 10% when one channel owns at most 25% of a shared table, with less than 2% regression at full occupancy.
+- Falsification: bit enumeration and word indexing cost at least as much as the current predictable scan.
+- State: pending; specialization of H-008.
+
+## H-015 — contiguous block copy for partial channels
+
+- Claim: copying an already materialized Morton channel into explicit full-hot storage is materially faster than reconstructing it from encoded data.
+- Mechanism: use one contiguous span copy for each partial channel while `MakeHot()` decodes only channels still encoded.
+- Prediction: partial-state `MakeHot()` improves by at least 10% per materialized channel relative to decoding every channel.
+- Falsification: the remaining channel decodes dominate or the JIT fails to lower `Span.CopyTo` to efficient block copy.
+- Change: the channel-local candidate already uses `Span.CopyTo`; measurement remains pending.
+- State: implemented; measurement pending.
+
+## H-016 — software prefetch before channel decode
+
+- Claim: prefetching encoded channel bytes before overflow materialization reduces decode stalls for large nonuniform encodings.
+- Mechanism: issue target-specific prefetches several cache lines ahead of the decoder.
+- Prediction: terrain-channel materialization improves by at least 10% with stable uniform-channel performance.
+- Falsification: hardware prefetch already covers sequential decode, managed intrinsic support is unsuitable, or added instructions regress warm-cache operation.
+- State: pending; target-specific and lower priority than measured channel-count work.
+
+## H-017 — direct position bitmask/index map
+
+- Claim: a direct map from voxel position to sparse slot outperforms linear key search at high occupancy.
+- Mechanism: maintain a generation-tagged slot table indexed by packed voxel position; use a bitmask when the volume is a power of two.
+- Prediction: insertion and hit/miss lookup improve by at least 25% above the measured crossover while total retained memory remains below one dense channel.
+- Falsification: the 32³ map's 64–128 KiB footprint or reset cost outweighs the saved search time.
+- State: pending; compare with H-005 and H-022.
+
+## H-018 — cache-line grouped overlay layout
+
+- Claim: grouping key, channel-presence summary, and commonly written values into cache-line-sized blocks improves locality over separate arrays.
+- Mechanism: use an array-of-small-structures layout while preserving vector-searchable key lanes.
+- Prediction: mixed write/read sessions at 64–256 positions improve by at least 10% without increasing one-channel retained payload by more than 25%.
+- Falsification: gather/scatter and generic value width defeat vectorized key search or inflate sparse memory excessively.
+- State: pending; representation prototype required.
+
+## H-019 — false-sharing-resistant store scheduling
+
+- Claim: separating frequently updated pending-state metadata from chunk-owner references improves concurrent store throughput.
+- Mechanism: shard the store or pad independently mutated queue metadata so worker threads do not invalidate the same cache line.
+- Prediction: a contended multi-thread store benchmark improves throughput or p99 latency by at least 15%.
+- Falsification: the store's single lock dominates, no cache line is concurrently mutated, or isolated owners remain the actual workload.
+- State: pending but outside the single-owner primary path; requires a contention trace.
+
+## H-020 — stencil-aware run overlay
+
+- Claim: spatially coherent edits from growth or simulation stencils can be stored and applied as short Morton runs more efficiently than independent keys.
+- Mechanism: coalesce adjacent Morton positions with identical channel/value operations and block-copy or fill them during materialization.
+- Prediction: clustered 3x3x3 and planar-stencil workloads improve by at least 20% in time or halve overlay payload, while random edits retain the scalar representation.
+- Falsification: coordinate-to-Morton ordering fragments the stencil or run maintenance costs more than individual entries.
+- State: pending; requires representative clustered traces.
+
+## H-021 — adaptive capacity by channel and source cost
+
+- Claim: a fixed default threshold is inferior to a threshold derived from channel count, value width, and measured encoded-channel decode cost.
+- Mechanism: keep the public maximum as an upper bound but materialize a channel when its estimated sparse search/application cost exceeds one decode.
+- Prediction: a weighted multi-channel workload improves by at least 10% with bounded retained memory and deterministic behavior.
+- Falsification: estimation overhead or source variability causes unstable promotion and more than 5% regression in priority cases.
+- State: pending; no application distribution currently supplies valid weights.
+
+## H-022 — pooled open-addressed index above a threshold
+
+- Claim: building a pooled open-addressed key-to-slot table only after 256–512 entries removes the observed quadratic insertion growth without taxing small overlays.
+- Mechanism: retain SIMD linear search below the crossover, then build a power-of-two integer slot table and update it on append or compaction.
+- Prediction: 1,024–4,096 distinct-write sessions improve by at least 30%, with less than 2% regression below 256 and lower retained memory than a volume-sized direct map.
+- Falsification: build cost, pool clearing, collisions, or compaction maintenance eliminates the high-count gain.
+- State: pending; threshold must be selected from H-005 kernel measurements.
