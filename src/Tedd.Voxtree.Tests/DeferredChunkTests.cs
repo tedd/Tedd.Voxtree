@@ -101,9 +101,81 @@ public sealed class DeferredChunkTests
         var next = Position(capacity, levels);
         owner[2, next.X, next.Y, next.Z] = expected[2 * count + capacity] = 123;
         Assert.True(owner.IsHot);
-        Assert.Equal(0, owner.PendingPositionCount);
+        Assert.Equal(capacity == 1 ? 0 : 2, owner.PendingPositionCount);
         AssertOwner(owner, expected);
         AssertSnapshot(owner.Repackage(), expected);
+        AssertClean(owner);
+    }
+
+    [Fact]
+    public void OverflowMaterializesOnlyChangedChannelsAndSharesUntouchedEncodings()
+    {
+        const int levels = 3, channels = 8, count = 512, capacity = 20;
+        var original = Enumerable.Range(0, channels * count).Select(index => (uint)(index % 17)).ToArray();
+        var source = OctreeChunk.FromDense(levels, channels, original);
+        using var owner = new DeferredOctreeChunk(source, capacity);
+
+        for (var key = 0; key <= capacity; key++)
+        {
+            var point = Position(key, levels);
+            owner[0, point.X, point.Y, point.Z] = (uint)(10_000 + key);
+        }
+
+        Assert.True(owner.IsHot);
+        Assert.Equal(0, owner.PendingPositionCount);
+        var snapshot = owner.Repackage();
+        Assert.False(snapshot.GetChannelData(0).Equals(source.GetChannelData(0)));
+        for (var channel = 1; channel < channels; channel++)
+            Assert.True(snapshot.GetChannelData(channel).Equals(source.GetChannelData(channel)));
+        AssertClean(owner);
+    }
+
+    [Fact]
+    public void PartialDenseAndResidualSparseEditsComposeIntoMakeHot()
+    {
+        const int levels = 2, count = 64;
+        var expected = Enumerable.Repeat(7u, count * 3).ToArray();
+        using var owner = new DeferredOctreeChunk(OctreeChunk.FromDense(levels, 3, expected), 2);
+
+        for (var key = 0; key < 2; key++)
+        {
+            var point = Position(key, levels);
+            owner[0, point.X, point.Y, point.Z] = expected[key] = (uint)(100 + key);
+        }
+        var third = Position(2, levels);
+        owner[1, third.X, third.Y, third.Z] = expected[count + 2] = 200;
+
+        Assert.True(owner.IsHot);
+        Assert.Equal(1, owner.PendingPositionCount);
+        AssertOwner(owner, expected);
+        var hot = owner.MakeHot();
+        Assert.Equal(0, owner.PendingPositionCount);
+        Assert.Same(hot, owner.MakeHot());
+        AssertOwner(owner, expected);
+        AssertSnapshot(owner.Repackage(), expected);
+        AssertClean(owner);
+    }
+
+    [Fact]
+    public void RepeatedChannelOverflowEpochsPreserveReadsAndSerialization()
+    {
+        const int levels = 2, count = 64;
+        var expected = new uint[count * 3];
+        using var owner = new DeferredOctreeChunk(OctreeChunk.Empty(levels, 3), 2);
+        for (var channel = 0; channel < 3; channel++)
+        for (var offset = 0; offset < 3; offset++)
+        {
+            var key = channel * 8 + offset;
+            var point = Position(key, levels);
+            owner[channel, point.X, point.Y, point.Z] = expected[channel * count + key] = (uint)(1 + key);
+        }
+
+        Assert.True(owner.IsHot);
+        Assert.Equal(0, owner.PendingPositionCount);
+        AssertOwner(owner, expected);
+        var encoded = new byte[owner.SerializedLength];
+        Assert.Equal(encoded.Length, owner.CopyEncodedTo(encoded));
+        AssertSnapshot(OctreeChunk.FromEncoded(encoded), expected);
         AssertClean(owner);
     }
 
@@ -485,7 +557,7 @@ public sealed class DeferredChunkTests
         owner[0, 0, 1, 2] = secondValue;
         owner[1, 1, 2, 3] = firstValue;
         Assert.True(owner.IsHot);
-        Assert.Equal(0, owner.PendingPositionCount);
+        Assert.Equal(1, owner.PendingPositionCount);
         Assert.Same(owner.MakeHot(), owner.MakeHot());
         var block = new T[count * 2];
         owner.CopyBlockTo(0, 0, 0, levels, block);
