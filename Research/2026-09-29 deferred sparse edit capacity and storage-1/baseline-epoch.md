@@ -2,7 +2,7 @@
 
 - Investigation: deferred sparse edit capacity, lookup, ownership, and channel-local promotion.
 - Product baseline revision: `85d7a99ff87ce04c455e8c8ede5f938b9ed5e211`.
-- Benchmark epoch revision: `337cf2b` plus the high-occupancy case extension committed before measurement (`codex/deferred-capacity`).
+- Benchmark epoch revision: `b43b1c6`; the source under measurement remained product revision `85d7a99`.
 - Initial product state: clean; only research and benchmark fixtures differ from the product baseline before measurement.
 - Target: Windows x64, .NET 10, AMD Ryzen 9 5950X, AVX2, concurrent workstation GC.
 - Benchmark package: BenchmarkDotNet 0.16.0-preview.1.
@@ -29,3 +29,6 @@
 ## Epoch changes
 
 Record source commits, fixture changes, runtime changes, and material background-load changes here before comparing measurements.
+
+- Baseline storage-acquisition screen: .NET 10 ShortRun, recorded under `raw/baseline-storage`.
+- Baseline deferred edit-session matrix: .NET 10 ShortRun, 34 cases, recorded under `raw/baseline-edit`; exclusive lease held for the full 4m56s run.
