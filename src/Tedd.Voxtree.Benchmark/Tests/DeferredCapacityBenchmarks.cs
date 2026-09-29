@@ -98,6 +98,17 @@ public class DeferredCapacityBenchmarks
         return (uint)written + _encoded[written - 1];
     }
 
+    [Benchmark]
+    public uint DeferredMakeHotCycle()
+    {
+        using var owner = new DeferredOctreeChunk(_source, _capacity);
+        Write(owner);
+        var hot = owner.MakeHot();
+        var position = DeferredChunkData.Position(_writes - 1);
+        var channel = (_writes - 1) % _channelsWritten;
+        return hot[channel, DeferredChunkData.X(position), DeferredChunkData.Y(position), DeferredChunkData.Z(position)];
+    }
+
     private void Write(DeferredOctreeChunk owner)
     {
         for (var index = 0; index < _writes; index++)
