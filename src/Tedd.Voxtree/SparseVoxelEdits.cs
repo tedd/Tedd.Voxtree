@@ -9,37 +9,21 @@ internal sealed class SparseVoxelEdits<T> : IDisposable where T : unmanaged
     private readonly int _capacity;
     private readonly int _wordsPerChannel;
     private readonly T[]?[] _values;
-    private readonly ArrayPool<ushort> _shortKeyPool;
-    private readonly ArrayPool<int> _wideKeyPool;
-    private readonly ArrayPool<ulong> _presentPool;
-    private readonly ArrayPool<T> _valuePool;
     private ushort[]? _shortKeys;
     private int[]? _wideKeys;
     private ulong[]? _present;
 
     internal SparseVoxelEdits(int levels, int channels, int capacity)
-        : this(levels, channels, capacity, ArrayPool<ushort>.Shared, ArrayPool<int>.Shared,
-            ArrayPool<ulong>.Shared, ArrayPool<T>.Shared)
-    {
-    }
-
-    internal SparseVoxelEdits(int levels, int channels, int capacity,
-        ArrayPool<ushort> shortKeyPool, ArrayPool<int> wideKeyPool,
-        ArrayPool<ulong> presentPool, ArrayPool<T> valuePool)
     {
         _capacity = capacity;
         _wordsPerChannel = (capacity + 63) / 64;
         _values = new T[channels][];
-        _shortKeyPool = shortKeyPool;
-        _wideKeyPool = wideKeyPool;
-        _presentPool = presentPool;
-        _valuePool = valuePool;
         try
         {
-            if (levels <= 5) _shortKeys = _shortKeyPool.Rent(capacity);
-            else _wideKeys = _wideKeyPool.Rent(capacity);
+            if (levels <= 5) _shortKeys = ArrayPool<ushort>.Shared.Rent(capacity);
+            else _wideKeys = ArrayPool<int>.Shared.Rent(capacity);
             var words = checked(channels * _wordsPerChannel);
-            _present = _presentPool.Rent(words);
+            _present = ArrayPool<ulong>.Shared.Rent(words);
             _present.AsSpan(0, words).Clear();
         }
         catch { Dispose(); throw; }
@@ -73,7 +57,7 @@ internal sealed class SparseVoxelEdits<T> : IDisposable where T : unmanaged
         var index = Find(key);
         if (index < 0 && Count == _capacity) return false;
         // Rent before publishing a new key, so allocation failure cannot create an empty entry.
-        var values = _values[channel] ??= _valuePool.Rent(_capacity);
+        var values = _values[channel] ??= ArrayPool<T>.Shared.Rent(_capacity);
         if (index < 0)
         {
             index = Count;
@@ -129,12 +113,12 @@ internal sealed class SparseVoxelEdits<T> : IDisposable where T : unmanaged
             _present!.AsSpan(0, checked(_values.Length * _wordsPerChannel)).Clear();
             _values[channel] = null;
             Count = 0;
-            _valuePool.Return(removed);
+            ArrayPool<T>.Shared.Return(removed);
             return;
         }
 
         var wordCount = checked(_values.Length * _wordsPerChannel);
-        var present = _presentPool.Rent(wordCount);
+        var present = ArrayPool<ulong>.Shared.Rent(wordCount);
         present.AsSpan(0, wordCount).Clear();
         var write = 0;
         for (var read = 0; read < Count; read++)
@@ -163,21 +147,21 @@ internal sealed class SparseVoxelEdits<T> : IDisposable where T : unmanaged
         _present = present;
         _values[channel] = null;
         Count = write;
-        _presentPool.Return(previousPresent);
-        _valuePool.Return(removed);
+        ArrayPool<ulong>.Shared.Return(previousPresent);
+        ArrayPool<T>.Shared.Return(removed);
     }
 
     public void Dispose()
     {
-        if (_shortKeys is not null) _shortKeyPool.Return(_shortKeys);
-        if (_wideKeys is not null) _wideKeyPool.Return(_wideKeys);
-        if (_present is not null) _presentPool.Return(_present);
+        if (_shortKeys is not null) ArrayPool<ushort>.Shared.Return(_shortKeys);
+        if (_wideKeys is not null) ArrayPool<int>.Shared.Return(_wideKeys);
+        if (_present is not null) ArrayPool<ulong>.Shared.Return(_present);
         _shortKeys = null;
         _wideKeys = null;
         _present = null;
         for (var channel = 0; channel < _values.Length; channel++)
         {
-            if (_values[channel] is { } values) _valuePool.Return(values);
+            if (_values[channel] is { } values) ArrayPool<T>.Shared.Return(values);
             _values[channel] = null;
         }
         Count = 0;
