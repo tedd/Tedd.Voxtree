@@ -14,7 +14,7 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
     private OctreeChunk<T> _snapshot;
     private HotOctreeChunk<T>? _hot;
     private SparseVoxelEdits<T>? _edits;
-    private T[]?[]? _denseChannels;
+    private PartialVoxelEdits<T>? _partial;
     private readonly bool _deferredWritesEnabled;
     private bool _disposed;
 
@@ -41,9 +41,9 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
     /// <summary>Whether point writes use sparse storage before dense promotion.</summary>
     public bool DeferredWritesEnabled => _deferredWritesEnabled;
     /// <summary>The number of distinct positions remaining in sparse storage.</summary>
-    public int PendingPositionCount => _edits?.Count ?? 0;
+    public int PendingPositionCount => _edits?.Count ?? _partial?.Edits?.Count ?? 0;
     /// <summary>Whether this owner retains any dense editing storage.</summary>
-    public bool IsHot => _hot is not null || _denseChannels is not null;
+    public bool IsHot => _hot is not null || _partial is not null;
     /// <summary>Whether edits or borrowed dense storage require repackaging.</summary>
     public bool IsDirty => IsHot || PendingPositionCount != 0;
 
@@ -54,32 +54,42 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
         {
             var key = Validate(channel, x, y, z);
             if (_hot is not null) return _hot[channel, x, y, z];
-            if (_denseChannels?[channel] is { } dense)
-                return dense[DenseVoxel.Index(x, y, z, SideLength, DenseVoxelLayout.Morton)];
-            if (_edits is not null && _edits.TryGet(channel, key, out var value)) return value;
+            if (_edits is { } edits)
+                return edits.TryGet(channel, key, out var sparseValue)
+                    ? sparseValue
+                    : _snapshot.GetChannel(channel).Get(x, y, z);
+            if (_partial is { } partial)
+            {
+                if (partial.DenseChannels[channel] is { } dense)
+                    return dense[DenseVoxel.Index(x, y, z, SideLength, DenseVoxelLayout.Morton)];
+                if (partial.Edits is not null && partial.Edits.TryGet(channel, key, out var partialValue))
+                    return partialValue;
+            }
             return _snapshot.GetChannel(channel).Get(x, y, z);
         }
         set
         {
             var key = Validate(channel, x, y, z);
             if (_hot is not null) { _hot[channel, x, y, z] = value; return; }
-            if (_denseChannels?[channel] is { } dense)
+            var edits = _edits;
+            if (edits is not null)
             {
-                dense[DenseVoxel.Index(x, y, z, SideLength, DenseVoxelLayout.Morton)] = value;
+                if (!edits.TrySet(channel, key, value))
+                    SetAfterSparseOverflow(channel, key, x, y, z, value, edits);
                 return;
             }
-            var edits = _edits;
-            if (edits is null)
+            if (_partial is { } partial)
             {
-                if (!_deferredWritesEnabled)
-                {
-                    MakeHot()[channel, x, y, z] = value;
-                    return;
-                }
-                _edits = edits = new SparseVoxelEdits<T>(Levels, ChannelCount, Capacity);
+                SetPartial(partial, channel, key, x, y, z, value);
+                return;
             }
-            if (!edits.TrySet(channel, key, value))
-                SetAfterSparseOverflow(channel, key, x, y, z, value);
+            if (!_deferredWritesEnabled)
+            {
+                MakeHot()[channel, x, y, z] = value;
+                return;
+            }
+            _edits = edits = new SparseVoxelEdits<T>(Levels, ChannelCount, Capacity);
+            edits.TrySet(channel, key, value);
         }
     }
 
@@ -92,20 +102,20 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
     {
         ThrowIfDisposed();
         if (_hot is not null) return _hot;
-        var hot = _denseChannels is null
+        var hot = _partial is null
             ? _snapshot.MarkHot()
-            : HotOctreeChunk<T>.FromChunkReplacingChannels(_snapshot, _denseChannels);
-        if (_edits is not null)
+            : HotOctreeChunk<T>.FromChunkReplacingChannels(_snapshot, _partial.DenseChannels);
+        var edits = _edits ?? _partial?.Edits;
+        if (edits is not null)
         {
             for (var channel = 0; channel < ChannelCount; channel++)
             {
-                if (!_edits.HasChannel(channel)) continue;
-                ApplyEdits(channel, hot.GetChannelSpan(channel));
+                if (!edits.HasChannel(channel)) continue;
+                ApplyEdits(edits, channel, hot.GetChannelSpan(channel));
             }
         }
         _hot = hot;
-        ReleaseEdits();
-        ReleaseDenseChannels();
+        ReleasePendingState();
         return hot;
     }
 
@@ -120,7 +130,7 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
             _snapshot = snapshot;
             _hot = null;
         }
-        else if (_edits is not null || _denseChannels is not null)
+        else if (_edits is not null || _partial is not null)
         {
             var snapshot = _snapshot;
             var count = OctreeCodec.GetVoxelCount(Levels);
@@ -129,22 +139,22 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
             {
                 for (var channel = 0; channel < ChannelCount; channel++)
                 {
-                    if (_denseChannels?[channel] is { } materialized)
+                    if (_partial?.DenseChannels[channel] is { } materialized)
                     {
                         snapshot = snapshot.WithDenseChannel(channel,
                             materialized.AsSpan(0, count), DenseVoxelLayout.Morton);
                         continue;
                     }
-                    if (_edits is null || !_edits.HasChannel(channel)) continue;
+                    var edits = _edits ?? _partial?.Edits;
+                    if (edits is null || !edits.HasChannel(channel)) continue;
                     buffer ??= ArrayPool<T>.Shared.Rent(count);
                     var dense = buffer.AsSpan(0, count);
                     _snapshot.GetChannel(channel).CopyBlockTo(0, 0, 0, Levels, dense, DenseVoxelLayout.Morton);
-                    ApplyEdits(channel, dense);
+                    ApplyEdits(edits, channel, dense);
                     snapshot = snapshot.WithDenseChannel(channel, dense, DenseVoxelLayout.Morton);
                 }
                 _snapshot = snapshot;
-                ReleaseEdits();
-                ReleaseDenseChannels();
+                ReleasePendingState();
             }
             finally
             {
@@ -182,11 +192,9 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
         if (_disposed) throw new ObjectDisposedException(nameof(DeferredOctreeChunk));
     }
 
-    private void ReleaseEdits() { _edits?.Dispose(); _edits = null; }
-
-    private void MaterializeChannel(int channel)
+    private void MaterializeChannel(PartialVoxelEdits<T> partial, int channel)
     {
-        var edits = _edits!;
+        var edits = partial.Edits!;
         var count = OctreeCodec.GetVoxelCount(Levels);
         var buffer = ArrayPool<T>.Shared.Rent(count);
         var published = false;
@@ -194,13 +202,15 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
         {
             var dense = buffer.AsSpan(0, count);
             _snapshot.GetChannel(channel).CopyBlockTo(0, 0, 0, Levels, dense, DenseVoxelLayout.Morton);
-            ApplyEdits(channel, dense);
-            var denseChannels = _denseChannels ?? new T[ChannelCount][];
+            ApplyEdits(edits, channel, dense);
             edits.RemoveChannel(channel);
-            denseChannels[channel] = buffer;
-            _denseChannels = denseChannels;
+            partial.DenseChannels[channel] = buffer;
             published = true;
-            if (edits.Count == 0) ReleaseEdits();
+            if (edits.Count == 0)
+            {
+                edits.Dispose();
+                partial.Edits = null;
+            }
         }
         finally
         {
@@ -208,9 +218,8 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
         }
     }
 
-    private void ApplyEdits(int channel, Span<T> dense)
+    private void ApplyEdits(SparseVoxelEdits<T> edits, int channel, Span<T> dense)
     {
-        var edits = _edits!;
         var mask = SideLength - 1;
         for (var index = 0; index < edits.Count; index++)
         {
@@ -223,33 +232,54 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
         }
     }
 
-    private void ReleaseDenseChannels()
+    private void ReleasePendingState()
     {
-        if (_denseChannels is null) return;
-        for (var channel = 0; channel < _denseChannels.Length; channel++)
+        _edits?.Dispose();
+        _edits = null;
+        var partial = _partial;
+        if (partial is null) return;
+        partial.Edits?.Dispose();
+        partial.Edits = null;
+        for (var channel = 0; channel < partial.DenseChannels.Length; channel++)
         {
-            if (_denseChannels[channel] is { } dense) ArrayPool<T>.Shared.Return(dense);
-            _denseChannels[channel] = null;
+            if (partial.DenseChannels[channel] is { } dense) ArrayPool<T>.Shared.Return(dense);
+            partial.DenseChannels[channel] = null;
         }
-        _denseChannels = null;
+        _partial = null;
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private void SetAfterSparseOverflow(int channel, int key, int x, int y, int z, T value)
+    private void SetAfterSparseOverflow(int channel, int key, int x, int y, int z, T value,
+        SparseVoxelEdits<T> edits)
     {
-        var edits = _edits!;
+        var partial = new PartialVoxelEdits<T>(ChannelCount, edits);
+        _partial = partial;
+        _edits = null;
+        SetPartial(partial, channel, key, x, y, z, value);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void SetPartial(PartialVoxelEdits<T> partial, int channel, int key,
+        int x, int y, int z, T value)
+    {
+        if (partial.DenseChannels[channel] is { } dense)
+        {
+            dense[DenseVoxel.Index(x, y, z, SideLength, DenseVoxelLayout.Morton)] = value;
+            return;
+        }
+        var edits = partial.Edits ??= new SparseVoxelEdits<T>(Levels, ChannelCount, Capacity);
+        if (edits.TrySet(channel, key, value)) return;
         while (true)
         {
             var selected = edits.SelectChannelToMaterialize();
             if (selected < 0) throw new InvalidOperationException("The sparse edit cache is full without a materializable channel.");
-            MaterializeChannel(selected);
-            if (_denseChannels?[channel] is { } promoted)
+            MaterializeChannel(partial, selected);
+            if (partial.DenseChannels[channel] is { } promoted)
             {
                 promoted[DenseVoxel.Index(x, y, z, SideLength, DenseVoxelLayout.Morton)] = value;
                 return;
             }
-            if (_edits is null) _edits = edits = new SparseVoxelEdits<T>(Levels, ChannelCount, Capacity);
-            else edits = _edits;
+            edits = partial.Edits ??= new SparseVoxelEdits<T>(Levels, ChannelCount, Capacity);
             if (edits.TrySet(channel, key, value)) return;
         }
     }
@@ -258,8 +288,7 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
     public void Dispose()
     {
         if (_disposed) return;
-        ReleaseEdits();
-        ReleaseDenseChannels();
+        ReleasePendingState();
         _hot = null;
         _disposed = true;
     }
