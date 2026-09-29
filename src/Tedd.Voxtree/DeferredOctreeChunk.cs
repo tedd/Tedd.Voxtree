@@ -103,14 +103,9 @@ public sealed class DeferredOctreeChunk : IDisposable
     {
         ThrowIfDisposed();
         if (_hot is not null) return _hot;
-        var hot = _snapshot.MarkHot();
-        if (_denseChannels is not null)
-        {
-            var count = OctreeCodec.GetVoxelCount(Levels);
-            for (var channel = 0; channel < ChannelCount; channel++)
-                if (_denseChannels[channel] is { } dense)
-                    dense.AsSpan(0, count).CopyTo(hot.GetChannelSpan(channel));
-        }
+        var hot = _denseChannels is null
+            ? _snapshot.MarkHot()
+            : HotOctreeChunk.FromChunkReplacingChannels(_snapshot, _denseChannels);
         if (_edits is not null)
         {
             for (var channel = 0; channel < ChannelCount; channel++)

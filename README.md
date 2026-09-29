@@ -441,7 +441,8 @@ channels become pooled dense Morton buffers while untouched channels remain in
 their encoded form. Shared positions can require more than one affected channel
 to be materialized before the sparse table has room.
 
-`MakeHot()` explicitly expands every channel for bulk editing and returns a
+`MakeHot()` explicitly expands every channel for bulk editing, copies channels
+already materialized, and decodes only the remaining channels. It returns a
 borrowed `HotOctreeChunk`; finish through the owner's `Repackage()`, and stop
 using borrowed spans afterward. The owner remains usable for further edits.
 Repackaging encodes dense or sparsely changed channels and shares the untouched

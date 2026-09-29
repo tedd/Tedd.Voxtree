@@ -48,6 +48,22 @@ public sealed class HotOctreeChunk
         return new HotOctreeChunk(chunk.Levels, chunk.ChannelCount, values, chunk, false);
     }
 
+    internal static HotOctreeChunk FromChunkReplacingChannels(OctreeChunk chunk, uint[]?[] replacements)
+    {
+        var count = OctreeCodec.GetVoxelCount(chunk.Levels);
+        var values = new uint[checked(count * chunk.ChannelCount)];
+        for (var channel = 0; channel < chunk.ChannelCount; channel++)
+        {
+            var destination = values.AsSpan(channel * count, count);
+            if (replacements[channel] is { } replacement)
+                replacement.AsSpan(0, count).CopyTo(destination);
+            else
+                chunk.GetChannel(channel).CopyBlockTo(0, 0, 0, chunk.Levels,
+                    destination, DenseVoxelLayout.Morton);
+        }
+        return new HotOctreeChunk(chunk.Levels, chunk.ChannelCount, values, chunk, false);
+    }
+
     /// <summary>Creates a mutable all-zero chunk in Morton order.</summary>
     public static HotOctreeChunk Empty(int levels, int channelCount)
     {

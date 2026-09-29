@@ -120,7 +120,7 @@
 - Mechanism: use one contiguous span copy for each partial channel while `MakeHot()` decodes only channels still encoded.
 - Prediction: partial-state `MakeHot()` improves by at least 10% per materialized channel relative to decoding every channel.
 - Falsification: the remaining channel decodes dominate or the JIT fails to lower `Span.CopyTo` to efficient block copy.
-- Change: the channel-local candidate already uses `Span.CopyTo`; measurement remains pending.
+- Change: `MakeHot()` now copies materialized channel spans directly and decodes only channels still represented by the compressed snapshot.
 - State: implemented; measurement pending.
 
 ## H-016 — software prefetch before channel decode

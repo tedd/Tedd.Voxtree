@@ -186,7 +186,8 @@ affected channels are materialized into pooled Morton-order
 buffers; untouched channels
 remain encoded. `Repackage()` combines materialized and sparse channels, encodes
 only changed channels, and retains the other channel encodings. Explicit
-`MakeHot()` still expands every channel. `PendingPositionCount` excludes edits
+`MakeHot()` expands every channel but copies materialized channels without
+decoding them again. `PendingPositionCount` excludes edits
 already held in dense channels, while `IsHot` reports any dense channel state.
 
 `DenseVoxelBlockSpan` is a mutable ref struct: its storage remains caller-owned
