@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace Tedd.Voxtree;
 
@@ -14,7 +15,6 @@ public sealed class DeferredOctreeChunk : IDisposable
     private HotOctreeChunk? _hot;
     private SparseVoxelEdits<uint>? _edits;
     private uint[]?[]? _denseChannels;
-    private int _denseChannelCount;
     private readonly bool _deferredWritesEnabled;
     private bool _disposed;
 
@@ -43,7 +43,7 @@ public sealed class DeferredOctreeChunk : IDisposable
     /// <summary>The number of distinct positions remaining in sparse storage.</summary>
     public int PendingPositionCount => _edits?.Count ?? 0;
     /// <summary>Whether this owner retains any dense editing storage.</summary>
-    public bool IsHot => _hot is not null || _denseChannelCount != 0;
+    public bool IsHot => _hot is not null || _denseChannels is not null;
     /// <summary>Whether edits or borrowed dense storage require repackaging.</summary>
     public bool IsDirty => IsHot || PendingPositionCount != 0;
 
@@ -78,19 +78,8 @@ public sealed class DeferredOctreeChunk : IDisposable
                 }
                 _edits = edits = new SparseVoxelEdits<uint>(Levels, ChannelCount, Capacity);
             }
-            while (!edits.TrySet(channel, key, value))
-            {
-                var selected = edits.SelectChannelToMaterialize();
-                if (selected < 0) throw new InvalidOperationException("The sparse edit cache is full without a materializable channel.");
-                MaterializeChannel(selected);
-                if (_denseChannels?[channel] is { } promoted)
-                {
-                    promoted[DenseVoxel.Index(x, y, z, SideLength, DenseVoxelLayout.Morton)] = value;
-                    return;
-                }
-                if (_edits is null) _edits = edits = new SparseVoxelEdits<uint>(Levels, ChannelCount, Capacity);
-                else edits = _edits;
-            }
+            if (!edits.TrySet(channel, key, value))
+                SetAfterSparseOverflow(channel, key, x, y, z, value);
         }
     }
 
@@ -131,7 +120,7 @@ public sealed class DeferredOctreeChunk : IDisposable
             _snapshot = snapshot;
             _hot = null;
         }
-        else if (_edits is not null || _denseChannelCount != 0)
+        else if (_edits is not null || _denseChannels is not null)
         {
             var snapshot = _snapshot;
             var count = OctreeCodec.GetVoxelCount(Levels);
@@ -210,7 +199,6 @@ public sealed class DeferredOctreeChunk : IDisposable
             edits.RemoveChannel(channel);
             denseChannels[channel] = buffer;
             _denseChannels = denseChannels;
-            _denseChannelCount++;
             published = true;
             if (edits.Count == 0) ReleaseEdits();
         }
@@ -244,7 +232,26 @@ public sealed class DeferredOctreeChunk : IDisposable
             _denseChannels[channel] = null;
         }
         _denseChannels = null;
-        _denseChannelCount = 0;
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void SetAfterSparseOverflow(int channel, int key, int x, int y, int z, uint value)
+    {
+        var edits = _edits!;
+        while (true)
+        {
+            var selected = edits.SelectChannelToMaterialize();
+            if (selected < 0) throw new InvalidOperationException("The sparse edit cache is full without a materializable channel.");
+            MaterializeChannel(selected);
+            if (_denseChannels?[channel] is { } promoted)
+            {
+                promoted[DenseVoxel.Index(x, y, z, SideLength, DenseVoxelLayout.Morton)] = value;
+                return;
+            }
+            if (_edits is null) _edits = edits = new SparseVoxelEdits<uint>(Levels, ChannelCount, Capacity);
+            else edits = _edits;
+            if (edits.TrySet(channel, key, value)) return;
+        }
     }
 
     /// <summary>Discards pending edits and returns pooled buffers. Previously returned snapshots remain valid.</summary>
