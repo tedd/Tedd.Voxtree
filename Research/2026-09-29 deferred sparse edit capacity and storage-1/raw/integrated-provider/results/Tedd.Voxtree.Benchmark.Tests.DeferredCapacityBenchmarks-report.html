@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Tedd.Voxtree.Benchmark.Tests.DeferredCapacityBenchmarks-20260929-171458</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.16.0-preview.1, Windows 11 (10.0.26200.9457/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 5950X 3.40GHz, 1 CPU, 32 logical and 16 physical cores
+Memory: 127.91 GB Total, 80.09 GB Available
+.NET SDK 11.0.100-rc.1.26425.128
+  [Host]    : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+  MediumRun : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code>Job=MediumRun  IterationCount=15  LaunchCount=2
+WarmupCount=10
+</code></pre>
+
+<table>
+<thead><tr><th>Method             </th><th>Case   </th><th>Pattern</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Gen0</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>DeferredEditSession</td><td>C256-W20-1of2</td><td>Uniform</td><td>305.1 ns</td><td>4.79 ns</td><td>7.02 ns</td><td>0.0134</td><td>224 B</td>
+</tr><tr><td>CallerProvidedEditSession</td><td>C256-W20-1of2</td><td>Uniform</td><td>277.9 ns</td><td>6.50 ns</td><td>9.33 ns</td><td>0.0134</td><td>224 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C256-W20-1of2</td><td>Terrain</td><td>342.4 ns</td><td>24.82 ns</td><td>37.15 ns</td><td>0.0134</td><td>224 B</td>
+</tr><tr><td>CallerProvidedEditSession</td><td>C256-W20-1of2</td><td>Terrain</td><td>347.8 ns</td><td>5.25 ns</td><td>7.85 ns</td><td>0.0134</td><td>224 B</td>
+</tr></tbody></table>
+</body>
+</html>

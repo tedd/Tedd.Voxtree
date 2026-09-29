@@ -1,41 +1,27 @@
 # Optimization catalogue coverage
 
-This ledger records applicability to the deferred sparse-edit path. Measurements and final dispositions are added without deleting rejected hypotheses.
-
-| Catalogue area | Applicability | Hypotheses / evidence | Disposition |
+| Catalogue category | Applicability | Evidence / hypotheses | Disposition |
 |---|---|---|---|
-| M1 Allocation and pooling | Direct | H-001, H-006, H-007, H-011, H-012 | Exact arrays and geometric growth rejected; shared pools retained; caller provider deferred. |
-| M2 Copies and lifetime | Direct | H-002, H-015; immutable snapshots and borrowed hot storage | Channel-local promotion retained; partial channels use contiguous copies during explicit hot expansion. |
-| M3 Bounds and slicing | Direct | Existing `Span.IndexOf`; key/presence/value bounds | Generated code already vectorizes lookup; no independent bounds hypothesis yet. |
-| M4 Stack allocation | Not applicable | Pending overlays outlive one call and may hold up to chunk volume | Rejected by lifetime and size. |
-| M5 Layout and working set | Direct | H-001, H-002, H-012, H-018 | Partial dense state retained; geometric growth rejected; cache-line grouping inconclusive. |
-| M6 Structure representation | Direct | Shared keys plus channel bitmaps | Retain unless channel-specific redesign demonstrates a caller gain. |
-| M7 Memory traffic | Direct | H-002, H-008, H-011, H-014, H-015 | Channel-local publication retained; scratch ownership rejected; bitmap iteration remains inconclusive. |
-| S1 Bitmaps/direct maps | Conditional | H-014, H-017; a direct 32^3 position map costs at least 64 KiB before validity metadata | Direct map rejected; presence-word iteration inconclusive. |
-| S2 Lookup/indexing | Direct | H-004, H-005, H-009, H-013, H-022 | `Span.IndexOf` SIMD retained; integrated pooled index rejected for small-overlay regressions. |
-| S3 Ordering/sorting | Not applicable | Sorting would shift shared values and validity metadata on insertion | Rejected structurally for the priority append/overwrite path. |
-| S4 String/text processing | Not applicable | No text in the hot path | Not applicable. |
-| S5 Compression/encoding | Direct | H-002, H-008, H-011, H-015 | Overflow now preserves untouched encodings; changed channels alone are encoded. |
-| C1 Loop shape | Direct | H-008, H-014, H-020 | Secondary sparse-application and stencil loops remain inconclusive without representative traces. |
-| C2 Branch behavior | Direct | H-004 and the instance enable branch | Last-key cache and startup-frozen flag rejected. |
-| C3 SIMD/vectorization | Direct | H-009 and existing generated code | Handwritten SIMD rejected; runtime `Span.IndexOf` retained. |
-| C4 Intrinsics | Conditional | H-013, H-016; existing AVX2 code generation | Batched probes are not applicable to the scalar API; software prefetch rejected. |
-| C5 Arithmetic | Minor | Coordinate-to-key and Morton conversion | No measured attribution; defer. |
-| C6 Spatial/Morton | Minor | Dense channels are Morton ordered | Existing prior investigation selected Morton order; no new evidence to reopen. |
-| R1 Dispatch/inlining | Direct | Integrated lookup and any provider call | Inspect generated code for retained candidates. |
-| R2 Specialization | Direct | `ushort` keys through level 5; `int` above | Existing specialization retained. |
-| R3 Startup/static flags | Direct | H-010 | Rejected by prior toggle measurement. |
-| R4 Tiering/PGO/AOT | Control | BenchmarkDotNet .NET 10 Tiered PGO environment | Controlled as an epoch variable; no product candidate. |
-| T1 Shared mutation | Not applicable to owner | `DeferredOctreeChunk` is exclusively owned and not thread-safe | Store synchronization remains separate. |
-| T2 Ownership and leasing | Direct | H-006, H-011 | Shared pools remain the default. Persistent provider deferred; caller scratch rejected as a speed feature. |
-| T3 Locks/contention | Conditional | `DeferredChunkStore` holds one lock through repackaging | No representative contention trace; outside primary local experiment. |
-| T4 Batching | Direct | H-011; store batch could reuse one channel scratch buffer | Rejected for speed: the measured acquisition ceiling is below 0.4% of the shortest complete cycle. |
-| T5 False sharing | Not applicable | H-019; owner is not concurrently mutated | Not applicable to the owner; store contention requires a separate trace. |
-
-## Existing generated-code evidence
-
-The .NET 10 `Span<ushort>.IndexOf` path used by `SparseVoxelEdits.Find` emitted AVX2 `vpcmpeqw` and `vptest` in the prior investigation. Explicit `Vector256` and padded searches did not improve the integrated owner/read caller and remain rejected unless the representation changes.
-
-## External-validity boundary
-
-No Forcecraft edit trace has yet supplied the distribution of distinct positions per publication, repeated-write ratio, channels touched, or read hit/miss frequency. Capacity conclusions therefore apply to the documented synthetic library workloads. An application default should be revisited when that trace exists.
+| M1 Allocation and initialization | Direct | H-001, H-006, H-007, H-011, H-012 | Short-lived exact arrays, geometric growth, and the caller-provider speed prototype were rejected. Shared pools remain. Deterministic-memory utility was not measured. |
+| M2 Stack storage | Not applicable | Pending overlays outlive one call and may reach chunk volume | Lifetime and size preclude stack storage. |
+| M3 Arrays and bounds checks | Inspected | Sparse arrays use bounded spans; no measured bounds-check hotspot | No candidate established. |
+| M4 Managed references and raw pointers | Inspected | Managed pooled arrays already provide stable ownership | No pointer candidate justified by profiling. |
+| M5 Layout and working set | Direct | H-001, H-002, H-012, H-018 | Partial dense state retained; geometric growth rejected; cache-line grouping remains inconclusive. |
+| M6 Addressing, prefetch, and alignment | Conditional | H-016, H-017 | Prefetch is not applicable to the measured warm sequential decoder; direct mapping remains inconclusive. |
+| M7 Copies and buffer traffic | Direct | H-002, H-008, H-011, H-014, H-015 | Channel-local publication retained; caller scratch rejected as a speed feature; bitmap iteration remains inconclusive. |
+| S1 Bitmaps and bulk updates | Conditional | H-014; direct-map validity would require additional metadata | Presence-word iteration remains inconclusive. |
+| S2 Lookups and hashing | Direct | H-004, H-005, H-009, H-013, H-017, H-022 | `Span.IndexOf` SIMD retained; last-key caching and a direct map remain inconclusive; the integrated pooled index was rejected. |
+| S3 Frozen collections | Not applicable | Per-chunk overlays mutate until publication | Frozen storage cannot serve the mutation path. |
+| S4 Storage and query preparation | Inspected | No query-preparation phase exists in this path | No candidate established. |
+| S5 Compression and runs | Direct | H-002, H-008, H-015 | Channel-local decode and encode retained. |
+| C1 Dependency latency and throughput | Direct | H-008, H-014, H-020 | Secondary sparse-application and stencil loops remain inconclusive without representative traces. |
+| C2 Branches, prediction, and layout | Direct | H-004, H-010 | Last-key caching remains inconclusive; startup-frozen feature flag rejected. |
+| C3 SIMD | Direct | H-009 and generated-code evidence | Handwritten SIMD rejected; runtime `Span.IndexOf` retained. |
+| C4 Intrinsics and strength reduction | Inspected | H-009, H-013, H-016 | Explicit intrinsics did not establish a suitable candidate. |
+| T1 False sharing | Not applicable | H-019 | Chunk editors have exclusive ownership; no concurrently written cache line was identified. |
+| T2 Ownership and publication | Direct | H-002, H-006, H-011 | Immutable encoded channels and exclusive pooled buffers preserved. |
+| T3 Locks and waiting | Inspected | Store publication already serializes ownership transfer | No contention profile established a lock bottleneck. |
+| T4 Scheduling, batching, and I/O | Conditional | H-020 and the pending-address store API | Representative client scheduling traces were unavailable. |
+| R1 Dispatch and lookup tables | Direct | H-005, H-017, H-022 | Integrated pooled index rejected; alternative index and direct-map forms remain inconclusive. |
+| R2 Inlining, specialization, and copies | Inspected | Generic and `uint` paths benchmarked separately | No remaining measured dispatch or copy hotspot. |
+| R3 Startup-frozen feature flags | Direct | H-010 | Rejected after mixed -2.8% to +0.5% measurements. |

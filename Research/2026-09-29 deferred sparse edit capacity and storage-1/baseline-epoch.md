@@ -1,9 +1,11 @@
 # Baseline epoch
 
 - Investigation: deferred sparse edit capacity, lookup, ownership, and channel-local promotion.
-- Product baseline revision: `85d7a99ff87ce04c455e8c8ede5f938b9ed5e211`.
-- Benchmark epoch revision: `b43b1c6`; the source under measurement remained product revision `85d7a99`.
-- Initial product state: clean; only research and benchmark fixtures differ from the product baseline before measurement.
+- Exploratory baseline revision: `85d7a99ff87ce04c455e8c8ede5f938b9ed5e211`; exploratory results are retained for hypothesis history only.
+- Causal comparison baseline revision: `f9d9b366ede89050800bc97df9fca2a086ab1ce2` (`origin/main` when the matched rerun began).
+- Causal comparison candidate revision: `4006838`; its product tree equals the final channel-local implementation after the caller-provider prototype and revert.
+- Baseline state: product files exactly match `f9d9b36`; only the candidate benchmark fixture was copied as an untracked file.
+- Candidate state: product and benchmark files match `4006838`; only Research artifacts were untracked or modified during measurement.
 - Target: Windows x64, .NET 10, AMD Ryzen 9 5950X, AVX2, concurrent workstation GC.
 - Benchmark package: BenchmarkDotNet 0.16.0-preview.1.
 - Seeded position sequence: `(index * 977 + 1234) & 32767`.
@@ -32,3 +34,6 @@ Record source commits, fixture changes, runtime changes, and material background
 
 - Baseline storage-acquisition screen: .NET 10 ShortRun, recorded under `raw/baseline-storage`.
 - Baseline deferred edit-session matrix: .NET 10 ShortRun, 34 cases, recorded under `raw/baseline-edit`; exclusive lease held for the full 4m56s run.
+- Source-matched 20-write comparison: .NET 10 MediumRun, baseline in `raw/matched-main-base`, candidate in `raw/matched-current-final`.
+- Source-matched overflow comparison: .NET 10 ShortRun, baseline in `raw/main-base-overflow`, candidate in `raw/current-final-overflow`.
+- Integrated caller-provider prototype: .NET 10 MediumRun at `0838be1`, recorded in `raw/integrated-provider`; the prototype was removed by `4006838`.

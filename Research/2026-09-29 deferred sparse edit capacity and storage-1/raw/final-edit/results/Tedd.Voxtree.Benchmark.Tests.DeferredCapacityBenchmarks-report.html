@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Tedd.Voxtree.Benchmark.Tests.DeferredCapacityBenchmarks-20260929-155304</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.16.0-preview.1, Windows 11 (10.0.26200.9457/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 5950X 3.40GHz, 1 CPU, 32 logical and 16 physical cores
+Memory: 127.91 GB Total, 89.74 GB Available
+.NET SDK 11.0.100-rc.1.26425.128
+  [Host]   : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+  ShortRun : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code>Job=ShortRun  IterationCount=3  LaunchCount=1
+WarmupCount=3
+</code></pre>
+
+<table>
+<thead><tr><th>Method       </th><th>Case      </th><th>Pattern</th><th>Mean  </th><th>Error  </th><th>StdDev</th><th>Gen0</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>DeferredEditSession</td><td>C1024-W1024-1of2</td><td>Uniform</td><td>10,832.21 ns</td><td>433.082 ns</td><td>23.739 ns</td><td>-</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C1024-W1024-1of2</td><td>Terrain</td><td>10,604.35 ns</td><td>348.080 ns</td><td>19.079 ns</td><td>-</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C1024-W512-1of8</td><td>Uniform</td><td>6,127.38 ns</td><td>1,358.820 ns</td><td>74.482 ns</td><td>0.0076</td><td>224 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C1024-W512-1of8</td><td>Terrain</td><td>6,041.69 ns</td><td>126.404 ns</td><td>6.929 ns</td><td>0.0076</td><td>224 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C20-W1-1of2</td><td>Uniform</td><td>80.64 ns</td><td>10.922 ns</td><td>0.599 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C20-W1-1of2</td><td>Terrain</td><td>80.69 ns</td><td>9.484 ns</td><td>0.520 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C20-W20-1of2</td><td>Uniform</td><td>316.85 ns</td><td>1.652 ns</td><td>0.091 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C20-W20-1of2</td><td>Terrain</td><td>302.53 ns</td><td>250.746 ns</td><td>13.744 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C20-W21-1of8</td><td>Uniform</td><td>2,309.03 ns</td><td>133.672 ns</td><td>7.327 ns</td><td>0.0153</td><td>312 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C20-W21-1of8</td><td>Terrain</td><td>31,608.06 ns</td><td>35,498.402 ns</td><td>1,945.787 ns</td><td>-</td><td>312 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C2048-W2048-1of2</td><td>Uniform</td><td>23,631.27 ns</td><td>10,885.272 ns</td><td>596.659 ns</td><td>-</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C2048-W2048-1of2</td><td>Terrain</td><td>22,984.77 ns</td><td>9,987.067 ns</td><td>547.425 ns</td><td>-</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C256-W20-1of2</td><td>Uniform</td><td>327.97 ns</td><td>195.941 ns</td><td>10.740 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C256-W20-1of2</td><td>Terrain</td><td>347.20 ns</td><td>85.685 ns</td><td>4.697 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C256-W257-1of8</td><td>Uniform</td><td>8,928.49 ns</td><td>5,950.022 ns</td><td>326.141 ns</td><td>0.0153</td><td>312 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C256-W257-1of8</td><td>Terrain</td><td>38,364.79 ns</td><td>77,762.311 ns</td><td>4,262.415 ns</td><td>-</td><td>312 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C256-W257-8of8</td><td>Uniform</td><td>15,827.87 ns</td><td>15,426.788 ns</td><td>845.594 ns</td><td>0.0153</td><td>312 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C256-W257-8of8</td><td>Terrain</td><td>46,207.65 ns</td><td>75,637.092 ns</td><td>4,145.924 ns</td><td>-</td><td>312 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C256-W32-1of2</td><td>Uniform</td><td>472.28 ns</td><td>357.824 ns</td><td>19.614 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C256-W32-1of2</td><td>Terrain</td><td>459.23 ns</td><td>75.148 ns</td><td>4.119 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C256-W64-1of2</td><td>Uniform</td><td>837.64 ns</td><td>316.823 ns</td><td>17.366 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C256-W64-1of2</td><td>Terrain</td><td>876.65 ns</td><td>80.765 ns</td><td>4.427 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C32-W20-1of2</td><td>Uniform</td><td>362.00 ns</td><td>591.200 ns</td><td>32.406 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C32-W20-1of2</td><td>Terrain</td><td>335.93 ns</td><td>549.470 ns</td><td>30.118 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C32-W32-1of2</td><td>Uniform</td><td>464.12 ns</td><td>210.524 ns</td><td>11.540 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C32-W32-1of2</td><td>Terrain</td><td>473.81 ns</td><td>72.303 ns</td><td>3.963 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C4096-W4096-1of2</td><td>Uniform</td><td>45,023.73 ns</td><td>7,808.999 ns</td><td>428.038 ns</td><td>-</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C4096-W4096-1of2</td><td>Terrain</td><td>44,222.06 ns</td><td>7,611.519 ns</td><td>417.213 ns</td><td>-</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C512-W512-1of8</td><td>Uniform</td><td>6,889.34 ns</td><td>337.050 ns</td><td>18.475 ns</td><td>0.0076</td><td>224 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C512-W512-1of8</td><td>Terrain</td><td>6,794.44 ns</td><td>2,391.316 ns</td><td>131.076 ns</td><td>0.0076</td><td>224 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C64-W20-1of2</td><td>Uniform</td><td>348.18 ns</td><td>358.264 ns</td><td>19.638 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C64-W20-1of2</td><td>Terrain</td><td>324.77 ns</td><td>88.916 ns</td><td>4.874 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C64-W64-1of2</td><td>Uniform</td><td>835.81 ns</td><td>373.700 ns</td><td>20.484 ns</td><td>0.0105</td><td>176 B</td>
+</tr><tr><td>DeferredEditSession</td><td>C64-W64-1of2</td><td>Terrain</td><td>900.36 ns</td><td>133.954 ns</td><td>7.342 ns</td><td>0.0105</td><td>176 B</td>
+</tr></tbody></table>
+</body>
+</html>

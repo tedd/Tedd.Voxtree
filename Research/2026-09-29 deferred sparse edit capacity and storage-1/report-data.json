@@ -1,0 +1,894 @@
+{
+  "title": "Deferred sparse edit capacity and channel-local promotion",
+  "generatedAt": "2026-09-29T17:35:00+02:00",
+  "status": "complete",
+  "scope": "Synthetic Tedd.Voxtree 32³ chunk workloads on one AVX2 x64 host. The investigation covers 1–20-write priority cases, capacity overflow, channel locality, storage acquisition, lookup structure, repackaging, and explicit MakeHot behavior.",
+  "question": "Can small voxel edits remain outside the compressed octree, and can overflow materialize only affected channels without regressing the common sparse path?",
+  "primaryMetric": "elapsed time",
+  "summary": {
+    "baseline": 366.013,
+    "final": 34.482,
+    "unit": "µs",
+    "changePercent": -90.579,
+    "headline": "Channel-local promotion reduced the source-matched capacity-256 terrain overflow edit median by 90.6%; ordinary 20-write medians changed by less than 1%."
+  },
+  "scorecards": [
+    {
+      "title": "256-capacity terrain overflow edit",
+      "value": 34.482,
+      "unit": "µs",
+      "wallChangePercent": -90.579,
+      "baseline": 366.013,
+      "secondaryMetric": "managed allocation",
+      "secondaryChangePercent": -99.97,
+      "progression": "366.013 µs full-hot baseline → 34.482 µs channel-local final"
+    },
+    {
+      "title": "256-capacity uniform overflow serialization",
+      "value": 84.661,
+      "unit": "µs",
+      "wallChangePercent": -67.571,
+      "baseline": 261.062,
+      "progression": "261.062 µs full-hot baseline → 84.661 µs channel-local final"
+    },
+    {
+      "title": "20-write default-capacity terrain session",
+      "value": 296.693,
+      "unit": "ns",
+      "wallChangePercent": -0.674,
+      "baseline": 298.705,
+      "progression": "298.705 ns source-matched baseline → 296.693 ns final"
+    },
+    {
+      "title": "256-capacity all-channel terrain publication",
+      "value": 846.211,
+      "unit": "µs",
+      "wallChangePercent": -16.875,
+      "baseline": 1018.0,
+      "progression": "1,018.000 µs full-hot baseline → 846.211 µs channel-local final"
+    }
+  ],
+  "environment": [
+    {
+      "label": "Measured revisions",
+      "value": "Baseline f9d9b366ede89050800bc97df9fca2a086ab1ce2; candidate product tree 4006838 after prototype revert"
+    },
+    {
+      "label": "CPU",
+      "value": "AMD Ryzen 9 5950X; x64; AVX2 and BMI available"
+    },
+    {
+      "label": "Runtime",
+      "value": ".NET 10.0.12, RyuJIT x86-64-v3, Tiered PGO"
+    },
+    {
+      "label": "GC",
+      "value": "Concurrent workstation GC"
+    },
+    {
+      "label": "Benchmark harness",
+      "value": "BenchmarkDotNet 0.16 preview; ShortRun screens and 15-iteration MediumRun confirmation"
+    },
+    {
+      "label": "Coordination",
+      "value": "All source-matched benchmark and final-test evidence acquired D:\\Temp\\BenchmarkLock.txt atomically"
+    },
+    {
+      "label": "Correctness command",
+      "value": "dotnet test .\\src\\Tedd.Voxtree.sln -c Release --nologo"
+    },
+    {
+      "label": "Measured tree state",
+      "value": "Baseline product files exact with only the shared fixture untracked; candidate product and fixture files exact with Research artifacts uncommitted"
+    }
+  ],
+  "hotspots": [],
+  "areas": [
+    {
+      "name": "Capacity and pooled storage",
+      "boundary": "Sparse key, presence, and per-channel value buffers",
+      "evidence": "Capacity/storage matrices and warm acquisition kernels",
+      "catalogue": "M1 Allocation and initialization; M5 Layout and working set; T2 Ownership and publication",
+      "hypothesisIds": [
+        "H-001",
+        "H-003",
+        "H-006",
+        "H-007",
+        "H-011",
+        "H-012"
+      ],
+      "disposition": "Retain capacity 256 and fixed shared-pool buffers; deterministic-memory utility remains unmeasured"
+    },
+    {
+      "name": "Channel-local overflow and publication",
+      "boundary": "DeferredOctreeChunk overflow, Repackage, serialization, and MakeHot",
+      "evidence": "Matched capacity-plus-one benchmarks for one and eight touched channels",
+      "catalogue": "M7 Copies and buffer traffic; S1 Bitmaps and bulk updates; S5 Compression and runs; T2 Ownership and publication",
+      "hypothesisIds": [
+        "H-002",
+        "H-008",
+        "H-014",
+        "H-015",
+        "H-016"
+      ],
+      "disposition": "Channel-local promotion retained; secondary loop and prefetch ideas rejected or deferred"
+    },
+    {
+      "name": "Lookup and generated code",
+      "boundary": "SparseVoxelEdits key lookup and insertion",
+      "evidence": "Lookup microbenchmarks, generated-code inspection, and integrated index prototype",
+      "catalogue": "S2 Lookups and hashing; C2 Branches, prediction, and layout; C3 SIMD; C4 Intrinsics and strength reduction; R1 Dispatch and lookup tables",
+      "hypothesisIds": [
+        "H-004",
+        "H-005",
+        "H-009",
+        "H-013",
+        "H-017",
+        "H-022"
+      ],
+      "disposition": "Retain Span.IndexOf; reject the tested pooled index; last-key caching and direct mapping remain inconclusive"
+    },
+    {
+      "name": "Application-specific locality and concurrency",
+      "boundary": "Stencil batches, adaptive thresholds, and synchronized stores",
+      "evidence": "Static design analysis; no representative Forcecraft trace or contention profile",
+      "catalogue": "M5 Layout and working set; C1 Dependency latency and throughput; T1 False sharing; T4 Scheduling, batching, and I/O",
+      "hypothesisIds": [
+        "H-018",
+        "H-019",
+        "H-020",
+        "H-021"
+      ],
+      "disposition": "Inconclusive or not applicable to the exclusively owned chunk editor"
+    },
+    {
+      "name": "Feature-flag branch",
+      "boundary": "Deferred-write enable check",
+      "evidence": "Prior startup-frozen flag experiment measured -2.8% to +0.5%",
+      "catalogue": "R3 Startup-frozen feature flags",
+      "hypothesisIds": [
+        "H-010"
+      ],
+      "disposition": "Retain the default-on instance option"
+    }
+  ],
+  "series": [
+    {
+      "title": "Capacity overflow edit session",
+      "description": "Source-matched ShortRun medians; whiskers span retained measurements (N=3). Lower is better.",
+      "unit": "µs",
+      "lowerIsBetter": true,
+      "rounds": [
+        "f9d9b36 full-hot baseline",
+        "4006838 channel-local final"
+      ],
+      "rows": [
+        {
+          "label": "C20 W21, 1/8, terrain",
+          "measurements": [
+            {
+              "median": 363.954,
+              "min": 358.3,
+              "max": 367.891,
+              "n": 3
+            },
+            {
+              "median": 32.065,
+              "min": 29.254,
+              "max": 32.973,
+              "n": 3,
+              "changePercent": -91.19
+            }
+          ],
+          "detail": "One touched channel"
+        },
+        {
+          "label": "C20 W21, 1/8, uniform",
+          "measurements": [
+            {
+              "median": 132.352,
+              "min": 132.054,
+              "max": 132.519,
+              "n": 3
+            },
+            {
+              "median": 2.765,
+              "min": 2.584,
+              "max": 2.771,
+              "n": 3,
+              "changePercent": -97.911
+            }
+          ],
+          "detail": "One touched channel"
+        },
+        {
+          "label": "C256 W257, 1/8, terrain",
+          "measurements": [
+            {
+              "median": 366.013,
+              "min": 358.276,
+              "max": 369.153,
+              "n": 3
+            },
+            {
+              "median": 34.482,
+              "min": 34.054,
+              "max": 34.572,
+              "n": 3,
+              "changePercent": -90.579
+            }
+          ],
+          "detail": "One touched channel"
+        },
+        {
+          "label": "C256 W257, 1/8, uniform",
+          "measurements": [
+            {
+              "median": 147.054,
+              "min": 144.982,
+              "max": 147.921,
+              "n": 3
+            },
+            {
+              "median": 8.92,
+              "min": 8.435,
+              "max": 9.022,
+              "n": 3,
+              "changePercent": -93.934
+            }
+          ],
+          "detail": "One touched channel"
+        },
+        {
+          "label": "C256 W257, 8/8, terrain",
+          "measurements": [
+            {
+              "median": 382.295,
+              "min": 372.45,
+              "max": 393.527,
+              "n": 3
+            },
+            {
+              "median": 41.689,
+              "min": 40.376,
+              "max": 42.001,
+              "n": 3,
+              "changePercent": -89.095
+            }
+          ],
+          "detail": "All channels touched"
+        },
+        {
+          "label": "C256 W257, 8/8, uniform",
+          "measurements": [
+            {
+              "median": 144.096,
+              "min": 142.575,
+              "max": 145.886,
+              "n": 3
+            },
+            {
+              "median": 15.636,
+              "min": 15.409,
+              "max": 16.755,
+              "n": 3,
+              "changePercent": -89.149
+            }
+          ],
+          "detail": "All channels touched"
+        }
+      ]
+    },
+    {
+      "title": "Overflow publication and serialization",
+      "description": "Source-matched ShortRun medians; whiskers span retained measurements (N=3). Lower is better.",
+      "unit": "µs",
+      "lowerIsBetter": true,
+      "rounds": [
+        "f9d9b36 full-hot baseline",
+        "4006838 channel-local final"
+      ],
+      "rows": [
+        {
+          "label": "Complete C256 W257, 1/8, terrain",
+          "measurements": [
+            {
+              "median": 907.975,
+              "min": 894.934,
+              "max": 926.227,
+              "n": 3
+            },
+            {
+              "median": 160.096,
+              "min": 159.705,
+              "max": 165.704,
+              "n": 3,
+              "changePercent": -82.368
+            }
+          ]
+        },
+        {
+          "label": "Complete C256 W257, 1/8, uniform",
+          "measurements": [
+            {
+              "median": 262.405,
+              "min": 260.945,
+              "max": 284.492,
+              "n": 3
+            },
+            {
+              "median": 83.312,
+              "min": 83.22,
+              "max": 84.55,
+              "n": 3,
+              "changePercent": -68.251
+            }
+          ]
+        },
+        {
+          "label": "Serialize C256 W257, 1/8, terrain",
+          "measurements": [
+            {
+              "median": 1087.0,
+              "min": 956.0,
+              "max": 1112.0,
+              "n": 3
+            },
+            {
+              "median": 159.076,
+              "min": 157.26,
+              "max": 161.68,
+              "n": 3,
+              "changePercent": -85.366
+            }
+          ]
+        },
+        {
+          "label": "Serialize C256 W257, 1/8, uniform",
+          "measurements": [
+            {
+              "median": 261.062,
+              "min": 260.551,
+              "max": 271.081,
+              "n": 3
+            },
+            {
+              "median": 84.661,
+              "min": 83.049,
+              "max": 85.437,
+              "n": 3,
+              "changePercent": -67.571
+            }
+          ]
+        },
+        {
+          "label": "Complete C256 W257, 8/8, terrain",
+          "measurements": [
+            {
+              "median": 1018.0,
+              "min": 1003.0,
+              "max": 1082.0,
+              "n": 3
+            },
+            {
+              "median": 846.211,
+              "min": 810.882,
+              "max": 854.642,
+              "n": 3,
+              "changePercent": -16.875
+            }
+          ]
+        },
+        {
+          "label": "Complete C256 W257, 8/8, uniform",
+          "measurements": [
+            {
+              "median": 335.465,
+              "min": 334.839,
+              "max": 337.401,
+              "n": 3
+            },
+            {
+              "median": 202.636,
+              "min": 202.408,
+              "max": 210.287,
+              "n": 3,
+              "changePercent": -39.595
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Ordinary default-capacity 20-write path",
+      "description": "Source-matched MediumRun medians. Whiskers and N reflect retained measurements after BenchmarkDotNet outlier handling. The retention guard was ±5%.",
+      "unit": "ns",
+      "lowerIsBetter": true,
+      "rounds": [
+        "f9d9b36 baseline",
+        "4006838 final"
+      ],
+      "rows": [
+        {
+          "label": "Uniform",
+          "detail": "C256 W20, one of two channels",
+          "measurements": [
+            {
+              "median": 293.745,
+              "min": 278.726,
+              "max": 310.845,
+              "n": 26
+            },
+            {
+              "median": 293.405,
+              "min": 278.151,
+              "max": 302.59,
+              "n": 30,
+              "changePercent": -0.116
+            }
+          ]
+        },
+        {
+          "label": "Terrain",
+          "detail": "C256 W20, one of two channels",
+          "measurements": [
+            {
+              "median": 298.705,
+              "min": 290.152,
+              "max": 313.367,
+              "n": 28
+            },
+            {
+              "median": 296.693,
+              "min": 286.341,
+              "max": 306.726,
+              "n": 29,
+              "changePercent": -0.674
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Explicit MakeHot after partial promotion",
+      "description": "Source-matched ShortRun medians. Explicit MakeHot expands every channel; results were directionally inconsistent.",
+      "unit": "µs",
+      "lowerIsBetter": true,
+      "rounds": [
+        "f9d9b36 full-hot baseline",
+        "4006838 channel-local final"
+      ],
+      "rows": [
+        {
+          "label": "C20 W21, 1/8, terrain",
+          "measurements": [
+            {
+              "median": 361.634,
+              "min": 355.16,
+              "max": 370.475,
+              "n": 3
+            },
+            {
+              "median": 365.447,
+              "min": 363.44,
+              "max": 367.335,
+              "n": 3,
+              "changePercent": 1.054
+            }
+          ]
+        },
+        {
+          "label": "C256 W257, 1/8, terrain",
+          "measurements": [
+            {
+              "median": 366.026,
+              "min": 364.182,
+              "max": 373.302,
+              "n": 3
+            },
+            {
+              "median": 370.957,
+              "min": 366.491,
+              "max": 372.822,
+              "n": 3,
+              "changePercent": 1.347
+            }
+          ]
+        },
+        {
+          "label": "C256 W257, 8/8, uniform",
+          "measurements": [
+            {
+              "median": 145.41,
+              "min": 141.907,
+              "max": 151.379,
+              "n": 3
+            },
+            {
+              "median": 164.834,
+              "min": 160.611,
+              "max": 164.863,
+              "n": 3,
+              "changePercent": 13.358
+            }
+          ]
+        },
+        {
+          "label": "C256 W257, 8/8, terrain",
+          "measurements": [
+            {
+              "median": 428.65,
+              "min": 425.041,
+              "max": 428.684,
+              "n": 3
+            },
+            {
+              "median": 385.173,
+              "min": 384.751,
+              "max": 388.045,
+              "n": 3,
+              "changePercent": -10.143
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Integrated reusable typed-pool prototype",
+      "description": "Contemporaneous MediumRun medians at prototype 0838be1. The provider failed the 10% threshold across patterns and allocated the same 224 B.",
+      "unit": "ns",
+      "lowerIsBetter": true,
+      "rounds": [
+        "Shared ArrayPool",
+        "Reusable caller pools"
+      ],
+      "rows": [
+        {
+          "label": "Uniform",
+          "measurements": [
+            {
+              "median": 306.864,
+              "min": 293.371,
+              "max": 318.436,
+              "n": 29
+            },
+            {
+              "median": 278.536,
+              "min": 261.282,
+              "max": 295.489,
+              "n": 28,
+              "changePercent": -9.232
+            }
+          ]
+        },
+        {
+          "label": "Terrain",
+          "measurements": [
+            {
+              "median": 346.275,
+              "min": 286.864,
+              "max": 386.231,
+              "n": 30
+            },
+            {
+              "median": 347.67,
+              "min": 331.309,
+              "max": 364.087,
+              "n": 30,
+              "changePercent": 0.403
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "effectGroups": [],
+  "hypotheses": [
+    {
+      "id": "H-001",
+      "claim": "A lower default capacity reduces pooled storage and cache cost for one to twenty writes.",
+      "mechanism": "Use a smaller ArrayPool bucket and promote earlier.",
+      "prediction": "At least 10% faster or 4× less payload with under 5% time regression.",
+      "result": "Capacities 32–256 showed no stable low-count advantage; capacity 20 made write 21 trigger a 132–364 µs full expansion. Retained pool memory was not measured.",
+      "state": "inconclusive",
+      "decision": "Retain 256 via H-003"
+    },
+    {
+      "id": "H-002",
+      "claim": "Overflow can materialize affected channels independently.",
+      "mechanism": "Preserve encoded untouched channels and compact residual sparse keys.",
+      "prediction": "At least 50% faster for one-of-eight overflow with under 5% ordinary-path regression.",
+      "result": "Against exact f9d9b36, one-channel overflow edit medians improved 90.6–97.9%; complete cycles improved 68.3–90.1%; serialization improved 67.6–90.1%. Ordinary 20-write medians changed -0.12% and -0.67%.",
+      "effectPercent": -90.579,
+      "state": "retained",
+      "decision": "Adopted"
+    },
+    {
+      "id": "H-003",
+      "claim": "Channel-local promotion makes capacity 32 a superior default.",
+      "mechanism": "Bound quadratic search by promoting at 33 positions.",
+      "prediction": "At least 10% weighted gain without a priority regression over 5%.",
+      "result": "No smaller tested capacity established a superior default; earlier promotion increases dense-work exposure. The optimal threshold remains workload-dependent.",
+      "state": "rejected",
+      "decision": "Retain 256 as the conservative default"
+    },
+    {
+      "id": "H-004",
+      "claim": "A last-key cache accelerates repeated writes.",
+      "mechanism": "Bypass lookup when consecutive keys match.",
+      "prediction": "At least 10% repeated-write gain with under 2% distinct-write regression.",
+      "result": "Repeated-versus-distinct workloads do not isolate a last-key cache implementation.",
+      "state": "inconclusive",
+      "decision": "Not tested"
+    },
+    {
+      "id": "H-005",
+      "claim": "A hybrid index outperforms vectorized search at high occupancy.",
+      "mechanism": "Replace cumulative linear insertion probes with expected constant-time lookup.",
+      "prediction": "At least 20% faster at 256 or more positions including maintenance.",
+      "result": "A Dictionary kernel established a crossover but excluded integrated allocation and maintenance; H-022 tested one integrated form.",
+      "state": "inconclusive",
+      "decision": "Alternative designs unproven"
+    },
+    {
+      "id": "H-006",
+      "claim": "A caller-owned typed provider reduces acquisition cost or retained memory.",
+      "mechanism": "Reuse heterogeneous buffers with shared-pool fallback.",
+      "prediction": "At least 10% caller gain or materially improved memory behavior.",
+      "result": "An integrated reusable typed-pool prototype changed the median by -9.23% for uniform data and +0.40% for terrain data, allocated the same 224 B, and failed the 10% threshold across patterns.",
+      "state": "rejected",
+      "decision": "Reject as a speed API; deterministic-memory utility remains unmeasured"
+    },
+    {
+      "id": "H-007",
+      "claim": "Allocating exact arrays per short-lived edit session outperforms shared pooling.",
+      "mechanism": "Avoid rent/return and bucket inflation.",
+      "prediction": "At least 10% faster acquisition with acceptable GC cost.",
+      "result": "Exact allocation cost 58.978 ns and 1,672 B at capacity 256 versus 42.705–53.039 ns and zero managed allocation for warm pooling.",
+      "state": "rejected",
+      "decision": "Use shared pools"
+    },
+    {
+      "id": "H-008",
+      "claim": "Channel-specific edit counts reduce sparse application work.",
+      "mechanism": "Iterate only values present in a channel.",
+      "prediction": "At least 10% faster in sparse-per-channel publication.",
+      "result": "Channel-local promotion removed the dominant cost before this secondary representation change was justified.",
+      "state": "inconclusive",
+      "decision": "Deferred"
+    },
+    {
+      "id": "H-009",
+      "claim": "Handwritten SIMD improves key lookup over Span.IndexOf.",
+      "mechanism": "Use explicit vector comparisons and masks.",
+      "prediction": "Integrated caller improvement without portability regression.",
+      "result": ".NET 10 already emitted AVX2 vpcmpeqw/vptest; prior explicit SIMD regressed integrated workloads.",
+      "state": "rejected",
+      "decision": "Retain Span.IndexOf"
+    },
+    {
+      "id": "H-010",
+      "claim": "A startup-frozen deferred-write flag removes meaningful branch cost.",
+      "mechanism": "Replace the per-instance option branch with an AppContext switch.",
+      "prediction": "Repeatable gain beyond the 5% noise threshold.",
+      "result": "Measured effects ranged from -2.8% to +0.5%, inside the threshold.",
+      "state": "rejected",
+      "decision": "Retain instance option"
+    },
+    {
+      "id": "H-011",
+      "claim": "Caller-supplied or retained repackage scratch improves publication.",
+      "mechanism": "Eliminate one shared-pool acquisition per call.",
+      "prediction": "At least 10% faster complete cycles.",
+      "result": "The measured acquisition ceiling is below 0.4% of the shortest complete cycle.",
+      "state": "rejected",
+      "decision": "No speed API"
+    },
+    {
+      "id": "H-012",
+      "claim": "Geometric physical growth reduces first-write storage without harming time.",
+      "mechanism": "Rent 32 slots initially and double to the logical capacity.",
+      "prediction": "Under 5% priority-path regression.",
+      "result": "32-entry workloads regressed 13.3–15.1%; 64-entry workloads regressed 47.5–53.5%.",
+      "state": "rejected",
+      "decision": "Removed"
+    },
+    {
+      "id": "H-013",
+      "claim": "AVX2 batched probes amortize key-vector loads for clustered requests.",
+      "mechanism": "Compare each loaded key vector with several broadcast query keys.",
+      "prediction": "At least 20% faster for batches of 8–32 at 64–256 entries.",
+      "result": "The public API is scalar and Span.IndexOf already emits AVX2 comparisons.",
+      "state": "not-applicable",
+      "decision": "Requires batch API"
+    },
+    {
+      "id": "H-014",
+      "claim": "Presence-bitmask enumeration accelerates sparse application.",
+      "mechanism": "Enumerate set bits with trailing-zero count instead of scanning all keys.",
+      "prediction": "At least 10% faster below 25% per-channel occupancy.",
+      "result": "No representative low-occupancy-per-channel publication trace was available.",
+      "state": "inconclusive",
+      "decision": "Await trace"
+    },
+    {
+      "id": "H-015",
+      "claim": "Block-copying partial channels accelerates explicit MakeHot.",
+      "mechanism": "Copy materialized spans and decode only encoded channels.",
+      "prediction": "At least 10% faster per materialized channel.",
+      "result": "Source-matched complete MakeHot medians ranged from 10.1% faster to 13.4% slower. The block copy remains a necessary H-002 detail but gave no consistent complete-path gain.",
+      "state": "rejected",
+      "decision": "Retain subordinate copy"
+    },
+    {
+      "id": "H-016",
+      "claim": "Software prefetch reduces encoded-channel decode stalls.",
+      "mechanism": "Prefetch cache lines ahead of the sequential decoder.",
+      "prediction": "At least 10% faster terrain materialization.",
+      "result": "The measured decoder is sequential and warm-cache; no cold-stream trace justified target-specific intrinsics.",
+      "state": "not-applicable",
+      "decision": "No cold-stream workload"
+    },
+    {
+      "id": "H-017",
+      "claim": "A direct position map beats linear search at high occupancy.",
+      "mechanism": "Index sparse slots by packed voxel position with generations or a bitmask.",
+      "prediction": "At least 25% faster above crossover while remaining smaller than one dense channel.",
+      "result": "A 32³ map costs 64–128 KiB plus metadata; the 64 KiB form remains below one 128 KiB uint dense channel, so static accounting does not falsify the speed claim.",
+      "state": "inconclusive",
+      "decision": "Not tested"
+    },
+    {
+      "id": "H-018",
+      "claim": "Cache-line grouped overlay blocks improve locality.",
+      "mechanism": "Group keys, presence summaries, and common values while retaining vector key lanes.",
+      "prediction": "At least 10% faster at 64–256 positions with under 25% payload growth.",
+      "result": "No measured locality attribution justified replacing the vector-searchable structure-of-arrays layout.",
+      "state": "inconclusive",
+      "decision": "Deferred"
+    },
+    {
+      "id": "H-019",
+      "claim": "False-sharing-resistant scheduling improves concurrent store throughput.",
+      "mechanism": "Shard or pad independently mutated pending metadata.",
+      "prediction": "At least 15% throughput or p99 improvement under contention.",
+      "result": "DeferredOctreeChunk is exclusively owned; the synchronized store needs a separate contention investigation.",
+      "state": "not-applicable",
+      "decision": "Separate store study"
+    },
+    {
+      "id": "H-020",
+      "claim": "Stencil-aware Morton runs compress and apply coherent edits efficiently.",
+      "mechanism": "Coalesce identical adjacent Morton operations into runs and fill or block-copy them.",
+      "prediction": "At least 20% faster or half the payload for 3×3×3 and planar stencils.",
+      "result": "No representative stencil trace or batch-write API was available.",
+      "state": "inconclusive",
+      "decision": "Await trace"
+    },
+    {
+      "id": "H-021",
+      "claim": "An adaptive threshold based on channel count and decode cost beats a fixed capacity.",
+      "mechanism": "Promote when estimated sparse cost exceeds one channel decode.",
+      "prediction": "At least 10% weighted gain without a priority regression over 5%.",
+      "result": "No application distribution supplied defensible weights; source variability risks unstable behavior.",
+      "state": "inconclusive",
+      "decision": "Retain fixed threshold; optimal capacity remains workload-dependent"
+    },
+    {
+      "id": "H-022",
+      "claim": "A pooled open-addressed index above a threshold removes quadratic insertion growth.",
+      "mechanism": "Build a compact hash table after 256–512 entries.",
+      "prediction": "At least 30% faster at 1,024–4,096 writes with under 2% regression below 256.",
+      "result": "The prototype improved 1,024–4,096 writes by about 70–87%. Effects across 20–64 writes ranged from a 15.1% improvement to a 36.0% regression and allocation rose, violating the 2% guard.",
+      "state": "rejected",
+      "decision": "Removed"
+    }
+  ],
+  "retainedChanges": [
+    "Sparse overflow promotes the channel that frees the most exclusive keys into a pooled dense Morton buffer.",
+    "Residual shared-position edits remain sparse; untouched channel encodings remain immutable and shared.",
+    "Repackage encodes only dense or sparsely changed channels and reuses unchanged encoded channel memory.",
+    "Explicit MakeHot combines partial dense channels, residual sparse edits, and still-encoded channels into full hot storage.",
+    "The default capacity remains 256, physical sparse buffers remain fixed-capacity shared-pool rentals, and deferred writes remain enabled by default."
+  ],
+  "decisions": [
+    "Retain 256 as the conservative default because no smaller tested capacity established a superior threshold; the optimal capacity remains workload-dependent.",
+    "Keep fixed shared-pool buffers. The integrated caller-provider prototype failed the 10% speed threshold across uniform and terrain inputs; deterministic-memory utility was not measured.",
+    "Do not add handwritten SIMD, geometric growth, or the tested pooled hash index. Last-key caching and a direct voxel map remain inconclusive.",
+    "A caller-supplied workspace remains a possible deterministic-memory feature; no measured speed case justifies it.",
+    "Treat explicit MakeHot as a full-expansion operation; channel-local optimization targets edits, publication, and serialization before that request."
+  ],
+  "correctness": [
+    "Release tests passed: 320 on net8.0, 321 on net10.0, and 322 on net11.0.",
+    "Tests cover partial promotion, residual sparse edits, repeated overflow epochs, explicit zero, overwrites, wide keys, generic bit fidelity, disposal, and snapshot immutability.",
+    "Tests verify untouched encoded channels retain memory identity after channel-local publication.",
+    "Tests verify explicit MakeHot applies all partial and sparse state before returning borrowed dense storage.",
+    "Serialized packet compatibility remains version 2.0.0."
+  ],
+  "generatedCode": [
+    {
+      "hypothesisId": "H-009",
+      "summary": "The retained Span<ushort>.IndexOf lookup uses AVX2 vector comparison on .NET 10.",
+      "before": "No scalar-only deficiency was observed in the retained implementation.",
+      "after": "Generated code contains vpcmpeqw and vptest; explicit SIMD therefore duplicates runtime specialization.",
+      "artifact": "disassembly/DeferredPositionLookup-asm.md"
+    }
+  ],
+  "validityThreats": [
+    "No Forcecraft application trace supplied the distribution of distinct positions, repeated writes, touched channels, or publication cadence.",
+    "Benchmarks are synthetic library workloads on one Ryzen 9 5950X host; ARM64, AVX-512, server GC, and other runtimes were not measured.",
+    "ArrayPool retained process memory is not represented by BenchmarkDotNet managed-allocation counters.",
+    "Overflow comparisons used ShortRun with three retained measurements; ordinary-path and provider comparisons used MediumRun.",
+    "No exclusive CPU profile supplied defensible hotspot percentages; the report therefore does not fabricate an Amdahl attribution.",
+    "Explicit MakeHot necessarily expands all channels and ranged from 10.1% faster to 13.4% slower across measured cases."
+  ],
+  "reproduction": [
+    "Use run-source-matched-benchmarks.ps1 with separate baseline and candidate worktree paths.",
+    "The script requires the baseline at f9d9b366ede89050800bc97df9fca2a086ab1ce2, verifies candidate src/ against product revision 4006838, and verifies identical benchmark fixtures.",
+    "Each dotnet invocation acquires D:\\Temp\\BenchmarkLock.txt through run-exclusive-benchmark.ps1.",
+    "The script executes the MediumRun 20-write priority filter and the ShortRun capacity-overflow filters for both worktrees.",
+    "Run normalize-results.py against each paired artifact directory, then render report-data.json with the scientific-method-performance render_report.py script."
+  ],
+  "artifacts": [
+    {
+      "label": "Baseline epoch and exact revisions",
+      "path": "baseline-epoch.md"
+    },
+    {
+      "label": "Hypothesis ledger",
+      "path": "hypotheses.md"
+    },
+    {
+      "label": "Optimization catalogue coverage",
+      "path": "coverage-ledger.md"
+    },
+    {
+      "label": "Source-matched overflow comparison",
+      "path": "raw/source-matched-overflow-comparison.csv"
+    },
+    {
+      "label": "Source-matched ordinary-path comparison",
+      "path": "raw/source-matched-low-comparison.csv"
+    },
+    {
+      "label": "Source-matched baseline overflow raw results",
+      "path": "raw/main-base-overflow/"
+    },
+    {
+      "label": "Source-matched final overflow raw results",
+      "path": "raw/current-final-overflow/"
+    },
+    {
+      "label": "Integrated caller-provider prototype",
+      "path": "raw/integrated-provider/"
+    },
+    {
+      "label": "Generated-code evidence",
+      "path": "disassembly/DeferredPositionLookup-asm.md"
+    },
+    {
+      "label": "Final coordinated test log",
+      "path": "raw/final-tests.log"
+    },
+    {
+      "label": "Result normalizer",
+      "path": "normalize-results.py"
+    },
+    {
+      "label": "Geometric-growth screening comparison",
+      "path": "raw/edit-session-comparison.csv"
+    },
+    {
+      "label": "Pooled-index screening comparison",
+      "path": "raw/final-edit-session-comparison.csv"
+    },
+    {
+      "label": "Lookup screening results",
+      "path": "raw/lookup-screen/"
+    },
+    {
+      "label": "Source-matched benchmark runner",
+      "path": "run-source-matched-benchmarks.ps1"
+    }
+  ]
+}

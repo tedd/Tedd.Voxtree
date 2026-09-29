@@ -6,8 +6,8 @@
 - Mechanism: requested capacity controls pool bucket size and promotion threshold, while lookup scans only populated entries.
 - Prediction: one-to-twenty-write caller medians improve by at least 10% or retained payload falls by at least 4x with less than 5% time regression.
 - Falsification: timings remain within noise and memory is not operationally material, or lower capacity regresses complete cycles above 5%.
-- Result: capacities 32–256 showed no stable low-count advantage, while capacity 20 converted the 21st write into a 136–373 µs full-hot transition in the matched baseline. Shared-pool bucket retention remains an application memory-budget question.
-- State: rejected as a default-capacity change; retain 256.
+- Result: capacities 32–256 showed no stable low-count advantage, while capacity 20 converted the 21st write into a 132–364 µs full-hot transition in the source-matched baseline. Retained pool memory was not measured.
+- State: inconclusive for retained-memory efficiency. H-003 separately rejects changing the default; retain 256.
 
 ## H-002 — channel-local promotion
 
@@ -16,7 +16,7 @@
 - Prediction: capacity-plus-one edit sessions with one changed channel improve by at least 50% for eight-channel chunks and by at least 20% for two-channel chunks, without more than 5% regression below capacity.
 - Falsification: caller gains miss those thresholds, serialization ceases to share/copy unchanged channels correctly, or memory/lifetime costs dominate.
 - Change: on sparse overflow, materialize the channel that frees the most exclusive positions into a pooled Morton-order buffer, compact residual shared keys, and retain untouched channel encodings. Explicit `MakeHot()` still expands all channels.
-- Result: one-channel overflow edit sessions improved 92.3–98.1% at capacity 20 and 91.1–93.9% at capacity 256. Complete cycles improved 63.9–89.8%; serialization improved 67.4–90.4%. Managed allocation fell from about 1 MiB to 328 B for edit-only overflow. Matched 20-write default-capacity sessions changed +2.42% and -1.43%.
+- Result: against the exact `f9d9b36` product baseline with the same fixture, one-channel overflow edit medians improved 90.6–97.9%. Complete-cycle medians improved 68.3–90.1%; serialization medians improved 67.6–90.1%. Managed allocation fell from about 1 MiB to 328 B for edit-only overflow. Matched 20-write medians changed -0.12% and -0.67%.
 - State: retained.
 
 ## H-003 — smaller default enabled by channel-local promotion
@@ -25,8 +25,8 @@
 - Mechanism: promote one channel at 33 distinct positions instead of retaining increasingly expensive linear searches to 256.
 - Prediction: the weighted 1/5/20/32/64/256 caller matrix improves by at least 10% overall, with no priority-case regression above 5%.
 - Falsification: capacity 32 causes more than 5% regression in realistic complete cycles or multi-channel workloads.
-- Result: capacity 32 offered no repeatable low-count gain, while earlier promotion increases the probability of entering the materially more expensive dense path.
-- State: rejected; retain the default of 256.
+- Result: no smaller tested capacity established a superior default, while earlier promotion increases the probability of entering the materially more expensive dense path. The optimal threshold remains workload-dependent.
+- State: rejected; retain 256 as the conservative default.
 
 ## H-004 — repeated-key cache
 
@@ -34,8 +34,8 @@
 - Mechanism: bypass `Span.IndexOf` when the next key equals the preceding key.
 - Prediction: repeated-position sessions improve by at least 10% with less than 2% regression for distinct random writes.
 - Falsification: branch cost offsets the saved lookup or predictor-sensitive regressions exceed 2%.
-- Result: repeated-position sessions were 6.5% faster at 20 writes and 36.3% faster at 256 writes than distinct-position sessions, but the repeated key already occupies slot zero and `Span.IndexOf` is vectorized. A new cache branch lacks a 10% isolated opportunity at the priority count.
-- State: rejected.
+- Result: repeated-position sessions were 6.5% faster at 20 writes and 36.3% faster at 256 writes than distinct-position sessions, but this contrast does not isolate a last-key cache implementation.
+- State: inconclusive; the candidate was not integrated.
 
 ## H-005 — large-count index
 
@@ -52,14 +52,14 @@
 - Mechanism: reuse heterogeneous key, presence, value, and dense scratch segments while preserving lazy channel allocation.
 - Prediction: repeated caller sessions improve by at least 10% or retained-memory behavior improves materially without a hot-path virtual/interface call.
 - Falsification: warm shared-pool caller timings remain within 5%, or the API/lifetime burden exceeds the measured benefit.
-- Evidence: an isolated caller-reused array kernel cost 3.399–5.194 ns, versus 42.705–53.039 ns for warm shared-pool rent/clear/return. This establishes an approximately 40–50 ns acquisition ceiling, but it excludes provider dispatch, ownership bookkeeping, lazy heterogeneous segments, and the complete owner path.
-- State: deferred. The maximum isolated saving does not yet justify a persistent public ownership API; reopen only if an integrated provider clears the 10% caller threshold or an application memory budget requires deterministic external storage.
+- Evidence: an isolated caller-reused array kernel cost 3.399–5.194 ns, versus 42.705–53.039 ns for warm shared-pool rent/clear/return. An integrated reusable typed-pool prototype then changed the 20-write median by -9.23% for uniform data and +0.40% for terrain data, allocated the same 224 B, and produced a bimodal shared-pool control distribution.
+- State: rejected as a speed API because it failed the preregistered 10% threshold across patterns. Shared pools remain the default. Reopen for a separately specified deterministic-memory requirement.
 
-## H-007 — exact owned arrays
+## H-007 — short-lived exact owned arrays
 
-- Claim: exact owned arrays outperform shared pooling for long-lived owners by avoiding rent/return and bucket inflation.
+- Claim: allocating exact arrays per edit session outperforms shared pooling by avoiding rent/return and bucket inflation.
 - Mechanism: trade GC allocation and zeroing for exact capacity and direct ownership.
-- Prediction: long-lived edit/repackage sessions improve by at least 10% with acceptable allocation and GC cost.
+- Prediction: short-lived acquisition improves by at least 10% with acceptable allocation and GC cost.
 - Falsification: construction, zeroing, or GC regresses the complete caller path.
 - Evidence: exact allocation cost 15.730 ns/208 B at capacity 20, 58.978 ns/1,672 B at 256, and 111.654 ns/3,272 B at 512. Warm shared-pool rent/clear/return cost 42.705–53.039 ns with no managed allocation.
 - State: rejected. Exact arrays become slower than pooling at the default and larger capacities and add per-session GC allocation.
@@ -126,7 +126,7 @@
 - Prediction: partial-state `MakeHot()` improves by at least 10% per materialized channel relative to decoding every channel.
 - Falsification: the remaining channel decodes dominate or the JIT fails to lower `Span.CopyTo` to efficient block copy.
 - Change: `MakeHot()` now copies materialized channel spans directly and decodes only channels still represented by the compressed snapshot.
-- Result: complete explicit `MakeHot()` remained 1.4–10.7% slower than the baseline because both designs ultimately expand every channel. The block copy avoids decoding an already materialized channel inside the retained H-002 design, but did not satisfy the 10% complete-path prediction.
+- Result: source-matched explicit `MakeHot()` medians ranged from 10.1% faster to 13.4% slower across the measured overflow cases because both designs ultimately expand every channel. The block copy avoids decoding an already materialized channel inside the retained H-002 design, but did not provide a consistent 10% complete-path gain.
 - State: rejected as a standalone speed hypothesis; retained as a subordinate H-002 implementation detail.
 
 ## H-016 — software prefetch before channel decode
@@ -135,7 +135,7 @@
 - Mechanism: issue target-specific prefetches several cache lines ahead of the decoder.
 - Prediction: terrain-channel materialization improves by at least 10% with stable uniform-channel performance.
 - Falsification: hardware prefetch already covers sequential decode, managed intrinsic support is unsuitable, or added instructions regress warm-cache operation.
-- State: rejected for this sequential warm-cache decoder; hardware prefetch is the applicable default and no cold-stream trace justified target-specific code.
+- State: not-applicable to the measured sequential warm-cache decoder; no cold-stream trace justified target-specific code.
 
 ## H-017 — direct position bitmask/index map
 
@@ -143,8 +143,8 @@
 - Mechanism: maintain a generation-tagged slot table indexed by packed voxel position; use a bitmask when the volume is a power of two.
 - Prediction: insertion and hit/miss lookup improve by at least 25% above the measured crossover while total retained memory remains below one dense channel.
 - Falsification: the 32³ map's 64–128 KiB footprint or reset cost outweighs the saved search time.
-- Result: a 32³ direct slot map requires 64–128 KiB plus reset/generation metadata, materially exceeding the sparse overlay at the retained default capacity.
-- State: rejected in favor of the compact linear representation.
+- Result: a 32³ direct slot map requires 64–128 KiB plus reset/generation metadata. The 64 KiB form remains below one 128 KiB `uint` dense channel, so static memory accounting alone does not falsify the speed prediction.
+- State: inconclusive; no integrated direct-map benchmark was run.
 
 ## H-018 — cache-line grouped overlay layout
 
@@ -176,7 +176,7 @@
 - Mechanism: keep the public maximum as an upper bound but materialize a channel when its estimated sparse search/application cost exceeds one decode.
 - Prediction: a weighted multi-channel workload improves by at least 10% with bounded retained memory and deterministic behavior.
 - Falsification: estimation overhead or source variability causes unstable promotion and more than 5% regression in priority cases.
-- State: inconclusive; no application distribution supplied defensible weights, and a stable fixed threshold is preferable without them.
+- State: inconclusive; no application distribution supplied defensible weights. Retain the fixed threshold while treating the optimal capacity as workload-dependent.
 
 ## H-022 — pooled open-addressed index above a threshold
 
@@ -184,5 +184,5 @@
 - Mechanism: retain SIMD linear search below the crossover, then build a power-of-two integer slot table and update it on append or compaction.
 - Prediction: 1,024–4,096 distinct-write sessions improve by at least 30%, with less than 2% regression below 256 and lower retained memory than a volume-sized direct map.
 - Falsification: build cost, pool clearing, collisions, or compaction maintenance eliminates the high-count gain.
-- Result: the pooled index prototype improved 1,024-entry sessions by about 70% and 4,096-entry sessions by about 87%, but regressed measured 20–64-write sessions by 12–36% and increased per-session managed allocation. It failed the small-overlay guard and was removed.
+- Result: the pooled index prototype improved 1,024-entry sessions by about 70% and 4,096-entry sessions by about 87%. Across 20–64-write cases, effects ranged from a 15.1% improvement to a 36.0% regression and managed allocation increased. It failed the under-2% small-overlay guard and was removed.
 - State: rejected; a separately selected large-overlay implementation remains future work.

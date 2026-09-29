@@ -7,8 +7,8 @@ Memory: 127.91 GB Total, 93.15 GB Available
   [Host]   : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
   ShortRun : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
 
-Job=ShortRun  IterationCount=3  LaunchCount=1  
-WarmupCount=3  
+Job=ShortRun  IterationCount=3  LaunchCount=1
+WarmupCount=3
 
 ```
 | Method              | Case             | Pattern | Mean          | Error          | StdDev        | Gen0     | Gen1     | Gen2     | Allocated |

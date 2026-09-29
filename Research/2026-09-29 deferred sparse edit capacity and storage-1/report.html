@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Scientific performance report</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f5f6f8;
+      --surface: #fcfcfd;
+      --ink: #0f1217;
+      --ink-2: #4a5160;
+      --muted: #767d8b;
+      --grid: #e3e6eb;
+      --axis: #c3c8d1;
+      --hairline: rgba(15, 18, 23, .10);
+      --before: #a9cbf3;
+      --mid: #5f97dc;
+      --after: #1d5aa6;
+      --good: #006300;
+      --slower: #d9822b;
+      --noeffect: #b9c0cb;
+      --adopted-bg: #e4f2e4;
+      --adopted-ink: #0b4f0b;
+      --decision-bg: #fbf0da;
+      --decision-ink: #6b4a00;
+      --info-bg: #e3edfb;
+      --info-ink: #184f95;
+      --neutral-bg: #eceef1;
+      --neutral-ink: #4a5160;
+      --sans: "IBM Plex Sans", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 40px 16px 64px;
+      background: var(--page);
+      color: var(--ink);
+      font: 15px/1.55 var(--sans);
+    }
+    a { color: var(--after); overflow-wrap: anywhere; }
+    code, .mono { font-family: var(--mono); font-size: .86em; }
+    h1, h2, h3 { margin: 0; font-weight: 600; text-wrap: balance; }
+    h1 { font-size: clamp(1.9rem, 1.25rem + 2vw, 2.65rem); line-height: 1.15; letter-spacing: -.012em; }
+    h2 { font-size: 1.25rem; line-height: 1.3; }
+    h3 { font-size: 1rem; line-height: 1.35; }
+    p { margin: 0; }
+    ul, ol { margin: 0; padding-left: 1.25em; display: grid; gap: 6px; }
+
+    .wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 40px; }
+    .report-head { display: grid; gap: 12px; }
+    .eyebrow { font: .78rem/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+    .lede { color: var(--ink-2); max-width: 78ch; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; color: var(--muted); font: .74rem/1.4 var(--mono); }
+    .report-status { display: inline-flex; padding: 2px 9px; border-radius: 999px; background: var(--info-bg); color: var(--info-ink); font: 500 .72rem/1.5 var(--sans); text-transform: capitalize; }
+
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 8px; }
+    .kpi, .card, .chart, .table-wrap, .panel {
+      background: var(--surface);
+      border: 1px solid var(--hairline);
+      border-radius: 10px;
+    }
+    .kpi { padding: 16px 18px; display: grid; gap: 6px; }
+    .kpi-label { color: var(--ink-2); font-size: .86rem; }
+    .kpi-value { font-size: 2rem; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .kpi-value small { margin-left: 3px; color: var(--ink-2); font-size: 1rem; font-weight: 500; }
+    .kpi-delta { color: var(--ink-2); font-size: .86rem; }
+    .kpi-delta strong { font-weight: 600; }
+    .kpi-delta .good { color: var(--good); }
+    .kpi-delta .bad { color: var(--slower); }
+    .kpi-steps { color: var(--muted); font: .72rem/1.4 var(--mono); }
+
+    section { display: grid; gap: 14px; }
+    section > p { color: var(--ink-2); max-width: 82ch; }
+    .panel { padding: 18px 20px; }
+    .scope-grid, .evidence-grid, .outcome-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .card { padding: 16px 18px; display: grid; gap: 6px; min-width: 0; }
+    .card p { color: var(--ink-2); }
+    .card .small, .small { color: var(--muted); font-size: .8rem; }
+    .card .metric { font: 500 .78rem/1.4 var(--mono); color: var(--muted); }
+
+    .charts { display: grid; gap: 20px; }
+    .chart { margin: 0; padding: 20px 20px 16px; display: grid; gap: 16px; overflow-x: auto; overflow-y: hidden; }
+    .chart-head { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; justify-content: space-between; }
+    .chart-head p { color: var(--ink-2); font-size: .9rem; }
+    .legend { display: flex; gap: 16px; flex-wrap: wrap; color: var(--ink-2); font-size: .86rem; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .swatch { width: 14px; height: 10px; border-radius: 0 3px 3px 0; display: inline-block; background: var(--swatch); }
+
+    .plot { display: grid; gap: 14px; }
+    .chart-row { display: grid; grid-template-columns: minmax(160px, 250px) 1fr; gap: 16px; align-items: center; }
+    .row-label { display: grid; gap: 2px; }
+    .row-label b { font-weight: 500; font-size: .95rem; }
+    .row-label small { color: var(--muted); font: .74rem/1.35 var(--mono); }
+    .track { position: relative; min-width: 0; }
+    .bar-plot-area { position: relative; display: grid; gap: 2px; margin-right: var(--bar-label-gutter, 0px); padding-block: 2px; }
+    .gridline { position: absolute; z-index: 0; top: -6px; bottom: -6px; width: 1px; background: var(--grid); }
+    .gridline.zero { background: var(--axis); }
+    .bar-line { position: relative; height: 16px; }
+    .bar { position: absolute; z-index: 1; left: 0; top: 1px; height: 14px; border-radius: 0 4px 4px 0; background: var(--bar-color); }
+    .whisker { position: absolute; z-index: 2; top: 7px; height: 1px; background: var(--ink); opacity: .65; pointer-events: none; }
+    .whisker::before, .whisker::after { content: ""; position: absolute; top: -3px; width: 1px; height: 7px; background: var(--ink); }
+    .whisker::before { left: 0; }
+    .whisker::after { right: 0; }
+    .bar-value { position: absolute; z-index: 3; top: -1px; color: var(--ink-2); font: .78rem/1.4 var(--mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .bar-value strong { color: var(--ink); font-weight: 500; }
+    .bar-value .improve { color: var(--good); margin-left: 6px; }
+    .bar-value .regress { color: var(--slower); margin-left: 6px; }
+    .axis { display: grid; grid-template-columns: minmax(160px, 250px) 1fr; gap: 16px; }
+    .axis-ticks { position: relative; height: 18px; color: var(--muted); font: .72rem/1.4 var(--mono); font-variant-numeric: tabular-nums; }
+    .axis-ticks span { position: absolute; transform: translateX(-50%); }
+    .axis-ticks span:first-child { transform: none; }
+    .axis-ticks span:last-child { transform: translateX(-100%); }
+    .axis .axis-ticks { margin-right: var(--bar-label-gutter, 0px); }
+
+    .effects { display: grid; gap: 20px; }
+    .effect-group { display: grid; gap: 8px; }
+    .effect-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+    .effect-head b { font-weight: 600; font-size: .95rem; }
+    .effect-head small { color: var(--muted); font: .74rem/1.4 var(--mono); }
+    .effect-row { display: grid; grid-template-columns: minmax(170px, 290px) 1fr; gap: 16px; align-items: center; }
+    .effect-label { font-size: .86rem; line-height: 1.3; }
+    .effect-label .id { margin-right: 6px; color: var(--muted); font: .74rem/1.3 var(--mono); }
+    .effect-track { position: relative; height: 18px; }
+    .effect-plot-area { position: absolute; inset: 0 var(--effect-right-gutter, 0px) 0 var(--effect-left-gutter, 0px); }
+    .effect-bar { position: absolute; z-index: 1; top: 3px; height: 12px; }
+    .effect-bar.faster { background: var(--after); border-radius: 3px 0 0 3px; }
+    .effect-bar.slower { background: var(--slower); border-radius: 0 3px 3px 0; }
+    .effect-bar.mixed { background: var(--noeffect); }
+    .effect-grid, .effect-zero { position: absolute; z-index: 0; top: -4px; bottom: -4px; width: 1px; background: var(--grid); }
+    .effect-zero { background: var(--axis); }
+    .effect-whisker { position: absolute; z-index: 2; top: 9px; height: 1px; background: var(--ink); opacity: .65; }
+    .effect-whisker::before, .effect-whisker::after { content: ""; position: absolute; top: -3px; width: 1px; height: 7px; background: var(--ink); }
+    .effect-whisker::before { left: 0; }
+    .effect-whisker::after { right: 0; }
+    .effect-value { position: absolute; z-index: 3; top: 0; color: var(--ink-2); font: .76rem/1.4 var(--mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .effect-value strong { color: var(--ink); font-weight: 500; }
+    .effect-axis { display: grid; grid-template-columns: minmax(170px, 290px) 1fr; gap: 16px; }
+    .effect-axis .axis-ticks { margin-left: var(--effect-left-gutter, 0px); margin-right: var(--effect-right-gutter, 0px); }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid var(--grid); text-align: left; vertical-align: top; }
+    thead th { color: var(--ink-2); font-size: .8rem; font-weight: 500; white-space: nowrap; }
+    tbody tr:last-child td { border-bottom: 0; }
+    td.id { color: var(--muted); font: .8rem/1.5 var(--mono); white-space: nowrap; }
+    td.num { text-align: right; font: .8rem/1.5 var(--mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .hypothesis-table { min-width: 820px; }
+    .hypothesis-table th:nth-child(1) { width: 68px; }
+    .hypothesis-table th:nth-child(2) { width: 37%; }
+    .hypothesis-table th:nth-child(4) { width: 160px; }
+    .cell-note { margin-top: 3px; color: var(--muted); font-size: .78rem; }
+    .chip { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 999px; font-size: .76rem; font-weight: 500; white-space: nowrap; }
+    .chip.retained { background: var(--adopted-bg); color: var(--adopted-ink); }
+    .chip.decision-required, .chip.inconclusive { background: var(--decision-bg); color: var(--decision-ink); }
+    .chip.pending { background: var(--info-bg); color: var(--info-ink); }
+    .chip.rejected, .chip.blocked, .chip.not-applicable { background: var(--neutral-bg); color: var(--neutral-ink); }
+
+    dl { display: grid; grid-template-columns: minmax(150px, 220px) 1fr; margin: 0; }
+    dt, dd { margin: 0; padding: 8px 0; border-bottom: 1px solid var(--grid); }
+    dt { padding-right: 18px; color: var(--muted); font-weight: 500; }
+    .code-note { padding-left: 13px; border-left: 3px solid var(--mid); }
+    .code-note + .code-note { margin-top: 14px; }
+    .empty { color: var(--muted); font-style: italic; }
+    footer { color: var(--muted); text-align: center; font: .72rem/1.4 var(--mono); }
+
+    @media (max-width: 700px) {
+      body { padding: 24px 10px 48px; }
+      .wrap { gap: 30px; }
+      .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .kpi { padding: 12px; }
+      .kpi-value { font-size: 1.6rem; }
+      .kpi-steps { display: none; }
+      .scope-grid, .evidence-grid, .outcome-grid { grid-template-columns: 1fr; }
+      .chart { padding: 16px 12px 14px; }
+      .chart-row, .axis, .effect-row, .effect-axis { grid-template-columns: 1fr; gap: 5px; }
+      .axis > div:first-child, .effect-axis > div:first-child { display: none; }
+      .effect-value .secondary { display: none; }
+      dl { grid-template-columns: 1fr; }
+      dt { padding-bottom: 0; border-bottom: 0; }
+    }
+
+    @media print {
+      body { padding: 0; background: #fff; font-size: 11px; }
+      .wrap { max-width: none; gap: 18px; }
+      .chart, .table-wrap, .panel, .kpi, .card { break-inside: avoid; background: #fff; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="report-head">
+      <p class="eyebrow" id="eyebrow"></p>
+      <h1 id="title"></h1>
+      <p class="lede" id="headline"></p>
+      <div class="meta"><span class="report-status" id="status"></span><span id="generated"></span></div>
+      <div class="kpis" id="scorecards" aria-label="Performance outcomes"></div>
+    </header>
+
+    <section>
+      <h2>Scope and scientific question</h2>
+      <div class="scope-grid">
+        <article class="card"><h3>Scope</h3><p id="scope"></p></article>
+        <article class="card"><h3>Question</h3><p id="question"></p></article>
+      </div>
+    </section>
+
+    <div class="charts" id="charts"></div>
+
+    <section id="measurements-section">
+      <h2>Every measurement</h2>
+      <p>Recorded medians, observed ranges, and run counts for every comparison series.</p>
+      <div class="table-wrap"><table id="measurements-table"><thead><tr><th>Metric</th><th>Workload</th><th>Round</th><th class="num">Median</th><th class="num">Range</th><th class="num">Runs</th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <figure class="chart" id="effects-chart">
+      <div class="chart-head">
+        <div><h2>Effect of each variant against the control</h2><p>Change against a control measured in the same period. Bars are medians; whiskers span the runs. Grey means the runs disagreed on direction.</p></div>
+        <div class="legend" aria-hidden="true"><span><i class="swatch" style="--swatch:var(--after)"></i>Faster</span><span><i class="swatch" style="--swatch:var(--slower)"></i>Slower</span><span><i class="swatch" style="--swatch:var(--noeffect)"></i>No consistent effect</span></div>
+      </div>
+      <div class="effects" id="effects"></div>
+    </figure>
+
+    <section>
+      <h2 id="hypothesis-title">Hypotheses</h2>
+      <p>Claims are recorded before measurement and tested against the declared baseline. Results smaller than environmental variation remain inconclusive.</p>
+      <div class="table-wrap"><table class="hypothesis-table"><thead><tr><th>#</th><th>Hypothesis</th><th>Measured</th><th>Verdict</th></tr></thead><tbody id="hypotheses"></tbody></table></div>
+    </section>
+
+    <section>
+      <h2>Outcomes</h2>
+      <div class="outcome-grid">
+        <article class="card"><h3>Retained changes</h3><div id="retainedChanges"></div></article>
+        <article class="card"><h3>Decisions required</h3><div id="decisions"></div></article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Environment and baseline epoch</h2>
+      <div class="panel"><dl id="environment"></dl></div>
+    </section>
+
+    <section>
+      <h2>Hotspot evidence</h2>
+      <div class="evidence-grid" id="hotspots"></div>
+    </section>
+
+    <section>
+      <h2>Investigation-area coverage</h2>
+      <div class="evidence-grid" id="areas"></div>
+    </section>
+
+    <section>
+      <h2>Correctness evidence</h2>
+      <div class="panel" id="correctness"></div>
+    </section>
+
+    <section>
+      <h2>Generated-code observations</h2>
+      <div class="panel" id="generatedCode"></div>
+    </section>
+
+    <section>
+      <h2>Threats to validity</h2>
+      <div class="panel" id="validityThreats"></div>
+    </section>
+
+    <section>
+      <h2>Reproduction procedure</h2>
+      <div class="panel" id="reproduction"></div>
+    </section>
+
+    <section>
+      <h2>Artifacts</h2>
+      <div class="panel" id="artifacts"></div>
+    </section>
+
+    <footer>Generated from the Scientific Performance standard report template.</footer>
+  </main>
+
+  <script id="report-data" type="application/json">{"title":"Deferred sparse edit capacity and channel-local promotion","generatedAt":"2026-09-29T17:35:00+02:00","status":"complete","scope":"Synthetic Tedd.Voxtree 32³ chunk workloads on one AVX2 x64 host. The investigation covers 1–20-write priority cases, capacity overflow, channel locality, storage acquisition, lookup structure, repackaging, and explicit MakeHot behavior.","question":"Can small voxel edits remain outside the compressed octree, and can overflow materialize only affected channels without regressing the common sparse path?","primaryMetric":"elapsed time","summary":{"baseline":366.013,"final":34.482,"unit":"µs","changePercent":-90.579,"headline":"Channel-local promotion reduced the source-matched capacity-256 terrain overflow edit median by 90.6%; ordinary 20-write medians changed by less than 1%."},"scorecards":[{"title":"256-capacity terrain overflow edit","value":34.482,"unit":"µs","wallChangePercent":-90.579,"baseline":366.013,"secondaryMetric":"managed allocation","secondaryChangePercent":-99.97,"progression":"366.013 µs full-hot baseline → 34.482 µs channel-local final"},{"title":"256-capacity uniform overflow serialization","value":84.661,"unit":"µs","wallChangePercent":-67.571,"baseline":261.062,"progression":"261.062 µs full-hot baseline → 84.661 µs channel-local final"},{"title":"20-write default-capacity terrain session","value":296.693,"unit":"ns","wallChangePercent":-0.674,"baseline":298.705,"progression":"298.705 ns source-matched baseline → 296.693 ns final"},{"title":"256-capacity all-channel terrain publication","value":846.211,"unit":"µs","wallChangePercent":-16.875,"baseline":1018.0,"progression":"1,018.000 µs full-hot baseline → 846.211 µs channel-local final"}],"environment":[{"label":"Measured revisions","value":"Baseline f9d9b366ede89050800bc97df9fca2a086ab1ce2; candidate product tree 4006838 after prototype revert"},{"label":"CPU","value":"AMD Ryzen 9 5950X; x64; AVX2 and BMI available"},{"label":"Runtime","value":".NET 10.0.12, RyuJIT x86-64-v3, Tiered PGO"},{"label":"GC","value":"Concurrent workstation GC"},{"label":"Benchmark harness","value":"BenchmarkDotNet 0.16 preview; ShortRun screens and 15-iteration MediumRun confirmation"},{"label":"Coordination","value":"All source-matched benchmark and final-test evidence acquired D:\\Temp\\BenchmarkLock.txt atomically"},{"label":"Correctness command","value":"dotnet test .\\src\\Tedd.Voxtree.sln -c Release --nologo"},{"label":"Measured tree state","value":"Baseline product files exact with only the shared fixture untracked; candidate product and fixture files exact with Research artifacts uncommitted"}],"hotspots":[],"areas":[{"name":"Capacity and pooled storage","boundary":"Sparse key, presence, and per-channel value buffers","evidence":"Capacity/storage matrices and warm acquisition kernels","catalogue":"M1 Allocation and initialization; M5 Layout and working set; T2 Ownership and publication","hypothesisIds":["H-001","H-003","H-006","H-007","H-011","H-012"],"disposition":"Retain capacity 256 and fixed shared-pool buffers; deterministic-memory utility remains unmeasured"},{"name":"Channel-local overflow and publication","boundary":"DeferredOctreeChunk overflow, Repackage, serialization, and MakeHot","evidence":"Matched capacity-plus-one benchmarks for one and eight touched channels","catalogue":"M7 Copies and buffer traffic; S1 Bitmaps and bulk updates; S5 Compression and runs; T2 Ownership and publication","hypothesisIds":["H-002","H-008","H-014","H-015","H-016"],"disposition":"Channel-local promotion retained; secondary loop and prefetch ideas rejected or deferred"},{"name":"Lookup and generated code","boundary":"SparseVoxelEdits key lookup and insertion","evidence":"Lookup microbenchmarks, generated-code inspection, and integrated index prototype","catalogue":"S2 Lookups and hashing; C2 Branches, prediction, and layout; C3 SIMD; C4 Intrinsics and strength reduction; R1 Dispatch and lookup tables","hypothesisIds":["H-004","H-005","H-009","H-013","H-017","H-022"],"disposition":"Retain Span.IndexOf; reject the tested pooled index; last-key caching and direct mapping remain inconclusive"},{"name":"Application-specific locality and concurrency","boundary":"Stencil batches, adaptive thresholds, and synchronized stores","evidence":"Static design analysis; no representative Forcecraft trace or contention profile","catalogue":"M5 Layout and working set; C1 Dependency latency and throughput; T1 False sharing; T4 Scheduling, batching, and I/O","hypothesisIds":["H-018","H-019","H-020","H-021"],"disposition":"Inconclusive or not applicable to the exclusively owned chunk editor"},{"name":"Feature-flag branch","boundary":"Deferred-write enable check","evidence":"Prior startup-frozen flag experiment measured -2.8% to +0.5%","catalogue":"R3 Startup-frozen feature flags","hypothesisIds":["H-010"],"disposition":"Retain the default-on instance option"}],"series":[{"title":"Capacity overflow edit session","description":"Source-matched ShortRun medians; whiskers span retained measurements (N=3). Lower is better.","unit":"µs","lowerIsBetter":true,"rounds":["f9d9b36 full-hot baseline","4006838 channel-local final"],"rows":[{"label":"C20 W21, 1/8, terrain","measurements":[{"median":363.954,"min":358.3,"max":367.891,"n":3},{"median":32.065,"min":29.254,"max":32.973,"n":3,"changePercent":-91.19}],"detail":"One touched channel"},{"label":"C20 W21, 1/8, uniform","measurements":[{"median":132.352,"min":132.054,"max":132.519,"n":3},{"median":2.765,"min":2.584,"max":2.771,"n":3,"changePercent":-97.911}],"detail":"One touched channel"},{"label":"C256 W257, 1/8, terrain","measurements":[{"median":366.013,"min":358.276,"max":369.153,"n":3},{"median":34.482,"min":34.054,"max":34.572,"n":3,"changePercent":-90.579}],"detail":"One touched channel"},{"label":"C256 W257, 1/8, uniform","measurements":[{"median":147.054,"min":144.982,"max":147.921,"n":3},{"median":8.92,"min":8.435,"max":9.022,"n":3,"changePercent":-93.934}],"detail":"One touched channel"},{"label":"C256 W257, 8/8, terrain","measurements":[{"median":382.295,"min":372.45,"max":393.527,"n":3},{"median":41.689,"min":40.376,"max":42.001,"n":3,"changePercent":-89.095}],"detail":"All channels touched"},{"label":"C256 W257, 8/8, uniform","measurements":[{"median":144.096,"min":142.575,"max":145.886,"n":3},{"median":15.636,"min":15.409,"max":16.755,"n":3,"changePercent":-89.149}],"detail":"All channels touched"}]},{"title":"Overflow publication and serialization","description":"Source-matched ShortRun medians; whiskers span retained measurements (N=3). Lower is better.","unit":"µs","lowerIsBetter":true,"rounds":["f9d9b36 full-hot baseline","4006838 channel-local final"],"rows":[{"label":"Complete C256 W257, 1/8, terrain","measurements":[{"median":907.975,"min":894.934,"max":926.227,"n":3},{"median":160.096,"min":159.705,"max":165.704,"n":3,"changePercent":-82.368}]},{"label":"Complete C256 W257, 1/8, uniform","measurements":[{"median":262.405,"min":260.945,"max":284.492,"n":3},{"median":83.312,"min":83.22,"max":84.55,"n":3,"changePercent":-68.251}]},{"label":"Serialize C256 W257, 1/8, terrain","measurements":[{"median":1087.0,"min":956.0,"max":1112.0,"n":3},{"median":159.076,"min":157.26,"max":161.68,"n":3,"changePercent":-85.366}]},{"label":"Serialize C256 W257, 1/8, uniform","measurements":[{"median":261.062,"min":260.551,"max":271.081,"n":3},{"median":84.661,"min":83.049,"max":85.437,"n":3,"changePercent":-67.571}]},{"label":"Complete C256 W257, 8/8, terrain","measurements":[{"median":1018.0,"min":1003.0,"max":1082.0,"n":3},{"median":846.211,"min":810.882,"max":854.642,"n":3,"changePercent":-16.875}]},{"label":"Complete C256 W257, 8/8, uniform","measurements":[{"median":335.465,"min":334.839,"max":337.401,"n":3},{"median":202.636,"min":202.408,"max":210.287,"n":3,"changePercent":-39.595}]}]},{"title":"Ordinary default-capacity 20-write path","description":"Source-matched MediumRun medians. Whiskers and N reflect retained measurements after BenchmarkDotNet outlier handling. The retention guard was ±5%.","unit":"ns","lowerIsBetter":true,"rounds":["f9d9b36 baseline","4006838 final"],"rows":[{"label":"Uniform","detail":"C256 W20, one of two channels","measurements":[{"median":293.745,"min":278.726,"max":310.845,"n":26},{"median":293.405,"min":278.151,"max":302.59,"n":30,"changePercent":-0.116}]},{"label":"Terrain","detail":"C256 W20, one of two channels","measurements":[{"median":298.705,"min":290.152,"max":313.367,"n":28},{"median":296.693,"min":286.341,"max":306.726,"n":29,"changePercent":-0.674}]}]},{"title":"Explicit MakeHot after partial promotion","description":"Source-matched ShortRun medians. Explicit MakeHot expands every channel; results were directionally inconsistent.","unit":"µs","lowerIsBetter":true,"rounds":["f9d9b36 full-hot baseline","4006838 channel-local final"],"rows":[{"label":"C20 W21, 1/8, terrain","measurements":[{"median":361.634,"min":355.16,"max":370.475,"n":3},{"median":365.447,"min":363.44,"max":367.335,"n":3,"changePercent":1.054}]},{"label":"C256 W257, 1/8, terrain","measurements":[{"median":366.026,"min":364.182,"max":373.302,"n":3},{"median":370.957,"min":366.491,"max":372.822,"n":3,"changePercent":1.347}]},{"label":"C256 W257, 8/8, uniform","measurements":[{"median":145.41,"min":141.907,"max":151.379,"n":3},{"median":164.834,"min":160.611,"max":164.863,"n":3,"changePercent":13.358}]},{"label":"C256 W257, 8/8, terrain","measurements":[{"median":428.65,"min":425.041,"max":428.684,"n":3},{"median":385.173,"min":384.751,"max":388.045,"n":3,"changePercent":-10.143}]}]},{"title":"Integrated reusable typed-pool prototype","description":"Contemporaneous MediumRun medians at prototype 0838be1. The provider failed the 10% threshold across patterns and allocated the same 224 B.","unit":"ns","lowerIsBetter":true,"rounds":["Shared ArrayPool","Reusable caller pools"],"rows":[{"label":"Uniform","measurements":[{"median":306.864,"min":293.371,"max":318.436,"n":29},{"median":278.536,"min":261.282,"max":295.489,"n":28,"changePercent":-9.232}]},{"label":"Terrain","measurements":[{"median":346.275,"min":286.864,"max":386.231,"n":30},{"median":347.67,"min":331.309,"max":364.087,"n":30,"changePercent":0.403}]}]}],"effectGroups":[],"hypotheses":[{"id":"H-001","claim":"A lower default capacity reduces pooled storage and cache cost for one to twenty writes.","mechanism":"Use a smaller ArrayPool bucket and promote earlier.","prediction":"At least 10% faster or 4× less payload with under 5% time regression.","result":"Capacities 32–256 showed no stable low-count advantage; capacity 20 made write 21 trigger a 132–364 µs full expansion. Retained pool memory was not measured.","state":"inconclusive","decision":"Retain 256 via H-003"},{"id":"H-002","claim":"Overflow can materialize affected channels independently.","mechanism":"Preserve encoded untouched channels and compact residual sparse keys.","prediction":"At least 50% faster for one-of-eight overflow with under 5% ordinary-path regression.","result":"Against exact f9d9b36, one-channel overflow edit medians improved 90.6–97.9%; complete cycles improved 68.3–90.1%; serialization improved 67.6–90.1%. Ordinary 20-write medians changed -0.12% and -0.67%.","effectPercent":-90.579,"state":"retained","decision":"Adopted"},{"id":"H-003","claim":"Channel-local promotion makes capacity 32 a superior default.","mechanism":"Bound quadratic search by promoting at 33 positions.","prediction":"At least 10% weighted gain without a priority regression over 5%.","result":"No smaller tested capacity established a superior default; earlier promotion increases dense-work exposure. The optimal threshold remains workload-dependent.","state":"rejected","decision":"Retain 256 as the conservative default"},{"id":"H-004","claim":"A last-key cache accelerates repeated writes.","mechanism":"Bypass lookup when consecutive keys match.","prediction":"At least 10% repeated-write gain with under 2% distinct-write regression.","result":"Repeated-versus-distinct workloads do not isolate a last-key cache implementation.","state":"inconclusive","decision":"Not tested"},{"id":"H-005","claim":"A hybrid index outperforms vectorized search at high occupancy.","mechanism":"Replace cumulative linear insertion probes with expected constant-time lookup.","prediction":"At least 20% faster at 256 or more positions including maintenance.","result":"A Dictionary kernel established a crossover but excluded integrated allocation and maintenance; H-022 tested one integrated form.","state":"inconclusive","decision":"Alternative designs unproven"},{"id":"H-006","claim":"A caller-owned typed provider reduces acquisition cost or retained memory.","mechanism":"Reuse heterogeneous buffers with shared-pool fallback.","prediction":"At least 10% caller gain or materially improved memory behavior.","result":"An integrated reusable typed-pool prototype changed the median by -9.23% for uniform data and +0.40% for terrain data, allocated the same 224 B, and failed the 10% threshold across patterns.","state":"rejected","decision":"Reject as a speed API; deterministic-memory utility remains unmeasured"},{"id":"H-007","claim":"Allocating exact arrays per short-lived edit session outperforms shared pooling.","mechanism":"Avoid rent/return and bucket inflation.","prediction":"At least 10% faster acquisition with acceptable GC cost.","result":"Exact allocation cost 58.978 ns and 1,672 B at capacity 256 versus 42.705–53.039 ns and zero managed allocation for warm pooling.","state":"rejected","decision":"Use shared pools"},{"id":"H-008","claim":"Channel-specific edit counts reduce sparse application work.","mechanism":"Iterate only values present in a channel.","prediction":"At least 10% faster in sparse-per-channel publication.","result":"Channel-local promotion removed the dominant cost before this secondary representation change was justified.","state":"inconclusive","decision":"Deferred"},{"id":"H-009","claim":"Handwritten SIMD improves key lookup over Span.IndexOf.","mechanism":"Use explicit vector comparisons and masks.","prediction":"Integrated caller improvement without portability regression.","result":".NET 10 already emitted AVX2 vpcmpeqw/vptest; prior explicit SIMD regressed integrated workloads.","state":"rejected","decision":"Retain Span.IndexOf"},{"id":"H-010","claim":"A startup-frozen deferred-write flag removes meaningful branch cost.","mechanism":"Replace the per-instance option branch with an AppContext switch.","prediction":"Repeatable gain beyond the 5% noise threshold.","result":"Measured effects ranged from -2.8% to +0.5%, inside the threshold.","state":"rejected","decision":"Retain instance option"},{"id":"H-011","claim":"Caller-supplied or retained repackage scratch improves publication.","mechanism":"Eliminate one shared-pool acquisition per call.","prediction":"At least 10% faster complete cycles.","result":"The measured acquisition ceiling is below 0.4% of the shortest complete cycle.","state":"rejected","decision":"No speed API"},{"id":"H-012","claim":"Geometric physical growth reduces first-write storage without harming time.","mechanism":"Rent 32 slots initially and double to the logical capacity.","prediction":"Under 5% priority-path regression.","result":"32-entry workloads regressed 13.3–15.1%; 64-entry workloads regressed 47.5–53.5%.","state":"rejected","decision":"Removed"},{"id":"H-013","claim":"AVX2 batched probes amortize key-vector loads for clustered requests.","mechanism":"Compare each loaded key vector with several broadcast query keys.","prediction":"At least 20% faster for batches of 8–32 at 64–256 entries.","result":"The public API is scalar and Span.IndexOf already emits AVX2 comparisons.","state":"not-applicable","decision":"Requires batch API"},{"id":"H-014","claim":"Presence-bitmask enumeration accelerates sparse application.","mechanism":"Enumerate set bits with trailing-zero count instead of scanning all keys.","prediction":"At least 10% faster below 25% per-channel occupancy.","result":"No representative low-occupancy-per-channel publication trace was available.","state":"inconclusive","decision":"Await trace"},{"id":"H-015","claim":"Block-copying partial channels accelerates explicit MakeHot.","mechanism":"Copy materialized spans and decode only encoded channels.","prediction":"At least 10% faster per materialized channel.","result":"Source-matched complete MakeHot medians ranged from 10.1% faster to 13.4% slower. The block copy remains a necessary H-002 detail but gave no consistent complete-path gain.","state":"rejected","decision":"Retain subordinate copy"},{"id":"H-016","claim":"Software prefetch reduces encoded-channel decode stalls.","mechanism":"Prefetch cache lines ahead of the sequential decoder.","prediction":"At least 10% faster terrain materialization.","result":"The measured decoder is sequential and warm-cache; no cold-stream trace justified target-specific intrinsics.","state":"not-applicable","decision":"No cold-stream workload"},{"id":"H-017","claim":"A direct position map beats linear search at high occupancy.","mechanism":"Index sparse slots by packed voxel position with generations or a bitmask.","prediction":"At least 25% faster above crossover while remaining smaller than one dense channel.","result":"A 32³ map costs 64–128 KiB plus metadata; the 64 KiB form remains below one 128 KiB uint dense channel, so static accounting does not falsify the speed claim.","state":"inconclusive","decision":"Not tested"},{"id":"H-018","claim":"Cache-line grouped overlay blocks improve locality.","mechanism":"Group keys, presence summaries, and common values while retaining vector key lanes.","prediction":"At least 10% faster at 64–256 positions with under 25% payload growth.","result":"No measured locality attribution justified replacing the vector-searchable structure-of-arrays layout.","state":"inconclusive","decision":"Deferred"},{"id":"H-019","claim":"False-sharing-resistant scheduling improves concurrent store throughput.","mechanism":"Shard or pad independently mutated pending metadata.","prediction":"At least 15% throughput or p99 improvement under contention.","result":"DeferredOctreeChunk is exclusively owned; the synchronized store needs a separate contention investigation.","state":"not-applicable","decision":"Separate store study"},{"id":"H-020","claim":"Stencil-aware Morton runs compress and apply coherent edits efficiently.","mechanism":"Coalesce identical adjacent Morton operations into runs and fill or block-copy them.","prediction":"At least 20% faster or half the payload for 3×3×3 and planar stencils.","result":"No representative stencil trace or batch-write API was available.","state":"inconclusive","decision":"Await trace"},{"id":"H-021","claim":"An adaptive threshold based on channel count and decode cost beats a fixed capacity.","mechanism":"Promote when estimated sparse cost exceeds one channel decode.","prediction":"At least 10% weighted gain without a priority regression over 5%.","result":"No application distribution supplied defensible weights; source variability risks unstable behavior.","state":"inconclusive","decision":"Retain fixed threshold; optimal capacity remains workload-dependent"},{"id":"H-022","claim":"A pooled open-addressed index above a threshold removes quadratic insertion growth.","mechanism":"Build a compact hash table after 256–512 entries.","prediction":"At least 30% faster at 1,024–4,096 writes with under 2% regression below 256.","result":"The prototype improved 1,024–4,096 writes by about 70–87%. Effects across 20–64 writes ranged from a 15.1% improvement to a 36.0% regression and allocation rose, violating the 2% guard.","state":"rejected","decision":"Removed"}],"retainedChanges":["Sparse overflow promotes the channel that frees the most exclusive keys into a pooled dense Morton buffer.","Residual shared-position edits remain sparse; untouched channel encodings remain immutable and shared.","Repackage encodes only dense or sparsely changed channels and reuses unchanged encoded channel memory.","Explicit MakeHot combines partial dense channels, residual sparse edits, and still-encoded channels into full hot storage.","The default capacity remains 256, physical sparse buffers remain fixed-capacity shared-pool rentals, and deferred writes remain enabled by default."],"decisions":["Retain 256 as the conservative default because no smaller tested capacity established a superior threshold; the optimal capacity remains workload-dependent.","Keep fixed shared-pool buffers. The integrated caller-provider prototype failed the 10% speed threshold across uniform and terrain inputs; deterministic-memory utility was not measured.","Do not add handwritten SIMD, geometric growth, or the tested pooled hash index. Last-key caching and a direct voxel map remain inconclusive.","A caller-supplied workspace remains a possible deterministic-memory feature; no measured speed case justifies it.","Treat explicit MakeHot as a full-expansion operation; channel-local optimization targets edits, publication, and serialization before that request."],"correctness":["Release tests passed: 320 on net8.0, 321 on net10.0, and 322 on net11.0.","Tests cover partial promotion, residual sparse edits, repeated overflow epochs, explicit zero, overwrites, wide keys, generic bit fidelity, disposal, and snapshot immutability.","Tests verify untouched encoded channels retain memory identity after channel-local publication.","Tests verify explicit MakeHot applies all partial and sparse state before returning borrowed dense storage.","Serialized packet compatibility remains version 2.0.0."],"generatedCode":[{"hypothesisId":"H-009","summary":"The retained Span\u003cushort\u003e.IndexOf lookup uses AVX2 vector comparison on .NET 10.","before":"No scalar-only deficiency was observed in the retained implementation.","after":"Generated code contains vpcmpeqw and vptest; explicit SIMD therefore duplicates runtime specialization.","artifact":"disassembly/DeferredPositionLookup-asm.md"}],"validityThreats":["No Forcecraft application trace supplied the distribution of distinct positions, repeated writes, touched channels, or publication cadence.","Benchmarks are synthetic library workloads on one Ryzen 9 5950X host; ARM64, AVX-512, server GC, and other runtimes were not measured.","ArrayPool retained process memory is not represented by BenchmarkDotNet managed-allocation counters.","Overflow comparisons used ShortRun with three retained measurements; ordinary-path and provider comparisons used MediumRun.","No exclusive CPU profile supplied defensible hotspot percentages; the report therefore does not fabricate an Amdahl attribution.","Explicit MakeHot necessarily expands all channels and ranged from 10.1% faster to 13.4% slower across measured cases."],"reproduction":["Use run-source-matched-benchmarks.ps1 with separate baseline and candidate worktree paths.","The script requires the baseline at f9d9b366ede89050800bc97df9fca2a086ab1ce2, verifies candidate src/ against product revision 4006838, and verifies identical benchmark fixtures.","Each dotnet invocation acquires D:\\Temp\\BenchmarkLock.txt through run-exclusive-benchmark.ps1.","The script executes the MediumRun 20-write priority filter and the ShortRun capacity-overflow filters for both worktrees.","Run normalize-results.py against each paired artifact directory, then render report-data.json with the scientific-method-performance render_report.py script."],"artifacts":[{"label":"Baseline epoch and exact revisions","path":"baseline-epoch.md"},{"label":"Hypothesis ledger","path":"hypotheses.md"},{"label":"Optimization catalogue coverage","path":"coverage-ledger.md"},{"label":"Source-matched overflow comparison","path":"raw/source-matched-overflow-comparison.csv"},{"label":"Source-matched ordinary-path comparison","path":"raw/source-matched-low-comparison.csv"},{"label":"Source-matched baseline overflow raw results","path":"raw/main-base-overflow/"},{"label":"Source-matched final overflow raw results","path":"raw/current-final-overflow/"},{"label":"Integrated caller-provider prototype","path":"raw/integrated-provider/"},{"label":"Generated-code evidence","path":"disassembly/DeferredPositionLookup-asm.md"},{"label":"Final coordinated test log","path":"raw/final-tests.log"},{"label":"Result normalizer","path":"normalize-results.py"},{"label":"Geometric-growth screening comparison","path":"raw/edit-session-comparison.csv"},{"label":"Pooled-index screening comparison","path":"raw/final-edit-session-comparison.csv"},{"label":"Lookup screening results","path":"raw/lookup-screen/"},{"label":"Source-matched benchmark runner","path":"run-source-matched-benchmarks.ps1"}]}</script>
+  <script>
+    (() => {
+      "use strict";
+      const data = JSON.parse(document.getElementById("report-data").textContent);
+      const $ = id => document.getElementById(id);
+      const text = (node, value) => { node.textContent = value ?? ""; return node; };
+      const el = (tag, className, value) => {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        if (value !== undefined) text(node, value);
+        return node;
+      };
+      const number = value => Number.isFinite(value) ? value.toLocaleString(undefined, { maximumFractionDigits: 3 }) : "—";
+      const signedPercent = value => Number.isFinite(value) ? `${value > 0 ? "+" : value < 0 ? "−" : ""}${number(Math.abs(value))}%` : "—";
+      const effectPercent = value => signedPercent(value * 100);
+      const roundColors = ["var(--before)", "var(--mid)", "var(--after)", "#123d72", "#739ecf"];
+
+      function niceMax(value) {
+        if (!Number.isFinite(value) || value <= 0) return 1;
+        const magnitude = 10 ** Math.floor(Math.log10(value));
+        for (const step of [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) {
+          if (step * magnitude >= value) return step * magnitude;
+        }
+        return 10 * magnitude;
+      }
+
+      function safeHref(value) {
+        if (typeof value !== "string") return "#";
+        if (!/^[a-z][a-z0-9+.-]*:/i.test(value)) return value;
+        try {
+          const protocol = new URL(value).protocol;
+          return ["http:", "https:", "file:"].includes(protocol) ? value : "#";
+        } catch { return "#"; }
+      }
+
+      document.title = `${data.title} — Scientific performance report`;
+      text($("eyebrow"), `${data.primaryMetric} · performance investigation`);
+      text($("title"), data.title);
+      text($("headline"), data.summary.headline);
+      text($("status"), data.status.replaceAll("-", " "));
+      text($("generated"), `Generated ${data.generatedAt}`);
+      text($("scope"), data.scope);
+      text($("question"), data.question);
+
+      const scorecards = $("scorecards");
+      if (!data.scorecards.length) {
+        scorecards.append(el("p", "empty", "No headline measurements recorded."));
+      }
+      for (const item of data.scorecards) {
+        const card = el("article", "kpi");
+        card.append(el("div", "kpi-label", item.title));
+        const value = el("div", "kpi-value", number(item.value));
+        value.append(el("small", "", item.unit));
+        card.append(value);
+        const delta = el("div", "kpi-delta");
+        if (Number.isFinite(item.wallChangePercent)) {
+          const higherIsBetter = item.higherIsBetter === true;
+          const good = higherIsBetter ? item.wallChangePercent > 0 : item.wallChangePercent < 0;
+          const arrow = item.wallChangePercent > 0 ? "▲" : item.wallChangePercent < 0 ? "▼" : "◆";
+          const primary = el("strong", good ? "good" : item.wallChangePercent === 0 ? "" : "bad", `${arrow} ${signedPercent(item.wallChangePercent)} ${item.changeLabel || "wall"}`);
+          delta.append(primary);
+          if (Number.isFinite(item.baseline)) delta.append(document.createTextNode(` from ${number(item.baseline)} ${item.unit}`));
+        }
+        if (item.secondaryMetric && Number.isFinite(item.secondaryChangePercent)) {
+          delta.append(document.createTextNode(` · ${item.secondaryMetric} ${signedPercent(item.secondaryChangePercent)}`));
+        }
+        card.append(delta);
+        if (item.progression) card.append(el("div", "kpi-steps", item.progression));
+        scorecards.append(card);
+      }
+
+      function addGrid(track, maximum) {
+        const step = niceMax(maximum) / 4;
+        for (let value = 0; value <= maximum + step / 10; value += step) {
+          const line = el("i", `gridline${value === 0 ? " zero" : ""}`);
+          line.style.left = `${value / maximum * 100}%`;
+          track.append(line);
+        }
+      }
+
+      function renderSeries(series) {
+        const figure = el("figure", "chart");
+        const head = el("div", "chart-head");
+        const intro = el("div", "");
+        intro.append(el("h2", "", series.title), el("p", "", series.description || `Values in ${series.unit}.`));
+        const legend = el("div", "legend");
+        series.rounds.forEach((round, index) => {
+          const entry = el("span", "");
+          const swatch = el("i", "swatch"); swatch.style.setProperty("--swatch", roundColors[index % roundColors.length]);
+          entry.append(swatch, document.createTextNode(round)); legend.append(entry);
+        });
+        head.append(intro, legend); figure.append(head);
+
+        const plot = el("div", "plot");
+        const maximum = niceMax(Math.max(1, ...series.rows.flatMap(row => row.measurements.map(item => item.max ?? item.median))) * 1.18);
+        for (const row of series.rows) {
+          const rowNode = el("div", "chart-row");
+          const label = el("div", "row-label"); label.append(el("b", "", row.label));
+          if (row.detail) label.append(el("small", "", row.detail));
+          const track = el("div", "track");
+          const plotArea = el("div", "bar-plot-area"); addGrid(plotArea, maximum);
+          row.measurements.forEach((measurement, index) => {
+            const line = el("div", "bar-line");
+            const ratio = Math.max(0, measurement.median / maximum * 100);
+            const bar = el("i", "bar");
+            bar.style.width = `${ratio}%`; bar.style.setProperty("--bar-color", roundColors[index % roundColors.length]);
+            bar.title = `${row.label}, ${series.rounds[index]}: ${number(measurement.median)} ${series.unit}`;
+            line.append(bar);
+            if (Number.isFinite(measurement.min) && Number.isFinite(measurement.max)) {
+              const whisker = el("i", "whisker");
+              whisker.style.left = `${Math.max(0, measurement.min / maximum * 100)}%`;
+              whisker.style.width = `${Math.max(0, (measurement.max - measurement.min) / maximum * 100)}%`;
+              line.append(whisker);
+            }
+            const rangeEnd = Number.isFinite(measurement.max) ? Math.max(measurement.median, measurement.max) : measurement.median;
+            const labelAnchor = Math.max(0, rangeEnd / maximum * 100);
+            const value = el("span", "bar-value"); value.style.left = `calc(${labelAnchor}% + 8px)`;
+            value.append(el("strong", "", `${number(measurement.median)} ${series.unit}`));
+            if (Number.isFinite(measurement.changePercent)) {
+              const improved = series.lowerIsBetter === false ? measurement.changePercent > 0 : measurement.changePercent < 0;
+              value.append(el("span", improved ? "improve" : measurement.changePercent === 0 ? "" : "regress", signedPercent(measurement.changePercent)));
+            }
+            line.append(value); plotArea.append(line);
+          });
+          track.append(plotArea);
+          rowNode.append(label, track); plot.append(rowNode);
+        }
+        const axis = el("div", "axis"); axis.append(el("div", ""));
+        const ticks = el("div", "axis-ticks");
+        const step = maximum / 4;
+        for (let value = 0; value <= maximum + step / 10; value += step) {
+          const tick = el("span", "", number(value)); tick.style.left = `${value / maximum * 100}%`; ticks.append(tick);
+        }
+        axis.append(ticks); plot.append(axis); figure.append(plot);
+        return figure;
+      }
+
+      const charts = $("charts");
+      for (const series of data.series) charts.append(renderSeries(series));
+      if (!data.series.length) {
+        charts.hidden = true;
+        $("measurements-section").hidden = true;
+      }
+
+      const measurementBody = $("measurements-table").querySelector("tbody");
+      for (const series of data.series) {
+        for (const row of series.rows) {
+          row.measurements.forEach((measurement, index) => {
+            const tr = document.createElement("tr");
+            const range = Number.isFinite(measurement.min) && Number.isFinite(measurement.max)
+              ? `${number(measurement.min)}–${number(measurement.max)} ${series.unit}` : "—";
+            tr.append(
+              el("td", "", series.title), el("td", "", row.label), el("td", "", series.rounds[index]),
+              el("td", "num", `${number(measurement.median)} ${series.unit}`), el("td", "num", range),
+              el("td", "num", Number.isFinite(measurement.n) ? number(measurement.n) : "—")
+            );
+            measurementBody.append(tr);
+          });
+        }
+      }
+
+      function effectScale() {
+        const values = data.effectGroups.flatMap(group => group.items.flatMap(item => [item.effect, item.range[0], item.range[1]]));
+        const low = Math.min(-.05, ...values), high = Math.max(.05, ...values);
+        const pad = Math.max(.02, (high - low) * .08);
+        return { min: low - pad, max: high + pad };
+      }
+
+      if (!data.effectGroups.length) $("effects-chart").hidden = true;
+      else {
+        const scale = effectScale();
+        const x = value => (value - scale.min) / (scale.max - scale.min) * 100;
+        const effects = $("effects");
+        for (const group of data.effectGroups) {
+          const groupNode = el("div", "effect-group");
+          const head = el("div", "effect-head"); head.append(el("b", "", group.name));
+          if (group.control) head.append(el("small", "", group.control));
+          groupNode.append(head);
+          for (const item of group.items) {
+            const row = el("div", "effect-row");
+            const label = el("div", "effect-label");
+            if (item.hypothesisId) label.append(el("span", "id", item.hypothesisId));
+            label.append(document.createTextNode(item.label));
+            const track = el("div", "effect-track");
+            const plotArea = el("div", "effect-plot-area");
+            for (let i = 0; i <= 6; i++) {
+              const point = scale.min + (scale.max - scale.min) * i / 6;
+              const grid = el("i", Math.abs(point) < (scale.max - scale.min) / 100 ? "effect-zero" : "effect-grid");
+              grid.style.left = `${x(point)}%`; plotArea.append(grid);
+            }
+            const zero = el("i", "effect-zero"); zero.style.left = `${x(0)}%`; plotArea.append(zero);
+            const start = Math.min(0, item.effect), end = Math.max(0, item.effect);
+            const mixed = item.range[0] <= 0 && item.range[1] >= 0;
+            const direction = mixed ? "mixed" : item.effect < 0 ? "faster" : "slower";
+            const bar = el("i", `effect-bar ${direction}`); bar.style.left = `${x(start)}%`; bar.style.width = `${Math.abs(x(end) - x(start))}%`;
+            bar.title = `${item.label}: ${effectPercent(item.effect)}`; plotArea.append(bar);
+            const whisker = el("i", "effect-whisker"); whisker.style.left = `${x(item.range[0])}%`; whisker.style.width = `${Math.max(0, x(item.range[1]) - x(item.range[0]))}%`; plotArea.append(whisker);
+            const value = el("span", "effect-value");
+            if (item.effect < 0) {
+              const labelAnchor = Math.min(item.effect, item.range[0]);
+              value.dataset.side = "left";
+              value.style.left = `calc(${x(labelAnchor)}% - 8px)`;
+              value.style.transform = "translateX(-100%)";
+            } else {
+              const labelAnchor = Math.max(item.effect, item.range[1]);
+              value.dataset.side = "right";
+              value.style.left = `calc(${x(labelAnchor)}% + 8px)`;
+            }
+            value.append(el("strong", "", effectPercent(item.effect)));
+            if (item.secondaryMetric && Number.isFinite(item.secondaryEffect)) value.append(el("span", "secondary", ` · ${item.secondaryMetric} ${effectPercent(item.secondaryEffect)}`));
+            plotArea.append(value); track.append(plotArea); row.append(label, track); groupNode.append(row);
+          }
+          effects.append(groupNode);
+        }
+        const axis = el("div", "effect-axis"); axis.append(el("div", ""));
+        const ticks = el("div", "axis-ticks");
+        for (let i = 0; i <= 6; i++) {
+          const point = scale.min + (scale.max - scale.min) * i / 6;
+          const tick = el("span", "", effectPercent(point)); tick.style.left = `${x(point)}%`; ticks.append(tick);
+        }
+        axis.append(ticks); effects.append(axis);
+      }
+
+      function updateLabelGutters() {
+        for (const figure of charts.querySelectorAll(".chart")) {
+          let width = 0;
+          for (const label of figure.querySelectorAll(".bar-value")) width = Math.max(width, label.getBoundingClientRect().width);
+          const trackWidth = figure.querySelector(".track")?.getBoundingClientRect().width ?? 0;
+          const gutter = Math.min(Math.ceil(width) + 12, Math.max(0, trackWidth - 160));
+          figure.style.setProperty("--bar-label-gutter", `${gutter}px`);
+        }
+        const effects = $("effects");
+        let left = 0, right = 0;
+        for (const label of effects.querySelectorAll(".effect-value")) {
+          const width = label.getBoundingClientRect().width;
+          if (label.dataset.side === "left") left = Math.max(left, width);
+          else right = Math.max(right, width);
+        }
+        left = Math.ceil(left) + 12;
+        right = Math.ceil(right) + 12;
+        const trackWidth = effects.querySelector(".effect-track")?.getBoundingClientRect().width ?? 0;
+        const budget = Math.max(0, trackWidth - 180);
+        const total = left + right;
+        const factor = total > budget && total > 0 ? budget / total : 1;
+        effects.style.setProperty("--effect-left-gutter", `${Math.floor(left * factor)}px`);
+        effects.style.setProperty("--effect-right-gutter", `${Math.floor(right * factor)}px`);
+      }
+
+      updateLabelGutters();
+      document.fonts?.ready.then(updateLabelGutters);
+      window.addEventListener("resize", updateLabelGutters, { passive: true });
+
+      const hypothesisBody = $("hypotheses");
+      text($("hypothesis-title"), `${data.hypotheses.length} ${data.hypotheses.length === 1 ? "hypothesis" : "hypotheses"}`);
+      if (!data.hypotheses.length) {
+        const row = document.createElement("tr"); const cell = el("td", "empty", "None recorded."); cell.colSpan = 4; row.append(cell); hypothesisBody.append(row);
+      }
+      const icons = { retained: "✓", rejected: "×", inconclusive: "○", "decision-required": "○", pending: "…", blocked: "!", "not-applicable": "—" };
+      for (const item of data.hypotheses) {
+        const row = document.createElement("tr");
+        row.append(el("td", "id", item.id));
+        const claim = el("td", ""); claim.append(document.createTextNode(item.claim));
+        if (item.mechanism) claim.append(el("div", "cell-note", item.mechanism));
+        const measured = el("td", "", item.result || "Not yet measured.");
+        if (item.prediction && !item.result) measured.append(el("div", "cell-note", `Prediction: ${item.prediction}`));
+        const verdict = el("td", ""); verdict.append(el("span", `chip ${item.state}`, `${icons[item.state]} ${item.decision}`));
+        row.append(claim, measured, verdict); hypothesisBody.append(row);
+      }
+
+      function renderList(id, items, ordered = false) {
+        const host = $(id);
+        if (!items.length) { host.append(el("p", "empty", "None recorded.")); return; }
+        const list = document.createElement(ordered ? "ol" : "ul");
+        items.forEach(item => list.append(el("li", "", item))); host.append(list);
+      }
+      renderList("retainedChanges", data.retainedChanges);
+      renderList("decisions", data.decisions);
+      renderList("correctness", data.correctness);
+      renderList("validityThreats", data.validityThreats);
+      renderList("reproduction", data.reproduction, true);
+
+      const environment = $("environment");
+      if (!data.environment.length) environment.replaceWith(el("p", "empty", "None recorded."));
+      else for (const item of data.environment) environment.append(el("dt", "", item.label), el("dd", "", item.value));
+
+      const hotspots = $("hotspots");
+      if (!data.hotspots.length) hotspots.append(el("p", "empty", "None recorded."));
+      for (const item of data.hotspots) {
+        const card = el("article", "card"); card.append(el("h3", "", item.name));
+        if (item.location) card.append(el("div", "small mono", item.location));
+        const shares = [];
+        if (Number.isFinite(item.inclusivePercent)) shares.push(`${number(item.inclusivePercent)}% inclusive`);
+        if (Number.isFinite(item.exclusivePercent)) shares.push(`${number(item.exclusivePercent)}% exclusive`);
+        if (shares.length) card.append(el("div", "metric", shares.join(" · ")));
+        if (item.evidence) card.append(el("p", "", item.evidence));
+        if (item.limit) card.append(el("p", "small", `Suspected limit: ${item.limit}`)); hotspots.append(card);
+      }
+
+      const areas = $("areas");
+      if (!data.areas.length) areas.append(el("p", "empty", "None recorded."));
+      for (const item of data.areas) {
+        const card = el("article", "card"); card.append(el("h3", "", item.name));
+        if (item.boundary) card.append(el("p", "", item.boundary));
+        if (item.evidence) card.append(el("p", "small", `Evidence: ${item.evidence}`));
+        if (item.catalogue) card.append(el("p", "small", `Catalogue: ${item.catalogue}`));
+        if (item.hypothesisIds?.length) card.append(el("div", "metric", item.hypothesisIds.join(" · ")));
+        if (item.disposition) card.append(el("p", "", item.disposition)); areas.append(card);
+      }
+
+      const generated = $("generatedCode");
+      if (!data.generatedCode.length) generated.append(el("p", "empty", "None recorded."));
+      for (const item of data.generatedCode) {
+        const note = el("article", "code-note"); note.append(el("h3", "", `${item.hypothesisId || "Unlinked"}: ${item.summary || "Observation"}`));
+        if (item.before) note.append(el("p", "", `Before: ${item.before}`));
+        if (item.after) note.append(el("p", "", `After: ${item.after}`));
+        if (item.artifact) { const link = el("a", "", item.artifact); link.href = safeHref(item.artifact); note.append(link); }
+        generated.append(note);
+      }
+
+      const artifacts = $("artifacts");
+      if (!data.artifacts.length) artifacts.append(el("p", "empty", "None recorded."));
+      else {
+        const list = document.createElement("ul");
+        for (const item of data.artifacts) {
+          const entry = document.createElement("li"); const link = el("a", "", item.label || item.path);
+          link.href = safeHref(item.path); entry.append(link); list.append(entry);
+        }
+        artifacts.append(list);
+      }
+    })();
+  </script>
+</body>
+</html>
