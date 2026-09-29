@@ -546,11 +546,27 @@ HotOctreeChunk hot = chunk.MarkHot();
 hot[channel: 0, x: 1, y: 2, z: 3] = 43;
 OctreeChunk snapshot = hot.UnmarkHot();
 
-// Serialize or transport all channels as one checked packet.
-var packet = new byte[snapshot.SerializedLength];
-snapshot.CopyEncodedTo(packet);
-OctreeChunk restored = OctreeChunk.FromEncoded(packet);
+// Reuse one maximum-capacity packet buffer across chunks with this schema.
+var packet = new byte[OctreeChunk.GetMaximumSerializedLength(levels, channels)];
+if (!snapshot.TryCopyEncodedTo(packet, out int used))
+    throw new InvalidOperationException("Packet buffer is too short.");
+
+// A stack-bound view aliases caller memory and allocates nothing. Construction
+// checks the packet envelope; IsWellFormed performs full channel-tree validation.
+var packetView = new OctreeChunkSpan(packet.AsSpan(0, used));
+if (!packetView.IsWellFormed()) throw new FormatException("Invalid chunk packet.");
+uint material = packetView.GetChannel(0).Get(1, 2, 3);
+
+// An owned chunk retains the ReadOnlyMemory packet and allocates channel descriptors.
+OctreeChunk restored = OctreeChunk.FromEncoded(packet.AsMemory(0, used));
 ```
+
+`CopyEncodedTo` is the throwing serialization API; `TryCopyEncodedTo` reports an
+undersized reusable destination with `false` and `bytesWritten == 0`.
+`OctreeChunkSpan` and `OctreeChunkSpan<T>` provide allocation-free, zero-copy
+packet access while their caller-owned bytes remain alive and immutable.
+`FromEncoded` performs full validation and retains the exact packet, so
+`TryGetSerializedData` can expose that contiguous memory without rebuilding it.
 
 | Data | Suggested initial layout |
 | --- | --- |

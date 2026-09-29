@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Tedd.Voxtree.Benchmark.Tests.ChunkSerialization-20260929-140343</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.16.0-preview.1, Windows 11 (10.0.26200.9457/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 5950X 3.40GHz, 1 CPU, 32 logical and 16 physical cores
+Memory: 127.91 GB Total, 95.85 GB Available
+.NET SDK 11.0.100-rc.1.26425.128
+  [Host]   : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+  ShortRun : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code>Job=ShortRun  IterationCount=3  LaunchCount=1  
+WarmupCount=3  
+</code></pre>
+
+<table>
+<thead><tr><th>Method                       </th><th>ChannelCount</th><th>Pattern</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Ratio</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>SerializeToReusedBuffer</td><td>1</td><td>Random</td><td>6.069 μs</td><td>0.1573 μs</td><td>0.0086 μs</td><td>2.24</td><td>-</td><td>NA</td>
+</tr><tr><td>SerializeLoadedPacketToReusedBuffer</td><td>1</td><td>Random</td><td>6.144 μs</td><td>0.4383 μs</td><td>0.0240 μs</td><td>2.27</td><td>-</td><td>NA</td>
+</tr><tr><td>SerializeLoadedPerChannelControl</td><td>1</td><td>Random</td><td>2.705 μs</td><td>0.3042 μs</td><td>0.0167 μs</td><td>1.00</td><td>-</td><td>NA</td>
+</tr><tr><td>SerializeToReusedBuffer</td><td>4</td><td>Random</td><td>18.898 μs</td><td>1.3012 μs</td><td>0.0713 μs</td><td>1.45</td><td>-</td><td>NA</td>
+</tr><tr><td>SerializeLoadedPacketToReusedBuffer</td><td>4</td><td>Random</td><td>13.831 μs</td><td>0.9891 μs</td><td>0.0542 μs</td><td>1.06</td><td>-</td><td>NA</td>
+</tr><tr><td>SerializeLoadedPerChannelControl</td><td>4</td><td>Random</td><td>13.016 μs</td><td>0.6658 μs</td><td>0.0365 μs</td><td>1.00</td><td>-</td><td>NA</td>
+</tr><tr><td>SerializeToReusedBuffer</td><td>16</td><td>Random</td><td>55.121 μs</td><td>2.7321 μs</td><td>0.1498 μs</td><td>0.85</td><td>-</td><td>NA</td>
+</tr><tr><td>SerializeLoadedPacketToReusedBuffer</td><td>16</td><td>Random</td><td>92.163 μs</td><td>1.3700 μs</td><td>0.0751 μs</td><td>1.41</td><td>-</td><td>NA</td>
+</tr><tr><td>SerializeLoadedPerChannelControl</td><td>16</td><td>Random</td><td>65.184 μs</td><td>5.9131 μs</td><td>0.3241 μs</td><td>1.00</td><td>-</td><td>NA</td>
+</tr></tbody></table>
+</body>
+</html>

@@ -18,7 +18,7 @@
     <RepositoryUrl>https://github.com/tedd/Tedd.Voxtree</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>octree;voxel;span;zero-allocation;performance;streaming;lod;zstandard</PackageTags>
-    <PackageReleaseNotes>Pooled sparse point edits through DeferredOctreeChunk, synchronized scheduling and bounded repackaging through DeferredChunkStore, and a default-enabled deferredWritesEnabled switch for choosing sparse or first-write dense editing. Existing serialized formats remain compatible.</PackageReleaseNotes>
+    <PackageReleaseNotes>Allocation-free OctreeChunkSpan packet views, reusable maximum-capacity serialization buffers, non-throwing TryCopyEncodedTo APIs, retained contiguous packet access, and faster loaded-packet serialization. Existing serialized formats remain compatible.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IncludeSymbols>true</IncludeSymbols>

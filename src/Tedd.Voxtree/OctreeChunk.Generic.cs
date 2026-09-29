@@ -8,26 +8,38 @@ namespace Tedd.Voxtree;
 public sealed class OctreeChunk<T> where T : unmanaged
 {
     private const int HeaderSize = 12;
+    private const int MaximumContiguousCopyLength = 64 * 1024;
     private readonly ReadOnlyMemory<byte>[] _channels;
+    private readonly int _serializedLength;
+    private readonly ReadOnlyMemory<byte> _serializedPacket;
 
     /// <summary>Validates and retains channel encodings, copying only their memory descriptors.</summary>
     public OctreeChunk(int levels, ReadOnlySpan<ReadOnlyMemory<byte>> channels)
         : this(levels, ValidateAndCopy(levels, channels)) { }
 
-    private OctreeChunk(int levels, ReadOnlyMemory<byte>[] channels)
+    private OctreeChunk(int levels, ReadOnlyMemory<byte>[] channels,
+        ReadOnlyMemory<byte> serializedPacket = default, bool? isEmpty = null)
     {
         VoxelType<T>.Validate();
         Levels = levels;
         _channels = channels;
-        IsEmpty = true;
-        var side = 1 << levels;
-        var box = new VoxelBox(0, 0, 0, side, side, side);
+        _serializedPacket = serializedPacket;
+        _serializedLength = serializedPacket.IsEmpty ? ComputeSerializedLength(channels) : serializedPacket.Length;
+        IsEmpty = isEmpty ?? AreAllChannelsEmpty(channels);
+    }
+
+    private static int ComputeSerializedLength(ReadOnlySpan<ReadOnlyMemory<byte>> channels)
+    {
+        var length = HeaderSize;
+        foreach (var channel in channels) length = checked(length + sizeof(int) + channel.Length);
+        return length;
+    }
+
+    private static bool AreAllChannelsEmpty(ReadOnlySpan<ReadOnlyMemory<byte>> channels)
+    {
         foreach (var channel in channels)
-        {
-            if (!new OctreeSpan<T>(channel.Span).Any(box, VoxelFilter<T>.NonZero)) continue;
-            IsEmpty = false;
-            break;
-        }
+            if (!VoxelCodec<T>.IsEmpty(channel.Span, VoxelCodec<T>.GetStorageKindUnchecked(channel.Span))) return false;
+        return true;
     }
 
     private static ReadOnlyMemory<byte>[] ValidateAndCopy(int levels,
@@ -137,22 +149,46 @@ public sealed class OctreeChunk<T> where T : unmanaged
     }
 
     /// <summary>Gets the byte count for the versioned multi-channel packet.</summary>
-    public int SerializedLength
+    public int SerializedLength => _serializedLength;
+
+    /// <summary>Gets the maximum packet capacity for a chunk schema, suitable for one reusable caller buffer.</summary>
+    public static int GetMaximumSerializedLength(int levels, int channelCount)
     {
-        get
-        {
-            var length = HeaderSize;
-            foreach (var channel in _channels) length = checked(length + sizeof(int) + channel.Length);
-            return length;
-        }
+        VoxelType<T>.Validate();
+        OctreeCodec.ValidateLevels(levels);
+        if (channelCount <= 0) throw new ArgumentOutOfRangeException(nameof(channelCount));
+        return checked(HeaderSize + channelCount * (sizeof(int) + Octree<T>.GetMaximumSize(levels)));
+    }
+
+    /// <summary>Gets the original contiguous packet when this chunk was loaded from one.</summary>
+    public bool TryGetSerializedData(out ReadOnlyMemory<byte> packet)
+    {
+        packet = _serializedPacket;
+        return !packet.IsEmpty;
     }
 
     /// <summary>Saves every channel and its shared depth into caller memory.</summary>
     public int CopyEncodedTo(Span<byte> destination)
     {
-        var length = SerializedLength;
-        if (destination.Length < length) throw new ArgumentException("Destination is too short.", nameof(destination));
+        if (TryCopyEncodedTo(destination, out var bytesWritten)) return bytesWritten;
+        throw new ArgumentException("Destination is too short.", nameof(destination));
+    }
+
+    /// <summary>Attempts to save this chunk into reusable caller memory.</summary>
+    public bool TryCopyEncodedTo(Span<byte> destination, out int bytesWritten)
+    {
+        bytesWritten = 0;
+        var length = _serializedLength;
+        if (destination.Length < length) return false;
         destination = destination[..length];
+        if (!_serializedPacket.IsEmpty && length <= MaximumContiguousCopyLength)
+        {
+            if (destination.Overlaps(_serializedPacket.Span))
+                throw new ArgumentException("Destination overlaps the encoded packet.", nameof(destination));
+            _serializedPacket.Span.CopyTo(destination);
+            bytesWritten = length;
+            return true;
+        }
         foreach (var channel in _channels)
             if (destination.Overlaps(channel.Span)) throw new ArgumentException("Destination overlaps a channel encoding.");
         destination[0] = 0x4f;
@@ -169,7 +205,8 @@ public sealed class OctreeChunk<T> where T : unmanaged
             channel.Span.CopyTo(destination[offset..]);
             offset += channel.Length;
         }
-        return length;
+        bytesWritten = length;
+        return true;
     }
 
     /// <summary>Validates and loads a generic chunk packet without copying its channel payloads.</summary>
@@ -184,6 +221,7 @@ public sealed class OctreeChunk<T> where T : unmanaged
         if (count <= 0 || count > (data.Length - HeaderSize) / 8)
             throw new FormatException("Invalid channel count.");
         var offset = HeaderSize;
+        var isEmpty = true;
         for (var index = 0; index < count; index++)
         {
             if (data.Length - offset < sizeof(int)) throw new FormatException("Truncated channel header.");
@@ -193,6 +231,8 @@ public sealed class OctreeChunk<T> where T : unmanaged
                 !OctreeSpan<T>.TryCreate(data.Slice(offset, channelLength), out var channel) ||
                 channel.Levels != data[3] || !channel.IsWellFormed())
                 throw new FormatException("Invalid generic channel payload.");
+            if (isEmpty && !VoxelCodec<T>.IsEmpty(channel.Data, VoxelCodec<T>.GetStorageKindUnchecked(channel.Data)))
+                isEmpty = false;
             offset += channelLength;
         }
         if (offset != data.Length) throw new FormatException("Trailing chunk packet data.");
@@ -205,6 +245,6 @@ public sealed class OctreeChunk<T> where T : unmanaged
             channels[index] = encoded.Slice(offset, channelLength);
             offset += channelLength;
         }
-        return new OctreeChunk<T>(data[3], channels);
+        return new OctreeChunk<T>(data[3], channels, encoded, isEmpty);
     }
 }

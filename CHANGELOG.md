@@ -2,6 +2,26 @@
 
 All notable changes to Tedd.Voxtree are documented here.
 
+## 2026-09-29
+
+### Added
+
+- Allocation-free `OctreeChunkSpan` and `OctreeChunkSpan<T>` views over
+  caller-owned reusable packet memory, with separate envelope parsing and full
+  structural validation.
+- `GetMaximumSerializedLength`, `TryCopyEncodedTo`, and
+  `TryGetSerializedData` APIs for reusable packet buffers and zero-copy access
+  to retained contiguous packets.
+
+### Performance
+
+- Chunk snapshots cache their immutable serialized length. Loaded packets up to
+  64 KiB use one contiguous copy; larger packets retain the per-channel path.
+- Empty-state derivation uses validated storage metadata instead of issuing a
+  second spatial query over each channel.
+
+Serialized formats remain compatible with version 2.0.0.
+
 ## 2026-09-20
 
 ### Added

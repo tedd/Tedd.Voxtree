@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Scientific performance report</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f5f6f8;
+      --surface: #fcfcfd;
+      --ink: #0f1217;
+      --ink-2: #4a5160;
+      --muted: #767d8b;
+      --grid: #e3e6eb;
+      --axis: #c3c8d1;
+      --hairline: rgba(15, 18, 23, .10);
+      --before: #a9cbf3;
+      --mid: #5f97dc;
+      --after: #1d5aa6;
+      --good: #006300;
+      --slower: #d9822b;
+      --noeffect: #b9c0cb;
+      --adopted-bg: #e4f2e4;
+      --adopted-ink: #0b4f0b;
+      --decision-bg: #fbf0da;
+      --decision-ink: #6b4a00;
+      --info-bg: #e3edfb;
+      --info-ink: #184f95;
+      --neutral-bg: #eceef1;
+      --neutral-ink: #4a5160;
+      --sans: "IBM Plex Sans", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 40px 16px 64px;
+      background: var(--page);
+      color: var(--ink);
+      font: 15px/1.55 var(--sans);
+    }
+    a { color: var(--after); overflow-wrap: anywhere; }
+    code, .mono { font-family: var(--mono); font-size: .86em; }
+    h1, h2, h3 { margin: 0; font-weight: 600; text-wrap: balance; }
+    h1 { font-size: clamp(1.9rem, 1.25rem + 2vw, 2.65rem); line-height: 1.15; letter-spacing: -.012em; }
+    h2 { font-size: 1.25rem; line-height: 1.3; }
+    h3 { font-size: 1rem; line-height: 1.35; }
+    p { margin: 0; }
+    ul, ol { margin: 0; padding-left: 1.25em; display: grid; gap: 6px; }
+
+    .wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 40px; }
+    .report-head { display: grid; gap: 12px; }
+    .eyebrow { font: .78rem/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+    .lede { color: var(--ink-2); max-width: 78ch; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; color: var(--muted); font: .74rem/1.4 var(--mono); }
+    .report-status { display: inline-flex; padding: 2px 9px; border-radius: 999px; background: var(--info-bg); color: var(--info-ink); font: 500 .72rem/1.5 var(--sans); text-transform: capitalize; }
+
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 8px; }
+    .kpi, .card, .chart, .table-wrap, .panel {
+      background: var(--surface);
+      border: 1px solid var(--hairline);
+      border-radius: 10px;
+    }
+    .kpi { padding: 16px 18px; display: grid; gap: 6px; }
+    .kpi-label { color: var(--ink-2); font-size: .86rem; }
+    .kpi-value { font-size: 2rem; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .kpi-value small { margin-left: 3px; color: var(--ink-2); font-size: 1rem; font-weight: 500; }
+    .kpi-delta { color: var(--ink-2); font-size: .86rem; }
+    .kpi-delta strong { font-weight: 600; }
+    .kpi-delta .good { color: var(--good); }
+    .kpi-delta .bad { color: var(--slower); }
+    .kpi-steps { color: var(--muted); font: .72rem/1.4 var(--mono); }
+
+    section { display: grid; gap: 14px; }
+    section > p { color: var(--ink-2); max-width: 82ch; }
+    .panel { padding: 18px 20px; }
+    .scope-grid, .evidence-grid, .outcome-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .card { padding: 16px 18px; display: grid; gap: 6px; min-width: 0; }
+    .card p { color: var(--ink-2); }
+    .card .small, .small { color: var(--muted); font-size: .8rem; }
+    .card .metric { font: 500 .78rem/1.4 var(--mono); color: var(--muted); }
+
+    .charts { display: grid; gap: 20px; }
+    .chart { margin: 0; padding: 20px 20px 16px; display: grid; gap: 16px; overflow-x: auto; overflow-y: hidden; }
+    .chart-head { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; justify-content: space-between; }
+    .chart-head p { color: var(--ink-2); font-size: .9rem; }
+    .legend { display: flex; gap: 16px; flex-wrap: wrap; color: var(--ink-2); font-size: .86rem; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .swatch { width: 14px; height: 10px; border-radius: 0 3px 3px 0; display: inline-block; background: var(--swatch); }
+
+    .plot { display: grid; gap: 14px; }
+    .chart-row { display: grid; grid-template-columns: minmax(160px, 250px) 1fr; gap: 16px; align-items: center; }
+    .row-label { display: grid; gap: 2px; }
+    .row-label b { font-weight: 500; font-size: .95rem; }
+    .row-label small { color: var(--muted); font: .74rem/1.35 var(--mono); }
+    .track { position: relative; min-width: 0; }
+    .bar-plot-area { position: relative; display: grid; gap: 2px; margin-right: var(--bar-label-gutter, 0px); padding-block: 2px; }
+    .gridline { position: absolute; z-index: 0; top: -6px; bottom: -6px; width: 1px; background: var(--grid); }
+    .gridline.zero { background: var(--axis); }
+    .bar-line { position: relative; height: 16px; }
+    .bar { position: absolute; z-index: 1; left: 0; top: 1px; height: 14px; border-radius: 0 4px 4px 0; background: var(--bar-color); }
+    .whisker { position: absolute; z-index: 2; top: 7px; height: 1px; background: var(--ink); opacity: .65; pointer-events: none; }
+    .whisker::before, .whisker::after { content: ""; position: absolute; top: -3px; width: 1px; height: 7px; background: var(--ink); }
+    .whisker::before { left: 0; }
+    .whisker::after { right: 0; }
+    .bar-value { position: absolute; z-index: 3; top: -1px; color: var(--ink-2); font: .78rem/1.4 var(--mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .bar-value strong { color: var(--ink); font-weight: 500; }
+    .bar-value .improve { color: var(--good); margin-left: 6px; }
+    .bar-value .regress { color: var(--slower); margin-left: 6px; }
+    .axis { display: grid; grid-template-columns: minmax(160px, 250px) 1fr; gap: 16px; }
+    .axis-ticks { position: relative; height: 18px; color: var(--muted); font: .72rem/1.4 var(--mono); font-variant-numeric: tabular-nums; }
+    .axis-ticks span { position: absolute; transform: translateX(-50%); }
+    .axis-ticks span:first-child { transform: none; }
+    .axis-ticks span:last-child { transform: translateX(-100%); }
+    .axis .axis-ticks { margin-right: var(--bar-label-gutter, 0px); }
+
+    .effects { display: grid; gap: 20px; }
+    .effect-group { display: grid; gap: 8px; }
+    .effect-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+    .effect-head b { font-weight: 600; font-size: .95rem; }
+    .effect-head small { color: var(--muted); font: .74rem/1.4 var(--mono); }
+    .effect-row { display: grid; grid-template-columns: minmax(170px, 290px) 1fr; gap: 16px; align-items: center; }
+    .effect-label { font-size: .86rem; line-height: 1.3; }
+    .effect-label .id { margin-right: 6px; color: var(--muted); font: .74rem/1.3 var(--mono); }
+    .effect-track { position: relative; height: 18px; }
+    .effect-plot-area { position: absolute; inset: 0 var(--effect-right-gutter, 0px) 0 var(--effect-left-gutter, 0px); }
+    .effect-bar { position: absolute; z-index: 1; top: 3px; height: 12px; }
+    .effect-bar.faster { background: var(--after); border-radius: 3px 0 0 3px; }
+    .effect-bar.slower { background: var(--slower); border-radius: 0 3px 3px 0; }
+    .effect-bar.mixed { background: var(--noeffect); }
+    .effect-grid, .effect-zero { position: absolute; z-index: 0; top: -4px; bottom: -4px; width: 1px; background: var(--grid); }
+    .effect-zero { background: var(--axis); }
+    .effect-whisker { position: absolute; z-index: 2; top: 9px; height: 1px; background: var(--ink); opacity: .65; }
+    .effect-whisker::before, .effect-whisker::after { content: ""; position: absolute; top: -3px; width: 1px; height: 7px; background: var(--ink); }
+    .effect-whisker::before { left: 0; }
+    .effect-whisker::after { right: 0; }
+    .effect-value { position: absolute; z-index: 3; top: 0; color: var(--ink-2); font: .76rem/1.4 var(--mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .effect-value strong { color: var(--ink); font-weight: 500; }
+    .effect-axis { display: grid; grid-template-columns: minmax(170px, 290px) 1fr; gap: 16px; }
+    .effect-axis .axis-ticks { margin-left: var(--effect-left-gutter, 0px); margin-right: var(--effect-right-gutter, 0px); }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid var(--grid); text-align: left; vertical-align: top; }
+    thead th { color: var(--ink-2); font-size: .8rem; font-weight: 500; white-space: nowrap; }
+    tbody tr:last-child td { border-bottom: 0; }
+    td.id { color: var(--muted); font: .8rem/1.5 var(--mono); white-space: nowrap; }
+    td.num { text-align: right; font: .8rem/1.5 var(--mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .hypothesis-table { min-width: 820px; }
+    .hypothesis-table th:nth-child(1) { width: 68px; }
+    .hypothesis-table th:nth-child(2) { width: 37%; }
+    .hypothesis-table th:nth-child(4) { width: 160px; }
+    .cell-note { margin-top: 3px; color: var(--muted); font-size: .78rem; }
+    .chip { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 999px; font-size: .76rem; font-weight: 500; white-space: nowrap; }
+    .chip.retained { background: var(--adopted-bg); color: var(--adopted-ink); }
+    .chip.decision-required, .chip.inconclusive { background: var(--decision-bg); color: var(--decision-ink); }
+    .chip.pending { background: var(--info-bg); color: var(--info-ink); }
+    .chip.rejected, .chip.blocked, .chip.not-applicable { background: var(--neutral-bg); color: var(--neutral-ink); }
+
+    dl { display: grid; grid-template-columns: minmax(150px, 220px) 1fr; margin: 0; }
+    dt, dd { margin: 0; padding: 8px 0; border-bottom: 1px solid var(--grid); }
+    dt { padding-right: 18px; color: var(--muted); font-weight: 500; }
+    .code-note { padding-left: 13px; border-left: 3px solid var(--mid); }
+    .code-note + .code-note { margin-top: 14px; }
+    .empty { color: var(--muted); font-style: italic; }
+    footer { color: var(--muted); text-align: center; font: .72rem/1.4 var(--mono); }
+
+    @media (max-width: 700px) {
+      body { padding: 24px 10px 48px; }
+      .wrap { gap: 30px; }
+      .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .kpi { padding: 12px; }
+      .kpi-value { font-size: 1.6rem; }
+      .kpi-steps { display: none; }
+      .scope-grid, .evidence-grid, .outcome-grid { grid-template-columns: 1fr; }
+      .chart { padding: 16px 12px 14px; }
+      .chart-row, .axis, .effect-row, .effect-axis { grid-template-columns: 1fr; gap: 5px; }
+      .axis > div:first-child, .effect-axis > div:first-child { display: none; }
+      .effect-value .secondary { display: none; }
+      dl { grid-template-columns: 1fr; }
+      dt { padding-bottom: 0; border-bottom: 0; }
+    }
+
+    @media print {
+      body { padding: 0; background: #fff; font-size: 11px; }
+      .wrap { max-width: none; gap: 18px; }
+      .chart, .table-wrap, .panel, .kpi, .card { break-inside: avoid; background: #fff; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="report-head">
+      <p class="eyebrow" id="eyebrow"></p>
+      <h1 id="title"></h1>
+      <p class="lede" id="headline"></p>
+      <div class="meta"><span class="report-status" id="status"></span><span id="generated"></span></div>
+      <div class="kpis" id="scorecards" aria-label="Performance outcomes"></div>
+    </header>
+
+    <section>
+      <h2>Scope and scientific question</h2>
+      <div class="scope-grid">
+        <article class="card"><h3>Scope</h3><p id="scope"></p></article>
+        <article class="card"><h3>Question</h3><p id="question"></p></article>
+      </div>
+    </section>
+
+    <div class="charts" id="charts"></div>
+
+    <section id="measurements-section">
+      <h2>Every measurement</h2>
+      <p>Recorded medians, observed ranges, and run counts for every comparison series.</p>
+      <div class="table-wrap"><table id="measurements-table"><thead><tr><th>Metric</th><th>Workload</th><th>Round</th><th class="num">Median</th><th class="num">Range</th><th class="num">Runs</th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <figure class="chart" id="effects-chart">
+      <div class="chart-head">
+        <div><h2>Effect of each variant against the control</h2><p>Change against a control measured in the same period. Bars are medians; whiskers span the runs. Grey means the runs disagreed on direction.</p></div>
+        <div class="legend" aria-hidden="true"><span><i class="swatch" style="--swatch:var(--after)"></i>Faster</span><span><i class="swatch" style="--swatch:var(--slower)"></i>Slower</span><span><i class="swatch" style="--swatch:var(--noeffect)"></i>No consistent effect</span></div>
+      </div>
+      <div class="effects" id="effects"></div>
+    </figure>
+
+    <section>
+      <h2 id="hypothesis-title">Hypotheses</h2>
+      <p>Claims are recorded before measurement and tested against the declared baseline. Results smaller than environmental variation remain inconclusive.</p>
+      <div class="table-wrap"><table class="hypothesis-table"><thead><tr><th>#</th><th>Hypothesis</th><th>Measured</th><th>Verdict</th></tr></thead><tbody id="hypotheses"></tbody></table></div>
+    </section>
+
+    <section>
+      <h2>Outcomes</h2>
+      <div class="outcome-grid">
+        <article class="card"><h3>Retained changes</h3><div id="retainedChanges"></div></article>
+        <article class="card"><h3>Decisions required</h3><div id="decisions"></div></article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Environment and baseline epoch</h2>
+      <div class="panel"><dl id="environment"></dl></div>
+    </section>
+
+    <section>
+      <h2>Hotspot evidence</h2>
+      <div class="evidence-grid" id="hotspots"></div>
+    </section>
+
+    <section>
+      <h2>Investigation-area coverage</h2>
+      <div class="evidence-grid" id="areas"></div>
+    </section>
+
+    <section>
+      <h2>Correctness evidence</h2>
+      <div class="panel" id="correctness"></div>
+    </section>
+
+    <section>
+      <h2>Generated-code observations</h2>
+      <div class="panel" id="generatedCode"></div>
+    </section>
+
+    <section>
+      <h2>Threats to validity</h2>
+      <div class="panel" id="validityThreats"></div>
+    </section>
+
+    <section>
+      <h2>Reproduction procedure</h2>
+      <div class="panel" id="reproduction"></div>
+    </section>
+
+    <section>
+      <h2>Artifacts</h2>
+      <div class="panel" id="artifacts"></div>
+    </section>
+
+    <footer>Generated from the Scientific Performance standard report template.</footer>
+  </main>
+
+  <script id="report-data" type="application/json">{"title":"Chunk serialization and caller-memory deserialization","generatedAt":"2026-09-29T15:02:00+02:00","status":"complete","scope":"Versioned UInt32 and generic chunk packets on .NET 10 x64, with 1, 4, and 16 channels over uniform, sparse, clustered, and random level-5 data.","question":"Can chunk serialization and deserialization materially reduce latency and allocations while preserving packet compatibility and accepting reusable caller-owned memory?","primaryMetric":"ns/op","summary":{"baseline":217.46,"final":53.811,"unit":"ns/op","changePercent":-75.25,"headline":"Allocation-free 16-channel envelope parsing reduced mean latency by 75.3% versus owned construction; full validation remains an explicit second step."},"scorecards":[{"title":"16-channel envelope parse","value":53.811,"unit":"ns/op","wallChangePercent":-75.25,"baseline":217.46,"secondaryMetric":"allocated bytes","secondaryChangePercent":-100.0,"progression":"Owned construction 217.460 ns and 336 B → borrowed envelope view 53.811 ns and 0 B"},{"title":"16-channel sparse full validation","value":587158.496,"unit":"ns/op","wallChangePercent":-47.43,"baseline":1116950.651,"secondaryMetric":"allocated bytes","secondaryChangePercent":-100.0,"progression":"Owned construction 1.117 ms and 336 B → borrowed full validation 587.158 us and 0 B"},{"title":"16-channel uniform loaded serialization","value":10.868,"unit":"ns/op","wallChangePercent":-86.97,"baseline":83.411,"progression":"Per-channel reconstruction 83.411 ns → retained-packet copy 10.868 ns"},{"title":"16-channel clustered loaded serialization","value":15.449,"unit":"ns/op","wallChangePercent":-78.9,"baseline":73.214,"progression":"Per-channel reconstruction 73.214 ns → retained-packet copy 15.449 ns"}],"environment":[{"label":"Revision","value":"85d7a99 plus the recorded working-tree candidate"},{"label":"Controlled epochs","value":"E-002 candidate matrix; E-003 final segmented-copy falsification"},{"label":"Runtime","value":".NET 10.0.12, X64 RyuJIT x86-64-v3"},{"label":"Benchmark harness","value":"BenchmarkDotNet 0.16.0-preview.1, ShortRun, 1 launch, 3 warmups, 3 measured iterations"},{"label":"CPU","value":"AMD Ryzen 9 5950X, 16 physical / 32 logical cores, AVX2"},{"label":"OS","value":"Windows 11 10.0.26200.9457"},{"label":"GC","value":"Concurrent workstation"},{"label":"Coordination","value":"Atomic host-wide D:\\Temp\\BenchmarkLock.txt; foreign builds were allowed to exit before measurement"}],"hotspots":[{"name":"OctreeChunk.FromEncoded","location":"src/Tedd.Voxtree/OctreeChunk.cs","evidence":"Source-path inspection and controlled owned-versus-view benchmarks","limit":"full structural validation, descriptor allocation, descriptor rescan, and empty-state derivation"},{"name":"OctreeChunk.CopyEncodedTo","location":"src/Tedd.Voxtree/OctreeChunk.cs","evidence":"Contemporaneous per-channel and retained-packet BenchmarkDotNet controls","limit":"packet reconstruction for small loaded packets; runtime-dependent transfer behavior for large packets"}],"areas":[{"name":"Caller-owned memory","boundary":"Reusable destination spans and stack-bound packet views","evidence":"0 B allocated by OctreeChunkSpan parse and validation benchmarks","catalogue":"optimize-code: Memory M1 and M7","hypothesisIds":["H-004","H-006"],"disposition":"Retained"},{"name":"Repeated traversal","boundary":"Serialized length and empty-state derivation","evidence":"Immutable length cache and validated storage metadata remove redundant descriptor/spatial walks","catalogue":"optimize-code: Runtime R2 and Memory M7","hypothesisIds":["H-001","H-002","H-007"],"disposition":"Retained with mixed isolated timing evidence"},{"name":"Packet transfer granularity","boundary":"Loaded-packet serialization","evidence":"Small packets improved materially; one large copy and segmented copies failed the regression guardrail","catalogue":"optimize-code: Memory M7","hypothesisIds":["H-003","H-005","H-009"],"disposition":"Bounded fast path retained; general mechanisms rejected"},{"name":"Generic packet parity","boundary":"UInt32 and exact-width generic chunk formats","evidence":"Shared API structure plus generic round-trip and structural-validation tests","catalogue":"optimize-code: Runtime R2","hypothesisIds":["H-008"],"disposition":"Retained"}],"series":[{"title":"Borrowed view versus owned deserialization","description":"Means from controlled epoch E-002. Envelope parsing validates packet framing and channel headers only; full validation additionally checks every channel tree.","unit":"ns/op","lowerIsBetter":true,"rounds":["Owned construction","Borrowed view"],"rows":[{"label":"16 channels, uniform envelope","detail":"Basic framing/header parse; 336 B versus 0 B","measurements":[{"median":217.46,"n":3},{"median":53.811,"n":3,"changePercent":-75.25}]},{"label":"16 channels, random envelope","detail":"Basic framing/header parse; 336 B versus 0 B","measurements":[{"median":207.073,"n":3},{"median":71.754,"n":3,"changePercent":-65.35}]},{"label":"16 channels, sparse full validation","detail":"Equivalent structural validation; 336 B versus 0 B","measurements":[{"median":1116950.651,"n":3},{"median":587158.496,"n":3,"changePercent":-47.43}]},{"label":"4 channels, random full validation","detail":"Equivalent structural validation; 144 B versus 0 B","measurements":[{"median":57.329,"n":3},{"median":42.836,"n":3,"changePercent":-25.28}]}]},{"title":"Small loaded-packet serialization","description":"Controlled E-002 means for packets below the retained 64 KiB limit. The manual control omitted legacy safety work, so these are conservative gains.","unit":"ns/op","lowerIsBetter":true,"rounds":["Per-channel control","Retained-packet copy"],"rows":[{"label":"4 channels, uniform","detail":"Small packet","measurements":[{"median":25.693,"n":3},{"median":10.207,"n":3,"changePercent":-60.27}]},{"label":"16 channels, uniform","detail":"Small packet","measurements":[{"median":83.411,"n":3},{"median":10.868,"n":3,"changePercent":-86.97}]},{"label":"4 channels, clustered","detail":"Small packet","measurements":[{"median":22.803,"n":3},{"median":11.136,"n":3,"changePercent":-51.16}]},{"label":"16 channels, clustered","detail":"Small packet","measurements":[{"median":73.214,"n":3},{"median":15.449,"n":3,"changePercent":-78.9}]}]}],"effectGroups":[{"name":"Rejected segmented copy, random packets","control":"Corrected legacy-safe per-channel control, same E-003 process","items":[{"hypothesisId":"H-009","label":"1 channel","effect":1.2717,"range":[1.2717,1.2717],"note":"6.096 us versus 2.683 us; mean effect"},{"hypothesisId":"H-009","label":"4 channels","effect":0.0162,"range":[0.0162,0.0162],"note":"14.178 us versus 13.952 us; mean effect"},{"hypothesisId":"H-009","label":"16 channels","effect":0.5382,"range":[0.5382,0.5382],"note":"106.564 us versus 69.281 us; mean effect"}]},{"name":"Borrowed full validation, representative cases","control":"Owned validated construction in E-002","items":[{"hypothesisId":"H-004","label":"16-channel sparse","effect":-0.4743,"range":[-0.4743,-0.4743],"secondaryMetric":"alloc","secondaryEffect":-1.0,"note":"587.158 us, 0 B; mean effect"},{"hypothesisId":"H-004","label":"4-channel random","effect":-0.2528,"range":[-0.2528,-0.2528],"secondaryMetric":"alloc","secondaryEffect":-1.0,"note":"42.836 ns, 0 B; mean effect"},{"hypothesisId":"H-004","label":"4-channel clustered","effect":0.0881,"range":[0.0881,0.0881],"secondaryMetric":"alloc","secondaryEffect":-1.0,"note":"Full validation regression; envelope parse remains 20.573 ns; mean effect"}]}],"hypotheses":[{"id":"H-001","claim":"Repeated serialized-length calculation adds a descriptor traversal to every write.","mechanism":"Immutable metadata caching","prediction":"SerializedLength becomes O(1) without changing packet bytes.","falsification":"Changed length or packet output, or construction cost that defeats write reuse.","change":"Cache the checked packet length when the immutable chunk is constructed.","result":"Length and packet equality tests pass; the traversal is removed, although its isolated latency was not separately benchmarked.","state":"retained","decision":"Adopted","evidence":["raw/candidate/","../../src/Tedd.Voxtree.Tests/ChunkSerializationTests.cs"],"risks":["Adds one integer field to owned chunks."]},{"id":"H-002","claim":"Owned deserialization repeats semantic traversal to derive IsEmpty after structural validation.","mechanism":"Validated storage metadata","prediction":"Exact empty-state parity with less tree traversal.","falsification":"Any IsEmpty mismatch across uniform, tree, or dense encodings.","change":"Derive empty state from validated canonical storage kinds and dense bytes.","result":"Existing and new round-trip tests preserve IsEmpty; isolated timing remains mixed by pattern.","state":"retained","decision":"Adopted","evidence":["raw/candidate/","../../src/Tedd.Voxtree.Tests/ChunkSerializationTests.cs"],"risks":["Depends on the existing canonical-tree validation invariant."]},{"id":"H-003","claim":"One general contiguous copy is faster than per-channel packet reconstruction.","mechanism":"Copy and header-store elimination","prediction":"At least 15% faster across loaded packets.","falsification":"Any representative regression beyond 5%.","change":"Screened unrestricted retained-packet copying.","result":"Rejected for large random packets; the 16-channel case reached 1.917 ms versus 66.354 us screening control.","effectPercent":2789.39,"state":"rejected","decision":"Rejected","evidence":["raw/candidate/results/Tedd.Voxtree.Benchmark.Tests.ChunkSerialization-report.csv"],"risks":[]},{"id":"H-004","claim":"A stack-bound packet view provides allocation-free caller-memory deserialization.","mechanism":"ref struct over ReadOnlySpan\u003cbyte\u003e","prediction":"0 B allocated and materially lower envelope-parse latency.","falsification":"Any allocation, lifetime ambiguity, or malformed-envelope acceptance.","change":"Add OctreeChunkSpan and OctreeChunkSpan\u003cT\u003e with envelope parsing and explicit full validation.","result":"0 B in all 12 workloads; envelope parsing improved 65.4-99.99% versus owned construction.","effectPercent":-75.25,"state":"retained","decision":"Adopted","evidence":["raw/candidate/results/Tedd.Voxtree.Benchmark.Tests.ChunkDeserialization-report.csv"],"risks":["Caller must keep packet memory alive and immutable.","Untrusted tree payloads require IsWellFormed()."]},{"id":"H-005","claim":"Retained packet identity accelerates loaded-chunk serialization.","mechanism":"Bypass header reconstruction for bounded packets","prediction":"At least 15% faster with no large-packet regression.","falsification":"Any representative regression beyond 5%.","change":"Retain exact packet ReadOnlyMemory and use one copy only when length is at most 64 KiB.","result":"Small 4/16-channel uniform and clustered packets improved 51.2-87.0%; unbounded copying was rejected.","effectPercent":-86.97,"state":"retained","decision":"Bounded adoption","evidence":["raw/candidate/results/Tedd.Voxtree.Benchmark.Tests.ChunkSerialization-report.csv","raw/candidate-threshold/"],"risks":["Large packets intentionally retain the existing per-channel path."]},{"id":"H-006","claim":"Stack-only views can remove owned descriptor allocation without unsafe lifetime transfer.","mechanism":"On-demand channel offset scanning","prediction":"0 B allocated with explicit caller-memory lifetime documentation.","falsification":"Escaping spans, hidden allocation, or ambiguous ownership.","change":"Keep only the packet span, levels, and channel count in the view.","result":"Allocation diagnoser reports 0 B; ref-struct lifetime is compiler-enforced.","effectPercent":-100.0,"state":"retained","decision":"Adopted","evidence":["raw/candidate/results/Tedd.Voxtree.Benchmark.Tests.ChunkDeserialization-report.csv"],"risks":["Random channel access scans preceding length fields."]},{"id":"H-007","claim":"Dense empty-state detection can use raw validated bytes instead of a spatial query.","mechanism":"Vectorized byte nonzero search","prediction":"Exact bitwise-empty semantics and reduced query overhead.","falsification":"Bitwise nonzero values classified as empty.","change":"Use IndexOfAnyExcept on .NET 10+ with a scalar netstandard fallback.","result":"Correctness passed for all target frameworks; end-to-end timing is pattern-dependent.","state":"retained","decision":"Adopted","evidence":["../../src/Tedd.Voxtree.Tests/ChunkSerializationTests.cs"],"risks":[]},{"id":"H-008","claim":"UInt32 and generic packets can expose equivalent reuse APIs without format divergence.","mechanism":"Parallel exact-width codec dispatch","prediction":"Identical ownership and validation behavior for both packet versions.","falsification":"Generic round-trip or malformed-input divergence.","change":"Add generic view, capacity, copy, retained-data, and empty-state paths.","result":"Generic exact-value, round-trip, and structural validation tests pass on net8.0, net10.0, and net11.0.","state":"retained","decision":"Adopted","evidence":["../../src/Tedd.Voxtree.Tests/ChunkSerializationTests.cs"],"risks":[]},{"id":"H-009","parentId":"H-003","claim":"64 KiB segmented copies avoid the runtime's large-copy regime.","mechanism":"Bounded copy granularity","prediction":"Within 5% of corrected control at 1, 4, and 16 random channels.","falsification":"Any case regresses more than 5%.","change":"Screened repeated 64 KiB span copies over the retained packet.","result":"Rejected: +127.2% at one channel and +53.8% at sixteen channels.","effectPercent":53.82,"state":"rejected","decision":"Rejected","evidence":["raw/final-segmented/results/Tedd.Voxtree.Benchmark.Tests.ChunkSerialization-report.csv"],"risks":[]}],"retainedChanges":["Reusable caller destinations through GetMaximumSerializedLength and TryCopyEncodedTo.","Allocation-free OctreeChunkSpan and OctreeChunkSpan\u003cT\u003e views over caller-owned packet memory.","Separate inexpensive envelope parsing from explicit full structural validation.","Retain exact loaded packet memory and expose it through TryGetSerializedData.","Use the retained-packet copy fast path only for packets at or below 64 KiB.","Cache immutable serialized length and derive IsEmpty from validated storage metadata."],"decisions":["Untrusted borrowed packets must call IsWellFormed before channel-tree use.","Large loaded packets retain per-channel serialization; unrestricted and segmented copies failed the regression guardrail.","The packet wire formats remain version 1 and version 2 without byte changes."],"correctness":["924 target-specific tests passed: 307 net8.0, 308 net10.0, and 309 net11.0.","Reusable destination failure returns false, writes zero bytes, and preserves the destination.","Loaded-packet aliasing, overlap rejection, exact packet copying, generic exact values, truncation rejection, and zero allocation are covered.","Local NuGet package inspection confirmed assemblies and XML documentation for netstandard2.1, net10.0, and net11.0 plus required package documents."],"generatedCode":[],"validityThreats":["BenchmarkDotNet ShortRun uses three measured iterations; nanosecond-scale confidence intervals can be broad.","Exploratory epoch E-001 overlapped a subsequently introduced host lock and used misleading multi-channel pattern perturbations; it is excluded from acceptance decisions.","The E-002 manual serialization control omitted legacy safety work, so only candidate wins against it are treated as conservative screening evidence.","Envelope parsing is intentionally not equivalent to full structural validation; the report labels these tiers separately.","Full borrowed validation regressed in 3 of 12 workloads, including +8.8% for four-channel clustered data; callers choose it primarily for zero allocation and caller-memory ownership.","No generated-code claim was retained, so disassembly was not required."],"reproduction":["Acquire D:\\Temp\\BenchmarkLock.txt atomically and verify the host has no active build, test, profiler, or benchmark process.","Run: dotnet test src\\Tedd.Voxtree.Tests\\Tedd.Voxtree.Tests.csproj -c Release --nologo","From src\\Tedd.Voxtree.Benchmark run the E-002 command recorded in README.md.","For H-009 run: dotnet run -c Release -f net10.0 --no-build --project Tedd.Voxtree.Benchmark.csproj -- --filter '*SerializeLoaded*Random*' --job short --artifacts '\u003crun\u003e\\raw\\final-segmented'","Run: dotnet pack src\\Tedd.Voxtree\\Tedd.Voxtree.csproj -c Release --no-build -o artifacts\\packages","Release the lock only after every child process exits."],"artifacts":[{"label":"Investigation ledger","path":"README.md"},{"label":"Excluded exploratory baseline","path":"raw/baseline/"},{"label":"Controlled 72-scenario matrix","path":"raw/candidate/"},{"label":"64 KiB fallback screening","path":"raw/candidate-threshold/"},{"label":"Rejected segmented-copy epoch","path":"raw/final-segmented/"}]}</script>
+  <script>
+    (() => {
+      "use strict";
+      const data = JSON.parse(document.getElementById("report-data").textContent);
+      const $ = id => document.getElementById(id);
+      const text = (node, value) => { node.textContent = value ?? ""; return node; };
+      const el = (tag, className, value) => {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        if (value !== undefined) text(node, value);
+        return node;
+      };
+      const number = value => Number.isFinite(value) ? value.toLocaleString(undefined, { maximumFractionDigits: 3 }) : "—";
+      const signedPercent = value => Number.isFinite(value) ? `${value > 0 ? "+" : value < 0 ? "−" : ""}${number(Math.abs(value))}%` : "—";
+      const effectPercent = value => signedPercent(value * 100);
+      const roundColors = ["var(--before)", "var(--mid)", "var(--after)", "#123d72", "#739ecf"];
+
+      function niceMax(value) {
+        if (!Number.isFinite(value) || value <= 0) return 1;
+        const magnitude = 10 ** Math.floor(Math.log10(value));
+        for (const step of [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) {
+          if (step * magnitude >= value) return step * magnitude;
+        }
+        return 10 * magnitude;
+      }
+
+      function safeHref(value) {
+        if (typeof value !== "string") return "#";
+        if (!/^[a-z][a-z0-9+.-]*:/i.test(value)) return value;
+        try {
+          const protocol = new URL(value).protocol;
+          return ["http:", "https:", "file:"].includes(protocol) ? value : "#";
+        } catch { return "#"; }
+      }
+
+      document.title = `${data.title} — Scientific performance report`;
+      text($("eyebrow"), `${data.primaryMetric} · performance investigation`);
+      text($("title"), data.title);
+      text($("headline"), data.summary.headline);
+      text($("status"), data.status.replaceAll("-", " "));
+      text($("generated"), `Generated ${data.generatedAt}`);
+      text($("scope"), data.scope);
+      text($("question"), data.question);
+
+      const scorecards = $("scorecards");
+      if (!data.scorecards.length) {
+        scorecards.append(el("p", "empty", "No headline measurements recorded."));
+      }
+      for (const item of data.scorecards) {
+        const card = el("article", "kpi");
+        card.append(el("div", "kpi-label", item.title));
+        const value = el("div", "kpi-value", number(item.value));
+        value.append(el("small", "", item.unit));
+        card.append(value);
+        const delta = el("div", "kpi-delta");
+        if (Number.isFinite(item.wallChangePercent)) {
+          const higherIsBetter = item.higherIsBetter === true;
+          const good = higherIsBetter ? item.wallChangePercent > 0 : item.wallChangePercent < 0;
+          const arrow = item.wallChangePercent > 0 ? "▲" : item.wallChangePercent < 0 ? "▼" : "◆";
+          const primary = el("strong", good ? "good" : item.wallChangePercent === 0 ? "" : "bad", `${arrow} ${signedPercent(item.wallChangePercent)} ${item.changeLabel || "wall"}`);
+          delta.append(primary);
+          if (Number.isFinite(item.baseline)) delta.append(document.createTextNode(` from ${number(item.baseline)} ${item.unit}`));
+        }
+        if (item.secondaryMetric && Number.isFinite(item.secondaryChangePercent)) {
+          delta.append(document.createTextNode(` · ${item.secondaryMetric} ${signedPercent(item.secondaryChangePercent)}`));
+        }
+        card.append(delta);
+        if (item.progression) card.append(el("div", "kpi-steps", item.progression));
+        scorecards.append(card);
+      }
+
+      function addGrid(track, maximum) {
+        const step = niceMax(maximum) / 4;
+        for (let value = 0; value <= maximum + step / 10; value += step) {
+          const line = el("i", `gridline${value === 0 ? " zero" : ""}`);
+          line.style.left = `${value / maximum * 100}%`;
+          track.append(line);
+        }
+      }
+
+      function renderSeries(series) {
+        const figure = el("figure", "chart");
+        const head = el("div", "chart-head");
+        const intro = el("div", "");
+        intro.append(el("h2", "", series.title), el("p", "", series.description || `Values in ${series.unit}.`));
+        const legend = el("div", "legend");
+        series.rounds.forEach((round, index) => {
+          const entry = el("span", "");
+          const swatch = el("i", "swatch"); swatch.style.setProperty("--swatch", roundColors[index % roundColors.length]);
+          entry.append(swatch, document.createTextNode(round)); legend.append(entry);
+        });
+        head.append(intro, legend); figure.append(head);
+
+        const plot = el("div", "plot");
+        const maximum = niceMax(Math.max(1, ...series.rows.flatMap(row => row.measurements.map(item => item.max ?? item.median))) * 1.18);
+        for (const row of series.rows) {
+          const rowNode = el("div", "chart-row");
+          const label = el("div", "row-label"); label.append(el("b", "", row.label));
+          if (row.detail) label.append(el("small", "", row.detail));
+          const track = el("div", "track");
+          const plotArea = el("div", "bar-plot-area"); addGrid(plotArea, maximum);
+          row.measurements.forEach((measurement, index) => {
+            const line = el("div", "bar-line");
+            const ratio = Math.max(0, measurement.median / maximum * 100);
+            const bar = el("i", "bar");
+            bar.style.width = `${ratio}%`; bar.style.setProperty("--bar-color", roundColors[index % roundColors.length]);
+            bar.title = `${row.label}, ${series.rounds[index]}: ${number(measurement.median)} ${series.unit}`;
+            line.append(bar);
+            if (Number.isFinite(measurement.min) && Number.isFinite(measurement.max)) {
+              const whisker = el("i", "whisker");
+              whisker.style.left = `${Math.max(0, measurement.min / maximum * 100)}%`;
+              whisker.style.width = `${Math.max(0, (measurement.max - measurement.min) / maximum * 100)}%`;
+              line.append(whisker);
+            }
+            const rangeEnd = Number.isFinite(measurement.max) ? Math.max(measurement.median, measurement.max) : measurement.median;
+            const labelAnchor = Math.max(0, rangeEnd / maximum * 100);
+            const value = el("span", "bar-value"); value.style.left = `calc(${labelAnchor}% + 8px)`;
+            value.append(el("strong", "", `${number(measurement.median)} ${series.unit}`));
+            if (Number.isFinite(measurement.changePercent)) {
+              const improved = series.lowerIsBetter === false ? measurement.changePercent > 0 : measurement.changePercent < 0;
+              value.append(el("span", improved ? "improve" : measurement.changePercent === 0 ? "" : "regress", signedPercent(measurement.changePercent)));
+            }
+            line.append(value); plotArea.append(line);
+          });
+          track.append(plotArea);
+          rowNode.append(label, track); plot.append(rowNode);
+        }
+        const axis = el("div", "axis"); axis.append(el("div", ""));
+        const ticks = el("div", "axis-ticks");
+        const step = maximum / 4;
+        for (let value = 0; value <= maximum + step / 10; value += step) {
+          const tick = el("span", "", number(value)); tick.style.left = `${value / maximum * 100}%`; ticks.append(tick);
+        }
+        axis.append(ticks); plot.append(axis); figure.append(plot);
+        return figure;
+      }
+
+      const charts = $("charts");
+      for (const series of data.series) charts.append(renderSeries(series));
+      if (!data.series.length) {
+        charts.hidden = true;
+        $("measurements-section").hidden = true;
+      }
+
+      const measurementBody = $("measurements-table").querySelector("tbody");
+      for (const series of data.series) {
+        for (const row of series.rows) {
+          row.measurements.forEach((measurement, index) => {
+            const tr = document.createElement("tr");
+            const range = Number.isFinite(measurement.min) && Number.isFinite(measurement.max)
+              ? `${number(measurement.min)}–${number(measurement.max)} ${series.unit}` : "—";
+            tr.append(
+              el("td", "", series.title), el("td", "", row.label), el("td", "", series.rounds[index]),
+              el("td", "num", `${number(measurement.median)} ${series.unit}`), el("td", "num", range),
+              el("td", "num", Number.isFinite(measurement.n) ? number(measurement.n) : "—")
+            );
+            measurementBody.append(tr);
+          });
+        }
+      }
+
+      function effectScale() {
+        const values = data.effectGroups.flatMap(group => group.items.flatMap(item => [item.effect, item.range[0], item.range[1]]));
+        const low = Math.min(-.05, ...values), high = Math.max(.05, ...values);
+        const pad = Math.max(.02, (high - low) * .08);
+        return { min: low - pad, max: high + pad };
+      }
+
+      if (!data.effectGroups.length) $("effects-chart").hidden = true;
+      else {
+        const scale = effectScale();
+        const x = value => (value - scale.min) / (scale.max - scale.min) * 100;
+        const effects = $("effects");
+        for (const group of data.effectGroups) {
+          const groupNode = el("div", "effect-group");
+          const head = el("div", "effect-head"); head.append(el("b", "", group.name));
+          if (group.control) head.append(el("small", "", group.control));
+          groupNode.append(head);
+          for (const item of group.items) {
+            const row = el("div", "effect-row");
+            const label = el("div", "effect-label");
+            if (item.hypothesisId) label.append(el("span", "id", item.hypothesisId));
+            label.append(document.createTextNode(item.label));
+            const track = el("div", "effect-track");
+            const plotArea = el("div", "effect-plot-area");
+            for (let i = 0; i <= 6; i++) {
+              const point = scale.min + (scale.max - scale.min) * i / 6;
+              const grid = el("i", Math.abs(point) < (scale.max - scale.min) / 100 ? "effect-zero" : "effect-grid");
+              grid.style.left = `${x(point)}%`; plotArea.append(grid);
+            }
+            const zero = el("i", "effect-zero"); zero.style.left = `${x(0)}%`; plotArea.append(zero);
+            const start = Math.min(0, item.effect), end = Math.max(0, item.effect);
+            const mixed = item.range[0] <= 0 && item.range[1] >= 0;
+            const direction = mixed ? "mixed" : item.effect < 0 ? "faster" : "slower";
+            const bar = el("i", `effect-bar ${direction}`); bar.style.left = `${x(start)}%`; bar.style.width = `${Math.abs(x(end) - x(start))}%`;
+            bar.title = `${item.label}: ${effectPercent(item.effect)}`; plotArea.append(bar);
+            const whisker = el("i", "effect-whisker"); whisker.style.left = `${x(item.range[0])}%`; whisker.style.width = `${Math.max(0, x(item.range[1]) - x(item.range[0]))}%`; plotArea.append(whisker);
+            const value = el("span", "effect-value");
+            if (item.effect < 0) {
+              const labelAnchor = Math.min(item.effect, item.range[0]);
+              value.dataset.side = "left";
+              value.style.left = `calc(${x(labelAnchor)}% - 8px)`;
+              value.style.transform = "translateX(-100%)";
+            } else {
+              const labelAnchor = Math.max(item.effect, item.range[1]);
+              value.dataset.side = "right";
+              value.style.left = `calc(${x(labelAnchor)}% + 8px)`;
+            }
+            value.append(el("strong", "", effectPercent(item.effect)));
+            if (item.secondaryMetric && Number.isFinite(item.secondaryEffect)) value.append(el("span", "secondary", ` · ${item.secondaryMetric} ${effectPercent(item.secondaryEffect)}`));
+            plotArea.append(value); track.append(plotArea); row.append(label, track); groupNode.append(row);
+          }
+          effects.append(groupNode);
+        }
+        const axis = el("div", "effect-axis"); axis.append(el("div", ""));
+        const ticks = el("div", "axis-ticks");
+        for (let i = 0; i <= 6; i++) {
+          const point = scale.min + (scale.max - scale.min) * i / 6;
+          const tick = el("span", "", effectPercent(point)); tick.style.left = `${x(point)}%`; ticks.append(tick);
+        }
+        axis.append(ticks); effects.append(axis);
+      }
+
+      function updateLabelGutters() {
+        for (const figure of charts.querySelectorAll(".chart")) {
+          let width = 0;
+          for (const label of figure.querySelectorAll(".bar-value")) width = Math.max(width, label.getBoundingClientRect().width);
+          const trackWidth = figure.querySelector(".track")?.getBoundingClientRect().width ?? 0;
+          const gutter = Math.min(Math.ceil(width) + 12, Math.max(0, trackWidth - 160));
+          figure.style.setProperty("--bar-label-gutter", `${gutter}px`);
+        }
+        const effects = $("effects");
+        let left = 0, right = 0;
+        for (const label of effects.querySelectorAll(".effect-value")) {
+          const width = label.getBoundingClientRect().width;
+          if (label.dataset.side === "left") left = Math.max(left, width);
+          else right = Math.max(right, width);
+        }
+        left = Math.ceil(left) + 12;
+        right = Math.ceil(right) + 12;
+        const trackWidth = effects.querySelector(".effect-track")?.getBoundingClientRect().width ?? 0;
+        const budget = Math.max(0, trackWidth - 180);
+        const total = left + right;
+        const factor = total > budget && total > 0 ? budget / total : 1;
+        effects.style.setProperty("--effect-left-gutter", `${Math.floor(left * factor)}px`);
+        effects.style.setProperty("--effect-right-gutter", `${Math.floor(right * factor)}px`);
+      }
+
+      updateLabelGutters();
+      document.fonts?.ready.then(updateLabelGutters);
+      window.addEventListener("resize", updateLabelGutters, { passive: true });
+
+      const hypothesisBody = $("hypotheses");
+      text($("hypothesis-title"), `${data.hypotheses.length} ${data.hypotheses.length === 1 ? "hypothesis" : "hypotheses"}`);
+      if (!data.hypotheses.length) {
+        const row = document.createElement("tr"); const cell = el("td", "empty", "None recorded."); cell.colSpan = 4; row.append(cell); hypothesisBody.append(row);
+      }
+      const icons = { retained: "✓", rejected: "×", inconclusive: "○", "decision-required": "○", pending: "…", blocked: "!", "not-applicable": "—" };
+      for (const item of data.hypotheses) {
+        const row = document.createElement("tr");
+        row.append(el("td", "id", item.id));
+        const claim = el("td", ""); claim.append(document.createTextNode(item.claim));
+        if (item.mechanism) claim.append(el("div", "cell-note", item.mechanism));
+        const measured = el("td", "", item.result || "Not yet measured.");
+        if (item.prediction && !item.result) measured.append(el("div", "cell-note", `Prediction: ${item.prediction}`));
+        const verdict = el("td", ""); verdict.append(el("span", `chip ${item.state}`, `${icons[item.state]} ${item.decision}`));
+        row.append(claim, measured, verdict); hypothesisBody.append(row);
+      }
+
+      function renderList(id, items, ordered = false) {
+        const host = $(id);
+        if (!items.length) { host.append(el("p", "empty", "None recorded.")); return; }
+        const list = document.createElement(ordered ? "ol" : "ul");
+        items.forEach(item => list.append(el("li", "", item))); host.append(list);
+      }
+      renderList("retainedChanges", data.retainedChanges);
+      renderList("decisions", data.decisions);
+      renderList("correctness", data.correctness);
+      renderList("validityThreats", data.validityThreats);
+      renderList("reproduction", data.reproduction, true);
+
+      const environment = $("environment");
+      if (!data.environment.length) environment.replaceWith(el("p", "empty", "None recorded."));
+      else for (const item of data.environment) environment.append(el("dt", "", item.label), el("dd", "", item.value));
+
+      const hotspots = $("hotspots");
+      if (!data.hotspots.length) hotspots.append(el("p", "empty", "None recorded."));
+      for (const item of data.hotspots) {
+        const card = el("article", "card"); card.append(el("h3", "", item.name));
+        if (item.location) card.append(el("div", "small mono", item.location));
+        const shares = [];
+        if (Number.isFinite(item.inclusivePercent)) shares.push(`${number(item.inclusivePercent)}% inclusive`);
+        if (Number.isFinite(item.exclusivePercent)) shares.push(`${number(item.exclusivePercent)}% exclusive`);
+        if (shares.length) card.append(el("div", "metric", shares.join(" · ")));
+        if (item.evidence) card.append(el("p", "", item.evidence));
+        if (item.limit) card.append(el("p", "small", `Suspected limit: ${item.limit}`)); hotspots.append(card);
+      }
+
+      const areas = $("areas");
+      if (!data.areas.length) areas.append(el("p", "empty", "None recorded."));
+      for (const item of data.areas) {
+        const card = el("article", "card"); card.append(el("h3", "", item.name));
+        if (item.boundary) card.append(el("p", "", item.boundary));
+        if (item.evidence) card.append(el("p", "small", `Evidence: ${item.evidence}`));
+        if (item.catalogue) card.append(el("p", "small", `Catalogue: ${item.catalogue}`));
+        if (item.hypothesisIds?.length) card.append(el("div", "metric", item.hypothesisIds.join(" · ")));
+        if (item.disposition) card.append(el("p", "", item.disposition)); areas.append(card);
+      }
+
+      const generated = $("generatedCode");
+      if (!data.generatedCode.length) generated.append(el("p", "empty", "None recorded."));
+      for (const item of data.generatedCode) {
+        const note = el("article", "code-note"); note.append(el("h3", "", `${item.hypothesisId || "Unlinked"}: ${item.summary || "Observation"}`));
+        if (item.before) note.append(el("p", "", `Before: ${item.before}`));
+        if (item.after) note.append(el("p", "", `After: ${item.after}`));
+        if (item.artifact) { const link = el("a", "", item.artifact); link.href = safeHref(item.artifact); note.append(link); }
+        generated.append(note);
+      }
+
+      const artifacts = $("artifacts");
+      if (!data.artifacts.length) artifacts.append(el("p", "empty", "None recorded."));
+      else {
+        const list = document.createElement("ul");
+        for (const item of data.artifacts) {
+          const entry = document.createElement("li"); const link = el("a", "", item.label || item.path);
+          link.href = safeHref(item.path); entry.append(link); list.append(entry);
+        }
+        artifacts.append(list);
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Tedd.Voxtree.Benchmark.Tests.ChunkSerialization-20260929-125442</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.16.0-preview.1, Windows 11 (10.0.26200.9457/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 5950X 3.40GHz, 1 CPU, 32 logical and 16 physical cores
+Memory: 127.91 GB Total, 66.42 GB Available
+.NET SDK 11.0.100-rc.1.26425.128
+  [Host]   : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+  ShortRun : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code>Job=ShortRun  IterationCount=3  LaunchCount=1  
+WarmupCount=3  
+</code></pre>
+
+<table>
+<thead><tr><th>Method           </th><th>ChannelCount</th><th>Pattern</th><th>Mean  </th><th>Error  </th><th>StdDev</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>SerializeToReusedBuffer</td><td>1</td><td>Uniform</td><td>13.89 ns</td><td>0.774 ns</td><td>0.042 ns</td><td>-</td>
+</tr><tr><td>SerializeToReusedBuffer</td><td>1</td><td>Random</td><td>6,210.49 ns</td><td>1,297.739 ns</td><td>71.133 ns</td><td>-</td>
+</tr><tr><td>SerializeToReusedBuffer</td><td>1</td><td>Clustered</td><td>12.58 ns</td><td>1.846 ns</td><td>0.101 ns</td><td>-</td>
+</tr><tr><td>SerializeToReusedBuffer</td><td>4</td><td>Uniform</td><td>133.02 ns</td><td>55.028 ns</td><td>3.016 ns</td><td>-</td>
+</tr><tr><td>SerializeToReusedBuffer</td><td>4</td><td>Random</td><td>18,956.01 ns</td><td>6,484.739 ns</td><td>355.450 ns</td><td>-</td>
+</tr><tr><td>SerializeToReusedBuffer</td><td>4</td><td>Clustered</td><td>131.57 ns</td><td>53.227 ns</td><td>2.918 ns</td><td>-</td>
+</tr><tr><td>SerializeToReusedBuffer</td><td>16</td><td>Uniform</td><td>1,092.50 ns</td><td>538.948 ns</td><td>29.542 ns</td><td>-</td>
+</tr><tr><td>SerializeToReusedBuffer</td><td>16</td><td>Random</td><td>57,833.80 ns</td><td>18,117.808 ns</td><td>993.098 ns</td><td>-</td>
+</tr><tr><td>SerializeToReusedBuffer</td><td>16</td><td>Clustered</td><td>1,074.97 ns</td><td>211.257 ns</td><td>11.580 ns</td><td>-</td>
+</tr></tbody></table>
+</body>
+</html>

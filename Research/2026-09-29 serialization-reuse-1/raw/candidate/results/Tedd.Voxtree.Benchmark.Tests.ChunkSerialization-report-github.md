@@ -1,0 +1,62 @@
+```
+
+BenchmarkDotNet v0.16.0-preview.1, Windows 11 (10.0.26200.9457/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 5950X 3.40GHz, 1 CPU, 32 logical and 16 physical cores
+Memory: 127.91 GB Total, 65.91 GB Available
+.NET SDK 11.0.100-rc.1.26425.128
+  [Host]   : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+  ShortRun : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+
+Job=ShortRun  IterationCount=3  LaunchCount=1  
+WarmupCount=3  
+
+```
+| Method                              | ChannelCount | Pattern   | Mean             | Error           | StdDev        | Ratio | RatioSD | Allocated | Alloc Ratio |
+|------------------------------------ |------------- |---------- |-----------------:|----------------:|--------------:|------:|--------:|----------:|------------:|
+| **SerializeToReusedBuffer**             | **1**            | **Uniform**   |        **15.600 ns** |      **12.7326 ns** |     **0.6979 ns** |  **1.48** |    **0.06** |         **-** |          **NA** |
+| SerializeLoadedPacketToReusedBuffer | 1            | Uniform   |         9.680 ns |       0.8604 ns |     0.0472 ns |  0.92 |    0.00 |         - |          NA |
+| SerializeLoadedPerChannelControl    | 1            | Uniform   |        10.571 ns |       0.4431 ns |     0.0243 ns |  1.00 |    0.00 |         - |          NA |
+|                                     |              |           |                  |                 |               |       |         |           |             |
+| **SerializeToReusedBuffer**             | **1**            | **Sparse**    |       **158.410 ns** |       **0.6430 ns** |     **0.0352 ns** |  **1.01** |    **0.00** |         **-** |          **NA** |
+| SerializeLoadedPacketToReusedBuffer | 1            | Sparse    |       155.004 ns |      11.8032 ns |     0.6470 ns |  0.99 |    0.00 |         - |          NA |
+| SerializeLoadedPerChannelControl    | 1            | Sparse    |       156.191 ns |       2.3866 ns |     0.1308 ns |  1.00 |    0.00 |         - |          NA |
+|                                     |              |           |                  |                 |               |       |         |           |             |
+| **SerializeToReusedBuffer**             | **1**            | **Random**    |     **6,101.367 ns** |     **309.7989 ns** |    **16.9811 ns** |  **2.28** |    **0.01** |         **-** |          **NA** |
+| SerializeLoadedPacketToReusedBuffer | 1            | Random    |     6,245.219 ns |     731.9883 ns |    40.1228 ns |  2.33 |    0.01 |         - |          NA |
+| SerializeLoadedPerChannelControl    | 1            | Random    |     2,676.472 ns |      86.6108 ns |     4.7474 ns |  1.00 |    0.00 |         - |          NA |
+|                                     |              |           |                  |                 |               |       |         |           |             |
+| **SerializeToReusedBuffer**             | **1**            | **Clustered** |        **13.561 ns** |       **4.5033 ns** |     **0.2468 ns** |  **1.34** |    **0.02** |         **-** |          **NA** |
+| SerializeLoadedPacketToReusedBuffer | 1            | Clustered |        10.010 ns |       3.0969 ns |     0.1698 ns |  0.99 |    0.02 |         - |          NA |
+| SerializeLoadedPerChannelControl    | 1            | Clustered |        10.092 ns |       1.7458 ns |     0.0957 ns |  1.00 |    0.00 |         - |          NA |
+|                                     |              |           |                  |                 |               |       |         |           |             |
+| **SerializeToReusedBuffer**             | **4**            | **Uniform**   |        **33.842 ns** |       **4.3088 ns** |     **0.2362 ns** |  **1.32** |    **0.02** |         **-** |          **NA** |
+| SerializeLoadedPacketToReusedBuffer | 4            | Uniform   |        10.207 ns |       5.7962 ns |     0.3177 ns |  0.40 |    0.01 |         - |          NA |
+| SerializeLoadedPerChannelControl    | 4            | Uniform   |        25.693 ns |       6.7191 ns |     0.3683 ns |  1.00 |    0.00 |         - |          NA |
+|                                     |              |           |                  |                 |               |       |         |           |             |
+| **SerializeToReusedBuffer**             | **4**            | **Sparse**    |       **880.294 ns** |     **122.0938 ns** |     **6.6924 ns** |  **1.01** |    **0.01** |         **-** |          **NA** |
+| SerializeLoadedPacketToReusedBuffer | 4            | Sparse    |       815.298 ns |      17.0658 ns |     0.9354 ns |  0.93 |    0.00 |         - |          NA |
+| SerializeLoadedPerChannelControl    | 4            | Sparse    |       873.499 ns |      48.6065 ns |     2.6643 ns |  1.00 |    0.00 |         - |          NA |
+|                                     |              |           |                  |                 |               |       |         |           |             |
+| **SerializeToReusedBuffer**             | **4**            | **Random**    |    **18,781.449 ns** |     **635.7967 ns** |    **34.8502 ns** |  **1.41** |    **0.01** |         **-** |          **NA** |
+| SerializeLoadedPacketToReusedBuffer | 4            | Random    |    13,794.644 ns |     798.0417 ns |    43.7434 ns |  1.04 |    0.01 |         - |          NA |
+| SerializeLoadedPerChannelControl    | 4            | Random    |    13,314.747 ns |   2,754.3703 ns |   150.9763 ns |  1.00 |    0.00 |         - |          NA |
+|                                     |              |           |                  |                 |               |       |         |           |             |
+| **SerializeToReusedBuffer**             | **4**            | **Clustered** |        **30.993 ns** |       **2.1821 ns** |     **0.1196 ns** |  **1.36** |    **0.01** |         **-** |          **NA** |
+| SerializeLoadedPacketToReusedBuffer | 4            | Clustered |        11.136 ns |       0.1986 ns |     0.0109 ns |  0.49 |    0.00 |         - |          NA |
+| SerializeLoadedPerChannelControl    | 4            | Clustered |        22.803 ns |       3.3273 ns |     0.1824 ns |  1.00 |    0.00 |         - |          NA |
+|                                     |              |           |                  |                 |               |       |         |           |             |
+| **SerializeToReusedBuffer**             | **16**           | **Uniform**   |       **112.613 ns** |       **9.7959 ns** |     **0.5369 ns** |  **1.35** |    **0.01** |         **-** |          **NA** |
+| SerializeLoadedPacketToReusedBuffer | 16           | Uniform   |        10.868 ns |       0.3723 ns |     0.0204 ns |  0.13 |    0.00 |         - |          NA |
+| SerializeLoadedPerChannelControl    | 16           | Uniform   |        83.411 ns |      17.0976 ns |     0.9372 ns |  1.00 |    0.00 |         - |          NA |
+|                                     |              |           |                  |                 |               |       |         |           |             |
+| **SerializeToReusedBuffer**             | **16**           | **Sparse**    |     **3,499.236 ns** |      **95.2965 ns** |     **5.2235 ns** |  **1.00** |    **0.00** |         **-** |          **NA** |
+| SerializeLoadedPacketToReusedBuffer | 16           | Sparse    |     3,209.800 ns |     305.7999 ns |    16.7619 ns |  0.92 |    0.00 |         - |          NA |
+| SerializeLoadedPerChannelControl    | 16           | Sparse    |     3,504.340 ns |     132.1310 ns |     7.2425 ns |  1.00 |    0.00 |         - |          NA |
+|                                     |              |           |                  |                 |               |       |         |           |             |
+| **SerializeToReusedBuffer**             | **16**           | **Random**    |    **54,759.914 ns** |   **4,842.7735 ns** |   **265.4488 ns** |  **0.83** |    **0.00** |         **-** |          **NA** |
+| SerializeLoadedPacketToReusedBuffer | 16           | Random    | 1,917,217.057 ns | 163,699.0360 ns | 8,972.8966 ns | 28.89 |    0.16 |         - |          NA |
+| SerializeLoadedPerChannelControl    | 16           | Random    |    66,353.792 ns |   5,509.2593 ns |   301.9811 ns |  1.00 |    0.00 |         - |          NA |
+|                                     |              |           |                  |                 |               |       |         |           |             |
+| **SerializeToReusedBuffer**             | **16**           | **Clustered** |       **104.416 ns** |       **3.3698 ns** |     **0.1847 ns** |  **1.43** |    **0.00** |         **-** |          **NA** |
+| SerializeLoadedPacketToReusedBuffer | 16           | Clustered |        15.449 ns |       1.5329 ns |     0.0840 ns |  0.21 |    0.00 |         - |          NA |
+| SerializeLoadedPerChannelControl    | 16           | Clustered |        73.214 ns |       3.7258 ns |     0.2042 ns |  1.00 |    0.00 |         - |          NA |

@@ -1,0 +1,383 @@
+{
+  "title": "Chunk serialization and caller-memory deserialization",
+  "generatedAt": "2026-09-29T15:02:00+02:00",
+  "status": "complete",
+  "scope": "Versioned UInt32 and generic chunk packets on .NET 10 x64, with 1, 4, and 16 channels over uniform, sparse, clustered, and random level-5 data.",
+  "question": "Can chunk serialization and deserialization materially reduce latency and allocations while preserving packet compatibility and accepting reusable caller-owned memory?",
+  "primaryMetric": "ns/op",
+  "summary": {
+    "baseline": 217.46,
+    "final": 53.811,
+    "unit": "ns/op",
+    "changePercent": -75.25,
+    "headline": "Allocation-free 16-channel envelope parsing reduced mean latency by 75.3% versus owned construction; full validation remains an explicit second step."
+  },
+  "scorecards": [
+    {
+      "title": "16-channel envelope parse",
+      "value": 53.811,
+      "unit": "ns/op",
+      "wallChangePercent": -75.25,
+      "baseline": 217.46,
+      "secondaryMetric": "allocated bytes",
+      "secondaryChangePercent": -100.0,
+      "progression": "Owned construction 217.460 ns and 336 B → borrowed envelope view 53.811 ns and 0 B"
+    },
+    {
+      "title": "16-channel sparse full validation",
+      "value": 587158.496,
+      "unit": "ns/op",
+      "wallChangePercent": -47.43,
+      "baseline": 1116950.651,
+      "secondaryMetric": "allocated bytes",
+      "secondaryChangePercent": -100.0,
+      "progression": "Owned construction 1.117 ms and 336 B → borrowed full validation 587.158 us and 0 B"
+    },
+    {
+      "title": "16-channel uniform loaded serialization",
+      "value": 10.868,
+      "unit": "ns/op",
+      "wallChangePercent": -86.97,
+      "baseline": 83.411,
+      "progression": "Per-channel reconstruction 83.411 ns → retained-packet copy 10.868 ns"
+    },
+    {
+      "title": "16-channel clustered loaded serialization",
+      "value": 15.449,
+      "unit": "ns/op",
+      "wallChangePercent": -78.9,
+      "baseline": 73.214,
+      "progression": "Per-channel reconstruction 73.214 ns → retained-packet copy 15.449 ns"
+    }
+  ],
+  "environment": [
+    {"label": "Revision", "value": "85d7a99 plus the recorded working-tree candidate"},
+    {"label": "Controlled epochs", "value": "E-002 candidate matrix; E-003 final segmented-copy falsification"},
+    {"label": "Runtime", "value": ".NET 10.0.12, X64 RyuJIT x86-64-v3"},
+    {"label": "Benchmark harness", "value": "BenchmarkDotNet 0.16.0-preview.1, ShortRun, 1 launch, 3 warmups, 3 measured iterations"},
+    {"label": "CPU", "value": "AMD Ryzen 9 5950X, 16 physical / 32 logical cores, AVX2"},
+    {"label": "OS", "value": "Windows 11 10.0.26200.9457"},
+    {"label": "GC", "value": "Concurrent workstation"},
+    {"label": "Coordination", "value": "Atomic host-wide D:\\Temp\\BenchmarkLock.txt; foreign builds were allowed to exit before measurement"}
+  ],
+  "hotspots": [
+    {
+      "name": "OctreeChunk.FromEncoded",
+      "location": "src/Tedd.Voxtree/OctreeChunk.cs",
+      "evidence": "Source-path inspection and controlled owned-versus-view benchmarks",
+      "limit": "full structural validation, descriptor allocation, descriptor rescan, and empty-state derivation"
+    },
+    {
+      "name": "OctreeChunk.CopyEncodedTo",
+      "location": "src/Tedd.Voxtree/OctreeChunk.cs",
+      "evidence": "Contemporaneous per-channel and retained-packet BenchmarkDotNet controls",
+      "limit": "packet reconstruction for small loaded packets; runtime-dependent transfer behavior for large packets"
+    }
+  ],
+  "areas": [
+    {
+      "name": "Caller-owned memory",
+      "boundary": "Reusable destination spans and stack-bound packet views",
+      "evidence": "0 B allocated by OctreeChunkSpan parse and validation benchmarks",
+      "catalogue": "optimize-code: Memory M1 and M7",
+      "hypothesisIds": ["H-004", "H-006"],
+      "disposition": "Retained"
+    },
+    {
+      "name": "Repeated traversal",
+      "boundary": "Serialized length and empty-state derivation",
+      "evidence": "Immutable length cache and validated storage metadata remove redundant descriptor/spatial walks",
+      "catalogue": "optimize-code: Runtime R2 and Memory M7",
+      "hypothesisIds": ["H-001", "H-002", "H-007"],
+      "disposition": "Retained with mixed isolated timing evidence"
+    },
+    {
+      "name": "Packet transfer granularity",
+      "boundary": "Loaded-packet serialization",
+      "evidence": "Small packets improved materially; one large copy and segmented copies failed the regression guardrail",
+      "catalogue": "optimize-code: Memory M7",
+      "hypothesisIds": ["H-003", "H-005", "H-009"],
+      "disposition": "Bounded fast path retained; general mechanisms rejected"
+    },
+    {
+      "name": "Generic packet parity",
+      "boundary": "UInt32 and exact-width generic chunk formats",
+      "evidence": "Shared API structure plus generic round-trip and structural-validation tests",
+      "catalogue": "optimize-code: Runtime R2",
+      "hypothesisIds": ["H-008"],
+      "disposition": "Retained"
+    }
+  ],
+  "series": [
+    {
+      "title": "Borrowed view versus owned deserialization",
+      "description": "Means from controlled epoch E-002. Envelope parsing validates packet framing and channel headers only; full validation additionally checks every channel tree.",
+      "unit": "ns/op",
+      "lowerIsBetter": true,
+      "rounds": ["Owned construction", "Borrowed view"],
+      "rows": [
+        {
+          "label": "16 channels, uniform envelope",
+          "detail": "Basic framing/header parse; 336 B versus 0 B",
+          "measurements": [
+            {"median": 217.46, "n": 3},
+            {"median": 53.811, "n": 3, "changePercent": -75.25}
+          ]
+        },
+        {
+          "label": "16 channels, random envelope",
+          "detail": "Basic framing/header parse; 336 B versus 0 B",
+          "measurements": [
+            {"median": 207.073, "n": 3},
+            {"median": 71.754, "n": 3, "changePercent": -65.35}
+          ]
+        },
+        {
+          "label": "16 channels, sparse full validation",
+          "detail": "Equivalent structural validation; 336 B versus 0 B",
+          "measurements": [
+            {"median": 1116950.651, "n": 3},
+            {"median": 587158.496, "n": 3, "changePercent": -47.43}
+          ]
+        },
+        {
+          "label": "4 channels, random full validation",
+          "detail": "Equivalent structural validation; 144 B versus 0 B",
+          "measurements": [
+            {"median": 57.329, "n": 3},
+            {"median": 42.836, "n": 3, "changePercent": -25.28}
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Small loaded-packet serialization",
+      "description": "Controlled E-002 means for packets below the retained 64 KiB limit. The manual control omitted legacy safety work, so these are conservative gains.",
+      "unit": "ns/op",
+      "lowerIsBetter": true,
+      "rounds": ["Per-channel control", "Retained-packet copy"],
+      "rows": [
+        {
+          "label": "4 channels, uniform",
+          "detail": "Small packet",
+          "measurements": [
+            {"median": 25.693, "n": 3},
+            {"median": 10.207, "n": 3, "changePercent": -60.27}
+          ]
+        },
+        {
+          "label": "16 channels, uniform",
+          "detail": "Small packet",
+          "measurements": [
+            {"median": 83.411, "n": 3},
+            {"median": 10.868, "n": 3, "changePercent": -86.97}
+          ]
+        },
+        {
+          "label": "4 channels, clustered",
+          "detail": "Small packet",
+          "measurements": [
+            {"median": 22.803, "n": 3},
+            {"median": 11.136, "n": 3, "changePercent": -51.16}
+          ]
+        },
+        {
+          "label": "16 channels, clustered",
+          "detail": "Small packet",
+          "measurements": [
+            {"median": 73.214, "n": 3},
+            {"median": 15.449, "n": 3, "changePercent": -78.9}
+          ]
+        }
+      ]
+    }
+  ],
+  "effectGroups": [
+    {
+      "name": "Rejected segmented copy, random packets",
+      "control": "Corrected legacy-safe per-channel control, same E-003 process",
+      "items": [
+        {"hypothesisId": "H-009", "label": "1 channel", "effect": 1.2717, "range": [1.2717, 1.2717], "note": "6.096 us versus 2.683 us; mean effect"},
+        {"hypothesisId": "H-009", "label": "4 channels", "effect": 0.0162, "range": [0.0162, 0.0162], "note": "14.178 us versus 13.952 us; mean effect"},
+        {"hypothesisId": "H-009", "label": "16 channels", "effect": 0.5382, "range": [0.5382, 0.5382], "note": "106.564 us versus 69.281 us; mean effect"}
+      ]
+    },
+    {
+      "name": "Borrowed full validation, representative cases",
+      "control": "Owned validated construction in E-002",
+      "items": [
+        {"hypothesisId": "H-004", "label": "16-channel sparse", "effect": -0.4743, "range": [-0.4743, -0.4743], "secondaryMetric": "alloc", "secondaryEffect": -1.0, "note": "587.158 us, 0 B; mean effect"},
+        {"hypothesisId": "H-004", "label": "4-channel random", "effect": -0.2528, "range": [-0.2528, -0.2528], "secondaryMetric": "alloc", "secondaryEffect": -1.0, "note": "42.836 ns, 0 B; mean effect"},
+        {"hypothesisId": "H-004", "label": "4-channel clustered", "effect": 0.0881, "range": [0.0881, 0.0881], "secondaryMetric": "alloc", "secondaryEffect": -1.0, "note": "Full validation regression; envelope parse remains 20.573 ns; mean effect"}
+      ]
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "H-001",
+      "claim": "Repeated serialized-length calculation adds a descriptor traversal to every write.",
+      "mechanism": "Immutable metadata caching",
+      "prediction": "SerializedLength becomes O(1) without changing packet bytes.",
+      "falsification": "Changed length or packet output, or construction cost that defeats write reuse.",
+      "change": "Cache the checked packet length when the immutable chunk is constructed.",
+      "result": "Length and packet equality tests pass; the traversal is removed, although its isolated latency was not separately benchmarked.",
+      "state": "retained",
+      "decision": "Adopted",
+      "evidence": ["raw/candidate/", "../../src/Tedd.Voxtree.Tests/ChunkSerializationTests.cs"],
+      "risks": ["Adds one integer field to owned chunks."]
+    },
+    {
+      "id": "H-002",
+      "claim": "Owned deserialization repeats semantic traversal to derive IsEmpty after structural validation.",
+      "mechanism": "Validated storage metadata",
+      "prediction": "Exact empty-state parity with less tree traversal.",
+      "falsification": "Any IsEmpty mismatch across uniform, tree, or dense encodings.",
+      "change": "Derive empty state from validated canonical storage kinds and dense bytes.",
+      "result": "Existing and new round-trip tests preserve IsEmpty; isolated timing remains mixed by pattern.",
+      "state": "retained",
+      "decision": "Adopted",
+      "evidence": ["raw/candidate/", "../../src/Tedd.Voxtree.Tests/ChunkSerializationTests.cs"],
+      "risks": ["Depends on the existing canonical-tree validation invariant."]
+    },
+    {
+      "id": "H-003",
+      "claim": "One general contiguous copy is faster than per-channel packet reconstruction.",
+      "mechanism": "Copy and header-store elimination",
+      "prediction": "At least 15% faster across loaded packets.",
+      "falsification": "Any representative regression beyond 5%.",
+      "change": "Screened unrestricted retained-packet copying.",
+      "result": "Rejected for large random packets; the 16-channel case reached 1.917 ms versus 66.354 us screening control.",
+      "effectPercent": 2789.39,
+      "state": "rejected",
+      "decision": "Rejected",
+      "evidence": ["raw/candidate/results/Tedd.Voxtree.Benchmark.Tests.ChunkSerialization-report.csv"],
+      "risks": []
+    },
+    {
+      "id": "H-004",
+      "claim": "A stack-bound packet view provides allocation-free caller-memory deserialization.",
+      "mechanism": "ref struct over ReadOnlySpan<byte>",
+      "prediction": "0 B allocated and materially lower envelope-parse latency.",
+      "falsification": "Any allocation, lifetime ambiguity, or malformed-envelope acceptance.",
+      "change": "Add OctreeChunkSpan and OctreeChunkSpan<T> with envelope parsing and explicit full validation.",
+      "result": "0 B in all 12 workloads; envelope parsing improved 65.4-99.99% versus owned construction.",
+      "effectPercent": -75.25,
+      "state": "retained",
+      "decision": "Adopted",
+      "evidence": ["raw/candidate/results/Tedd.Voxtree.Benchmark.Tests.ChunkDeserialization-report.csv"],
+      "risks": ["Caller must keep packet memory alive and immutable.", "Untrusted tree payloads require IsWellFormed()."]
+    },
+    {
+      "id": "H-005",
+      "claim": "Retained packet identity accelerates loaded-chunk serialization.",
+      "mechanism": "Bypass header reconstruction for bounded packets",
+      "prediction": "At least 15% faster with no large-packet regression.",
+      "falsification": "Any representative regression beyond 5%.",
+      "change": "Retain exact packet ReadOnlyMemory and use one copy only when length is at most 64 KiB.",
+      "result": "Small 4/16-channel uniform and clustered packets improved 51.2-87.0%; unbounded copying was rejected.",
+      "effectPercent": -86.97,
+      "state": "retained",
+      "decision": "Bounded adoption",
+      "evidence": ["raw/candidate/results/Tedd.Voxtree.Benchmark.Tests.ChunkSerialization-report.csv", "raw/candidate-threshold/"],
+      "risks": ["Large packets intentionally retain the existing per-channel path."]
+    },
+    {
+      "id": "H-006",
+      "claim": "Stack-only views can remove owned descriptor allocation without unsafe lifetime transfer.",
+      "mechanism": "On-demand channel offset scanning",
+      "prediction": "0 B allocated with explicit caller-memory lifetime documentation.",
+      "falsification": "Escaping spans, hidden allocation, or ambiguous ownership.",
+      "change": "Keep only the packet span, levels, and channel count in the view.",
+      "result": "Allocation diagnoser reports 0 B; ref-struct lifetime is compiler-enforced.",
+      "effectPercent": -100.0,
+      "state": "retained",
+      "decision": "Adopted",
+      "evidence": ["raw/candidate/results/Tedd.Voxtree.Benchmark.Tests.ChunkDeserialization-report.csv"],
+      "risks": ["Random channel access scans preceding length fields."]
+    },
+    {
+      "id": "H-007",
+      "claim": "Dense empty-state detection can use raw validated bytes instead of a spatial query.",
+      "mechanism": "Vectorized byte nonzero search",
+      "prediction": "Exact bitwise-empty semantics and reduced query overhead.",
+      "falsification": "Bitwise nonzero values classified as empty.",
+      "change": "Use IndexOfAnyExcept on .NET 10+ with a scalar netstandard fallback.",
+      "result": "Correctness passed for all target frameworks; end-to-end timing is pattern-dependent.",
+      "state": "retained",
+      "decision": "Adopted",
+      "evidence": ["../../src/Tedd.Voxtree.Tests/ChunkSerializationTests.cs"],
+      "risks": []
+    },
+    {
+      "id": "H-008",
+      "claim": "UInt32 and generic packets can expose equivalent reuse APIs without format divergence.",
+      "mechanism": "Parallel exact-width codec dispatch",
+      "prediction": "Identical ownership and validation behavior for both packet versions.",
+      "falsification": "Generic round-trip or malformed-input divergence.",
+      "change": "Add generic view, capacity, copy, retained-data, and empty-state paths.",
+      "result": "Generic exact-value, round-trip, and structural validation tests pass on net8.0, net10.0, and net11.0.",
+      "state": "retained",
+      "decision": "Adopted",
+      "evidence": ["../../src/Tedd.Voxtree.Tests/ChunkSerializationTests.cs"],
+      "risks": []
+    },
+    {
+      "id": "H-009",
+      "parentId": "H-003",
+      "claim": "64 KiB segmented copies avoid the runtime's large-copy regime.",
+      "mechanism": "Bounded copy granularity",
+      "prediction": "Within 5% of corrected control at 1, 4, and 16 random channels.",
+      "falsification": "Any case regresses more than 5%.",
+      "change": "Screened repeated 64 KiB span copies over the retained packet.",
+      "result": "Rejected: +127.2% at one channel and +53.8% at sixteen channels.",
+      "effectPercent": 53.82,
+      "state": "rejected",
+      "decision": "Rejected",
+      "evidence": ["raw/final-segmented/results/Tedd.Voxtree.Benchmark.Tests.ChunkSerialization-report.csv"],
+      "risks": []
+    }
+  ],
+  "retainedChanges": [
+    "Reusable caller destinations through GetMaximumSerializedLength and TryCopyEncodedTo.",
+    "Allocation-free OctreeChunkSpan and OctreeChunkSpan<T> views over caller-owned packet memory.",
+    "Separate inexpensive envelope parsing from explicit full structural validation.",
+    "Retain exact loaded packet memory and expose it through TryGetSerializedData.",
+    "Use the retained-packet copy fast path only for packets at or below 64 KiB.",
+    "Cache immutable serialized length and derive IsEmpty from validated storage metadata."
+  ],
+  "decisions": [
+    "Untrusted borrowed packets must call IsWellFormed before channel-tree use.",
+    "Large loaded packets retain per-channel serialization; unrestricted and segmented copies failed the regression guardrail.",
+    "The packet wire formats remain version 1 and version 2 without byte changes."
+  ],
+  "correctness": [
+    "924 target-specific tests passed: 307 net8.0, 308 net10.0, and 309 net11.0.",
+    "Reusable destination failure returns false, writes zero bytes, and preserves the destination.",
+    "Loaded-packet aliasing, overlap rejection, exact packet copying, generic exact values, truncation rejection, and zero allocation are covered.",
+    "Local NuGet package inspection confirmed assemblies and XML documentation for netstandard2.1, net10.0, and net11.0 plus required package documents."
+  ],
+  "generatedCode": [],
+  "validityThreats": [
+    "BenchmarkDotNet ShortRun uses three measured iterations; nanosecond-scale confidence intervals can be broad.",
+    "Exploratory epoch E-001 overlapped a subsequently introduced host lock and used misleading multi-channel pattern perturbations; it is excluded from acceptance decisions.",
+    "The E-002 manual serialization control omitted legacy safety work, so only candidate wins against it are treated as conservative screening evidence.",
+    "Envelope parsing is intentionally not equivalent to full structural validation; the report labels these tiers separately.",
+    "Full borrowed validation regressed in 3 of 12 workloads, including +8.8% for four-channel clustered data; callers choose it primarily for zero allocation and caller-memory ownership.",
+    "No generated-code claim was retained, so disassembly was not required."
+  ],
+  "reproduction": [
+    "Acquire D:\\Temp\\BenchmarkLock.txt atomically and verify the host has no active build, test, profiler, or benchmark process.",
+    "Run: dotnet test src\\Tedd.Voxtree.Tests\\Tedd.Voxtree.Tests.csproj -c Release --nologo",
+    "From src\\Tedd.Voxtree.Benchmark run the E-002 command recorded in README.md.",
+    "For H-009 run: dotnet run -c Release -f net10.0 --no-build --project Tedd.Voxtree.Benchmark.csproj -- --filter '*SerializeLoaded*Random*' --job short --artifacts '<run>\\raw\\final-segmented'",
+    "Run: dotnet pack src\\Tedd.Voxtree\\Tedd.Voxtree.csproj -c Release --no-build -o artifacts\\packages",
+    "Release the lock only after every child process exits."
+  ],
+  "artifacts": [
+    {"label": "Investigation ledger", "path": "README.md"},
+    {"label": "Excluded exploratory baseline", "path": "raw/baseline/"},
+    {"label": "Controlled 72-scenario matrix", "path": "raw/candidate/"},
+    {"label": "64 KiB fallback screening", "path": "raw/candidate-threshold/"},
+    {"label": "Rejected segmented-copy epoch", "path": "raw/final-segmented/"}
+  ]
+}

@@ -134,6 +134,17 @@ internal static class VoxelCodec<T> where T : unmanaged
             _ => ThrowUnsupported<bool>()
         };
 
+    internal static bool IsEmpty(ReadOnlySpan<byte> data, StorageKind storageKind) =>
+        Unsafe.SizeOf<T>() switch
+        {
+            1 => GenericOctreeCodec<byte>.IsEmpty(data, storageKind),
+            2 => GenericOctreeCodec<ushort>.IsEmpty(data, storageKind),
+            4 => GenericOctreeCodec<uint>.IsEmpty(data, storageKind),
+            8 => GenericOctreeCodec<ulong>.IsEmpty(data, storageKind),
+            16 => GenericOctreeCodec<VoxelUInt128>.IsEmpty(data, storageKind),
+            _ => ThrowUnsupported<bool>()
+        };
+
     internal static bool TryGet(ReadOnlySpan<byte> data, int levels, StorageKind storageKind,
         int x, int y, int z, out T value) => TryGetCore(data, levels, storageKind, x, y, z, false, out value);
 

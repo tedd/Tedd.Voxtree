@@ -231,6 +231,29 @@ internal static class OctreeCodec
                nodeEnd - rootOffset == rootLength;
     }
 
+    internal static bool IsEmpty(ReadOnlySpan<byte> data, StorageKind storageKind)
+    {
+        // A validated tree is canonical: an all-zero subtree collapses to a
+        // uniform encoding, so any surviving tree contains a nonzero leaf.
+        if (storageKind == StorageKind.Tree)
+            return false;
+
+        if (storageKind == StorageKind.Uniform)
+        {
+            var cursor = HeaderSize;
+            return TryReadVarUInt(data, ref cursor, out var value) && value == 0;
+        }
+
+        var dense = data[HeaderSize..];
+#if NET10_0_OR_GREATER
+        return dense.IndexOfAnyExcept((byte)0) < 0;
+#else
+        for (var index = 0; index < dense.Length; index++)
+            if (dense[index] != 0) return false;
+        return true;
+#endif
+    }
+
     internal static bool TryGet(
         ReadOnlySpan<byte> data,
         int levels,
