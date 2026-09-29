@@ -180,6 +180,15 @@ the returned immutable chunks into a world explicitly. Set
 write while retaining the same lifetime and repackaging contract. Construction
 does not decode the chunk in either mode.
 
+Capacity is a logical sparse-position limit. Pooled sparse buffers begin with
+capacity for no more than 32 entries and grow geometrically. When the limit is
+exceeded, only affected channels are materialized into pooled Morton-order
+buffers; untouched channels
+remain encoded. `Repackage()` combines materialized and sparse channels, encodes
+only changed channels, and retains the other channel encodings. Explicit
+`MakeHot()` still expands every channel. `PendingPositionCount` excludes edits
+already held in dense channels, while `IsHot` reports any dense channel state.
+
 `DenseVoxelBlockSpan` is a mutable ref struct: its storage remains caller-owned
 and exclusive while editing. `OctreeChunk` voxel-channel snapshots are immutable;
 optional chunk-level side-channel buffers are mutable and exclusively owned. Each dense

@@ -372,8 +372,9 @@
             <p class="card-kicker">Deferred point edits</p>
             <h3>Keep small writes beside compressed chunks</h3>
             <p>
-              <code>DeferredOctreeChunk&lt;T&gt;</code> retains pooled point edits and
-              rebuilds changed channels when requested. A synchronized store
+              <code>DeferredOctreeChunk&lt;T&gt;</code> retains pooled point edits,
+              grows sparse storage on demand, and materializes only affected
+              channels on overflow. A synchronized store
               exposes deduplicated chunks for bounded worker repackaging. Sparse
               mode is configurable and enabled by default.
             </p>
@@ -495,9 +496,10 @@ world.UnloadChunk(-<span class="num">1</span>, <span class="num">0</span>, <span
           <div>
             <strong>DeferredOctreeChunk&lt;T&gt;</strong
             ><span
-              >Owns a compressed snapshot plus pooled point edits. It promotes
-              to dense Morton storage at capacity or on the first write when
-              deferred writes are disabled.</span
+              >Owns a compressed snapshot plus pooled point edits. At capacity,
+              affected channels become dense while untouched channels remain
+              encoded. Disabling deferred writes expands every channel on the
+              first write.</span
             >
           </div>
           <div>

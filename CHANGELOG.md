@@ -25,6 +25,18 @@ All notable changes to Tedd.Voxtree are documented here.
 - Empty-state derivation uses validated storage metadata instead of issuing a
   second spatial query over each channel.
 
+### Changed
+
+- Sparse edit buffers now start at 32 entries and grow geometrically to the
+  configured logical capacity, reducing pooled storage retained by small edit
+  sessions without changing the default capacity of 256.
+- Sparse overflow materializes affected channels independently. Untouched
+  channels remain encoded until explicit `MakeHot()`, their own overflow, or a
+  requested publication; repackaging still encodes only changed channels.
+- Shared `ArrayPool<T>` storage remains the default. Exact owned arrays and a
+  caller-provided persistent workspace were rejected by measured acquisition
+  cost and ownership complexity.
+
 Serialized formats remain compatible with version 2.0.0.
 
 ## 2026-09-20

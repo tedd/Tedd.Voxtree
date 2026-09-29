@@ -73,7 +73,8 @@ public class DocumentationExamplesTests
             hot.GetChannelSpan(3).Clear();
             OctreeChunk hotSnapshot = hot.UnmarkHot();
 
-            // Retain sparse point writes beside the compressed snapshot, then repackage.
+            // Retain sparse point writes beside the compressed snapshot. Overflow
+            // materializes affected channels; Repackage combines every pending state.
             using var deferred = new DeferredOctreeChunk(
                 chunk, capacity: 256, deferredWritesEnabled: true);
             deferred[0, 1, 2, 3] = 44;

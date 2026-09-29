@@ -433,13 +433,23 @@ uint current = edits[0, 1, 2, 3];
 OctreeChunk updated = edits.Repackage();
 ```
 
-Capacity counts distinct positions, independently of channel count. Exceeding it
-promotes the chunk to dense Morton storage. `MakeHot()` explicitly promotes for
-bulk editing and returns a borrowed `HotOctreeChunk`; finish through the owner's
-`Repackage()`, and stop using borrowed spans afterward. The owner remains usable
-for further edits. Sparse repackaging rebuilds only changed channels and shares
-the other encodings. `GetChunk()`, `CopyBlockTo()`, `SerializedLength`, and
-`CopyEncodedTo()` apply pending edits before exposing complete content.
+Capacity is the logical limit for distinct positions in the current sparse
+overlay, independently of channel count. Physical key and value buffers begin
+with capacity for no more than 32 entries and grow geometrically. The default
+capacity of 256 therefore does not reserve 256 entries for a one-to-twenty-write
+session. On overflow, affected
+channels become pooled dense Morton buffers while untouched channels remain in
+their encoded form. Shared positions can require more than one affected channel
+to be materialized before the sparse table has room.
+
+`MakeHot()` explicitly expands every channel for bulk editing and returns a
+borrowed `HotOctreeChunk`; finish through the owner's `Repackage()`, and stop
+using borrowed spans afterward. The owner remains usable for further edits.
+Repackaging encodes dense or sparsely changed channels and shares the untouched
+encodings. `GetChunk()`, `CopyBlockTo()`, `SerializedLength`, and
+`CopyEncodedTo()` apply every pending representation before exposing complete
+content. `PendingPositionCount` reports positions still held sparsely; `IsHot`
+is true when any channel is dense.
 
 Set `deferredWritesEnabled: false` to retain the same owner and repackaging API
 while promoting to dense Morton storage on the first write. Construction remains
@@ -471,10 +481,10 @@ another operation may repackage or remove an address before it is processed.
 Repackaging holds the store lock, so bound each batch to limit stalls. Publication
 into a `WorldEntity` requires the application's usual synchronization.
 
-Dispose owners and stores when finished to return pooled edit buffers. A
-standalone owner requires exclusive access; disposing it discards unpublished
-edits. Pool retention consumes memory even when managed allocation counters report
-no new array allocations.
+Dispose owners and stores when finished to return pooled sparse and dense edit
+buffers. A standalone owner requires exclusive access; disposing it discards
+unpublished edits. Pool retention consumes memory even when managed allocation
+counters report no new array allocations.
 
 ## Repeated checks around moving entities
 

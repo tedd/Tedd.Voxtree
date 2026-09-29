@@ -18,7 +18,7 @@
     <RepositoryUrl>https://github.com/tedd/Tedd.Voxtree</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>octree;voxel;span;zero-allocation;performance;streaming;lod;zstandard</PackageTags>
-    <PackageReleaseNotes>Reusable caller-owned serialization buffers; single-pass validated and sequential allocation-free packet views; faster retained-packet serialization; persistent typed chunk side channels with disk-backed storage support. Legacy voxel-only packets remain compatible.</PackageReleaseNotes>
+    <PackageReleaseNotes>Reusable caller-owned serialization buffers; allocation-free packet views; faster retained-packet serialization; persistent typed chunk side channels with disk-backed storage support; and channel-local deferred sparse overflow that preserves untouched encodings. Legacy voxel-only packets remain compatible.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IncludeSymbols>true</IncludeSymbols>
