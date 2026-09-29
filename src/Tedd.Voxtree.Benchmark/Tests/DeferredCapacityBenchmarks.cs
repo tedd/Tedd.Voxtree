@@ -35,6 +35,10 @@ public class DeferredCapacityBenchmarks
     private int _channels;
     private int _channelsWritten;
     private byte[] _encoded = null!;
+    private ReusableArrayPool<ushort> _shortKeys = null!;
+    private ReusableArrayPool<int> _wideKeys = null!;
+    private ReusableArrayPool<ulong> _presence = null!;
+    private ReusableArrayPool<uint> _values = null!;
 
     [GlobalSetup]
     public void Setup()
@@ -47,6 +51,10 @@ public class DeferredCapacityBenchmarks
         _channels = int.Parse(channelParts[1]);
         _source = CreateSource(Pattern, _channels);
         _encoded = new byte[checked(12 + _channels * (sizeof(int) + Octree.GetMaximumSize(5)))];
+        _shortKeys = new ReusableArrayPool<ushort>(_capacity);
+        _wideKeys = new ReusableArrayPool<int>(_capacity);
+        _presence = new ReusableArrayPool<ulong>(checked(_channels * ((_capacity + 63) / 64)));
+        _values = new ReusableArrayPool<uint>(_capacity);
 
         var expected = ExpectedChecksum();
         if (DeferredCompleteCycle() != expected || ImmediateCompleteCycle() != expected)
@@ -57,6 +65,17 @@ public class DeferredCapacityBenchmarks
     public uint DeferredEditSession()
     {
         using var owner = new DeferredOctreeChunk(_source, _capacity);
+        Write(owner);
+        var position = DeferredChunkData.Position(_writes - 1);
+        var channel = (_writes - 1) % _channelsWritten;
+        return owner[channel, DeferredChunkData.X(position), DeferredChunkData.Y(position), DeferredChunkData.Z(position)];
+    }
+
+    [Benchmark]
+    public uint CallerProvidedEditSession()
+    {
+        using var owner = new DeferredOctreeChunk(_source, _capacity, true,
+            _shortKeys, _wideKeys, _presence, _values);
         Write(owner);
         var position = DeferredChunkData.Position(_writes - 1);
         var channel = (_writes - 1) % _channelsWritten;
@@ -154,6 +173,33 @@ public class DeferredCapacityBenchmarks
                     ? (uint)(channel + 1)
                     : y < 12 + ((x + z) & 3) ? (uint)(channel + 1) : 0;
         return OctreeChunk.FromDense(5, channels, values);
+    }
+}
+
+internal sealed class ReusableArrayPool<T> : ArrayPool<T>
+{
+    private readonly T[] _buffer;
+    private bool _rented;
+
+    internal ReusableArrayPool(int length) => _buffer = new T[length];
+
+    public override T[] Rent(int minimumLength)
+    {
+        if (_rented || minimumLength > _buffer.Length)
+            return ArrayPool<T>.Shared.Rent(minimumLength);
+        _rented = true;
+        return _buffer;
+    }
+
+    public override void Return(T[] array, bool clearArray = false)
+    {
+        if (!ReferenceEquals(array, _buffer))
+        {
+            ArrayPool<T>.Shared.Return(array, clearArray);
+            return;
+        }
+        if (clearArray) array.AsSpan().Clear();
+        _rented = false;
     }
 }
 

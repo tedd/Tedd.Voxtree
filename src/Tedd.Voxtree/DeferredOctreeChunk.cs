@@ -15,6 +15,10 @@ public sealed class DeferredOctreeChunk : IDisposable
     private HotOctreeChunk? _hot;
     private SparseVoxelEdits<uint>? _edits;
     private PartialVoxelEdits<uint>? _partial;
+    private readonly ArrayPool<ushort> _shortKeyPool;
+    private readonly ArrayPool<int> _wideKeyPool;
+    private readonly ArrayPool<ulong> _presentPool;
+    private readonly ArrayPool<uint> _valuePool;
     private readonly bool _deferredWritesEnabled;
     private bool _disposed;
 
@@ -23,11 +27,23 @@ public sealed class DeferredOctreeChunk : IDisposable
     /// <param name="capacity">Maximum sparse positions, 1..1,048,576. Overflow materializes affected channels.</param>
     /// <param name="deferredWritesEnabled">Whether point writes use sparse storage before dense promotion.</param>
     public DeferredOctreeChunk(OctreeChunk source, int capacity = 256, bool deferredWritesEnabled = true)
+        : this(source, capacity, deferredWritesEnabled, ArrayPool<ushort>.Shared,
+            ArrayPool<int>.Shared, ArrayPool<ulong>.Shared, ArrayPool<uint>.Shared)
+    {
+    }
+
+    internal DeferredOctreeChunk(OctreeChunk source, int capacity, bool deferredWritesEnabled,
+        ArrayPool<ushort> shortKeyPool, ArrayPool<int> wideKeyPool,
+        ArrayPool<ulong> presentPool, ArrayPool<uint> valuePool)
     {
         _snapshot = source ?? throw new ArgumentNullException(nameof(source));
         if (capacity < 1 || capacity > 1_048_576) throw new ArgumentOutOfRangeException(nameof(capacity));
         Capacity = Math.Min(capacity, OctreeCodec.GetVoxelCount(source.Levels));
         _deferredWritesEnabled = deferredWritesEnabled;
+        _shortKeyPool = shortKeyPool;
+        _wideKeyPool = wideKeyPool;
+        _presentPool = presentPool;
+        _valuePool = valuePool;
     }
 
     /// <summary>The chunk depth.</summary>
@@ -88,7 +104,7 @@ public sealed class DeferredOctreeChunk : IDisposable
                 MakeHot()[channel, x, y, z] = value;
                 return;
             }
-            _edits = edits = new SparseVoxelEdits<uint>(Levels, ChannelCount, Capacity);
+            _edits = edits = CreateEdits();
             edits.TrySet(channel, key, value);
         }
     }
@@ -270,7 +286,7 @@ public sealed class DeferredOctreeChunk : IDisposable
             dense[DenseVoxel.Index(x, y, z, SideLength, DenseVoxelLayout.Morton)] = value;
             return;
         }
-        var edits = partial.Edits ??= new SparseVoxelEdits<uint>(Levels, ChannelCount, Capacity);
+        var edits = partial.Edits ??= CreateEdits();
         if (edits.TrySet(channel, key, value)) return;
         while (true)
         {
@@ -282,10 +298,13 @@ public sealed class DeferredOctreeChunk : IDisposable
                 promoted[DenseVoxel.Index(x, y, z, SideLength, DenseVoxelLayout.Morton)] = value;
                 return;
             }
-            edits = partial.Edits ??= new SparseVoxelEdits<uint>(Levels, ChannelCount, Capacity);
+            edits = partial.Edits ??= CreateEdits();
             if (edits.TrySet(channel, key, value)) return;
         }
     }
+
+    private SparseVoxelEdits<uint> CreateEdits() => new(Levels, ChannelCount, Capacity,
+        _shortKeyPool, _wideKeyPool, _presentPool, _valuePool);
 
     /// <summary>Discards pending edits and returns pooled buffers. Previously returned snapshots remain valid.</summary>
     public void Dispose()
