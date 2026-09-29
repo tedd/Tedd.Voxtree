@@ -566,7 +566,50 @@ undersized reusable destination with `false` and `bytesWritten == 0`.
 `OctreeChunkSpan` and `OctreeChunkSpan<T>` provide allocation-free, zero-copy
 packet access while their caller-owned bytes remain alive and immutable.
 `FromEncoded` performs full validation and retains the exact packet, so
-`TryGetSerializedData` can expose that contiguous memory without rebuilding it.
+`TryGetSerializedData` can expose that contiguous memory without rebuilding it
+for legacy voxel-only packets.
+
+Chunk-level side channels store custom data that is not associated with individual
+voxels. Each non-negative integer ID addresses one owned byte array. Allocate a
+zeroed buffer or copy caller data, then access the owned buffer directly as bytes
+or any unmanaged element type:
+
+```csharp
+const int navigationId = 100;
+chunk.CreateSideChannel(navigationId, byteLength: 16 * sizeof(float));
+Span<float> navigation = chunk.GetSideChannel<float>(navigationId);
+navigation[0] = 1.5f;
+
+// The source is copied; subsequent access aliases the chunk-owned buffer.
+float[] replacement = { 2.0f, 3.0f };
+chunk.SetSideChannel(navigationId,
+    MemoryMarshal.AsBytes(replacement.AsSpan()).ToArray());
+Span<float> current = chunk.GetSideChannel<float>(navigationId);
+
+int firstId = chunk.GetSideChannelId(0); // IDs enumerate in ascending order.
+bool removed = chunk.DeleteSideChannel(navigationId);
+```
+
+`CreateSideChannel` rejects an existing ID; `SetSideChannel` creates or replaces
+it. Creation and replacement accept byte arrays only and always copy them. Size
+buffers to an integral number of the native elements requested from
+`GetSideChannel<T>`. The side-channel schema, byte order, and type identity
+belong to the application.
+`WithDenseChannel` and hot-chunk commits copy side channels into the replacement
+chunk, so their mutable buffers are not shared.
+
+Packets containing side channels use a directory before the payloads. Each side
+entry records its ID, byte size, and absolute payload position. `FromEncoded`
+copies side payloads into owned arrays; `OctreeChunkSpan` exposes read-only,
+zero-copy side spans. `SerializedLength` includes the directory and payloads.
+Use the four-argument `GetMaximumSerializedLength` overload when sizing a reusable
+packet buffer for a bounded number of side channels.
+
+Disk-backed worlds accept up to `ChunkStorageOptions.MaximumSideChannelBytes`
+additional serialized bytes per chunk; the default is 64 MiB. Direct writes
+through a returned side-channel span cannot automatically mark a resident world
+entry dirty. Call `SetChunk` again to mark it dirty for `SaveAllChunks`, or call
+`SaveChunk` explicitly after the mutation.
 
 | Data | Suggested initial layout |
 | --- | --- |
@@ -586,8 +629,8 @@ level if readers require a consistent multi-channel snapshot.
 
 This is a read-optimized chunk representation. Use `MarkHot()` on an isolated
 chunk, or `MarkChunkHot()` on a world, to retain a mutable Morton-ordered dense
-representation across repeated edits. `Commit()`/`UnmarkHot()` return an immutable
-octree; the world-specific commit methods also publish it. Do not
+representation across repeated edits. `Commit()`/`UnmarkHot()` return a chunk
+with immutable voxel encodings; the world-specific commit methods also publish it. Do not
 rebuild voxel octrees for entity movement: keep entity IDs, positions, velocity,
 and bounds in a separate mutable index and query voxel collision channels for
 terrain interaction.
@@ -732,9 +775,10 @@ Dispose a world after all its workers and batches have finished.
 
 `Octree` uses lock-free immutable publication: concurrent builds and reads are
 safe when each build source is stable. The last build to publish wins. Capture
-`AsSpan()` once for several reads of the same encoding. `OctreeChunk` is an
-immutable multi-channel snapshot; a chunk returned by `TryGetChunk` remains usable
-after replacement or eviction. Borrowed bytes and caller-owned workspace must
+`AsSpan()` once for several reads of the same encoding. `OctreeChunk` keeps its
+voxel encodings immutable, while its optional side-channel buffers are mutable and
+exclusively owned. A chunk returned by `TryGetChunk` remains usable after replacement
+or eviction. Borrowed bytes and caller-owned workspace must
 retain their documented immutability and lifetime. Hot chunks, mutable dense
 views, and neighborhood caches remain exclusive per-worker resources.
 

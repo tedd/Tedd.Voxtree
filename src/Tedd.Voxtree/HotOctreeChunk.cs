@@ -6,7 +6,7 @@ namespace Tedd.Voxtree;
 /// <remarks>
 /// A hot chunk is exclusively owned and is not thread-safe. Worlds continue exposing the
 /// immutable source snapshot until this editor is committed back to them. Commit encodes
-/// every channel once and closes the editor; the resulting <see cref="OctreeChunk"/> is immutable.
+/// every channel once and closes the editor; the resulting <see cref="OctreeChunk"/> has immutable voxel channels.
 /// </remarks>
 public sealed class HotOctreeChunk
 {
@@ -93,8 +93,13 @@ public sealed class HotOctreeChunk
     /// <summary>Equivalent to <see cref="Commit"/>.</summary>
     public OctreeChunk UnmarkHot() => Commit();
 
-    internal OctreeChunk BuildSnapshot() => _committed ??
-        OctreeChunk.FromDense(Levels, ChannelCount, GetValues(), DenseVoxelLayout.Morton);
+    internal OctreeChunk BuildSnapshot()
+    {
+        if (_committed is not null) return _committed;
+        var snapshot = OctreeChunk.FromDense(Levels, ChannelCount, GetValues(), DenseVoxelLayout.Morton);
+        SourceChunk?.CopySideChannelsTo(snapshot);
+        return snapshot;
+    }
 
     internal void Complete(OctreeChunk chunk)
     {

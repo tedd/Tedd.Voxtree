@@ -24,6 +24,8 @@ public enum ChunkCompression : byte
 /// <summary>Configures disk persistence for an unbounded chunk world.</summary>
 public sealed class ChunkStorageOptions
 {
+    private int _maximumSideChannelBytes = 64 * 1024 * 1024;
+
     /// <summary>Creates storage rooted at a filesystem directory.</summary>
     public ChunkStorageOptions(string directoryPath)
     {
@@ -38,6 +40,19 @@ public sealed class ChunkStorageOptions
     public ChunkCompression Compression { get; set; } = ChunkCompression.Zstandard;
     /// <summary>The compression tradeoff used by subsequent saves.</summary>
     public CompressionLevel CompressionLevel { get; set; } = CompressionLevel.Optimal;
+    /// <summary>
+    /// Maximum additional serialized bytes permitted for side-channel directories and payloads
+    /// when a world saves or loads one chunk. Defaults to 64 MiB.
+    /// </summary>
+    public int MaximumSideChannelBytes
+    {
+        get => _maximumSideChannelBytes;
+        set
+        {
+            if (value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+            _maximumSideChannelBytes = value;
+        }
+    }
 
     /// <summary>Returns the sharded path for a chunk coordinate.</summary>
     public string GetChunkPath(ChunkCoordinate coordinate) =>

@@ -155,7 +155,7 @@ OctreeChunk snapshot = hot.UnmarkHot(); // Encodes every channel once and closes
 ```
 
 The hot buffer is channel-major and always Morton ordered. It is exclusively
-owned mutable storage; `OctreeChunk` remains the immutable publication format.
+owned mutable storage; `OctreeChunk` voxel channels remain immutable after publication.
 
 For isolated point writes, retain a sparse overlay and schedule repackaging:
 
@@ -181,7 +181,8 @@ write while retaining the same lifetime and repackaging contract. Construction
 does not decode the chunk in either mode.
 
 `DenseVoxelBlockSpan` is a mutable ref struct: its storage remains caller-owned
-and exclusive while editing. `OctreeChunk` snapshots are immutable. Each dense
+and exclusive while editing. `OctreeChunk` voxel-channel snapshots are immutable;
+optional chunk-level side-channel buffers are mutable and exclusively owned. Each dense
 factory allocates encoded output arrays plus chunk/descriptors; it does not claim
 to be allocation-free. The caller-buffer `Octree.Build` path remains available
 for pooled/unmanaged encoded payloads, which can then be attached without copying:
@@ -392,13 +393,23 @@ if (world.TryGetChunk(0, 0, 0, out OctreeChunk? resident))
 }
 ```
 
-Chunk packets contain a version, depth, channel count, and length-delimited
-octree encodings. Integers use little-endian order. Loading validates every
-channel, allocates only descriptors/the chunk wrapper, and borrows packet memory.
-Packets must be exact slices. Malformed/truncated/trailing data is rejected.
+Voxel-only chunk packets contain a version, depth, channel count, and
+length-delimited octree encodings. Packets with side channels use a leading
+directory: voxel entries record size and position, while side entries record
+application-defined ID, byte size, and position. Payloads follow the directory.
+Integers use little-endian order. Loading validates every voxel channel and borrows
+its packet memory; side payloads are copied into owned mutable arrays. Packets must
+be exact slices. Malformed, overlapping, truncated, or trailing data is rejected.
 `CopyEncodedTo` writes into a caller-provided buffer without allocating and rejects
 overlap before writing. Packets are Int32-sized; larger channel sets can save
 individual `GetChannelData` payloads in separate files instead.
+
+Use `CreateSideChannel`, `SetSideChannel`, `GetSideChannel<T>`, and
+`DeleteSideChannel` for data not indexed per voxel. Direct spans alias the
+chunk-owned buffer. Reassign a resident chunk with `SetChunk` before relying on
+`SaveAllChunks`, or save it explicitly, because mutations through a span cannot
+update world dirty-state accounting. Disk-backed worlds bound the additional
+directory and payload bytes with `ChunkStorageOptions.MaximumSideChannelBytes`.
 
 Save before eviction if modifications must persist. Eviction releases the world's
 references; it does not delete files, free caller-owned native memory, or return
@@ -472,10 +483,10 @@ can track per-chunk revisions. Chunk-local caches must not be queried outside
 their bounds. Use world queries/extraction or multiple chunk caches at borders.
 
 World operations acquire shared read or exclusive write locks automatically.
-Hot chunks, mutable neighborhood caches, and dense working buffers remain
-exclusive to their worker. A retained chunk snapshot can be read without world locks, including
-after replacement or eviction, provided its borrowed backing storage is still
-alive and immutable. A world lock does not protect external buffer mutation.
+Hot chunks, side-channel buffers, mutable neighborhood caches, and dense working buffers remain
+exclusive to their worker. A retained chunk's voxel channels can be read without world locks,
+including after replacement or eviction, provided borrowed backing storage remains
+alive and immutable. A world lock does not protect side-channel or external buffer mutation.
 Use a read batch when pairing a chunk lookup with `Revision` or when sizing a
 manifest from `BranchCount` before enumeration.
 
@@ -486,10 +497,10 @@ manifest from `BranchCount` before enumeration.
 | Dense conversion, indexing, block extraction | 0 after caller buffers exist |
 | Caller-buffer linear/Morton build | 0 |
 | `OctreeChunk.FromDense` | Final channel arrays, descriptors, wrapper |
-| `WithDenseChannel` | One final channel array, descriptors, wrapper |
+| `WithDenseChannel` | One final voxel-channel array, descriptors, wrapper, and copied side buffers |
 | `MarkHot` / `MarkChunkHot` | One dense Morton array and editor wrapper |
-| Hot-chunk commit | Final channel arrays, descriptors, immutable chunk wrapper |
-| Chunk constructor / `FromEncoded` | Descriptors and wrapper; payloads borrowed |
+| Hot-chunk commit | Final voxel-channel arrays, descriptors, chunk wrapper, and copied side buffers |
+| Chunk constructor / `FromEncoded` | Descriptors and wrapper; voxel payloads borrowed, side payloads copied |
 | `CopyEncodedTo` | 0 |
 | WorldEntity save/load | Packet, compression, and file buffers plus stream objects |
 | WorldEntity trim | Ordered candidate list; dirty eviction additionally has save costs |

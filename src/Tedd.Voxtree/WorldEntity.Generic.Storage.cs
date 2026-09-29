@@ -120,6 +120,8 @@ public sealed partial class WorldEntity<T> where T : unmanaged
         catch (FileNotFoundException) { chunk = null; return false; }
         catch (DirectoryNotFoundException) { chunk = null; return false; }
         var loaded = OctreeChunk<T>.FromEncoded(packet);
+        if (loaded.SideChannelSerializedLength > storage.MaximumSideChannelBytes)
+            throw new InvalidDataException("The stored chunk exceeds the configured side-channel storage limit.");
         ValidateStoredSchema(loaded);
         _chunks.Set(address, loaded, loaded.SerializedLength, isDirty: false);
         TrimToMemoryTargetCore(address);
@@ -205,6 +207,8 @@ public sealed partial class WorldEntity<T> where T : unmanaged
 
     private void SaveChunkCore(ChunkAddress address, OctreeChunk<T> chunk)
     {
+        if (chunk.SideChannelSerializedLength > RequireStorage().MaximumSideChannelBytes)
+            throw new InvalidOperationException("The chunk exceeds the configured side-channel storage limit.");
         var packet = new byte[chunk.SerializedLength];
         chunk.CopyEncodedTo(packet);
         ChunkFile.Save(RequireStorage(), address, packet);
@@ -215,7 +219,8 @@ public sealed partial class WorldEntity<T> where T : unmanaged
         throw new InvalidOperationException("Chunk storage is not configured.");
 
     private int GetMaximumPacketLength() =>
-        checked(12 + ChannelCount * (4 + Octree<T>.GetMaximumSize(ChunkShift)));
+        checked(OctreeChunk<T>.GetMaximumSerializedLength(ChunkShift, ChannelCount) +
+                RequireStorage().MaximumSideChannelBytes);
 
     private void ValidateStoredSchema(OctreeChunk<T> chunk)
     {

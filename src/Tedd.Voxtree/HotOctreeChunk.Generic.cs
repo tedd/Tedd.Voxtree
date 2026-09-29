@@ -5,7 +5,7 @@ namespace Tedd.Voxtree;
 /// <summary>A mutable, Morton-ordered dense generic chunk for edit-intensive workloads.</summary>
 /// <remarks>
 /// A hot chunk is exclusively owned and is not thread-safe. Worlds retain the immutable source
-/// snapshot until commit publishes the re-encoded result under the world's write lock.
+/// voxel snapshot until commit publishes the re-encoded result under the world's write lock.
 /// </remarks>
 public sealed class HotOctreeChunk<T> where T : unmanaged
 {
@@ -94,8 +94,13 @@ public sealed class HotOctreeChunk<T> where T : unmanaged
     /// <summary>Equivalent to <see cref="Commit"/>.</summary>
     public OctreeChunk<T> UnmarkHot() => Commit();
 
-    internal OctreeChunk<T> BuildSnapshot() => _committed ??
-        OctreeChunk<T>.FromDense(Levels, ChannelCount, GetValues(), DenseVoxelLayout.Morton);
+    internal OctreeChunk<T> BuildSnapshot()
+    {
+        if (_committed is not null) return _committed;
+        var snapshot = OctreeChunk<T>.FromDense(Levels, ChannelCount, GetValues(), DenseVoxelLayout.Morton);
+        SourceChunk?.CopySideChannelsTo(snapshot);
+        return snapshot;
+    }
 
     internal void Complete(OctreeChunk<T> chunk)
     {
