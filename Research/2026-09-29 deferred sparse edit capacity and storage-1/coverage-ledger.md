@@ -4,13 +4,13 @@ This ledger records applicability to the deferred sparse-edit path. Measurements
 
 | Catalogue area | Applicability | Hypotheses / evidence | Disposition |
 |---|---|---|---|
-| M1 Allocation and pooling | Direct | H-001, H-006, H-007, H-011, H-012 | Pending integrated measurement. |
+| M1 Allocation and pooling | Direct | H-001, H-006, H-007, H-011, H-012 | Exact owned arrays rejected; caller provider deferred; geometric growth pending. |
 | M2 Copies and lifetime | Direct | H-002; immutable snapshots and borrowed hot storage | Pending channel-promotion experiment. |
 | M3 Bounds and slicing | Direct | Existing `Span.IndexOf`; key/presence/value bounds | Generated code already vectorizes lookup; no independent bounds hypothesis yet. |
 | M4 Stack allocation | Not applicable | Pending overlays outlive one call and may hold up to chunk volume | Rejected by lifetime and size. |
 | M5 Layout and working set | Direct | H-001, H-002, H-012 | Pending geometric-growth and partial-dense measurements. |
 | M6 Structure representation | Direct | Shared keys plus channel bitmaps | Retain unless channel-specific redesign demonstrates a caller gain. |
-| M7 Memory traffic | Direct | H-002, H-008, H-011 | Pending. |
+| M7 Memory traffic | Direct | H-002, H-008, H-011 | Repackage scratch ownership rejected as a speed feature; partial-channel work pending. |
 | S1 Bitmaps/direct maps | Conditional | A direct 32^3 position map costs at least 64 KiB with `ushort` slots before validity metadata | Defer unless occupancy trace justifies large-count indexing. |
 | S2 Lookup/indexing | Direct | H-004, H-005, H-009 | `Span.IndexOf` SIMD is the incumbent; large-count alternative pending. |
 | S3 Ordering/sorting | Not applicable | Sorting would shift shared values and validity metadata on insertion | Rejected structurally for the priority append/overwrite path. |
@@ -27,9 +27,9 @@ This ledger records applicability to the deferred sparse-edit path. Measurements
 | R3 Startup/static flags | Direct | H-010 | Rejected by prior toggle measurement. |
 | R4 Tiering/PGO/AOT | Control | BenchmarkDotNet .NET 10 Tiered PGO environment | Controlled as an epoch variable; no product candidate. |
 | T1 Shared mutation | Not applicable to owner | `DeferredOctreeChunk` is exclusively owned and not thread-safe | Store synchronization remains separate. |
-| T2 Ownership and leasing | Direct | H-006, H-011 | Caller scratch is the lowest-risk candidate; persistent provider pending evidence. |
+| T2 Ownership and leasing | Direct | H-006, H-011 | Shared pools remain the default. Persistent provider deferred; caller scratch rejected as a speed feature. |
 | T3 Locks/contention | Conditional | `DeferredChunkStore` holds one lock through repackaging | No representative contention trace; outside primary local experiment. |
-| T4 Batching | Direct | H-011; store batch can reuse one channel scratch buffer | Pending. |
+| T4 Batching | Direct | H-011; store batch could reuse one channel scratch buffer | Rejected for speed: the measured acquisition ceiling is below 0.4% of the shortest complete cycle. |
 | T5 False sharing | Not applicable | Owner is not concurrently mutated | Not applicable. |
 
 ## Existing generated-code evidence

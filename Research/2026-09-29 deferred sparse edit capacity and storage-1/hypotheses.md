@@ -46,7 +46,8 @@
 - Mechanism: reuse heterogeneous key, presence, value, and dense scratch segments while preserving lazy channel allocation.
 - Prediction: repeated caller sessions improve by at least 10% or retained-memory behavior improves materially without a hot-path virtual/interface call.
 - Falsification: warm shared-pool caller timings remain within 5%, or the API/lifetime burden exceeds the measured benefit.
-- State: pending.
+- Evidence: an isolated caller-reused array kernel cost 3.399–5.194 ns, versus 42.705–53.039 ns for warm shared-pool rent/clear/return. This establishes an approximately 40–50 ns acquisition ceiling, but it excludes provider dispatch, ownership bookkeeping, lazy heterogeneous segments, and the complete owner path.
+- State: deferred. The maximum isolated saving does not yet justify a persistent public ownership API; reopen only if an integrated provider clears the 10% caller threshold or an application memory budget requires deterministic external storage.
 
 ## H-007 — exact owned arrays
 
@@ -54,7 +55,8 @@
 - Mechanism: trade GC allocation and zeroing for exact capacity and direct ownership.
 - Prediction: long-lived edit/repackage sessions improve by at least 10% with acceptable allocation and GC cost.
 - Falsification: construction, zeroing, or GC regresses the complete caller path.
-- State: pending.
+- Evidence: exact allocation cost 15.730 ns/208 B at capacity 20, 58.978 ns/1,672 B at 256, and 111.654 ns/3,272 B at 512. Warm shared-pool rent/clear/return cost 42.705–53.039 ns with no managed allocation.
+- State: rejected. Exact arrays become slower than pooling at the default and larger capacities and add per-session GC allocation.
 
 ## H-008 — channel-specific sparse iteration
 
@@ -82,7 +84,8 @@
 - Mechanism: remove one large buffer acquisition per publication.
 - Prediction: complete cycles improve by at least 10% without raising idle memory disproportionately.
 - Falsification: encoding/decoding dominates and the effect remains within 5%.
-- State: pending.
+- Evidence: warm shared-pool acquisition and return of the measured buffers cost at most 53.039 ns, while existing complete sparse cycles cost at least 15.2 µs. Even eliminating the entire measured acquisition kernel has an Amdahl ceiling below 0.4%; a call-bound scratch API cannot meet the 10% speed criterion on this evidence.
+- State: rejected as a speed feature. A caller workspace may still be justified by a separate deterministic-memory requirement, which has not been supplied.
 
 ## H-012 — geometric physical growth
 
