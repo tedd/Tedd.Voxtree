@@ -120,7 +120,10 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
     }
 
     /// <summary>Returns a current immutable snapshot and clears pending edits; further writes are allowed.</summary>
-    /// <remarks>Only changed channels are encoded. Failed encoding retains pending edits.</remarks>
+    /// <remarks>
+    /// Sparse and partially dense state encodes only changed channels. Explicit full-hot state
+    /// encodes every channel. Failed encoding retains pending edits.
+    /// </remarks>
     public OctreeChunk<T> Repackage()
     {
         ThrowIfDisposed();

@@ -184,10 +184,11 @@ Capacity is a sparse-position limit. Key and per-touched-channel value buffers
 are rented from shared pools at that capacity. When the limit is exceeded, only
 affected channels are materialized into pooled Morton-order
 buffers; untouched channels
-remain encoded. `Repackage()` combines materialized and sparse channels, encodes
-only changed channels, and retains the other channel encodings. Explicit
-`MakeHot()` expands every channel but copies materialized channels without
-decoding them again. `PendingPositionCount` excludes edits
+remain encoded. From sparse or partially dense state, `Repackage()` combines
+materialized and sparse channels, encodes only changed channels, and retains the
+other channel encodings. Explicit `MakeHot()` expands every channel but copies
+materialized channels without decoding them again; repackaging that full-hot
+state encodes every channel. `PendingPositionCount` excludes edits
 already held in dense channels, while `IsHot` reports any dense channel state.
 
 `DenseVoxelBlockSpan` is a mutable ref struct: its storage remains caller-owned
