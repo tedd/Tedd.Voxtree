@@ -372,9 +372,8 @@
             <p class="card-kicker">Deferred point edits</p>
             <h3>Keep small writes beside compressed chunks</h3>
             <p>
-              <code>DeferredOctreeChunk&lt;T&gt;</code> retains pooled point edits,
-              grows sparse storage on demand, and materializes only affected
-              channels on overflow. A synchronized store
+              <code>DeferredOctreeChunk&lt;T&gt;</code> retains pooled point edits
+              and materializes only affected channels on overflow. A synchronized store
               exposes deduplicated chunks for bounded worker repackaging. Sparse
               mode is configurable and enabled by default.
             </p>

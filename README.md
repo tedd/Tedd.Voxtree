@@ -433,11 +433,10 @@ uint current = edits[0, 1, 2, 3];
 OctreeChunk updated = edits.Repackage();
 ```
 
-Capacity is the logical limit for distinct positions in the current sparse
-overlay, independently of channel count. Physical key and value buffers begin
-with capacity for no more than 32 entries and grow geometrically. The default
-capacity of 256 therefore does not reserve 256 entries for a one-to-twenty-write
-session. On overflow, affected
+Capacity is the limit for distinct positions in the current sparse overlay,
+independently of channel count. Key and per-touched-channel value buffers are
+rented from shared pools at that capacity; untouched channels do not rent value
+buffers. On overflow, affected
 channels become pooled dense Morton buffers while untouched channels remain in
 their encoded form. Shared positions can require more than one affected channel
 to be materialized before the sparse table has room.

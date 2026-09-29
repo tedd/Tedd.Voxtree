@@ -27,9 +27,8 @@ All notable changes to Tedd.Voxtree are documented here.
 
 ### Changed
 
-- Sparse edit buffers now start at 32 entries and grow geometrically to the
-  configured logical capacity, reducing pooled storage retained by small edit
-  sessions without changing the default capacity of 256.
+- Sparse edit buffers retain fixed pooled capacity after geometric growth was
+  rejected by matched benchmarks for regressing 32–64-write sessions.
 - Sparse overflow materializes affected channels independently. Untouched
   channels remain encoded until explicit `MakeHot()`, their own overflow, or a
   requested publication; repackaging still encodes only changed channels.

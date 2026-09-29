@@ -94,8 +94,9 @@
 - Mechanism: allocate physical storage at `min(32, Capacity)` and double only when the populated count reaches the physical limit; keep `Capacity` as the externally visible promotion threshold.
 - Prediction: default-capacity pooled payload for one modified `uint` channel falls from approximately 1,664 bytes to approximately 320 bytes at up to twenty writes, while caller time changes by less than 5%; any speed improvement is secondary.
 - Falsification: growth causes more than 5% regression in priority workloads, introduces pool-return or validity defects, or retained memory does not fall as predicted.
-- Change: sparse key and value buffers begin at `min(32, Capacity)` and double to the unchanged logical limit; presence metadata grows only when its word stride changes.
-- State: implemented; validation and candidate measurement pending.
+- Result: matched edit-session measurements regressed 32-entry workloads by 13.3–15.1%, 64-entry workloads by 47.5–53.5%, and capacity-256/64-write workloads by 13.8–27.7%. The memory reduction therefore fails the 5% priority-path guard.
+- Change: the geometric-growth prototype was removed; fixed shared-pool rentals remain.
+- State: rejected.
 
 ## H-013 — AVX2 batched key probes
 
