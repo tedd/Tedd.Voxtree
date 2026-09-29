@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Tedd.Voxtree.Benchmark.Tests.ChunkSequentialChannelScan-20260929-153752</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.16.0-preview.1, Windows 11 (10.0.26200.9457/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 5950X 3.40GHz, 1 CPU, 32 logical and 16 physical cores
+Memory: 127.91 GB Total, 94.93 GB Available
+.NET SDK 11.0.100-rc.1.26425.128
+  [Host]     : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+  Job-ZNVNAZ : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code>IterationCount=5  IterationTime=100ms  LaunchCount=1  
+WarmupCount=3  
+</code></pre>
+
+<table>
+<thead><tr><th>Method        </th><th>ChannelCount</th><th>Mean </th><th>Error</th><th>StdDev</th><th>Ratio</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>RepeatedIndexedScan</td><td>16</td><td>197.04 ns</td><td>5.299 ns</td><td>1.376 ns</td><td>1.00</td><td>-</td><td>NA</td>
+</tr><tr><td>SingleSequentialScan</td><td>16</td><td>73.28 ns</td><td>0.534 ns</td><td>0.083 ns</td><td>0.37</td><td>-</td><td>NA</td>
+</tr><tr><td>RepeatedIndexedScan</td><td>64</td><td>3,291.62 ns</td><td>90.054 ns</td><td>23.387 ns</td><td>1.00</td><td>-</td><td>NA</td>
+</tr><tr><td>SingleSequentialScan</td><td>64</td><td>304.75 ns</td><td>13.840 ns</td><td>2.142 ns</td><td>0.09</td><td>-</td><td>NA</td>
+</tr></tbody></table>
+</body>
+</html>

@@ -1,7 +1,7 @@
 {
   "title": "Chunk serialization and caller-memory deserialization",
-  "generatedAt": "2026-09-29T15:02:00+02:00",
-  "status": "complete",
+  "generatedAt": "2026-09-29T15:42:00+02:00",
+  "status": "partial",
   "scope": "Versioned UInt32 and generic chunk packets on .NET 10 x64, with 1, 4, and 16 channels over uniform, sparse, clustered, and random level-5 data.",
   "question": "Can chunk serialization and deserialization materially reduce latency and allocations while preserving packet compatibility and accepting reusable caller-owned memory?",
   "primaryMetric": "ns/op",
@@ -48,13 +48,37 @@
       "wallChangePercent": -78.9,
       "baseline": 73.214,
       "progression": "Per-channel reconstruction 73.214 ns → retained-packet copy 15.449 ns"
+    },
+    {
+      "title": "16-channel single-pass validation",
+      "value": 92.03,
+      "unit": "ns/op",
+      "wallChangePercent": -46.5,
+      "baseline": 172.02,
+      "progression": "Envelope then full validation 172.02 ns → fused validation 92.03 ns"
+    },
+    {
+      "title": "64-channel sequential scan",
+      "value": 304.75,
+      "unit": "ns/op",
+      "wallChangePercent": -90.7,
+      "baseline": 3291.62,
+      "progression": "Repeated indexed scan 3291.62 ns → forward enumerator 304.75 ns"
+    },
+    {
+      "title": "16-channel random overlap validation",
+      "value": 66.46,
+      "unit": "us/op",
+      "wallChangePercent": -28.0,
+      "baseline": 92.37,
+      "progression": "Per-channel overlap checks 92.37 us → one retained-packet check 66.46 us"
     }
   ],
   "environment": [
-    {"label": "Revision", "value": "85d7a99 plus the recorded working-tree candidate"},
-    {"label": "Controlled epochs", "value": "E-002 candidate matrix; E-003 final segmented-copy falsification"},
+    {"label": "Revision", "value": "409c0dd plus the recorded isolated-worktree candidate"},
+    {"label": "Controlled epochs", "value": "E-002 candidate matrix; E-003 segmented-copy falsification; E-004 extended hypothesis screen"},
     {"label": "Runtime", "value": ".NET 10.0.12, X64 RyuJIT x86-64-v3"},
-    {"label": "Benchmark harness", "value": "BenchmarkDotNet 0.16.0-preview.1, ShortRun, 1 launch, 3 warmups, 3 measured iterations"},
+    {"label": "Benchmark harness", "value": "BenchmarkDotNet 0.16.0-preview.1; E-004 used 1 launch, 3 warmups, 5 measured 100 ms iterations"},
     {"label": "CPU", "value": "AMD Ryzen 9 5950X, 16 physical / 32 logical cores, AVX2"},
     {"label": "OS", "value": "Windows 11 10.0.26200.9457"},
     {"label": "GC", "value": "Concurrent workstation"},
@@ -106,6 +130,30 @@
       "catalogue": "optimize-code: Runtime R2",
       "hypothesisIds": ["H-008"],
       "disposition": "Retained"
+    },
+    {
+      "name": "Validation and sequential channel traversal",
+      "boundary": "Borrowed full validation and all-channel access",
+      "evidence": "E-004 measured 35-47% lower uniform/random validation latency and 63-91% lower complete channel-scan latency",
+      "catalogue": "optimize-code: Memory M3/M7 and Runtime R2",
+      "hypothesisIds": ["H-010", "H-011", "H-012", "H-017"],
+      "disposition": "H-010/H-012 retained; H-011/H-017 pending"
+    },
+    {
+      "name": "Transfer kernel and overlap validation",
+      "boundary": "Loaded-packet overlap checks, fixed headers, copy kernels, and prefetch",
+      "evidence": "E-004 measured a 28% gain from one retained-packet overlap check",
+      "catalogue": "optimize-code: Memory M6/M7 and CPU C3/C4",
+      "hypothesisIds": ["H-013", "H-014", "H-015", "H-016"],
+      "disposition": "H-014 retained; remaining candidates gated"
+    },
+    {
+      "name": "Applicability controls",
+      "boundary": "False sharing and stencil fusion",
+      "evidence": "Packet APIs contain neither shared writable state nor neighborhood computation",
+      "catalogue": "optimize-code: Concurrency T1 and source-specific fusion",
+      "hypothesisIds": ["H-018", "H-019"],
+      "disposition": "Not applicable"
     }
   ],
   "series": [
@@ -190,6 +238,47 @@
           ]
         }
       ]
+    },
+    {
+      "title": "Extended E-004 retained candidates",
+      "description": "Controlled five-iteration screening means. Units differ by row and are normalized here to nanoseconds.",
+      "unit": "ns/op",
+      "lowerIsBetter": true,
+      "rounds": ["Control", "Candidate"],
+      "rows": [
+        {
+          "label": "16-channel uniform full validation",
+          "detail": "Envelope then validation versus single pass",
+          "measurements": [
+            {"median": 172.02, "n": 5},
+            {"median": 92.03, "n": 5, "changePercent": -46.5}
+          ]
+        },
+        {
+          "label": "16-channel random full validation",
+          "detail": "Envelope then validation versus single pass",
+          "measurements": [
+            {"median": 160.58, "n": 5},
+            {"median": 103.91, "n": 5, "changePercent": -35.3}
+          ]
+        },
+        {
+          "label": "64-channel encoded-data scan",
+          "detail": "Repeated indexed lookup versus forward enumerator",
+          "measurements": [
+            {"median": 3291.62, "n": 5},
+            {"median": 304.75, "n": 5, "changePercent": -90.7}
+          ]
+        },
+        {
+          "label": "16-channel random serialization",
+          "detail": "Per-channel versus one retained-packet overlap check",
+          "measurements": [
+            {"median": 92370.0, "n": 5},
+            {"median": 66460.0, "n": 5, "changePercent": -28.0}
+          ]
+        }
+      ]
     }
   ],
   "effectGroups": [
@@ -209,6 +298,16 @@
         {"hypothesisId": "H-004", "label": "16-channel sparse", "effect": -0.4743, "range": [-0.4743, -0.4743], "secondaryMetric": "alloc", "secondaryEffect": -1.0, "note": "587.158 us, 0 B; mean effect"},
         {"hypothesisId": "H-004", "label": "4-channel random", "effect": -0.2528, "range": [-0.2528, -0.2528], "secondaryMetric": "alloc", "secondaryEffect": -1.0, "note": "42.836 ns, 0 B; mean effect"},
         {"hypothesisId": "H-004", "label": "4-channel clustered", "effect": 0.0881, "range": [0.0881, 0.0881], "secondaryMetric": "alloc", "secondaryEffect": -1.0, "note": "Full validation regression; envelope parse remains 20.573 ns; mean effect"}
+      ]
+    },
+    {
+      "name": "Extended retained effects",
+      "control": "Same-process E-004 controls",
+      "items": [
+        {"hypothesisId": "H-010", "label": "16-channel uniform validation", "effect": -0.465, "range": [-0.465, -0.465], "note": "172.02 to 92.03 ns; mean effect"},
+        {"hypothesisId": "H-010", "label": "16-channel random validation", "effect": -0.353, "range": [-0.353, -0.353], "note": "160.58 to 103.91 ns; mean effect"},
+        {"hypothesisId": "H-012", "label": "64-channel sequential scan", "effect": -0.907, "range": [-0.907, -0.907], "secondaryMetric": "alloc", "secondaryEffect": 0.0, "note": "3291.62 to 304.75 ns; 0 B in both"},
+        {"hypothesisId": "H-014", "label": "16-channel random serialization", "effect": -0.280, "range": [-0.280, -0.280], "note": "92.37 to 66.46 us; mean effect"}
       ]
     }
   ],
@@ -335,6 +434,146 @@
       "decision": "Rejected",
       "evidence": ["raw/final-segmented/results/Tedd.Voxtree.Benchmark.Tests.ChunkSerialization-report.csv"],
       "risks": []
+    },
+    {
+      "id": "H-010",
+      "parentId": "H-004",
+      "claim": "Envelope parsing and full structural validation redundantly traverse channel headers.",
+      "mechanism": "Single-pass packet validation",
+      "prediction": "At least 10% lower uniform/random latency with sparse/tree regression limited to 5%.",
+      "falsification": "Benefit below 10%, semantic divergence, or regression above 5%.",
+      "change": "Add TryCreateValidated to parse and validate in one packet pass.",
+      "result": "At 16 channels, uniform improved 172.02 to 92.03 ns and random 160.58 to 103.91 ns; sparse improved 1.2%.",
+      "effectPercent": -46.5,
+      "state": "retained",
+      "decision": "Adopted in isolated integration worktree",
+      "evidence": ["raw/extended-screen/results/Tedd.Voxtree.Benchmark.Tests.ChunkValidationSinglePass-report.csv"],
+      "risks": ["Callers must select TryCreateValidated when accepting untrusted channel trees."]
+    },
+    {
+      "id": "H-011",
+      "parentId": "H-006",
+      "claim": "Owned FromEncoded performs a second packet traversal solely to populate channel descriptors.",
+      "mechanism": "Single-pass descriptor materialization",
+      "prediction": "At least 10% lower 16-channel owned-deserialization latency.",
+      "falsification": "Insufficient gain or unacceptable malformed-input allocation exposure.",
+      "change": "Proposed descriptor allocation and population during validation.",
+      "result": "Not executed; allocation before complete validation requires a security decision.",
+      "state": "pending",
+      "decision": "Security gate",
+      "evidence": ["../../src/Tedd.Voxtree/OctreeChunk.cs"],
+      "risks": ["Malformed packets could force descriptor allocation before rejection."]
+    },
+    {
+      "id": "H-012",
+      "parentId": "H-006",
+      "claim": "Repeated indexed channel access turns an all-channel borrowed scan into O(n-squared) header work.",
+      "mechanism": "Stack-only sequential channel enumeration",
+      "prediction": "At least 25% lower latency at 16 and 64 channels with 0 B allocation.",
+      "falsification": "Slice mismatch, allocation, or benefit below 25%.",
+      "change": "Add EnumerateChannelData with a forward packet offset.",
+      "result": "Improved 197.04 to 73.28 ns at 16 channels and 3291.62 to 304.75 ns at 64 channels; 0 B allocated.",
+      "effectPercent": -90.7,
+      "state": "retained",
+      "decision": "Adopted in isolated integration worktree",
+      "evidence": ["raw/extended-screen/results/Tedd.Voxtree.Benchmark.Tests.ChunkSequentialChannelScan-report.csv"],
+      "risks": ["Does not improve isolated random channel access."]
+    },
+    {
+      "id": "H-013",
+      "claim": "Scalar packet-prefix stores are material for very small writes.",
+      "mechanism": "Packed fixed-width little-endian stores",
+      "prediction": "At least 5% lower one- and four-channel uniform serialization latency with fewer native stores.",
+      "falsification": "No code-generation reduction, benefit below 5%, or regression above 5%.",
+      "change": "Proposed packed 64-bit prefix plus 32-bit length store.",
+      "result": "Not executed.",
+      "state": "pending",
+      "decision": "Generated-code gate",
+      "evidence": ["../../src/Tedd.Voxtree/OctreeChunk.cs"],
+      "risks": ["Must preserve exact little-endian bytes on every architecture."]
+    },
+    {
+      "id": "H-014",
+      "parentId": "H-005",
+      "claim": "Large loaded-packet serialization repeats overlap checks for channels that all alias one retained packet.",
+      "mechanism": "One retained-packet overlap check",
+      "prediction": "At least 10% lower 16-channel random serialization latency with identical exceptions.",
+      "falsification": "Changed overlap behavior, benefit below 10%, or regression above 5%.",
+      "change": "Check destination overlap once against the retained packet before per-channel reconstruction.",
+      "result": "Improved 92.37 to 66.46 us, a 28.0% reduction; output remained byte-identical.",
+      "effectPercent": -28.0,
+      "state": "retained",
+      "decision": "Adopted in isolated integration worktree",
+      "evidence": ["raw/extended-screen/results/Tedd.Voxtree.Benchmark.Tests.ChunkLoadedOverlapCheck-report.csv"],
+      "risks": ["Valid only when channels are slices of the retained packet."]
+    },
+    {
+      "id": "H-015",
+      "parentId": "H-003",
+      "claim": "A different block-copy kernel may outperform span copying in the bounded retained-packet range.",
+      "mechanism": "Runtime block copy versus guarded AVX2 transfer",
+      "prediction": "At least 10% lower latency for 4-64 KiB packets without regression above 5%.",
+      "falsification": "Equivalent runtime code, tail overhead, portability cost, or failed guardrails.",
+      "change": "Proposed Span.CopyTo, runtime block-copy, and AVX2 comparison.",
+      "result": "Not executed; generated-code inspection remains the admission gate.",
+      "state": "pending",
+      "decision": "Generated-code gate",
+      "evidence": ["raw/final-segmented/"],
+      "risks": ["ISA-specific duplication of optimized runtime memmove."]
+    },
+    {
+      "id": "H-016",
+      "parentId": "H-010",
+      "claim": "Recursive validation exposes child addresses early enough for software prefetch.",
+      "mechanism": "Guarded Sse.Prefetch0",
+      "prediction": "At least 10% lower large sparse/tree validation latency.",
+      "falsification": "Hardware prefetch dominates, no stable benefit, or regression above 5%.",
+      "change": "Proposed prefetch of the next non-uniform child with a portable fallback.",
+      "result": "Not executed; queued after the single-pass validation integration.",
+      "state": "pending",
+      "decision": "Queued",
+      "evidence": ["../../src/Tedd.Voxtree/OctreeCodec.cs"],
+      "risks": ["Architecture specificity and cache pollution."]
+    },
+    {
+      "id": "H-017",
+      "parentId": "H-010",
+      "claim": "Fixed eight-child validator loops waste work under skewed uniform masks.",
+      "mechanism": "Bitmask iteration with TrailingZeroCount",
+      "prediction": "At least 10% lower sparse/tree validation latency with identical rejection behavior.",
+      "falsification": "No native-code reduction, benefit below 10%, or regression above 5%.",
+      "change": "Proposed reverse-order iteration over set bits in the inverted uniform mask.",
+      "result": "Not executed.",
+      "state": "pending",
+      "decision": "Queued",
+      "evidence": ["../../src/Tedd.Voxtree/OctreeCodec.cs"],
+      "risks": ["Incorrect bit ordering would alter malformed-tree validation."]
+    },
+    {
+      "id": "H-018",
+      "claim": "Concurrent serialization may suffer false sharing between adjacent caller-owned destinations.",
+      "mechanism": "Cache-line separation",
+      "prediction": "The library must own shared writable cache lines for an internal remedy to apply.",
+      "falsification": "Source inspection shows destination storage and partitioning are entirely caller-owned.",
+      "change": "None.",
+      "result": "Not applicable to the library API; callers control destination placement and concurrent partitioning.",
+      "state": "not-applicable",
+      "decision": "No library experiment",
+      "evidence": ["../../src/Tedd.Voxtree/OctreeChunk.cs"],
+      "risks": []
+    },
+    {
+      "id": "H-019",
+      "claim": "A 3-D stencil can be fused with packet serialization or deserialization.",
+      "mechanism": "Producer-consumer stencil fusion",
+      "prediction": "An actual stencil stage and format-preserving fusion boundary must exist.",
+      "falsification": "No neighborhood dependency exists in the measured packet paths.",
+      "change": "None.",
+      "result": "Not applicable: packet serialization copies canonical encodings and deserialization validates them.",
+      "state": "not-applicable",
+      "decision": "No experiment",
+      "evidence": ["../../src/Tedd.Voxtree/OctreeChunk.cs", "../../src/Tedd.Voxtree/OctreeChunkSpan.cs"],
+      "risks": []
     }
   ],
   "retainedChanges": [
@@ -348,12 +587,14 @@
   "decisions": [
     "Untrusted borrowed packets must call IsWellFormed before channel-tree use.",
     "Large loaded packets retain per-channel serialization; unrestricted and segmented copies failed the regression guardrail.",
-    "The packet wire formats remain version 1 and version 2 without byte changes."
+    "The packet wire formats remain version 1 and version 2 without byte changes.",
+    "H-010, H-012, and H-014 passed the bounded E-003 screen; H-011, H-013, and H-015 through H-017 remain pending. H-018 and H-019 are not applicable to the library packet path."
   ],
   "correctness": [
     "924 target-specific tests passed: 307 net8.0, 308 net10.0, and 309 net11.0.",
     "Reusable destination failure returns false, writes zero bytes, and preserves the destination.",
     "Loaded-packet aliasing, overlap rejection, exact packet copying, generic exact values, truncation rejection, and zero allocation are covered.",
+    "Single-pass validated views, sequential channel-enumerator parity, generic parity, and large retained-packet overlap rejection passed on every target framework.",
     "Local NuGet package inspection confirmed assemblies and XML documentation for netstandard2.1, net10.0, and net11.0 plus required package documents."
   ],
   "generatedCode": [],
@@ -370,6 +611,7 @@
     "Run: dotnet test src\\Tedd.Voxtree.Tests\\Tedd.Voxtree.Tests.csproj -c Release --nologo",
     "From src\\Tedd.Voxtree.Benchmark run the E-002 command recorded in README.md.",
     "For H-009 run: dotnet run -c Release -f net10.0 --no-build --project Tedd.Voxtree.Benchmark.csproj -- --filter '*SerializeLoaded*Random*' --job short --artifacts '<run>\\raw\\final-segmented'",
+    "For E-004 run: dotnet run -c Release -f net10.0 --no-build --project src\\Tedd.Voxtree.Benchmark\\Tedd.Voxtree.Benchmark.csproj -- --filter '*ChunkValidationSinglePass*' '*ChunkSequentialChannelScan*' '*ChunkLoadedOverlapCheck*' --job short --warmupCount 3 --iterationCount 5 --iterationTime 100 --artifacts '<run>\\raw\\extended-screen'",
     "Run: dotnet pack src\\Tedd.Voxtree\\Tedd.Voxtree.csproj -c Release --no-build -o artifacts\\packages",
     "Release the lock only after every child process exits."
   ],
@@ -378,6 +620,7 @@
     {"label": "Excluded exploratory baseline", "path": "raw/baseline/"},
     {"label": "Controlled 72-scenario matrix", "path": "raw/candidate/"},
     {"label": "64 KiB fallback screening", "path": "raw/candidate-threshold/"},
-    {"label": "Rejected segmented-copy epoch", "path": "raw/final-segmented/"}
+    {"label": "Rejected segmented-copy epoch", "path": "raw/final-segmented/"},
+    {"label": "Extended H-010/H-012/H-014 screen", "path": "raw/extended-screen/"}
   ]
 }

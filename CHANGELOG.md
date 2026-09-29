@@ -12,11 +12,16 @@ All notable changes to Tedd.Voxtree are documented here.
 - `GetMaximumSerializedLength`, `TryCopyEncodedTo`, and
   `TryGetSerializedData` APIs for reusable packet buffers and zero-copy access
   to retained contiguous packets.
+- `TryCreateValidated` for single-pass packet and voxel-tree validation, plus
+  allocation-free `EnumerateChannelData` traversal.
+- Persistent chunk side channels with owned mutable payloads, zero-copy packet
+  views, typed access, and disk-backed storage limits.
 
 ### Performance
 
 - Chunk snapshots cache their immutable serialized length. Loaded packets up to
-  64 KiB use one contiguous copy; larger packets retain the per-channel path.
+  64 KiB use one contiguous copy; larger retained packets use one overlap check
+  before rebuilding the envelope.
 - Empty-state derivation uses validated storage metadata instead of issuing a
   second spatial query over each channel.
 

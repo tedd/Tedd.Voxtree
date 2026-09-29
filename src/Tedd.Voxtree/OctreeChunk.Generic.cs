@@ -260,16 +260,22 @@ public sealed class OctreeChunk<T> where T : unmanaged
         var length = SerializedLength;
         if (destination.Length < length) return false;
         destination = destination[..length];
-        if (SideChannelCount == 0 && !_serializedPacket.IsEmpty && length <= MaximumContiguousCopyLength)
+        if (SideChannelCount == 0 && !_serializedPacket.IsEmpty)
         {
             if (destination.Overlaps(_serializedPacket.Span))
                 throw new ArgumentException("Destination overlaps the encoded packet.", nameof(destination));
-            _serializedPacket.Span.CopyTo(destination);
-            bytesWritten = length;
-            return true;
+            if (length <= MaximumContiguousCopyLength)
+            {
+                _serializedPacket.Span.CopyTo(destination);
+                bytesWritten = length;
+                return true;
+            }
         }
-        foreach (var channel in _channels)
-            if (destination.Overlaps(channel.Span)) throw new ArgumentException("Destination overlaps a channel encoding.");
+        else
+        {
+            foreach (var channel in _channels)
+                if (destination.Overlaps(channel.Span)) throw new ArgumentException("Destination overlaps a channel encoding.");
+        }
         if (SideChannelCount != 0)
         {
             destination[0] = 0x4f;

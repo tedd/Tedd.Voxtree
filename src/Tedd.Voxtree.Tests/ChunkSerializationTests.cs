@@ -53,6 +53,7 @@ public sealed class ChunkSerializationTests
         Assert.True(loaded.TryCopyEncodedTo(copy, out var written));
         Assert.Equal(packet.Length, written);
         Assert.Equal(packet, copy);
+        Assert.Throws<ArgumentException>(() => loaded.CopyEncodedTo(packet));
     }
 
     [Fact]
@@ -70,9 +71,19 @@ public sealed class ChunkSerializationTests
         Assert.Equal(2, view.ChannelCount);
         Assert.Equal(packet.Length, view.SerializedLength);
         Assert.True(view.IsWellFormed());
+        Assert.True(OctreeChunkSpan.TryCreateValidated(packet, out var validated));
+        Assert.Equal(view.ChannelCount, validated.ChannelCount);
         Assert.Equal(17u, view.GetChannel(0).Get(1, 7, 3));
         Assert.Equal(29u, view.GetChannel(1).Get(7, 1, 0));
         Assert.True(view.Data.Overlaps(packet));
+
+        var channelIndex = 0;
+        foreach (var channel in view.EnumerateChannelData())
+        {
+            Assert.True(channel.SequenceEqual(view.GetChannelData(channelIndex)));
+            channelIndex++;
+        }
+        Assert.Equal(view.ChannelCount, channelIndex);
 
         var expectedChecksum = ParseRepeatedly(packet);
         var before = GC.GetAllocatedBytesForCurrentThread();
@@ -81,6 +92,7 @@ public sealed class ChunkSerializationTests
         Assert.Equal(expectedChecksum, checksum);
 
         Assert.False(OctreeChunkSpan.TryCreate(packet.AsSpan(0, packet.Length - 1), out _));
+        Assert.False(OctreeChunkSpan.TryCreateValidated(packet.AsSpan(0, packet.Length - 1), out _));
     }
 
     [Fact]
@@ -93,7 +105,17 @@ public sealed class ChunkSerializationTests
 
         Assert.True(OctreeChunkSpan<ulong>.TryCreate(packet.AsSpan(0, written), out var view));
         Assert.True(view.IsWellFormed());
+        Assert.True(OctreeChunkSpan<ulong>.TryCreateValidated(packet.AsSpan(0, written), out var validated));
+        Assert.Equal(view.ChannelCount, validated.ChannelCount);
         Assert.Equal(values[64 + 27], view.GetChannel(1).Get(1, 2, 3));
+
+        var channelIndex = 0;
+        foreach (var channel in view.EnumerateChannelData())
+        {
+            Assert.True(channel.SequenceEqual(view.GetChannelData(channelIndex)));
+            channelIndex++;
+        }
+        Assert.Equal(view.ChannelCount, channelIndex);
 
         var loaded = OctreeChunk<ulong>.FromEncoded(packet.AsMemory(0, written));
         Assert.True(loaded.TryGetSerializedData(out var retained));

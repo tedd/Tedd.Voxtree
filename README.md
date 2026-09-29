@@ -565,6 +565,9 @@ OctreeChunk restored = OctreeChunk.FromEncoded(packet.AsMemory(0, used));
 undersized reusable destination with `false` and `bytesWritten == 0`.
 `OctreeChunkSpan` and `OctreeChunkSpan<T>` provide allocation-free, zero-copy
 packet access while their caller-owned bytes remain alive and immutable.
+Use `TryCreateValidated` to validate the packet envelope and every voxel tree in
+one traversal. Use `EnumerateChannelData` for an allocation-free forward scan of
+all encoded channel slices.
 `FromEncoded` performs full validation and retains the exact packet, so
 `TryGetSerializedData` can expose that contiguous memory without rebuilding it
 for legacy voxel-only packets.

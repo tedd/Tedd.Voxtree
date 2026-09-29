@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Tedd.Voxtree.Benchmark.Tests.ChunkValidationSinglePass-20260929-153806</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.16.0-preview.1, Windows 11 (10.0.26200.9457/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 5950X 3.40GHz, 1 CPU, 32 logical and 16 physical cores
+Memory: 127.91 GB Total, 94.93 GB Available
+.NET SDK 11.0.100-rc.1.26425.128
+  [Host]     : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+  Job-ZNVNAZ : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code>IterationCount=5  IterationTime=100ms  LaunchCount=1  
+WarmupCount=3  
+</code></pre>
+
+<table>
+<thead><tr><th>Method              </th><th>ChannelCount</th><th>Pattern</th><th>Mean   </th><th>Error  </th><th>StdDev</th><th>Ratio</th><th>RatioSD</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>EnvelopeThenValidate</td><td>1</td><td>Uniform</td><td>15.34 ns</td><td>0.114 ns</td><td>0.029 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>ValidateInSinglePacketPass</td><td>1</td><td>Uniform</td><td>11.35 ns</td><td>0.037 ns</td><td>0.006 ns</td><td>0.74</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>EnvelopeThenValidate</td><td>1</td><td>Sparse</td><td>35,738.46 ns</td><td>356.988 ns</td><td>92.709 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>ValidateInSinglePacketPass</td><td>1</td><td>Sparse</td><td>33,896.77 ns</td><td>1,291.199 ns</td><td>199.814 ns</td><td>0.95</td><td>0.01</td><td>-</td><td>NA</td>
+</tr><tr><td>EnvelopeThenValidate</td><td>1</td><td>Random</td><td>14.91 ns</td><td>0.113 ns</td><td>0.017 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>ValidateInSinglePacketPass</td><td>1</td><td>Random</td><td>11.80 ns</td><td>0.453 ns</td><td>0.070 ns</td><td>0.79</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>EnvelopeThenValidate</td><td>4</td><td>Uniform</td><td>45.87 ns</td><td>1.015 ns</td><td>0.157 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>ValidateInSinglePacketPass</td><td>4</td><td>Uniform</td><td>27.79 ns</td><td>0.467 ns</td><td>0.121 ns</td><td>0.61</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>EnvelopeThenValidate</td><td>4</td><td>Sparse</td><td>142,594.72 ns</td><td>1,635.426 ns</td><td>424.715 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>ValidateInSinglePacketPass</td><td>4</td><td>Sparse</td><td>136,281.86 ns</td><td>1,990.603 ns</td><td>308.048 ns</td><td>0.96</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>EnvelopeThenValidate</td><td>4</td><td>Random</td><td>42.46 ns</td><td>0.480 ns</td><td>0.074 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>ValidateInSinglePacketPass</td><td>4</td><td>Random</td><td>29.59 ns</td><td>1.123 ns</td><td>0.292 ns</td><td>0.70</td><td>0.01</td><td>-</td><td>NA</td>
+</tr><tr><td>EnvelopeThenValidate</td><td>16</td><td>Uniform</td><td>172.02 ns</td><td>1.874 ns</td><td>0.487 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>ValidateInSinglePacketPass</td><td>16</td><td>Uniform</td><td>92.03 ns</td><td>1.005 ns</td><td>0.155 ns</td><td>0.54</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>EnvelopeThenValidate</td><td>16</td><td>Sparse</td><td>558,941.98 ns</td><td>22,640.609 ns</td><td>5,879.694 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>ValidateInSinglePacketPass</td><td>16</td><td>Sparse</td><td>552,460.62 ns</td><td>29,087.710 ns</td><td>7,553.986 ns</td><td>0.99</td><td>0.02</td><td>-</td><td>NA</td>
+</tr><tr><td>EnvelopeThenValidate</td><td>16</td><td>Random</td><td>160.58 ns</td><td>7.951 ns</td><td>2.065 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>NA</td>
+</tr><tr><td>ValidateInSinglePacketPass</td><td>16</td><td>Random</td><td>103.91 ns</td><td>0.787 ns</td><td>0.204 ns</td><td>0.65</td><td>0.01</td><td>-</td><td>NA</td>
+</tr></tbody></table>
+</body>
+</html>

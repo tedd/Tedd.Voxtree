@@ -92,12 +92,18 @@ public sealed class SideChannelTests
             System.Runtime.InteropServices.MemoryMarshal.Cast<byte, int>(packet.AsSpan(firstPosition, 8)).ToArray());
 
         Assert.True(OctreeChunkSpan.TryCreate(packet, out var view));
+        Assert.True(OctreeChunkSpan.TryCreateValidated(packet, out var validatedView));
         Assert.Equal(2, view.SideChannelCount);
+        Assert.Equal(view.SideChannelCount, validatedView.SideChannelCount);
         Assert.Equal(7, view.GetSideChannelId(0));
         Assert.Equal(40, view.GetSideChannelId(1));
         Assert.Equal(new int[] { 100, 200 }, view.GetSideChannel<int>(7).ToArray());
         Assert.Equal(new byte[] { 4, 5, 6 }, view.GetSideChannel(40).ToArray());
         Assert.Equal(7u, view.GetChannel(0).Get(1, 1, 1));
+        var enumeratedChannels = view.EnumerateChannelData().GetEnumerator();
+        Assert.True(enumeratedChannels.MoveNext());
+        Assert.True(enumeratedChannels.Current.SequenceEqual(view.GetChannelData(0)));
+        Assert.False(enumeratedChannels.MoveNext());
         Assert.True(view.IsWellFormed());
         Assert.Throws<KeyNotFoundException>(() => ReadMissingSideChannel(packet));
         Assert.Throws<KeyNotFoundException>(() => ReadLowerMissingSideChannel(packet));
@@ -157,11 +163,17 @@ public sealed class SideChannelTests
         chunk.CopyEncodedTo(packet);
         Assert.Equal(4, packet[2]);
         Assert.True(OctreeChunkSpan<ushort>.TryCreate(packet, out var view));
+        Assert.True(OctreeChunkSpan<ushort>.TryCreateValidated(packet, out var validatedView));
         var constructedView = new OctreeChunkSpan<ushort>(packet);
         Assert.Equal(3, view.SideChannelCount);
+        Assert.Equal(view.SideChannelCount, validatedView.SideChannelCount);
         Assert.Equal(2, constructedView.GetSideChannelId(0));
         Assert.Equal(new long[] { -1, long.MaxValue }, view.GetSideChannel<long>(8).ToArray());
         Assert.Equal(new short[] { -7, 11 }, view.GetSideChannel<short>(12).ToArray());
+        var enumeratedChannels = view.EnumerateChannelData().GetEnumerator();
+        Assert.True(enumeratedChannels.MoveNext());
+        Assert.True(enumeratedChannels.Current.SequenceEqual(view.GetChannelData(0)));
+        Assert.False(enumeratedChannels.MoveNext());
         Assert.True(view.IsWellFormed());
 
         var restored = OctreeChunk<ushort>.FromEncoded(packet);

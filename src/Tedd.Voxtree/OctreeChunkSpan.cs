@@ -24,7 +24,7 @@ public readonly ref struct OctreeChunkSpan
     /// <summary>Creates a zero-copy view over an exact chunk packet.</summary>
     public OctreeChunkSpan(ReadOnlySpan<byte> data)
     {
-        if (!TryReadPacket(data, out _levels, out _channelCount,
+        if (!TryReadPacket(data, validatePayloads: false, out _levels, out _channelCount,
                 out _sideChannelCount, out _formatVersion))
             throw new FormatException("Invalid chunk packet envelope or channel directory.");
         _data = data;
@@ -54,6 +54,9 @@ public readonly ref struct OctreeChunkSpan
     public int SerializedLength => _data.Length;
     /// <summary>The caller-owned packet bytes.</summary>
     public ReadOnlySpan<byte> Data => _data;
+
+    /// <summary>Enumerates encoded channel slices in one forward packet pass.</summary>
+    public ChannelDataEnumerable EnumerateChannelData() => new(_data, _channelCount, _formatVersion);
 
     /// <summary>Gets one voxel channel's encoded bytes without allocation.</summary>
     public ReadOnlySpan<byte> GetChannelData(int channel)
@@ -115,7 +118,20 @@ public readonly ref struct OctreeChunkSpan
     /// <summary>Attempts to create a zero-copy view from a supported packet envelope.</summary>
     public static bool TryCreate(ReadOnlySpan<byte> data, out OctreeChunkSpan chunk)
     {
-        if (!TryReadPacket(data, out var levels, out var channelCount,
+        if (!TryReadPacket(data, validatePayloads: false, out var levels, out var channelCount,
+                out var sideChannelCount, out var formatVersion))
+        {
+            chunk = default;
+            return false;
+        }
+        chunk = new OctreeChunkSpan(data, levels, channelCount, sideChannelCount, formatVersion);
+        return true;
+    }
+
+    /// <summary>Attempts to create a zero-copy view while fully validating every channel in one packet traversal.</summary>
+    public static bool TryCreateValidated(ReadOnlySpan<byte> data, out OctreeChunkSpan chunk)
+    {
+        if (!TryReadPacket(data, validatePayloads: true, out var levels, out var channelCount,
                 out var sideChannelCount, out var formatVersion))
         {
             chunk = default;
@@ -144,7 +160,7 @@ public readonly ref struct OctreeChunkSpan
         throw new KeyNotFoundException($"Side channel {channelId} does not exist.");
     }
 
-    private static bool TryReadPacket(ReadOnlySpan<byte> data, out int levels,
+    private static bool TryReadPacket(ReadOnlySpan<byte> data, bool validatePayloads, out int levels,
         out int channelCount, out int sideChannelCount, out byte formatVersion)
     {
         levels = default;
@@ -159,7 +175,7 @@ public readonly ref struct OctreeChunkSpan
         channelCount = BinaryPrimitives.ReadInt32LittleEndian(data[4..]);
         levels = data[3];
         if (formatVersion == LegacyFormatVersion)
-            return TryReadLegacyPacket(data, levels, channelCount);
+            return TryReadLegacyPacket(data, levels, channelCount, validatePayloads);
         if (formatVersion != ExtendedFormatVersion || data.Length < ExtendedHeaderSize)
             return false;
 
@@ -177,7 +193,8 @@ public readonly ref struct OctreeChunkSpan
             var position = BinaryPrimitives.ReadInt32LittleEndian(data[(header + sizeof(int))..]);
             header += 2 * sizeof(int);
             if (length < 3 || position != expectedPosition || length > data.Length - position ||
-                !OctreeSpan.TryCreate(data.Slice(position, length), out var view) || view.Levels != levels)
+                !OctreeSpan.TryCreate(data.Slice(position, length), out var view) || view.Levels != levels ||
+                (validatePayloads && !view.IsWellFormed()))
                 return false;
             expectedPosition += length;
         }
@@ -198,7 +215,8 @@ public readonly ref struct OctreeChunkSpan
         return expectedPosition == data.Length;
     }
 
-    private static bool TryReadLegacyPacket(ReadOnlySpan<byte> data, int levels, int channelCount)
+    private static bool TryReadLegacyPacket(ReadOnlySpan<byte> data, int levels, int channelCount,
+        bool validatePayloads)
     {
         if (channelCount <= 0 || channelCount > (data.Length - HeaderSize) / 7) return false;
         var offset = HeaderSize;
@@ -208,11 +226,80 @@ public readonly ref struct OctreeChunkSpan
             var length = BinaryPrimitives.ReadInt32LittleEndian(data[offset..]);
             offset += sizeof(int);
             if (length < 3 || length > data.Length - offset ||
-                !OctreeSpan.TryCreate(data.Slice(offset, length), out var view) || view.Levels != levels)
+                !OctreeSpan.TryCreate(data.Slice(offset, length), out var view) || view.Levels != levels ||
+                (validatePayloads && !view.IsWellFormed()))
                 return false;
             offset += length;
         }
         return offset == data.Length;
+    }
+
+    /// <summary>A stack-only allocation-free sequence of encoded channel slices.</summary>
+    public readonly ref struct ChannelDataEnumerable
+    {
+        private readonly ReadOnlySpan<byte> _data;
+        private readonly int _count;
+        private readonly byte _formatVersion;
+
+        internal ChannelDataEnumerable(ReadOnlySpan<byte> data, int count, byte formatVersion)
+        {
+            _data = data;
+            _count = count;
+            _formatVersion = formatVersion;
+        }
+
+        /// <summary>Creates a forward-only channel enumerator.</summary>
+        public ChannelDataEnumerator GetEnumerator() => new(_data, _count, _formatVersion);
+    }
+
+    /// <summary>A forward-only stack-bound enumerator over encoded channel slices.</summary>
+    public ref struct ChannelDataEnumerator
+    {
+        private readonly ReadOnlySpan<byte> _data;
+        private readonly byte _formatVersion;
+        private int _remaining;
+        private int _offset;
+        private int _index;
+
+        internal ChannelDataEnumerator(ReadOnlySpan<byte> data, int count, byte formatVersion)
+        {
+            _data = data;
+            _formatVersion = formatVersion;
+            _remaining = count;
+            _offset = HeaderSize;
+            _index = 0;
+            Current = default;
+        }
+
+        /// <summary>The current encoded channel slice.</summary>
+        public ReadOnlySpan<byte> Current { get; private set; }
+
+        /// <summary>Advances to the next channel.</summary>
+        public bool MoveNext()
+        {
+            if (_remaining == 0)
+            {
+                Current = default;
+                return false;
+            }
+            if (_formatVersion == ExtendedFormatVersion)
+            {
+                var header = ExtendedHeaderSize + _index * 2 * sizeof(int);
+                var length = BinaryPrimitives.ReadInt32LittleEndian(_data[header..]);
+                var position = BinaryPrimitives.ReadInt32LittleEndian(_data[(header + sizeof(int))..]);
+                Current = _data.Slice(position, length);
+            }
+            else
+            {
+                var length = BinaryPrimitives.ReadInt32LittleEndian(_data[_offset..]);
+                _offset += sizeof(int);
+                Current = _data.Slice(_offset, length);
+                _offset += length;
+            }
+            _remaining--;
+            _index++;
+            return true;
+        }
     }
 }
 
@@ -238,7 +325,7 @@ public readonly ref struct OctreeChunkSpan<T> where T : unmanaged
     public OctreeChunkSpan(ReadOnlySpan<byte> data)
     {
         VoxelType<T>.Validate();
-        if (!TryReadPacket(data, out _levels, out _channelCount,
+        if (!TryReadPacket(data, validatePayloads: false, out _levels, out _channelCount,
                 out _sideChannelCount, out _formatVersion))
             throw new FormatException("Invalid generic chunk packet envelope or channel directory.");
         _data = data;
@@ -268,6 +355,9 @@ public readonly ref struct OctreeChunkSpan<T> where T : unmanaged
     public int SerializedLength => _data.Length;
     /// <summary>The caller-owned packet bytes.</summary>
     public ReadOnlySpan<byte> Data => _data;
+
+    /// <summary>Enumerates encoded channel slices in one forward packet pass.</summary>
+    public ChannelDataEnumerable EnumerateChannelData() => new(_data, _channelCount, _formatVersion);
 
     /// <summary>Gets one voxel channel's encoded bytes without allocation.</summary>
     public ReadOnlySpan<byte> GetChannelData(int channel)
@@ -330,7 +420,21 @@ public readonly ref struct OctreeChunkSpan<T> where T : unmanaged
     public static bool TryCreate(ReadOnlySpan<byte> data, out OctreeChunkSpan<T> chunk)
     {
         VoxelType<T>.Validate();
-        if (!TryReadPacket(data, out var levels, out var channelCount,
+        if (!TryReadPacket(data, validatePayloads: false, out var levels, out var channelCount,
+                out var sideChannelCount, out var formatVersion))
+        {
+            chunk = default;
+            return false;
+        }
+        chunk = new OctreeChunkSpan<T>(data, levels, channelCount, sideChannelCount, formatVersion);
+        return true;
+    }
+
+    /// <summary>Attempts to create a zero-copy view while fully validating every channel in one packet traversal.</summary>
+    public static bool TryCreateValidated(ReadOnlySpan<byte> data, out OctreeChunkSpan<T> chunk)
+    {
+        VoxelType<T>.Validate();
+        if (!TryReadPacket(data, validatePayloads: true, out var levels, out var channelCount,
                 out var sideChannelCount, out var formatVersion))
         {
             chunk = default;
@@ -359,7 +463,7 @@ public readonly ref struct OctreeChunkSpan<T> where T : unmanaged
         throw new KeyNotFoundException($"Side channel {channelId} does not exist.");
     }
 
-    private static bool TryReadPacket(ReadOnlySpan<byte> data, out int levels,
+    private static bool TryReadPacket(ReadOnlySpan<byte> data, bool validatePayloads, out int levels,
         out int channelCount, out int sideChannelCount, out byte formatVersion)
     {
         levels = default;
@@ -374,7 +478,7 @@ public readonly ref struct OctreeChunkSpan<T> where T : unmanaged
         channelCount = BinaryPrimitives.ReadInt32LittleEndian(data[4..]);
         levels = data[3];
         if (formatVersion == LegacyFormatVersion)
-            return TryReadLegacyPacket(data, levels, channelCount);
+            return TryReadLegacyPacket(data, levels, channelCount, validatePayloads);
         if (formatVersion != ExtendedFormatVersion || data.Length < ExtendedHeaderSize)
             return false;
 
@@ -392,7 +496,8 @@ public readonly ref struct OctreeChunkSpan<T> where T : unmanaged
             var position = BinaryPrimitives.ReadInt32LittleEndian(data[(header + sizeof(int))..]);
             header += 2 * sizeof(int);
             if (length < 4 || position != expectedPosition || length > data.Length - position ||
-                !OctreeSpan<T>.TryCreate(data.Slice(position, length), out var view) || view.Levels != levels)
+                !OctreeSpan<T>.TryCreate(data.Slice(position, length), out var view) || view.Levels != levels ||
+                (validatePayloads && !view.IsWellFormed()))
                 return false;
             expectedPosition += length;
         }
@@ -413,7 +518,8 @@ public readonly ref struct OctreeChunkSpan<T> where T : unmanaged
         return expectedPosition == data.Length;
     }
 
-    private static bool TryReadLegacyPacket(ReadOnlySpan<byte> data, int levels, int channelCount)
+    private static bool TryReadLegacyPacket(ReadOnlySpan<byte> data, int levels, int channelCount,
+        bool validatePayloads)
     {
         if (channelCount <= 0 || channelCount > (data.Length - HeaderSize) / 8) return false;
         var offset = HeaderSize;
@@ -423,10 +529,79 @@ public readonly ref struct OctreeChunkSpan<T> where T : unmanaged
             var length = BinaryPrimitives.ReadInt32LittleEndian(data[offset..]);
             offset += sizeof(int);
             if (length < 4 || length > data.Length - offset ||
-                !OctreeSpan<T>.TryCreate(data.Slice(offset, length), out var view) || view.Levels != levels)
+                !OctreeSpan<T>.TryCreate(data.Slice(offset, length), out var view) || view.Levels != levels ||
+                (validatePayloads && !view.IsWellFormed()))
                 return false;
             offset += length;
         }
         return offset == data.Length;
+    }
+
+    /// <summary>A stack-only allocation-free sequence of encoded channel slices.</summary>
+    public readonly ref struct ChannelDataEnumerable
+    {
+        private readonly ReadOnlySpan<byte> _data;
+        private readonly int _count;
+        private readonly byte _formatVersion;
+
+        internal ChannelDataEnumerable(ReadOnlySpan<byte> data, int count, byte formatVersion)
+        {
+            _data = data;
+            _count = count;
+            _formatVersion = formatVersion;
+        }
+
+        /// <summary>Creates a forward-only channel enumerator.</summary>
+        public ChannelDataEnumerator GetEnumerator() => new(_data, _count, _formatVersion);
+    }
+
+    /// <summary>A forward-only stack-bound enumerator over encoded channel slices.</summary>
+    public ref struct ChannelDataEnumerator
+    {
+        private readonly ReadOnlySpan<byte> _data;
+        private readonly byte _formatVersion;
+        private int _remaining;
+        private int _offset;
+        private int _index;
+
+        internal ChannelDataEnumerator(ReadOnlySpan<byte> data, int count, byte formatVersion)
+        {
+            _data = data;
+            _formatVersion = formatVersion;
+            _remaining = count;
+            _offset = HeaderSize;
+            _index = 0;
+            Current = default;
+        }
+
+        /// <summary>The current encoded channel slice.</summary>
+        public ReadOnlySpan<byte> Current { get; private set; }
+
+        /// <summary>Advances to the next channel.</summary>
+        public bool MoveNext()
+        {
+            if (_remaining == 0)
+            {
+                Current = default;
+                return false;
+            }
+            if (_formatVersion == ExtendedFormatVersion)
+            {
+                var header = ExtendedHeaderSize + _index * 2 * sizeof(int);
+                var length = BinaryPrimitives.ReadInt32LittleEndian(_data[header..]);
+                var position = BinaryPrimitives.ReadInt32LittleEndian(_data[(header + sizeof(int))..]);
+                Current = _data.Slice(position, length);
+            }
+            else
+            {
+                var length = BinaryPrimitives.ReadInt32LittleEndian(_data[_offset..]);
+                _offset += sizeof(int);
+                Current = _data.Slice(_offset, length);
+                _offset += length;
+            }
+            _remaining--;
+            _index++;
+            return true;
+        }
     }
 }

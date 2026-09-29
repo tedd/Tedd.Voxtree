@@ -108,6 +108,26 @@ dotnet run -c Release -f net10.0 --no-build --project Tedd.Voxtree.Benchmark.csp
 | H-008 | Generic and `UInt32` chunk paths share the same packet overhead and should use one proven parsing structure. | Equivalent improvements and identical malformed-input results on both paths; reject divergence that increases maintenance risk. | retained |
 | H-009 | Segmenting retained-packet copies at 64 KiB avoids the runtime's slow large-copy regime without reintroducing per-channel packet reconstruction. | Random packet serialization must remain within 5% of the control at 1, 4, and 16 channels while preserving small-packet gains. | rejected: +53.8% at 16 channels |
 
+## Extended hypothesis ledger
+
+These hypotheses retain epoch E-002's wire-format, ownership, correctness, and
+regression constraints. The bounded E-003 screen used .NET 10.0.12 on the same
+Ryzen 9 5950X, five 100 ms measured iterations, three warmups, and the host-wide
+benchmark lock. Raw output is under `raw/extended-screen/`.
+
+| ID | Claim | Prediction and falsification | State |
+| --- | --- | --- | --- |
+| H-010 | Packet-envelope parsing and channel structural validation repeat the packet walk and each channel's codec-header parse. | A single validation pass improves uniform/random full validation by at least 10% without regressing sparse/tree validation by more than 5%. | retained: 16-channel uniform 172.02→92.03 ns (-46.5%); random 160.58→103.91 ns (-35.3%); sparse -1.2% |
+| H-011 | Owned `FromEncoded` pays for a second packet traversal because descriptors are populated only after all validation completes. | Populate descriptors during validation and require at least 10% improvement at 16 channels; reject or require a decision if malformed packets can force material allocation. | pending; security gate |
+| H-012 | Repeated indexed `GetChannelData(i)` calls make an all-channel borrowed scan O(n²). | A stack-only sequential channel enumerator remains allocation-free and improves 16- and 64-channel full scans by at least 25%. | retained: -62.8% at 16 channels and -90.7% at 64 |
+| H-013 | Four scalar packet-prefix stores plus two endian helpers cost materially on very small writes. | A packed 64-bit prefix plus 32-bit length store improves 1- and 4-channel uniform serialization by at least 5%; generated code must show fewer stores. | pending |
+| H-014 | Loaded large-packet serialization repeats overlap detection for every channel although every channel aliases the retained packet. | One exact retained-packet overlap check improves 16-channel random serialization by at least 10% with identical overlap exceptions. | retained: 92.37→66.46 us (-28.0%) |
+| H-015 | The retained-packet transfer kernel may benefit from `Buffer.BlockCopy`, runtime memmove, or guarded AVX2 with scalar tails. | A candidate must improve 4-64 KiB transfers by at least 10% and never regress representative large packets by more than 5%. | pending; generated-code gate |
+| H-016 | Recursive tree validation exposes child addresses early enough for `Sse.Prefetch0` to overlap cache-miss latency. | Improve large sparse/tree validation by at least 10%; reject if sequential hardware prefetch dominates or any prioritized workload regresses by more than 5%. | pending after H-010 integration |
+| H-017 | Fixed eight-child validator loops do unnecessary work under skewed `uniformMask` values. | Iterate the inverted bitmask with `BitOperations.TrailingZeroCount`; require at least 10% lower sparse/tree validation latency and identical malformed-tree rejection. | pending |
+| H-018 | Concurrent writers may lose throughput through false sharing when caller-owned destinations occupy adjacent cache lines. | A caller-layout benchmark must first show coherence-sensitive degradation; absent shared library state, any padding belongs to caller partitioning. | not-applicable to the library API: destinations and partitioning are caller-owned |
+| H-019 | A 3-D stencil or neighborhood transform could be fused with packet serialization/deserialization. | An actual stencil stage and format-preserving fusion boundary must exist in the measured call path. | not-applicable: neither packet path performs stencil computation |
+
 ## Initial catalogue coverage
 
 - M1: applicable to descriptor/object allocation and caller-owned reuse.
@@ -118,10 +138,12 @@ dotnet run -c Release -f net10.0 --no-build --project Tedd.Voxtree.Benchmark.csp
 - M4: not presently justified; safe spans are the control.
 - M5/M6: not applicable to contiguous packet parsing.
 - M7: applicable to packet reconstruction, copies, and borrowed slices.
-- C1/C3: no arithmetic or lane-wise hot kernel identified.
+- C1: no arithmetic dependency chain identified.
+- C3: H-015 gates explicit AVX2 on generated-code evidence; no vector arithmetic kernel exists.
 - C2: potentially applicable to storage-kind validation distributions.
 - C4: applicable only to existing endian primitives/header stores.
 - S1-S5: not applicable to packet serialization.
 - R1: no dispatch table candidate established.
 - R2: applicable to small parser/writer helpers and descriptor copies.
-- R3/T1-T4: not applicable; operations are synchronous and instance-local.
+- R3/T2-T4: not applicable; operations are synchronous and instance-local.
+- T1: H-018 is outside the library boundary because destination partitioning is caller-owned.
