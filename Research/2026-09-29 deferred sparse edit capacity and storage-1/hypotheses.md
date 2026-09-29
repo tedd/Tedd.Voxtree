@@ -14,7 +14,8 @@
 - Mechanism: preserve unchanged channel encodings; materialize one Morton-order channel; re-encode only materialized or sparsely edited channels during repackage.
 - Prediction: capacity-plus-one edit sessions with one changed channel improve by at least 50% for eight-channel chunks and by at least 20% for two-channel chunks, without more than 5% regression below capacity.
 - Falsification: caller gains miss those thresholds, serialization ceases to share/copy unchanged channels correctly, or memory/lifetime costs dominate.
-- State: pending.
+- Change: on sparse overflow, materialize the channel that frees the most exclusive positions into a pooled Morton-order buffer, compact residual shared keys, and retain untouched channel encodings. Explicit `MakeHot()` still expands all channels.
+- State: implemented; validation and candidate measurement pending.
 
 ## H-003 — smaller default enabled by channel-local promotion
 
@@ -93,4 +94,5 @@
 - Mechanism: allocate physical storage at `min(32, Capacity)` and double only when the populated count reaches the physical limit; keep `Capacity` as the externally visible promotion threshold.
 - Prediction: default-capacity pooled payload for one modified `uint` channel falls from approximately 1,664 bytes to approximately 320 bytes at up to twenty writes, while caller time changes by less than 5%; any speed improvement is secondary.
 - Falsification: growth causes more than 5% regression in priority workloads, introduces pool-return or validity defects, or retained memory does not fall as predicted.
-- State: pending.
+- Change: sparse key and value buffers begin at `min(32, Capacity)` and double to the unchanged logical limit; presence metadata grows only when its word stride changes.
+- State: implemented; validation and candidate measurement pending.
