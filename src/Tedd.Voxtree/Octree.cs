@@ -56,6 +56,36 @@ public sealed partial class Octree
         return new OctreeLookup(encoded, encoded);
     }
 
+    /// <summary>Creates an owned tree filled with one value without allocating a dense source.</summary>
+    public Octree(int levels, uint value) : this(levels) => BuildUniform(value);
+
+    /// <summary>Replaces this tree with one value throughout the volume, publishing one final encoded array.</summary>
+    public void BuildUniform(uint value) =>
+        Volatile.Write(ref _data, OctreeCodec.BuildUniformOwned(value, _levels));
+
+    /// <summary>Gets the exact encoded size for a volume filled with one value.</summary>
+    public static int GetUniformSize(uint value, int levels)
+    {
+        return OctreeCodec.GetUniformSize(value, levels);
+    }
+
+    /// <summary>Encodes a volume filled with one value into caller-owned memory without allocation.</summary>
+    /// <exception cref="ArgumentException">The destination is too short.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">The depth is outside the supported range.</exception>
+    public static int BuildUniform(uint value, int levels, Span<byte> destination)
+    {
+        if (TryBuildUniform(value, levels, destination, out var written)) return written;
+        throw new ArgumentException("Encoded destination is too short.", nameof(destination));
+    }
+
+    /// <summary>Attempts to encode a volume filled with one value without allocation.</summary>
+    /// <remarks>Insufficient capacity returns <see langword="false"/>, writes zero bytes, and leaves the destination unchanged.
+    /// On success only <c>destination[..bytesWritten]</c> is part of the encoding.</remarks>
+    public static bool TryBuildUniform(uint value, int levels, Span<byte> destination, out int bytesWritten)
+    {
+        return OctreeCodec.TryBuildUniform(value, levels, destination, out bytesWritten);
+    }
+
     /// <summary>Gets whether this instance contains a completed build.</summary>
     public bool IsBuilt => Volatile.Read(ref _data).Length != 0;
 

@@ -54,6 +54,45 @@ internal static class VoxelCodec<T> where T : unmanaged
     internal static StorageKind GetStorageKindUnchecked(ReadOnlySpan<byte> data) =>
         (StorageKind)(data[1] & 0x03);
 
+    internal static int GetUniformSize(T value, int levels) =>
+        Unsafe.SizeOf<T>() switch
+        {
+            1 => GenericOctreeCodec<byte>.GetUniformSize(Unsafe.As<T, byte>(ref value), levels),
+            2 => GenericOctreeCodec<ushort>.GetUniformSize(Unsafe.As<T, ushort>(ref value), levels),
+            4 => GenericOctreeCodec<uint>.GetUniformSize(Unsafe.As<T, uint>(ref value), levels),
+            8 => GenericOctreeCodec<ulong>.GetUniformSize(Unsafe.As<T, ulong>(ref value), levels),
+            16 => GenericOctreeCodec<VoxelUInt128>.GetUniformSize(Unsafe.As<T, VoxelUInt128>(ref value), levels),
+            _ => ThrowUnsupported<int>()
+        };
+
+    internal static byte[] BuildUniformOwned(T value, int levels) =>
+        Unsafe.SizeOf<T>() switch
+        {
+            1 => GenericOctreeCodec<byte>.BuildUniformOwned(Unsafe.As<T, byte>(ref value), levels),
+            2 => GenericOctreeCodec<ushort>.BuildUniformOwned(Unsafe.As<T, ushort>(ref value), levels),
+            4 => GenericOctreeCodec<uint>.BuildUniformOwned(Unsafe.As<T, uint>(ref value), levels),
+            8 => GenericOctreeCodec<ulong>.BuildUniformOwned(Unsafe.As<T, ulong>(ref value), levels),
+            16 => GenericOctreeCodec<VoxelUInt128>.BuildUniformOwned(Unsafe.As<T, VoxelUInt128>(ref value), levels),
+            _ => ThrowUnsupported<byte[]>()
+        };
+
+    internal static bool TryBuildUniform(T value, int levels, Span<byte> destination, out int bytesWritten) =>
+        Unsafe.SizeOf<T>() switch
+        {
+            1 => GenericOctreeCodec<byte>.TryBuildUniform(Unsafe.As<T, byte>(ref value), levels, destination, out bytesWritten),
+            2 => GenericOctreeCodec<ushort>.TryBuildUniform(Unsafe.As<T, ushort>(ref value), levels, destination, out bytesWritten),
+            4 => GenericOctreeCodec<uint>.TryBuildUniform(Unsafe.As<T, uint>(ref value), levels, destination, out bytesWritten),
+            8 => GenericOctreeCodec<ulong>.TryBuildUniform(Unsafe.As<T, ulong>(ref value), levels, destination, out bytesWritten),
+            16 => GenericOctreeCodec<VoxelUInt128>.TryBuildUniform(Unsafe.As<T, VoxelUInt128>(ref value), levels, destination, out bytesWritten),
+            _ => ThrowUnsupportedUniform(out bytesWritten)
+        };
+
+    private static bool ThrowUnsupportedUniform(out int bytesWritten)
+    {
+        bytesWritten = 0;
+        return ThrowUnsupported<bool>();
+    }
+
     internal static int GetRequiredSize(ReadOnlySpan<T> source, int levels, DenseVoxelLayout layout) =>
         Unsafe.SizeOf<T>() switch
         {

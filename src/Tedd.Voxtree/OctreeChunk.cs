@@ -84,6 +84,17 @@ public sealed class OctreeChunk
         for (var i = 0; i < channelCount; i++) channels[i] = OctreeCodec.BuildOwned(values.Slice(i * count, count), levels, layout);
         return new OctreeChunk(levels, channels);
     }
+    /// <summary>Creates an owned chunk from one uniform value per channel without a dense source.</summary>
+    public static OctreeChunk FromUniform(int levels, ReadOnlySpan<uint> values)
+    {
+        OctreeCodec.ValidateLevels(levels);
+        if (values.IsEmpty) throw new ArgumentException("At least one channel value is required.", nameof(values));
+        var channels = new ReadOnlyMemory<byte>[values.Length];
+        for (var i = 0; i < values.Length; i++)
+            channels[i] = OctreeCodec.BuildUniformOwned(values[i], levels);
+        return new OctreeChunk(levels, channels);
+    }
+
     /// <summary>Creates an all-zero chunk without allocating or traversing a dense volume.</summary>
     public static OctreeChunk Empty(int levels, int channelCount)
     {

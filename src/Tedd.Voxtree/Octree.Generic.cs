@@ -31,6 +31,38 @@ public sealed partial class Octree<T> where T : unmanaged
     /// <summary>Creates and builds an owned tree.</summary>
     public Octree(int levels, ReadOnlySpan<T> values) : this(levels) => Build(values);
 
+    /// <summary>Creates an owned tree filled with one value without allocating a dense source.</summary>
+    public Octree(int levels, T value) : this(levels) => BuildUniform(value);
+
+    /// <summary>Replaces this tree with one value throughout the volume, publishing one final encoded array.</summary>
+    public void BuildUniform(T value) =>
+        Volatile.Write(ref _data, VoxelCodec<T>.BuildUniformOwned(value, _levels));
+
+    /// <summary>Gets the exact encoded size for a volume filled with one value.</summary>
+    public static int GetUniformSize(T value, int levels)
+    {
+        VoxelType<T>.Validate();
+        return VoxelCodec<T>.GetUniformSize(value, levels);
+    }
+
+    /// <summary>Encodes a volume filled with one value into caller-owned memory without allocation.</summary>
+    /// <exception cref="ArgumentException">The destination is too short.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">The depth is outside the supported range.</exception>
+    public static int BuildUniform(T value, int levels, Span<byte> destination)
+    {
+        if (TryBuildUniform(value, levels, destination, out var written)) return written;
+        throw new ArgumentException("Encoded destination is too short.", nameof(destination));
+    }
+
+    /// <summary>Attempts to encode a volume filled with one value without allocation.</summary>
+    /// <remarks>Insufficient capacity returns <see langword="false"/>, writes zero bytes, and leaves the destination unchanged.
+    /// On success only <c>destination[..bytesWritten]</c> is part of the encoding.</remarks>
+    public static bool TryBuildUniform(T value, int levels, Span<byte> destination, out int bytesWritten)
+    {
+        VoxelType<T>.Validate();
+        return VoxelCodec<T>.TryBuildUniform(value, levels, destination, out bytesWritten);
+    }
+
     /// <summary>Gets whether this instance contains a completed build.</summary>
     public bool IsBuilt => Volatile.Read(ref _data).Length != 0;
     /// <summary>Gets the tree depth.</summary>

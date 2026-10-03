@@ -25,6 +25,45 @@ internal static class GenericOctreeCodec<TStorage>
     private static readonly int MaximumNodeSize =
         1 + (8 * Math.Max(StorageInteger<TStorage>.MaximumVarIntBytes, 5));
 
+    internal static int GetUniformSize(TStorage value, int levels)
+    {
+        OctreeCodec.ValidateLevels(levels);
+        var writer = new OctreeWriter(Span<byte>.Empty, measureOnly: true);
+        writer.WriteValue(value);
+        return levels == 0 ? Math.Min(writer.Position, GetDenseSize(1)) : writer.Position;
+    }
+
+    internal static byte[] BuildUniformOwned(TStorage value, int levels)
+    {
+        var encoded = new byte[GetUniformSize(value, levels)];
+        if (!TryBuildUniform(value, levels, encoded, out _))
+            throw new InvalidOperationException("The octree encoder produced an inconsistent uniform result.");
+        return encoded;
+    }
+
+    internal static bool TryBuildUniform(TStorage value, int levels, Span<byte> destination, out int bytesWritten)
+    {
+        var required = GetUniformSize(value, levels);
+        bytesWritten = 0;
+        if (destination.Length < required) return false;
+
+        // At depth zero, a fixed-width cell can be smaller than its varint.
+        // Preserve the dense builder's canonical choice, including equal sizes.
+        if (levels == 0 && required == GetDenseSize(1))
+        {
+            WriteLittleEndian(destination.Slice(HeaderSize, ValueSize), value);
+            WriteHeader(destination, levels, StorageKind.Dense);
+        }
+        else
+        {
+            var writer = new OctreeWriter(destination[..required], measureOnly: false);
+            writer.WriteValue(value);
+            WriteHeader(destination, levels, StorageKind.Uniform);
+        }
+        bytesWritten = required;
+        return true;
+    }
+
     internal static int GetRequiredSize(ReadOnlySpan<TStorage> source, int levels, DenseVoxelLayout layout) =>
         CreateBuildPlan(source, levels, layout).EncodedLength;
 

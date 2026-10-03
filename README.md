@@ -275,6 +275,37 @@ tree.Build(values);
 
 `Build` replaces the wrapper's owned encoding. The voxel data is read-only between builds.
 
+### Uniform volumes
+
+Initialize air, water, or another constant volume from a single value:
+
+```csharp
+var air = new Octree(levels: 5, value: 0u);
+var water = new Octree<ushort>(levels: 5, value: (ushort)7);
+water.BuildUniform((ushort)9);
+
+var chunk = OctreeChunk.FromUniform(levels: 5, new uint[] { 7, 0 });
+var typedChunk = OctreeChunk<ushort>.FromUniform(levels: 5, new ushort[] { 7, 0 });
+```
+
+Each chunk value initializes an entire channel. Owned trees allocate only the
+final encoded byte array; no dense source or voxel scan is required. Uniform
+encoding size depends on the value's bits, not the represented voxel count.
+Depth-zero volumes use dense storage when it is no larger.
+
+For caller-owned storage, use `GetUniformSize`, `BuildUniform`, and
+`TryBuildUniform` on either `Octree` or `Octree<T>`:
+
+```csharp
+Span<byte> encoded = stackalloc byte[Octree.GetUniformSize(7u, levels: 5)];
+int written = Octree.BuildUniform(7u, levels: 5, encoded);
+var view = new OctreeSpan(encoded[..written]);
+```
+
+These caller-buffer operations allocate nothing. Insufficient capacity causes
+`TryBuildUniform` to return `false`, report zero bytes written, and leave the
+destination unchanged.
+
 ## Caller-owned and span-backed tree
 
 Use the static sizing/building API with `OctreeSpan` when the storage lifetime is controlled by the caller. The following path uses stack storage throughout:

@@ -94,6 +94,18 @@ public sealed class OctreeChunk<T> where T : unmanaged
         return new OctreeChunk<T>(levels, channels);
     }
 
+    /// <summary>Creates an owned chunk from one uniform value per channel without a dense source.</summary>
+    public static OctreeChunk<T> FromUniform(int levels, ReadOnlySpan<T> values)
+    {
+        VoxelType<T>.Validate();
+        OctreeCodec.ValidateLevels(levels);
+        if (values.IsEmpty) throw new ArgumentException("At least one channel value is required.", nameof(values));
+        var channels = new ReadOnlyMemory<byte>[values.Length];
+        for (var i = 0; i < values.Length; i++)
+            channels[i] = VoxelCodec<T>.BuildUniformOwned(values[i], levels);
+        return new OctreeChunk<T>(levels, channels);
+    }
+
     /// <summary>Creates an all-zero chunk without traversing a dense volume.</summary>
     public static OctreeChunk<T> Empty(int levels, int channelCount)
     {
