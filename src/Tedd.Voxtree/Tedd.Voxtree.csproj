@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <Version>2.0.0</Version>
+    <Version>2.0.19</Version>
     <PackageId>Tedd.Voxtree</PackageId>
     <Authors>Tedd Hansen</Authors>
     <Description>Compact span-backed voxel octrees with allocation-free queries, multi-channel chunks, and disk-backed global/LOD chunk streaming.</Description>
@@ -18,7 +18,7 @@
     <RepositoryUrl>https://github.com/tedd/Tedd.Voxtree</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>octree;voxel;span;zero-allocation;performance;streaming;lod;zstandard</PackageTags>
-    <PackageReleaseNotes>Reusable caller-owned serialization buffers; allocation-free packet views; faster retained-packet serialization; persistent typed chunk side channels with disk-backed storage support; and channel-local deferred sparse overflow that preserves untouched encodings. Legacy voxel-only packets remain compatible.</PackageReleaseNotes>
+    <PackageReleaseNotes>Direct uniform initialization for owned and caller-buffer trees and multi-channel chunks without dense source allocation; reusable caller-owned serialization buffers; allocation-free packet views; faster retained-packet serialization; persistent typed chunk side channels with disk-backed storage support; and channel-local deferred sparse overflow that preserves untouched encodings. Legacy voxel-only packets remain compatible.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IncludeSymbols>true</IncludeSymbols>
