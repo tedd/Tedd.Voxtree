@@ -2,6 +2,16 @@
 
 All notable changes to Tedd.Voxtree are documented here.
 
+## 2026-10-05
+
+### Performance
+
+- Deferred chunk point writes replace an unshared single-voxel tree leaf directly
+  when the new value has the same encoded width. Repeated writes use a private
+  channel encoding and avoid sparse edits and dense decode/rebuild work.
+- Published chunk snapshots remain unchanged. Writes to shared regions or values
+  requiring a different encoded width continue through sparse edits.
+
 ## 2026-09-29
 
 ### Added

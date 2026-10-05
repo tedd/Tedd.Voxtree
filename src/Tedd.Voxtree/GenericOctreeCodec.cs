@@ -309,6 +309,55 @@ internal static class GenericOctreeCodec<TStorage>
         return false;
     }
 
+    internal static bool TryPatchSingleLeaf(ReadOnlySpan<byte> data, Span<byte> destination,
+        int levels, int x, int y, int z, TStorage value)
+    {
+        if (levels == 0 || (data[1] & StorageKindMask) != (byte)StorageKind.Tree) return false;
+        var body = (ReadOnlySpan<byte>)data[..^1];
+        var nodeOffset = body.Length - data[^1];
+        for (var bit = levels - 1; bit >= 0; bit--)
+        {
+            var nodeStart = nodeOffset;
+            var cursor = nodeStart;
+            var mask = body[cursor++];
+            var child = (((x >> bit) & 1) << 2) | (((y >> bit) & 1) << 1) | ((z >> bit) & 1);
+            for (var index = 0; index < child; index++)
+            {
+                if ((mask & (1 << index)) != 0)
+                {
+                    if (!SkipValue(body, ref cursor)) return false;
+                }
+                else if (!OctreeCodec.TryReadVarUInt(body, ref cursor, out _)) return false;
+            }
+            var valueOffset = cursor;
+            if ((mask & (1 << child)) != 0)
+            {
+                if (!TryReadValue(body, ref cursor, out _) || bit != 0) return false;
+                var width = cursor - valueOffset;
+                var remaining = value;
+                var newWidth = 1;
+                while (StorageInteger<TStorage>.HasMoreThanSevenBits(remaining))
+                {
+                    remaining = StorageInteger<TStorage>.ShiftRightSeven(remaining);
+                    newWidth++;
+                }
+                if (newWidth != width) return false;
+                if (destination.IsEmpty) return true;
+                for (var index = 0; index < width - 1; index++)
+                {
+                    destination[valueOffset + index] = (byte)(StorageInteger<TStorage>.LowByte(value) | 0x80);
+                    value = StorageInteger<TStorage>.ShiftRightSeven(value);
+                }
+                destination[valueOffset + width - 1] = StorageInteger<TStorage>.LowByte(value);
+                return true;
+            }
+            if (!OctreeCodec.TryReadVarUInt(body, ref cursor, out var distance) ||
+                bit == 0 || distance == 0 || distance > (uint)(nodeStart - HeaderSize)) return false;
+            nodeOffset = nodeStart - (int)distance;
+        }
+        return false;
+    }
+
     internal static bool TryCopyTo(ReadOnlySpan<byte> data, int levels, StorageKind storageKind,
         Span<TStorage> destination, DenseVoxelLayout layout = DenseVoxelLayout.Linear)
     {

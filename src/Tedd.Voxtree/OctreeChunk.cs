@@ -158,6 +158,13 @@ public sealed class OctreeChunk
         for (var index = 0; index < SideChannelCount; index++)
             destination._sideChannels.Create(_sideChannels.GetId(index), _sideChannels.GetDataAt(index));
     }
+    internal OctreeChunk WithPatchedChannels(byte[]?[] patches)
+    {
+        var channels = (ReadOnlyMemory<byte>[])_channels.Clone();
+        for (var channel = 0; channel < channels.Length; channel++)
+            if (patches[channel] is { } data) channels[channel] = data;
+        return new OctreeChunk(Levels, channels, sideChannels: _sideChannels.Clone());
+    }
     /// <summary>Rebuilds only one changed dense channel and returns a new snapshot sharing the other encodings.</summary>
     public OctreeChunk WithDenseChannel(int channel, ReadOnlySpan<uint> values, DenseVoxelLayout layout = DenseVoxelLayout.Linear)
     {

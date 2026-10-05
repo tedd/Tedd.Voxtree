@@ -50,6 +50,18 @@ internal struct VoxelUInt128 : IEquatable<VoxelUInt128>
 /// <summary>Routes a closed voxel type to an exact-width codec.</summary>
 internal static class VoxelCodec<T> where T : unmanaged
 {
+    internal static bool TryPatchSingleLeaf(ReadOnlySpan<byte> data, Span<byte> destination,
+        int levels, int x, int y, int z, T value) =>
+        Unsafe.SizeOf<T>() switch
+        {
+            1 => GenericOctreeCodec<byte>.TryPatchSingleLeaf(data, destination, levels, x, y, z, Unsafe.As<T, byte>(ref value)),
+            2 => GenericOctreeCodec<ushort>.TryPatchSingleLeaf(data, destination, levels, x, y, z, Unsafe.As<T, ushort>(ref value)),
+            4 => GenericOctreeCodec<uint>.TryPatchSingleLeaf(data, destination, levels, x, y, z, Unsafe.As<T, uint>(ref value)),
+            8 => GenericOctreeCodec<ulong>.TryPatchSingleLeaf(data, destination, levels, x, y, z, Unsafe.As<T, ulong>(ref value)),
+            16 => GenericOctreeCodec<VoxelUInt128>.TryPatchSingleLeaf(data, destination, levels, x, y, z, Unsafe.As<T, VoxelUInt128>(ref value)),
+            _ => ThrowUnsupported<bool>()
+        };
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static StorageKind GetStorageKindUnchecked(ReadOnlySpan<byte> data) =>
         (StorageKind)(data[1] & 0x03);

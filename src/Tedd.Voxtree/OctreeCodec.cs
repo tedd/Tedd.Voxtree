@@ -388,6 +388,47 @@ internal static class OctreeCodec
         return false;
     }
 
+    // A uniform child at the final level represents exactly one voxel. Its
+    // varint can be replaced without changing any node offsets when widths match.
+    internal static bool TryPatchSingleLeaf(ReadOnlySpan<byte> data, Span<byte> destination,
+        int levels, int x, int y, int z, uint value)
+    {
+        if (levels == 0 || GetStorageKindUnchecked(data) != StorageKind.Tree) return false;
+        var body = (ReadOnlySpan<byte>)data[..^1];
+        var nodeOffset = body.Length - data[^1];
+        for (var bit = levels - 1; bit >= 0; bit--)
+        {
+            var nodeStart = nodeOffset;
+            var cursor = nodeStart;
+            var mask = body[cursor++];
+            var child = (((x >> bit) & 1) << 2) | (((y >> bit) & 1) << 1) | ((z >> bit) & 1);
+            for (var index = 0; index < child; index++)
+                if (!TryReadVarUInt(body, ref cursor, out _)) return false;
+            var valueOffset = cursor;
+            if (!TryReadVarUInt(body, ref cursor, out var token)) return false;
+            if ((mask & (1 << child)) != 0)
+            {
+                if (bit != 0) return false;
+                var width = cursor - valueOffset;
+                var remaining = value;
+                var newWidth = 1;
+                while (remaining >= 0x80) { remaining >>= 7; newWidth++; }
+                if (newWidth != width) return false;
+                if (destination.IsEmpty) return true;
+                for (var index = 0; index < width - 1; index++)
+                {
+                    destination[valueOffset + index] = (byte)(value | 0x80);
+                    value >>= 7;
+                }
+                destination[valueOffset + width - 1] = (byte)value;
+                return true;
+            }
+            if (bit == 0 || token == 0 || token > (uint)(nodeStart - HeaderSize)) return false;
+            nodeOffset = nodeStart - (int)token;
+        }
+        return false;
+    }
+
     internal static bool TryCopyTo(
         ReadOnlySpan<byte> data,
         int levels,

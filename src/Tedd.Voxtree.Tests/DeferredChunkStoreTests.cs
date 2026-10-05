@@ -5,6 +5,27 @@ public sealed class DeferredChunkStoreTests
     private static readonly ChunkAddress Address = new(0, -3, 4, 5);
 
     [Fact]
+    public void DirectLeafPatchRemainsScheduledUntilPublished()
+    {
+        var values = Enumerable.Repeat(7u, 512).ToArray();
+        values[DenseVoxel.GetIndex(3, 2, 1, 3, DenseVoxelLayout.Linear)] = 3;
+        var source = OctreeChunk.FromDense(3, 1, values);
+        using var store = new DeferredChunkStore();
+        store.SetChunk(Address, source);
+
+        store.Set(Address, 0, 3, 2, 1, 4);
+        Assert.Equal(1, store.PendingRepackageCount);
+        Assert.Equal(4u, store.Get(Address, 0, 3, 2, 1));
+        Assert.Equal(3u, source.GetChannel(0).Get(3, 2, 1));
+
+        var packet = new byte[store.GetChunk(Address).SerializedLength];
+        Assert.Equal(0, store.PendingRepackageCount);
+        var written = store.CopyEncodedTo(Address, packet);
+        Assert.Equal(4u, OctreeChunk.FromEncoded(packet.AsMemory(0, written))
+            .GetChannel(0).Get(3, 2, 1));
+    }
+
+    [Fact]
     public void DeferredWritesCanBeDisabledForNewlyInstalledChunks()
     {
         using var defaultStore = new DeferredChunkStore();

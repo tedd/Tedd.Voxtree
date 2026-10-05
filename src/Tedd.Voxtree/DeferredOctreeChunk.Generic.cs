@@ -15,6 +15,7 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
     private HotOctreeChunk<T>? _hot;
     private SparseVoxelEdits<T>? _edits;
     private PartialVoxelEdits<T>? _partial;
+    private byte[]?[]? _directChannels;
     private readonly bool _deferredWritesEnabled;
     private bool _disposed;
 
@@ -45,7 +46,7 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
     /// <summary>Whether this owner retains any dense editing storage.</summary>
     public bool IsHot => _hot is not null || _partial is not null;
     /// <summary>Whether edits or borrowed dense storage require repackaging.</summary>
-    public bool IsDirty => IsHot || PendingPositionCount != 0;
+    public bool IsDirty => IsHot || PendingPositionCount != 0 || _directChannels is not null;
 
     /// <summary>Reads or overwrites a channel value, consulting sparse edits before the compressed source.</summary>
     public T this[int channel, int x, int y, int z]
@@ -54,6 +55,9 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
         {
             var key = Validate(channel, x, y, z);
             if (_hot is not null) return _hot[channel, x, y, z];
+            if (_directChannels?[channel] is { } direct &&
+                VoxelCodec<T>.TryGetUnchecked(direct, Levels, StorageKind.Tree, x, y, z, out var directValue))
+                return directValue;
             if (_edits is { } edits)
                 return edits.TryGet(channel, key, out var sparseValue)
                     ? sparseValue
@@ -71,6 +75,11 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
         {
             var key = Validate(channel, x, y, z);
             if (_hot is not null) { _hot[channel, x, y, z] = value; return; }
+            if (_edits is null && _partial is null)
+            {
+                if (TryDirectSet(channel, x, y, z, value)) return;
+                PublishDirect();
+            }
             var edits = _edits;
             if (edits is not null)
             {
@@ -102,6 +111,7 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
     {
         ThrowIfDisposed();
         if (_hot is not null) return _hot;
+        PublishDirect();
         var hot = _partial is null
             ? _snapshot.MarkHot()
             : HotOctreeChunk<T>.FromChunkReplacingChannels(_snapshot, _partial.DenseChannels);
@@ -127,6 +137,7 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
     public OctreeChunk<T> Repackage()
     {
         ThrowIfDisposed();
+        PublishDirect();
         if (_hot is not null)
         {
             var snapshot = _hot.Commit();
@@ -188,6 +199,26 @@ public sealed class DeferredOctreeChunk<T> : IDisposable where T : unmanaged
         if ((uint)x >= (uint)SideLength || (uint)y >= (uint)SideLength || (uint)z >= (uint)SideLength)
             throw new ArgumentOutOfRangeException(nameof(x));
         return (x << (Levels * 2)) | (y << Levels) | z;
+    }
+
+    private bool TryDirectSet(int channel, int x, int y, int z, T value)
+    {
+        if (_directChannels?[channel] is { } direct)
+            return VoxelCodec<T>.TryPatchSingleLeaf(direct, direct, Levels, x, y, z, value);
+        var source = _snapshot.GetChannelData(channel).Span;
+        if (VoxelCodec<T>.GetStorageKindUnchecked(source) != StorageKind.Tree) return false;
+        if (!VoxelCodec<T>.TryPatchSingleLeaf(source, Span<byte>.Empty, Levels, x, y, z, value)) return false;
+        var copy = source.ToArray();
+        VoxelCodec<T>.TryPatchSingleLeaf(copy, copy, Levels, x, y, z, value);
+        (_directChannels ??= new byte[]?[ChannelCount])[channel] = copy;
+        return true;
+    }
+
+    private void PublishDirect()
+    {
+        if (_directChannels is not { } patches) return;
+        _snapshot = _snapshot.WithPatchedChannels(patches);
+        _directChannels = null;
     }
 
     private void ThrowIfDisposed()

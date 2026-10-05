@@ -5,6 +5,55 @@ namespace Tedd.Voxtree.Tests;
 public sealed class DeferredChunkTests
 {
     [Fact]
+    public void SingleVoxelLeafIsPatchedWithoutSparseEditsOrReencoding()
+    {
+        var values = Enumerable.Repeat(7u, 512).ToArray();
+        values[DenseVoxel.GetIndex(3, 2, 1, 3, DenseVoxelLayout.Linear)] = 3;
+        var source = OctreeChunk.FromDense(3, 2,
+            values.Concat(Enumerable.Repeat(9u, 512)).ToArray());
+        using var owner = new DeferredOctreeChunk(source);
+
+        owner[0, 3, 2, 1] = 4;
+        owner[0, 3, 2, 1] = 5;
+        Assert.Equal(5u, owner[0, 3, 2, 1]);
+        Assert.Equal(0, owner.PendingPositionCount);
+        Assert.False(owner.IsHot);
+        Assert.True(owner.IsDirty);
+        Assert.Equal(3u, source.GetChannel(0).Get(3, 2, 1));
+
+        var published = owner.Repackage();
+        Assert.Equal(source.GetChannelData(0).Length, published.GetChannelData(0).Length);
+        Assert.True(source.GetChannelData(1).Equals(published.GetChannelData(1)));
+        Assert.Equal(5u, published.GetChannel(0).Get(3, 2, 1));
+        AssertClean(owner);
+
+        owner[0, 3, 2, 1] = 128; // Varint width changes: use the sparse fallback.
+        Assert.Equal(1, owner.PendingPositionCount);
+        Assert.Equal(128u, owner.Repackage().GetChannel(0).Get(3, 2, 1));
+        Assert.Equal(5u, published.GetChannel(0).Get(3, 2, 1));
+    }
+
+    [Fact]
+    public void GenericSingleVoxelLeafPatchPreservesSourceAndOtherChannels()
+    {
+        var values = Enumerable.Repeat(7UL, 512).ToArray();
+        values[DenseVoxel.GetIndex(3, 2, 1, 3, DenseVoxelLayout.Linear)] = 3;
+        var source = OctreeChunk<ulong>.FromDense(3, 2,
+            values.Concat(Enumerable.Repeat(9UL, 512)).ToArray());
+        using var owner = new DeferredOctreeChunk<ulong>(source);
+
+        owner[0, 3, 2, 1] = 4;
+        Assert.Equal(0, owner.PendingPositionCount);
+        Assert.True(owner.IsDirty);
+        Assert.Equal(3UL, source.GetChannel(0).Get(3, 2, 1));
+        var published = owner.Repackage();
+        Assert.Equal(4UL, published.GetChannel(0).Get(3, 2, 1));
+        Assert.True(source.GetChannelData(1).Equals(published.GetChannelData(1)));
+        Assert.False(owner.IsDirty);
+        Assert.Equal(0, owner.PendingPositionCount);
+    }
+
+    [Fact]
     public void DeferredWritesCanBeDisabledWithoutChangingSnapshotSemantics()
     {
         var source = OctreeChunk.Empty(2, 2);
