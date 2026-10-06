@@ -64,6 +64,43 @@ public sealed class OctreeLookup
         return GetUnchecked(x, y, z);
     }
 
+    /// <summary>Gets the voxel value and the LOD level of its stored leaf in one query.</summary>
+    /// <param name="x">Voxel X coordinate.</param>
+    /// <param name="y">Voxel Y coordinate.</param>
+    /// <param name="z">Voxel Z coordinate.</param>
+    /// <param name="lodLevel">Zero for a single voxel; N for an aligned uniform cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</param>
+    /// <exception cref="ArgumentOutOfRangeException">A coordinate is outside the volume.</exception>
+    public uint Get(int x, int y, int z, out int lodLevel)
+    {
+        lodLevel = 0;
+        if ((uint)x >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(x), x);
+        if ((uint)y >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(y), y);
+        if ((uint)z >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(z), z);
+        return GetUnchecked(x, y, z, out lodLevel);
+    }
+
+    /// <summary>Gets the stored leaf LOD level at a coordinate and returns its voxel value.</summary>
+    /// <remarks>LOD zero is one voxel, and LOD N is an aligned uniform cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</remarks>
+    public int GetLod(int x, int y, int z, out uint value)
+    {
+        value = Get(x, y, z, out var lodLevel);
+        return lodLevel;
+    }
+
+    /// <summary>Attempts to get a value and its stored leaf LOD level; failure returns zero in both outputs.</summary>
+    /// <remarks>LOD zero is one voxel, and LOD N is an aligned cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</remarks>
+    public bool TryGet(int x, int y, int z, out uint value, out int lodLevel)
+    {
+        value = default;
+        lodLevel = 0;
+        if ((uint)(x | y | z) >= (uint)SideLength) return false;
+        value = GetUnchecked(x, y, z, out lodLevel);
+        return true;
+    }
+
     /// <summary>Attempts a read, returning false for coordinates outside the volume.</summary>
     public bool TryGet(int x, int y, int z, out uint value)
     {
@@ -77,11 +114,19 @@ public sealed class OctreeLookup
     }
 
     private uint GetUnchecked(int x, int y, int z)
+        => GetUnchecked(x, y, z, out _);
+
+    private uint GetUnchecked(int x, int y, int z, out int lodLevel)
     {
+        lodLevel = 0;
         var nodes = _nodes;
         if (nodes is null)
         {
-            if (_dense.IsEmpty) return _uniform;
+            if (_dense.IsEmpty)
+            {
+                lodLevel = Levels;
+                return _uniform;
+            }
             var index = ((x << Levels) + y) * SideLength + z;
             return BinaryPrimitives.ReadUInt32LittleEndian(_dense.Span.Slice(
                 OctreeCodec.HeaderSize + index * sizeof(uint), sizeof(uint)));
@@ -91,7 +136,11 @@ public sealed class OctreeLookup
         {
             var child = (((x >> bit) & 1) << 2) | (((y >> bit) & 1) << 1) | ((z >> bit) & 1);
             var token = nodes[offset + child + 1];
-            if ((nodes[offset] & (1u << child)) != 0) return token;
+            if ((nodes[offset] & (1u << child)) != 0)
+            {
+                lodLevel = bit;
+                return token;
+            }
             offset = (int)token;
         }
         // Construction validates the complete source before compiling the private index.

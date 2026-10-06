@@ -380,6 +380,41 @@ public sealed partial class OctreeWorld<T> : IDisposable where T : unmanaged
         throw new InvalidOperationException("The queried voxel is unloaded.");
     }
 
+    /// <summary>Reads a channel value and its stored leaf LOD level.</summary>
+    /// <remarks>LOD zero is one voxel; LOD N covers an aligned cube with side 2^N.
+    /// Known-empty regions return their collapsed outer region level. Resident chunks return
+    /// the selected channel's leaf level, with dense channels returning zero.</remarks>
+    public T Get(int channel, int x, int y, int z, out int lodLevel)
+    {
+        ValidatePoint(x, y, z);
+        if (TryGet(channel, x, y, z, out var value, out lodLevel)) return value;
+        throw new InvalidOperationException("The queried voxel is unloaded.");
+    }
+
+    /// <summary>Gets the selected channel's stored leaf LOD level and returns its voxel value.</summary>
+    public int GetLod(int channel, int x, int y, int z, out T value)
+    {
+        value = Get(channel, x, y, z, out var lodLevel);
+        return lodLevel;
+    }
+
+    /// <summary>Reads a channel value and leaf LOD; false means outside the world or unloaded, with default outputs.</summary>
+    public bool TryGet(int channel, int x, int y, int z, out T value, out int lodLevel)
+    {
+        using var scope = ReadLock();
+        ValidateChannel(channel);
+        value = default;
+        lodLevel = 0;
+        if ((uint)x >= (uint)SideLength || (uint)y >= (uint)SideLength || (uint)z >= (uint)SideLength)
+            return false;
+        var link = Find(x, y, z, out var regionLevel);
+        if (link == 0) return false;
+        if (link == -1) { lodLevel = regionLevel; return true; }
+        var mask = ChunkSideLength - 1;
+        value = _chunks.Span[-link - 2]!.GetChannel(channel).Get(x & mask, y & mask, z & mask, out lodLevel);
+        return true;
+    }
+
     /// <summary>Determines whether any voxel matches; false return means the result is inconclusive.</summary>
     public bool TryAny(VoxelBox box, int channel, VoxelFilter<T> filter, out bool any)
     {

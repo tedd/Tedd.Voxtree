@@ -150,6 +150,39 @@ public sealed partial class Octree
         return value;
     }
 
+    /// <summary>Gets the voxel value and the LOD level of its stored leaf in one query.</summary>
+    /// <param name="x">Voxel X coordinate.</param>
+    /// <param name="y">Voxel Y coordinate.</param>
+    /// <param name="z">Voxel Z coordinate.</param>
+    /// <param name="lodLevel">Zero for a single voxel; N for an aligned uniform cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</param>
+    /// <exception cref="InvalidOperationException">The tree has not been built.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">A coordinate is outside the volume.</exception>
+    /// <exception cref="FormatException">The encoded data is malformed.</exception>
+    public uint Get(int x, int y, int z, out int lodLevel) => AsSpan().Get(x, y, z, out lodLevel);
+
+    /// <summary>Gets the stored leaf LOD level at a coordinate and returns its voxel value.</summary>
+    /// <remarks>LOD zero is one voxel, and LOD N is an aligned uniform cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</remarks>
+    public int GetLod(int x, int y, int z, out uint value)
+    {
+        value = Get(x, y, z, out var lodLevel);
+        return lodLevel;
+    }
+
+    /// <summary>Attempts to get a value and its stored leaf LOD level; failure returns zero in both outputs.</summary>
+    /// <remarks>LOD zero is one voxel, and LOD N is an aligned cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</remarks>
+    public bool TryGet(int x, int y, int z, out uint value, out int lodLevel)
+    {
+        var encoded = Volatile.Read(ref _data);
+        value = default;
+        lodLevel = 0;
+        return encoded.Length != 0 &&
+               OctreeSpan.CreateTrusted(encoded, _levels, OctreeCodec.GetStorageKindUnchecked(encoded))
+                   .TryGet(x, y, z, out value, out lodLevel);
+    }
+
     /// <summary>Attempts to get a value without throwing for an unbuilt tree, bad coordinate, or malformed data.</summary>
     public bool TryGet(int x, int y, int z, out uint value)
     {

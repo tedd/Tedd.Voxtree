@@ -259,13 +259,21 @@ internal static class GenericOctreeCodec<TStorage>
 
     internal static bool TryGetUnchecked(ReadOnlySpan<byte> data, int levels, StorageKind storageKind,
         int x, int y, int z, out TStorage value)
+        => TryGetUnchecked(data, levels, storageKind, x, y, z, out value, out _);
+
+    internal static bool TryGetUnchecked(ReadOnlySpan<byte> data, int levels, StorageKind storageKind,
+        int x, int y, int z, out TStorage value, out int lodLevel)
     {
         value = default;
+        lodLevel = 0;
         var sideLength = 1 << levels;
         if (storageKind == StorageKind.Uniform)
         {
             var cursor = HeaderSize;
-            return TryReadValue(data, ref cursor, out value) && cursor == data.Length;
+            if (!TryReadValue(data, ref cursor, out value) || cursor != data.Length)
+                return false;
+            lodLevel = levels;
+            return true;
         }
 
         if (storageKind == StorageKind.Dense)
@@ -300,7 +308,11 @@ internal static class GenericOctreeCodec<TStorage>
             }
 
             if ((uniformMask & (1 << child)) != 0)
-                return TryReadValue(body, ref cursor, out value);
+            {
+                if (!TryReadValue(body, ref cursor, out value)) return false;
+                lodLevel = bit;
+                return true;
+            }
             if (!OctreeCodec.TryReadVarUInt(body, ref cursor, out var distance) ||
                 bit == 0 || distance == 0 || distance > (uint)(nodeStart - HeaderSize))
                 return false;

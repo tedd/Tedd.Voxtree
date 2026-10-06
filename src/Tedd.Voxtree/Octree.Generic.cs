@@ -100,6 +100,39 @@ public sealed partial class Octree<T> where T : unmanaged
         return value;
     }
 
+    /// <summary>Gets the voxel value and the LOD level of its stored leaf in one query.</summary>
+    /// <param name="x">Voxel X coordinate.</param>
+    /// <param name="y">Voxel Y coordinate.</param>
+    /// <param name="z">Voxel Z coordinate.</param>
+    /// <param name="lodLevel">Zero for a single voxel; N for an aligned uniform cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</param>
+    /// <exception cref="InvalidOperationException">The tree has not been built.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">A coordinate is outside the volume.</exception>
+    /// <exception cref="FormatException">The encoded data is malformed.</exception>
+    public T Get(int x, int y, int z, out int lodLevel) => AsSpan().Get(x, y, z, out lodLevel);
+
+    /// <summary>Gets the stored leaf LOD level at a coordinate and returns its voxel value.</summary>
+    /// <remarks>LOD zero is one voxel, and LOD N is an aligned uniform cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</remarks>
+    public int GetLod(int x, int y, int z, out T value)
+    {
+        value = Get(x, y, z, out var lodLevel);
+        return lodLevel;
+    }
+
+    /// <summary>Attempts to get a value and its stored leaf LOD level; failure returns default outputs.</summary>
+    /// <remarks>LOD zero is one voxel, and LOD N is an aligned cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</remarks>
+    public bool TryGet(int x, int y, int z, out T value, out int lodLevel)
+    {
+        var encoded = Volatile.Read(ref _data);
+        value = default;
+        lodLevel = 0;
+        return encoded.Length != 0 &&
+               OctreeSpan<T>.CreateTrusted(encoded, _levels, VoxelCodec<T>.GetStorageKindUnchecked(encoded))
+                   .TryGet(x, y, z, out value, out lodLevel);
+    }
+
     /// <summary>Attempts to get a value without throwing for an unbuilt tree, bad coordinate, or malformed data.</summary>
     public bool TryGet(int x, int y, int z, out T value)
     {
@@ -250,6 +283,51 @@ public readonly ref partial struct OctreeSpan<T> where T : unmanaged
         if (!VoxelCodec<T>.TryGetUnchecked(_data, _levels, _storageKind, x, y, z, out var value))
             return GenericOctreeThrowHelper<T>.ThrowMalformed();
         return value;
+    }
+
+    /// <summary>Gets the voxel value and the LOD level of its stored leaf in one query.</summary>
+    /// <param name="x">Voxel X coordinate.</param>
+    /// <param name="y">Voxel Y coordinate.</param>
+    /// <param name="z">Voxel Z coordinate.</param>
+    /// <param name="lodLevel">Zero for a single voxel; N for an aligned uniform cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</param>
+    /// <exception cref="InvalidOperationException">This is a default view.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">A coordinate is outside the volume.</exception>
+    /// <exception cref="FormatException">The encoded structure is malformed.</exception>
+    public T Get(int x, int y, int z, out int lodLevel)
+    {
+        lodLevel = 0;
+        if (!IsValid) return GenericOctreeThrowHelper<T>.ThrowInvalidView();
+        if ((uint)x >= (uint)SideLength) return GenericOctreeThrowHelper<T>.ThrowCoordinate(nameof(x), x);
+        if ((uint)y >= (uint)SideLength) return GenericOctreeThrowHelper<T>.ThrowCoordinate(nameof(y), y);
+        if ((uint)z >= (uint)SideLength) return GenericOctreeThrowHelper<T>.ThrowCoordinate(nameof(z), z);
+        if (!VoxelCodec<T>.TryGetUnchecked(_data, _levels, _storageKind, x, y, z, out var value, out lodLevel))
+            return GenericOctreeThrowHelper<T>.ThrowMalformed();
+        return value;
+    }
+
+    /// <summary>Gets the stored leaf LOD level at a coordinate and returns its voxel value.</summary>
+    /// <remarks>LOD zero is one voxel, and LOD N is an aligned uniform cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</remarks>
+    public int GetLod(int x, int y, int z, out T value)
+    {
+        value = Get(x, y, z, out var lodLevel);
+        return lodLevel;
+    }
+
+    /// <summary>Attempts to get a value and its stored leaf LOD level; failure returns default outputs.</summary>
+    /// <remarks>LOD zero is one voxel, and LOD N is an aligned cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</remarks>
+    public bool TryGet(int x, int y, int z, out T value, out int lodLevel)
+    {
+        value = default;
+        lodLevel = 0;
+        if (!Contains(x, y, z)) return false;
+        if (VoxelCodec<T>.TryGetUnchecked(_data, _levels, _storageKind, x, y, z, out value, out lodLevel))
+            return true;
+        value = default;
+        lodLevel = 0;
+        return false;
     }
 
     /// <summary>Attempts to get a value without throwing for a bad coordinate or malformed structure.</summary>

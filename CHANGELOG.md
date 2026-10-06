@@ -2,6 +2,17 @@
 
 All notable changes to Tedd.Voxtree are documented here.
 
+## 2026-10-06
+
+### Added
+
+- Point getters return a voxel value and its compressed leaf LOD level through
+  `Get(..., out lodLevel)`, `GetLod(..., out value)`, and
+  `TryGet(..., out value, out lodLevel)`. Supported APIs include owned trees,
+  spans, compiled lookups, and channel-aware worlds, including generic variants.
+- Unit coverage for collapsed leaves, independent channels, dense storage,
+  malformed data, snapshot consistency, and allocation-free queries.
+
 ## 2026-10-05
 
 ### Performance

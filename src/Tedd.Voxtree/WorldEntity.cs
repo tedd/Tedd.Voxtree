@@ -95,7 +95,8 @@ public readonly struct ChunkAddress : IEquatable<ChunkAddress>
 /// <summary>Maps immutable chunks into an effectively unbounded, signed global voxel coordinate system.</summary>
 /// <remarks>
 /// Chunk coordinates address entries in <see cref="Chunks"/>; voxel coordinates passed to
-/// <see cref="Get"/> and <see cref="TryGet"/> are global. Chunk side length must be a power of two,
+/// <see cref="Get(int, long, long, long)"/> and <see cref="TryGet(int, long, long, long, out uint)"/>
+/// are global. Chunk side length must be a power of two,
 /// so each global coordinate is routed with an arithmetic shift and a bit mask. This type is not
 /// thread-safe; synchronize access when chunks can be changed concurrently with reads.
 /// </remarks>
@@ -265,6 +266,42 @@ public sealed partial class WorldEntity
         }
         value = default;
         return false;
+    }
+
+    /// <summary>Reads a base channel value and its stored leaf LOD level at global voxel coordinates.</summary>
+    /// <remarks>Uses the same on-demand loading as the value-only getter. False means the chunk
+    /// is unavailable and returns zero outputs. The leaf level is local to the selected channel;
+    /// no merging across chunk boundaries is attempted.</remarks>
+    public bool TryGet(int channel, long x, long y, long z, out uint value, out int lodLevel)
+    {
+        ValidateChannel(channel);
+        ResolveCoordinates(x, y, z, out var coordinate, out var localX, out var localY, out var localZ);
+        lodLevel = 0;
+        if (_chunks.TryGetValue(coordinate, out var chunk) ||
+            (StorageOptions is not null &&
+             TryGetOrLoadChunk(new ChunkAddress(0, coordinate), out chunk)))
+        {
+            value = chunk!.GetChannel(channel).Get(localX, localY, localZ, out lodLevel);
+            return true;
+        }
+        value = default;
+        return false;
+    }
+
+    /// <summary>Reads a base channel value and its stored leaf LOD level, throwing when the chunk is unavailable.</summary>
+    /// <remarks>LOD zero is one voxel; LOD N is an aligned uniform cube with side 2^N.
+    /// Dense channels return zero.</remarks>
+    public uint Get(int channel, long x, long y, long z, out int lodLevel)
+    {
+        if (TryGet(channel, x, y, z, out var value, out lodLevel)) return value;
+        throw new InvalidOperationException("The chunk containing the queried voxel is not loaded.");
+    }
+
+    /// <summary>Gets a base channel's stored leaf LOD level and returns its voxel value at global coordinates.</summary>
+    public int GetLod(int channel, long x, long y, long z, out uint value)
+    {
+        value = Get(channel, x, y, z, out var lodLevel);
+        return lodLevel;
     }
 
     /// <summary>Reads an LOD sample at global base-voxel coordinates.</summary>

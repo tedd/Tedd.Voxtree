@@ -18,7 +18,7 @@
     <RepositoryUrl>https://github.com/tedd/Tedd.Voxtree</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>octree;voxel;span;zero-allocation;performance;streaming;lod;zstandard</PackageTags>
-    <PackageReleaseNotes>Same-width writes to unshared single-voxel tree leaves now update a private channel encoding directly, avoiding sparse edits and dense channel rebuilds. Published snapshots remain immutable; other point writes retain sparse fallback. Serialized formats remain compatible.</PackageReleaseNotes>
+    <PackageReleaseNotes>Point getters return both voxel values and compressed leaf LOD levels for trees, spans, compiled lookups, and channel-aware worlds, including generic variants. LOD 0 represents one voxel; LOD N represents an aligned uniform cube of side 2^N. Dense storage returns LOD 0. Serialized formats remain compatible.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IncludeSymbols>true</IncludeSymbols>

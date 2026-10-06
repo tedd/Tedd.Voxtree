@@ -177,6 +177,42 @@ public sealed partial class WorldEntity<T> where T : unmanaged
         return false;
     }
 
+    /// <summary>Reads a base channel value and its stored leaf LOD level at global voxel coordinates.</summary>
+    /// <remarks>Uses the same on-demand loading as the value-only getter. False means the chunk
+    /// is unavailable and returns default outputs. The leaf level is local to the selected channel;
+    /// no merging across chunk boundaries is attempted.</remarks>
+    public bool TryGet(int channel, long x, long y, long z, out T value, out int lodLevel)
+    {
+        ValidateChannel(channel);
+        ResolveCoordinates(x, y, z, out var coordinate, out var localX, out var localY, out var localZ);
+        lodLevel = 0;
+        if (_chunks.TryGetValue(coordinate, out var chunk) ||
+            (StorageOptions is not null &&
+             TryGetOrLoadChunk(new ChunkAddress(0, coordinate), out chunk)))
+        {
+            value = chunk!.GetChannel(channel).Get(localX, localY, localZ, out lodLevel);
+            return true;
+        }
+        value = default;
+        return false;
+    }
+
+    /// <summary>Reads a base channel value and its stored leaf LOD level, throwing when the chunk is unavailable.</summary>
+    /// <remarks>LOD zero is one voxel; LOD N is an aligned uniform cube with side 2^N.
+    /// Dense channels return zero.</remarks>
+    public T Get(int channel, long x, long y, long z, out int lodLevel)
+    {
+        if (TryGet(channel, x, y, z, out var value, out lodLevel)) return value;
+        throw new InvalidOperationException("The chunk containing the queried voxel is not loaded.");
+    }
+
+    /// <summary>Gets a base channel's stored leaf LOD level and returns its voxel value at global coordinates.</summary>
+    public int GetLod(int channel, long x, long y, long z, out T value)
+    {
+        value = Get(channel, x, y, z, out var lodLevel);
+        return lodLevel;
+    }
+
     /// <summary>Reads an LOD sample at global base-voxel coordinates.</summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryGetLod(int lodLevel, int channel, long x, long y, long z, out T value)

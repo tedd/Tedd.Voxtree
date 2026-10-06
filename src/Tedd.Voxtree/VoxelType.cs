@@ -202,6 +202,53 @@ internal static class VoxelCodec<T> where T : unmanaged
     internal static bool TryGetUnchecked(ReadOnlySpan<byte> data, int levels, StorageKind storageKind,
         int x, int y, int z, out T value) => TryGetCore(data, levels, storageKind, x, y, z, true, out value);
 
+    internal static bool TryGetUnchecked(ReadOnlySpan<byte> data, int levels, StorageKind storageKind,
+        int x, int y, int z, out T value, out int lodLevel)
+    {
+        switch (Unsafe.SizeOf<T>())
+        {
+            case 1:
+            {
+                var ok = GenericOctreeCodec<byte>.TryGetUnchecked(data, levels, storageKind, x, y, z,
+                    out var storage, out lodLevel);
+                value = Unsafe.As<byte, T>(ref storage);
+                return ok;
+            }
+            case 2:
+            {
+                var ok = GenericOctreeCodec<ushort>.TryGetUnchecked(data, levels, storageKind, x, y, z,
+                    out var storage, out lodLevel);
+                value = Unsafe.As<ushort, T>(ref storage);
+                return ok;
+            }
+            case 4:
+            {
+                var ok = GenericOctreeCodec<uint>.TryGetUnchecked(data, levels, storageKind, x, y, z,
+                    out var storage, out lodLevel);
+                value = Unsafe.As<uint, T>(ref storage);
+                return ok;
+            }
+            case 8:
+            {
+                var ok = GenericOctreeCodec<ulong>.TryGetUnchecked(data, levels, storageKind, x, y, z,
+                    out var storage, out lodLevel);
+                value = Unsafe.As<ulong, T>(ref storage);
+                return ok;
+            }
+            case 16:
+            {
+                var ok = GenericOctreeCodec<VoxelUInt128>.TryGetUnchecked(data, levels, storageKind, x, y, z,
+                    out var storage, out lodLevel);
+                value = Unsafe.As<VoxelUInt128, T>(ref storage);
+                return ok;
+            }
+            default:
+                value = default;
+                lodLevel = 0;
+                return ThrowUnsupported<bool>();
+        }
+    }
+
     private static bool TryGetCore(ReadOnlySpan<byte> data, int levels, StorageKind storageKind,
         int x, int y, int z, bool uncheckedCoordinates, out T value)
     {

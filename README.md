@@ -275,6 +275,43 @@ tree.Build(values);
 
 `Build` replaces the wrapper's owned encoding. The voxel data is read-only between builds.
 
+### Querying compressed leaf LOD
+
+Point getters can return both the voxel value and the LOD level of the stored leaf
+containing its coordinate:
+
+```csharp
+uint value = tree.Get(x, y, z, out int lodLevel);
+int sameLod = tree.GetLod(x, y, z, out uint sameValue);
+bool available = tree.TryGet(x, y, z, out uint found, out int foundLod);
+```
+
+LOD 0 represents one voxel, LOD 1 an aligned uniform `2×2×2` cube, and LOD 2
+an aligned uniform `4×4×4` cube. Neighboring leaves can have different values
+and different LOD levels. Uniform storage returns the tree's `Levels`; dense
+storage returns 0 because it retains no collapsed leaf topology. Reads traverse
+the stored tree once and allocate no managed memory.
+
+The same overloads are available on `Octree<T>`, `OctreeSpan`, `OctreeSpan<T>`,
+and `OctreeLookup`. For a chunk, select the channel first:
+
+```csharp
+int lodLevel = chunk.GetChannel(channel).GetLod(x, y, z, out uint value);
+```
+
+`OctreeWorld` and `WorldEntity`, including their generic variants, accept the
+channel before the coordinates: `world.Get(channel, x, y, z, out lodLevel)` or
+`world.GetLod(channel, x, y, z, out value)`. Loaded chunks report that channel's
+leaf level; collapsed known-empty `OctreeWorld` regions report their outer
+region level. `WorldEntity` reports leaves within the selected base-layer chunk.
+`TryGet` returns default outputs when data is unavailable or coordinates are
+outside the volume; invalid channels throw.
+
+Mutable dense editors contain values rather than current compressed topology.
+Query an immutable snapshot after `Commit()` or `Repackage()` to obtain its
+current leaf levels. Captured snapshots and compiled lookups retain their own
+leaf levels after subsequent edits or builds.
+
 ### Uniform volumes
 
 Initialize air, water, or another constant volume from a single value:

@@ -86,6 +86,51 @@ public readonly ref partial struct OctreeSpan
         return value;
     }
 
+    /// <summary>Gets the voxel value and the LOD level of its stored leaf in one query.</summary>
+    /// <param name="x">Voxel X coordinate.</param>
+    /// <param name="y">Voxel Y coordinate.</param>
+    /// <param name="z">Voxel Z coordinate.</param>
+    /// <param name="lodLevel">Zero for a single voxel; N for an aligned uniform cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</param>
+    /// <exception cref="InvalidOperationException">This is a default view.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">A coordinate is outside the volume.</exception>
+    /// <exception cref="FormatException">The encoded structure is malformed.</exception>
+    public uint Get(int x, int y, int z, out int lodLevel)
+    {
+        lodLevel = 0;
+        if (!IsValid) return OctreeThrowHelper.ThrowInvalidView();
+        if ((uint)x >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(x), x);
+        if ((uint)y >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(y), y);
+        if ((uint)z >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(z), z);
+        if (!OctreeCodec.TryGetUnchecked(_data, _levels, _storageKind, x, y, z, out var value, out lodLevel))
+            return OctreeThrowHelper.ThrowMalformed();
+        return value;
+    }
+
+    /// <summary>Gets the stored leaf LOD level at a coordinate and returns its voxel value.</summary>
+    /// <remarks>LOD zero is one voxel, and LOD N is an aligned uniform cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</remarks>
+    public int GetLod(int x, int y, int z, out uint value)
+    {
+        value = Get(x, y, z, out var lodLevel);
+        return lodLevel;
+    }
+
+    /// <summary>Attempts to get a value and its stored leaf LOD level; failure returns zero in both outputs.</summary>
+    /// <remarks>LOD zero is one voxel, and LOD N is an aligned cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</remarks>
+    public bool TryGet(int x, int y, int z, out uint value, out int lodLevel)
+    {
+        value = default;
+        lodLevel = 0;
+        if (!Contains(x, y, z)) return false;
+        if (OctreeCodec.TryGetUnchecked(_data, _levels, _storageKind, x, y, z, out value, out lodLevel))
+            return true;
+        value = default;
+        lodLevel = 0;
+        return false;
+    }
+
     /// <summary>Compiles an independently owned immutable point-lookup snapshot.</summary>
     /// <remarks>
     /// The input must remain stable during compilation and may be reused afterward.
