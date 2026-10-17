@@ -1,0 +1,9 @@
+{
+  "id": "hyp-45a5270de6144a17a5439523b08d9601",
+  "mechanism": "Repeated immutable depth/layout validation in checked voxel indexers.",
+  "prediction": "Reuse constructor validation and combine coordinate bounds checks while preserving exact simulations.",
+  "state": "proposed",
+  "evidence_ids": [
+    "cap-b9b77b0970fa481fb09a3478eeed8dc4"
+  ]
+}

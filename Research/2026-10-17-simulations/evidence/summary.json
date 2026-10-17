@@ -1,0 +1,1039 @@
+{
+  "exploration": {
+    "cases": [
+      {
+        "levels": 3,
+        "kind": "Heat",
+        "access": "Linear",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 1272712.5,
+          "minimum_ns": 346700,
+          "maximum_ns": 1372962.5,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 1180662.5,
+          "minimum_ns": 289587.5,
+          "maximum_ns": 1202612.5,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 7.23258394963513
+      },
+      {
+        "levels": 3,
+        "kind": "Heat",
+        "access": "Random",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 603506.25,
+          "minimum_ns": 131231.25,
+          "maximum_ns": 1370768.75,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 292206.25,
+          "minimum_ns": 106531.25,
+          "maximum_ns": 1220793.75,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 51.58190159588239
+      },
+      {
+        "levels": 3,
+        "kind": "Tracer",
+        "access": "Linear",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 142050,
+          "minimum_ns": 134206.25,
+          "maximum_ns": 356250,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 104243.75,
+          "minimum_ns": 101481.25,
+          "maximum_ns": 330275,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 26.614748328053505
+      },
+      {
+        "levels": 3,
+        "kind": "Tracer",
+        "access": "Random",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 138562.5,
+          "minimum_ns": 133343.75,
+          "maximum_ns": 356250,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 102156.25,
+          "minimum_ns": 101425,
+          "maximum_ns": 290656.25,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 26.274244474515108
+      },
+      {
+        "levels": 3,
+        "kind": "Water",
+        "access": "Linear",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 234856.25,
+          "minimum_ns": 56256.25,
+          "maximum_ns": 240268.75,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 213093.75,
+          "minimum_ns": 42093.75,
+          "maximum_ns": 229506.25,
+          "allocated_bytes": 0
+        },
+        "checksum": 131072,
+        "reduction_percent": 9.266306517284505
+      },
+      {
+        "levels": 3,
+        "kind": "Water",
+        "access": "Random",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 235831.25,
+          "minimum_ns": 56525,
+          "maximum_ns": 245506.25,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 214750,
+          "minimum_ns": 42462.5,
+          "maximum_ns": 226437.5,
+          "allocated_bytes": 0
+        },
+        "checksum": 131072,
+        "reduction_percent": 8.939124903930251
+      },
+      {
+        "levels": 5,
+        "kind": "Heat",
+        "access": "Linear",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 9060500,
+          "minimum_ns": 8996750,
+          "maximum_ns": 9643600,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 6863750,
+          "minimum_ns": 6837450,
+          "maximum_ns": 7222900,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 24.2453506980851
+      },
+      {
+        "levels": 5,
+        "kind": "Heat",
+        "access": "Random",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 9695900,
+          "minimum_ns": 9629400,
+          "maximum_ns": 10876200,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 7534700,
+          "minimum_ns": 7428800,
+          "maximum_ns": 8033500,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 22.28983384729628
+      },
+      {
+        "levels": 5,
+        "kind": "Tracer",
+        "access": "Linear",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 9381100,
+          "minimum_ns": 9319800,
+          "maximum_ns": 10412850,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 6919200,
+          "minimum_ns": 6843550,
+          "maximum_ns": 8259300,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 26.24319109699289
+      },
+      {
+        "levels": 5,
+        "kind": "Tracer",
+        "access": "Random",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 9963850,
+          "minimum_ns": 9788000,
+          "maximum_ns": 10270400,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 7508700,
+          "minimum_ns": 7480450,
+          "maximum_ns": 9945700,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 24.640575681087128
+      },
+      {
+        "levels": 5,
+        "kind": "Water",
+        "access": "Linear",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 610450,
+          "minimum_ns": 583150,
+          "maximum_ns": 1394850,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 360700,
+          "minimum_ns": 353200,
+          "maximum_ns": 683350,
+          "allocated_bytes": 0
+        },
+        "checksum": 2097152,
+        "reduction_percent": 40.91244164141208
+      },
+      {
+        "levels": 5,
+        "kind": "Water",
+        "access": "Random",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 665550,
+          "minimum_ns": 610100,
+          "maximum_ns": 979500,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 406800,
+          "minimum_ns": 384800,
+          "maximum_ns": 738650,
+          "allocated_bytes": 0
+        },
+        "checksum": 2097152,
+        "reduction_percent": 38.87762001352265
+      }
+    ],
+    "process_identities": [
+      {
+        "pair": 0,
+        "arm": "baseline",
+        "process": 95924,
+        "start": "2026-10-17T08:59:16.3675809Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 0,
+        "arm": "candidate",
+        "process": 57796,
+        "start": "2026-10-17T08:59:17.4210343Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 1,
+        "arm": "baseline",
+        "process": 12792,
+        "start": "2026-10-17T08:59:19.0299422Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 1,
+        "arm": "candidate",
+        "process": 64168,
+        "start": "2026-10-17T08:59:18.2263539Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 2,
+        "arm": "baseline",
+        "process": 73620,
+        "start": "2026-10-17T08:59:20.0419775Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 2,
+        "arm": "candidate",
+        "process": 44584,
+        "start": "2026-10-17T08:59:20.9604661Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 3,
+        "arm": "baseline",
+        "process": 76232,
+        "start": "2026-10-17T08:59:22.4859529Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 3,
+        "arm": "candidate",
+        "process": 52308,
+        "start": "2026-10-17T08:59:21.6855706Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 4,
+        "arm": "baseline",
+        "process": 80712,
+        "start": "2026-10-17T08:59:23.4902892Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 4,
+        "arm": "candidate",
+        "process": 93644,
+        "start": "2026-10-17T08:59:24.3668222Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      }
+    ],
+    "interpretation": "Descriptive pooled batch medians; correlated observations; no confidence or independence claim."
+  },
+  "exploration-fullopts": {
+    "cases": [
+      {
+        "levels": 3,
+        "kind": "Heat",
+        "access": "Linear",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 240937.5,
+          "minimum_ns": 235887.5,
+          "maximum_ns": 257287.5,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 184975,
+          "minimum_ns": 184250,
+          "maximum_ns": 189856.25,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 23.226977950713355
+      },
+      {
+        "levels": 3,
+        "kind": "Heat",
+        "access": "Random",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 239756.25,
+          "minimum_ns": 234725,
+          "maximum_ns": 247368.75,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 184368.75,
+          "minimum_ns": 183800,
+          "maximum_ns": 203987.5,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 23.101587549855317
+      },
+      {
+        "levels": 3,
+        "kind": "Tracer",
+        "access": "Linear",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 240612.5,
+          "minimum_ns": 237512.5,
+          "maximum_ns": 243693.75,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 184831.25,
+          "minimum_ns": 184206.25,
+          "maximum_ns": 188606.25,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 23.183022494675043
+      },
+      {
+        "levels": 3,
+        "kind": "Tracer",
+        "access": "Random",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 239706.25,
+          "minimum_ns": 235762.5,
+          "maximum_ns": 244656.25,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 184506.25,
+          "minimum_ns": 183812.5,
+          "maximum_ns": 192881.25,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 23.028185539592727
+      },
+      {
+        "levels": 3,
+        "kind": "Water",
+        "access": "Linear",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 48150,
+          "minimum_ns": 47743.75,
+          "maximum_ns": 50137.5,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 30312.5,
+          "minimum_ns": 29806.25,
+          "maximum_ns": 31818.75,
+          "allocated_bytes": 0
+        },
+        "checksum": 131072,
+        "reduction_percent": 37.04569055036345
+      },
+      {
+        "levels": 3,
+        "kind": "Water",
+        "access": "Random",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 48256.25,
+          "minimum_ns": 47856.25,
+          "maximum_ns": 51212.5,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 30156.25,
+          "minimum_ns": 29775,
+          "maximum_ns": 35831.25,
+          "allocated_bytes": 0
+        },
+        "checksum": 131072,
+        "reduction_percent": 37.50809480637223
+      },
+      {
+        "levels": 5,
+        "kind": "Heat",
+        "access": "Linear",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 16690150,
+          "minimum_ns": 16607550,
+          "maximum_ns": 16860100,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 12909200,
+          "minimum_ns": 12876750,
+          "maximum_ns": 13019950,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 22.653780822820647
+      },
+      {
+        "levels": 5,
+        "kind": "Heat",
+        "access": "Random",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 17107900,
+          "minimum_ns": 16809350,
+          "maximum_ns": 17246750,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 13353000,
+          "minimum_ns": 13301300,
+          "maximum_ns": 13654850,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 21.948339655948423
+      },
+      {
+        "levels": 5,
+        "kind": "Tracer",
+        "access": "Linear",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 16655100,
+          "minimum_ns": 16411250,
+          "maximum_ns": 16724750,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 12916050,
+          "minimum_ns": 12871350,
+          "maximum_ns": 13393550,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 22.44988021687051
+      },
+      {
+        "levels": 5,
+        "kind": "Tracer",
+        "access": "Random",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 17049500,
+          "minimum_ns": 16844700,
+          "maximum_ns": 17321650,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 13357350,
+          "minimum_ns": 13317550,
+          "maximum_ns": 13522700,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 21.655473767559165
+      },
+      {
+        "levels": 5,
+        "kind": "Water",
+        "access": "Linear",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 853750,
+          "minimum_ns": 844050,
+          "maximum_ns": 882600,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 539650,
+          "minimum_ns": 531850,
+          "maximum_ns": 694100,
+          "allocated_bytes": 0
+        },
+        "checksum": 2097152,
+        "reduction_percent": 36.79062957540263
+      },
+      {
+        "levels": 5,
+        "kind": "Water",
+        "access": "Random",
+        "baseline": {
+          "observations": 25,
+          "median_ns": 897950,
+          "minimum_ns": 879550,
+          "maximum_ns": 928800,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 25,
+          "median_ns": 557350,
+          "minimum_ns": 544400,
+          "maximum_ns": 584750,
+          "allocated_bytes": 0
+        },
+        "checksum": 2097152,
+        "reduction_percent": 37.930842474525306
+      }
+    ],
+    "process_identities": [
+      {
+        "pair": 0,
+        "arm": "baseline",
+        "process": 117000,
+        "start": "2026-10-17T09:00:17.4779897Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 0,
+        "arm": "candidate",
+        "process": 31800,
+        "start": "2026-10-17T09:00:18.6931012Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 1,
+        "arm": "baseline",
+        "process": 105800,
+        "start": "2026-10-17T09:00:20.5982227Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 1,
+        "arm": "candidate",
+        "process": 92444,
+        "start": "2026-10-17T09:00:19.6480471Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 2,
+        "arm": "baseline",
+        "process": 7092,
+        "start": "2026-10-17T09:00:21.7734166Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 2,
+        "arm": "candidate",
+        "process": 25900,
+        "start": "2026-10-17T09:00:22.951369Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 3,
+        "arm": "baseline",
+        "process": 85808,
+        "start": "2026-10-17T09:00:24.8483832Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 3,
+        "arm": "candidate",
+        "process": 61316,
+        "start": "2026-10-17T09:00:23.8975167Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 4,
+        "arm": "baseline",
+        "process": 18056,
+        "start": "2026-10-17T09:00:26.0144001Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 4,
+        "arm": "candidate",
+        "process": 117528,
+        "start": "2026-10-17T09:00:27.1938466Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      }
+    ],
+    "interpretation": "Descriptive pooled batch medians; correlated observations; no confidence or independence claim."
+  },
+  "confirmation-fullopts": {
+    "cases": [
+      {
+        "levels": 3,
+        "kind": "Heat",
+        "access": "Linear",
+        "baseline": {
+          "observations": 15,
+          "median_ns": 242931.25,
+          "minimum_ns": 240600,
+          "maximum_ns": 251187.5,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 15,
+          "median_ns": 184887.5,
+          "minimum_ns": 184312.5,
+          "maximum_ns": 201062.5,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 23.89307674496385
+      },
+      {
+        "levels": 3,
+        "kind": "Heat",
+        "access": "Random",
+        "baseline": {
+          "observations": 15,
+          "median_ns": 240293.75,
+          "minimum_ns": 239225,
+          "maximum_ns": 244256.25,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 15,
+          "median_ns": 184356.25,
+          "minimum_ns": 183637.5,
+          "maximum_ns": 187018.75,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 23.278799386167968
+      },
+      {
+        "levels": 3,
+        "kind": "Tracer",
+        "access": "Linear",
+        "baseline": {
+          "observations": 15,
+          "median_ns": 240700,
+          "minimum_ns": 238462.5,
+          "maximum_ns": 243075,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 15,
+          "median_ns": 184581.25,
+          "minimum_ns": 184081.25,
+          "maximum_ns": 336131.25,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 23.31481096800997
+      },
+      {
+        "levels": 3,
+        "kind": "Tracer",
+        "access": "Random",
+        "baseline": {
+          "observations": 15,
+          "median_ns": 240025,
+          "minimum_ns": 238062.5,
+          "maximum_ns": 242343.75,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 15,
+          "median_ns": 184325,
+          "minimum_ns": 183675,
+          "maximum_ns": 213118.75,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 23.205916050411414
+      },
+      {
+        "levels": 3,
+        "kind": "Water",
+        "access": "Linear",
+        "baseline": {
+          "observations": 15,
+          "median_ns": 48081.25,
+          "minimum_ns": 47737.5,
+          "maximum_ns": 48700,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 15,
+          "median_ns": 30081.25,
+          "minimum_ns": 29743.75,
+          "maximum_ns": 32575,
+          "allocated_bytes": 0
+        },
+        "checksum": 131072,
+        "reduction_percent": 37.43663070323671
+      },
+      {
+        "levels": 3,
+        "kind": "Water",
+        "access": "Random",
+        "baseline": {
+          "observations": 15,
+          "median_ns": 48143.75,
+          "minimum_ns": 47787.5,
+          "maximum_ns": 50212.5,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 15,
+          "median_ns": 30143.75,
+          "minimum_ns": 29743.75,
+          "maximum_ns": 30587.5,
+          "allocated_bytes": 0
+        },
+        "checksum": 131072,
+        "reduction_percent": 37.38803063741399
+      },
+      {
+        "levels": 5,
+        "kind": "Heat",
+        "access": "Linear",
+        "baseline": {
+          "observations": 15,
+          "median_ns": 16628550,
+          "minimum_ns": 16600050,
+          "maximum_ns": 16967500,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 15,
+          "median_ns": 12914800,
+          "minimum_ns": 12871200,
+          "maximum_ns": 13094900,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 22.333576890348226
+      },
+      {
+        "levels": 5,
+        "kind": "Heat",
+        "access": "Random",
+        "baseline": {
+          "observations": 15,
+          "median_ns": 17081500,
+          "minimum_ns": 16982300,
+          "maximum_ns": 17268500,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 15,
+          "median_ns": 13311300,
+          "minimum_ns": 13284250,
+          "maximum_ns": 15931800,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 22.071832099054532
+      },
+      {
+        "levels": 5,
+        "kind": "Tracer",
+        "access": "Linear",
+        "baseline": {
+          "observations": 15,
+          "median_ns": 16677300,
+          "minimum_ns": 16613550,
+          "maximum_ns": 17091600,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 15,
+          "median_ns": 12969600,
+          "minimum_ns": 12868800,
+          "maximum_ns": 13217900,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 22.232015973808707
+      },
+      {
+        "levels": 5,
+        "kind": "Tracer",
+        "access": "Random",
+        "baseline": {
+          "observations": 15,
+          "median_ns": 17008350,
+          "minimum_ns": 16979350,
+          "maximum_ns": 17363450,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 15,
+          "median_ns": 13347600,
+          "minimum_ns": 13285850,
+          "maximum_ns": 13683050,
+          "allocated_bytes": 0
+        },
+        "checksum": 1000000,
+        "reduction_percent": 21.523251814549916
+      },
+      {
+        "levels": 5,
+        "kind": "Water",
+        "access": "Linear",
+        "baseline": {
+          "observations": 15,
+          "median_ns": 849550,
+          "minimum_ns": 844250,
+          "maximum_ns": 873000,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 15,
+          "median_ns": 534950,
+          "minimum_ns": 530750,
+          "maximum_ns": 568250,
+          "allocated_bytes": 0
+        },
+        "checksum": 2097152,
+        "reduction_percent": 37.03136954858455
+      },
+      {
+        "levels": 5,
+        "kind": "Water",
+        "access": "Random",
+        "baseline": {
+          "observations": 15,
+          "median_ns": 886350,
+          "minimum_ns": 872000,
+          "maximum_ns": 903900,
+          "allocated_bytes": 0
+        },
+        "candidate": {
+          "observations": 15,
+          "median_ns": 562200,
+          "minimum_ns": 550600,
+          "maximum_ns": 584050,
+          "allocated_bytes": 0
+        },
+        "checksum": 2097152,
+        "reduction_percent": 36.571331866644094
+      }
+    ],
+    "process_identities": [
+      {
+        "pair": 0,
+        "arm": "baseline",
+        "process": 85516,
+        "start": "2026-10-17T09:01:32.3600922Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 0,
+        "arm": "candidate",
+        "process": 40720,
+        "start": "2026-10-17T09:01:33.5809958Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 1,
+        "arm": "baseline",
+        "process": 80032,
+        "start": "2026-10-17T09:01:35.5033579Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 1,
+        "arm": "candidate",
+        "process": 27228,
+        "start": "2026-10-17T09:01:34.543905Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 2,
+        "arm": "baseline",
+        "process": 53964,
+        "start": "2026-10-17T09:01:36.6790587Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      },
+      {
+        "pair": 2,
+        "arm": "candidate",
+        "process": 60604,
+        "start": "2026-10-17T09:01:37.8513255Z",
+        "runtime": ".NET 10.0.13",
+        "architecture": "X64",
+        "clockFrequency": 10000000,
+        "processors": 32
+      }
+    ],
+    "interpretation": "Descriptive pooled batch medians; correlated observations; no confidence or independence claim."
+  }
+}

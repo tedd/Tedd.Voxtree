@@ -1,0 +1,10 @@
+{
+  "id": "op-53900a1a36794232b7c10893395f6210",
+  "kind": "stack_analysis",
+  "state": "completed",
+  "revision": "3",
+  "target_id": "stack-analysis-cap-b9b77b0970fa481fb09a3478eeed8dc4",
+  "result_id": "stack-analysis-c7ca5d467cf74eb2bfbffa4ed1340260",
+  "error_code": null,
+  "created_at": "2026-10-17T09:04:43.1158165+00:00"
+}

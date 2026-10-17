@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tedd.Voxtree\Tedd.Voxtree.csproj" />
+    <Compile Include="..\Shared\SimulationWorkload.cs" Link="Simulations\SimulationWorkload.cs" />
   </ItemGroup>
 
 </Project>

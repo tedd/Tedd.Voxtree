@@ -1,0 +1,574 @@
+[
+  {
+    "file": "src/Shared/SimulationWorkload.cs",
+    "sha256": "cea040b4a646e55778f811bb1b480345cd700da2bfb718d87e2ddcacebc79d64"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/SimulationLoop.cs",
+    "sha256": "9c110021e79aef2b269749ab6b27bc13716877918c41ae7cf55fa5835d4ad6a6"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/SimulationBenchmarks.cs",
+    "sha256": "1b6d7a58e1175899968c396481be7474f77cd9c7015a198ba0320efc5f384bb8"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/DenseAccessValidationTests.cs",
+    "sha256": "ca462c29ac1bc0e5451ad60cdbf6065d99116c963a3b8b66a016d242464c1f6b"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/SimulationTests.cs",
+    "sha256": "26a5740bca7425da123df7e70500a87c3f92335ab195d207542baf5c84aadb20"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/DenseVoxel.Generic.Api.cs",
+    "sha256": "11479e50165a82d2f65aec9c1d3d4e376c72f121be281dc7a9c666d299a6a6e9"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/DenseVoxelLayout.Generic.cs",
+    "sha256": "fdf99a5c6ee9f1aa37759defcdbec3d42de9e921bed548e58980289f605ec72a"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/DenseVoxelLayout.cs",
+    "sha256": "e1c7d4b63ee383d5eb2d7e03c430cd4d0c26f493786e206ed0841f2419735a01"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/GenericOctreeCodec.cs",
+    "sha256": "e06df50f411e9051bba3834b9c3a3639d405bd1997fcd371c16c3e0e70f5ea78"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/GenericOctreeQueries.cs",
+    "sha256": "30125a6899b330a686ff413d0cbc8dc18f16a2833417dfd3ada30736f1bdb976"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/Octree.Blocks.cs",
+    "sha256": "007123860a9ad08df6dd07eb370c221c7c7cee40e4f75a3836f05fa78afc71f9"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/Octree.Generic.Queries.cs",
+    "sha256": "9da263d00901f78e0c2ff777d117a15b0950fa3e70a31c349bfc6080a970d140"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/Octree.Generic.cs",
+    "sha256": "d777e9ae2ff64b1f067b2a75e53502052aa11537c402edec7c7805f8388359db"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/Octree.cs",
+    "sha256": "4d2dfc07c11f6367eb59a151476a0d72728a7f27427f4d92daa7d2a268bf3dd8"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/OctreeCodec.cs",
+    "sha256": "3c466b8f62735424a51e9f8c945d7d4ffffdb229ba2e1396d089d00fe7011bb4"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/OctreeQueries.cs",
+    "sha256": "0e20c5b282ec0b7f034e861912a06d1340ee0b2e9b45e52d6a9b241824ff6230"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/OctreeSpan.cs",
+    "sha256": "64ee6d91fcbef92865df8904527b86871bc26778b27624f271bfddf292a6bf35"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/OctreeThrowHelper.cs",
+    "sha256": "77e71a2692ab2d94874cef66e737f6cd654404232a4ab02e3d858d3e0cf7eaa1"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/StorageInteger.cs",
+    "sha256": "aeb070acaa5d826407c6a8db7c3e7f4c4f8c143a8e07f6e81acffb602c8ff322"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/VoxelBox.cs",
+    "sha256": "7ac3f5eeb423472760f22458a85313735ed387b93abc05e38ced0cd1292f3746"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/VoxelFilter.Generic.cs",
+    "sha256": "62fa5d6aba859990afefcba7d8b093107b9032515f13b399d0b56c5a76833650"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/VoxelFilter.cs",
+    "sha256": "e2bcf52571580997e059a2e59dad16c60f530bc79036f3b3c1b6009148905187"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/VoxelHit.cs",
+    "sha256": "7363188002b2b5e86ba4defbdc65f7a805e1788e1ed9b0cd43d9439b832bf7e6"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/MortonBefore/VoxelType.cs",
+    "sha256": "9ae34d0f850ac2c0abe2899b6d1cb1432a2866282c41c0306e2fec1eafa159e4"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/V1/LegacyExtensions.cs",
+    "sha256": "51ced9e662bbe4345798c6e3720fecca9e4995388012d967f5f88a84e4baf5bc"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Archive/V1/OctreeV1.cs",
+    "sha256": "6fe30274d5c262646f55e4c3399fd5dc0d3275465a9621a2030cbf812c190388"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/BenchmarkData.cs",
+    "sha256": "15e6085a59ded103cd0b386398ffad855bbcbd54d84b8058a6658786eba9ebd9"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Program.cs",
+    "sha256": "545dd0cb3b3dca1ea6612dabb82d764f9660b452e496e44e87aa5d3cf2840304"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tedd.Voxtree.Benchmark.csproj",
+    "sha256": "319aef8e4949d856f440f8d40ad80c7fc3b730b4feedf7e1fc42119fd092ff87"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/AccessBounds.cs",
+    "sha256": "2cc70c2eb7997472a9a9f7f2ba2de7c2f3ac946c2da2b69757f6f9e03790b0ed"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/AccessBoundsConversion.cs",
+    "sha256": "8f597f424156673a5755d6c056139dfceb158052e2d4357170f2b31cc59d3cfc"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/AccessFilterWidths.cs",
+    "sha256": "c2627d2d13d31a364fb63560302e6d92b38eaad36e386f3a03e69f20438a72cc"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/AccessLocks.cs",
+    "sha256": "2f6c35f1ddc2e91a0154f0898c80a97be049d0521a64287fb9c826128c9ae5b7"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/AccessLookupBuild.cs",
+    "sha256": "db98aa30e07471bdbcff234d580748a531c532084b1ea006a2a68fffab35e165"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/AccessOctrees.cs",
+    "sha256": "3c0e3cd5e3d655024e737794121f628c20f9a2d64d1f77b48e332bdcbcbeccdb"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/AccessPrefetch.cs",
+    "sha256": "6c9a0ddf9353d2490e26cc581375a0f4e918c11cab23d925a01df7ba48099447"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/AccessQueries.cs",
+    "sha256": "3cc4bf5a12aaa40c67e97200b17daea74bafef7ace1027b6e08d2b362037ec0b"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/AccessTraversal.cs",
+    "sha256": "b14958d90d22c2d7e734631b7ae550b7e31329319ad2c71c11d9d2cb749cd011"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/BuildOctrees.cs",
+    "sha256": "fa08d236058ce23066605e2d1cb1257b6cb075858922e7bb4323505ae546b217"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/BulkBlocks.cs",
+    "sha256": "05cad8b5eb07127acb1661c152da93e10b45518bfba8e9602429f65e2e4b1670"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/BulkUniform.cs",
+    "sha256": "a086d06fe75e2c6adf25a7b1fa935585c61f36fd6bfd3ea34f876b42c446403c"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/CheckedLookupBaseline.cs",
+    "sha256": "484d14311948c1d481fd8e3780d8a5c08f1fe6d0db50691dfc41331bfd348ed3"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/ChunkSerializationBenchmarks.cs",
+    "sha256": "bbd24f8372545879bb45c92b178b9c5e25bd3e08639eb0d874d17a8445ad5845"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/ChunkSerializationExtendedHypotheses.cs",
+    "sha256": "371d4097a772eb44a68298dd21917867f7bd00c762146584880557676235d2d9"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/DeferredCapacityBenchmarks.cs",
+    "sha256": "f3bbfe591afcccf169bdfb37154e8a0d806a1dc25109dcc936ffb36ea04ff2ed"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/DeferredChunkBenchmarks.cs",
+    "sha256": "0f0678d3f01ce7b4263c99be8e73349b2639179d94bc220ae9ca3947ff8b665b"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/DeferredStoreBenchmarks.cs",
+    "sha256": "cc097c480f8b2c21b5d737ee8551249a0e0a15a9339f816fe822455a806fd299"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/GenericMortonConversions.cs",
+    "sha256": "e716cd802ecc6489fa817a61b6258f77f16de5e045a531d1a0cca1ec2f219d8d"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/MortonConversions.cs",
+    "sha256": "f9ed04556f9c1e96b5c95209f649f1059d90b71550d1785b37de11257813b747"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/SpatialBenchmarks.cs",
+    "sha256": "7875e8a39034200b468fe806cce3bee09b2984ebc20dcfcd4a9f9bf8b3bbc9d4"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/SpatialChannels.cs",
+    "sha256": "ad350b12b62900737fd8c12286e3d0b4ff51314d03a9c6bc03ad309c4c94844f"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/SpatialSupport.cs",
+    "sha256": "9383e378ac7eb962909521b80b0333e948d69eae675772ec818539985b04b526"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/UncheckedLookupCandidate.cs",
+    "sha256": "174e07653ef8a9329e4786bea1da0b539dca0447ce51e03902294f48fc4622fe"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/WorldEntityLookups.cs",
+    "sha256": "c080aea49751936e78a3c21ed12da186f975bd921e0a2aceff6ca8dd2841a1cc"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Benchmark/Tests/WorldSynchronization.cs",
+    "sha256": "de6ccdeb1df3f2b30496343b74c4413ae240ea211ff62fd4d9fd13e515ef6217"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/AssemblyInfo.cs",
+    "sha256": "3f7edd72eac91614fcf49f709dd4e560c74ebef8da68a53a02947e5611cd1869"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/ChunkSerializationTests.cs",
+    "sha256": "bac37b98ec54bd0fa072c23ff70694ad5183aa7a08e5fa9228e60efdf97afe3d"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/DeferredChunkStoreTests.cs",
+    "sha256": "7f0d7847d16a10426b5d65a7371051d516e259ccf6ea51ffcd29ccdf710bedc2"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/DeferredChunkTests.cs",
+    "sha256": "fd2200b06a60831e74db99ea83f4a2c4a58777f16f7fd929ba3704d386e3b438"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/DenseBlockTests.cs",
+    "sha256": "a7525829a0cb4b599dd49e6fcd14d859a3a9f23ddc9a7fb90b0ceedc33f111ab"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/DenseFilterTests.cs",
+    "sha256": "b4c9691ceebce2f86a567c09b2ffda60683408aa1a5d26eb52dd7b356b37120c"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/DocumentationExamplesTests.cs",
+    "sha256": "96087a3a941843810afd7f3ded611f835fbda6bfb86f0331bd8613e134f814df"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/GenericFormatValidationTests.cs",
+    "sha256": "734e9135ebb0db164d78dd7416bb5c97a7223419bbfa3ff5d6c4d939c9e7094a"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/GenericMortonConversionTests.cs",
+    "sha256": "439dfa32d85acec42fb2fc8f8f553b81bfbd36076feaf42f22efea775d649cf4"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/GenericOctreeTests.cs",
+    "sha256": "632cb4f58efc2197f2a7844367afc31c1e6325b9be35d3a41ec934cd985d3cef"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/GenericSpatialTests.cs",
+    "sha256": "97748ad696b0f589818df02d667ec49c45e15b430c573697538f9c539590a2e0"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/GenericWorldTests.cs",
+    "sha256": "637bfecd3ea6a1eb8c9291facb73526234ba940d6cda2ed1c1df758366270356"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/GlobalUsings.cs",
+    "sha256": "50436eb3a60162e0cfad749eddfb06f8908f821a90ca44532df946a53e071359"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/HotChunkTests.cs",
+    "sha256": "11146284fed1dfc6e6ff311932277c95d82a16c1d83ef1368fd4b1e10c73152a"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/LeafLodTests.cs",
+    "sha256": "6268e52e91a0ccdd0ac04b8fc90d4486455683f6640fe9bc37f4134e0ab4fcac"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/MortonConversionTests.cs",
+    "sha256": "1362fd6e7dec5fce7c82e9a134b4c474337b008528fb58cf9bf389083e29b45f"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/NeighborhoodCacheTests.cs",
+    "sha256": "3d0546ccca0e0e20447ac87cb146c4e0a02562d5cb4bd55da29c0b637f6a7983"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/OctreeAllocationTests.cs",
+    "sha256": "3b0ac33cc1c78cb05bc38fe1ff959b91e5517b9674b5d74c5c67d5e424fe5e30"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/OctreeBufferTests.cs",
+    "sha256": "b2778fd0d7f033facc5c94655714baf1c6c4b459a1e5473f131b07089d162453"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/OctreeFormatValidationTests.cs",
+    "sha256": "e29dff06b2eba4df17061dfc9983c90935fbfb2c49685915dc9f9a5d0fafc9e9"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/OctreeLookupTests.cs",
+    "sha256": "fe8022616082e6ece474880ec808a3930ba651a600c9f631cbdc9e9e4bc86320"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/OctreeRoundTripTests.cs",
+    "sha256": "5599895949bc12226da21e3cf2cb261d60416cd9e49b8f4d9b2c9080e9f6f0d2"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/OctreeStructuralValidationTests.cs",
+    "sha256": "3844e89fae64ea0d4dfc6ad7d3a3612ce260b3471ee661e5f69e4952d1440e5a"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/OctreeValidationTests.cs",
+    "sha256": "be6a5a8fc64f57677f415ed8550c1f148051e17de1eb30bfca1cb1bdb6e902c3"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/SideChannelTests.cs",
+    "sha256": "d55dfe9ef32780575875c5529c4b226b541dfcdece02bbaab6070da494338c6e"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/SnapshotConcurrencyTests.cs",
+    "sha256": "9d8d72ba165e634dff2f7cf7597d1ce0d10e415d190955925cdd56248c6fe457"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/SpatialQueryTests.cs",
+    "sha256": "9a1744b5966e9ac2b4821bbda2cd701ffb01b451c5fc4b48a43c9d59d9292672"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/Tedd.Voxtree.Tests.csproj",
+    "sha256": "e11964334d50985012c09114dfe31f6b06706cdd81eb93e45bf1013092d2ae61"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/TestData.cs",
+    "sha256": "757abd7f2666ead074373053eeab6f1da43d2e52000b2714748d0939fd8c1665"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/UniformInitializationTests.cs",
+    "sha256": "f5648234bc9fd99d008c72fee34aaf332300eb7fe2abceead9a8124245524dbc"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/WorldConcurrencyTests.cs",
+    "sha256": "8a0d871e8d28be570ec25ff6d8904af0c65e005276088eb48228cea7192f6a4a"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/WorldEntityStorageTests.cs",
+    "sha256": "a0538c4db6cd0673a4d6ce9e7cf7377fc876c1cc5980265e7cc6bbe61ae1781b"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/WorldEntityTests.cs",
+    "sha256": "c1f344724b67a4550c6fd5d4085a942fb737b2b74d27ad7fbf7cad2224d862c8"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/WorldLeafLodTests.cs",
+    "sha256": "29bda6ac93682553406e017a8fb6fd83e965347798eea00412a9895668e909eb"
+  },
+  {
+    "file": "src/Tedd.Voxtree.Tests/WorldTests.cs",
+    "sha256": "0c75fc3760116c107226f0454787548c38ca49123d3428ba75553844f10004c8"
+  },
+  {
+    "file": "src/Tedd.Voxtree/ChunkCompressionCodec.cs",
+    "sha256": "f496cd74a4d7bf95b56fcedd41d50d50ee7629b98baa1f8db16e66cd4fa48a92"
+  },
+  {
+    "file": "src/Tedd.Voxtree/ChunkStorage.cs",
+    "sha256": "8cc0306e8e54a4a2491a0ee014b79b670d83ed311e759dad3b701eea57698fd4"
+  },
+  {
+    "file": "src/Tedd.Voxtree/DeferredChunkStore.Generic.cs",
+    "sha256": "1e6131871ebd3140907ca5c8137c692cb8870213ac5c070eb035ff917c592a98"
+  },
+  {
+    "file": "src/Tedd.Voxtree/DeferredChunkStore.cs",
+    "sha256": "900232ed9bfa8c6f91ec419332b045edcda01fe8c7f524c9f9771dc8b96641c8"
+  },
+  {
+    "file": "src/Tedd.Voxtree/DeferredOctreeChunk.Generic.cs",
+    "sha256": "b8ffa5fb19542cf56a0a95e840c3344a44201779afdf037ebf1f69b0e75e17f4"
+  },
+  {
+    "file": "src/Tedd.Voxtree/DeferredOctreeChunk.cs",
+    "sha256": "fbcbee8ea1fad0bd3a7c5caea6ccd92f58785e3fb2275cf848905f900b830545"
+  },
+  {
+    "file": "src/Tedd.Voxtree/DenseVoxel.Generic.Api.cs",
+    "sha256": "5c5518afb0e544079cf8a39b4b52b20b113ac1f27c6ce06908bfc46f1a5667e3"
+  },
+  {
+    "file": "src/Tedd.Voxtree/DenseVoxelLayout.Generic.cs",
+    "sha256": "8996e683e5e57df78a11392dedfd6d48176b4ccf2f043931ca48c3a1bd0054f2"
+  },
+  {
+    "file": "src/Tedd.Voxtree/DenseVoxelLayout.cs",
+    "sha256": "1bbeaffc0afe304fe38d3fc72be91f03717459d2ead4675659d868d96dd2f0a1"
+  },
+  {
+    "file": "src/Tedd.Voxtree/GenericOctreeCodec.cs",
+    "sha256": "6eec79d31c594af85d527135c7d3a8a790eb07785da356b7e4d5bf4e45db832d"
+  },
+  {
+    "file": "src/Tedd.Voxtree/GenericOctreeQueries.cs",
+    "sha256": "5888b165968a38b92fc6087f34b7b6479d4502603da130554320ddee0e508988"
+  },
+  {
+    "file": "src/Tedd.Voxtree/HotOctreeChunk.Generic.cs",
+    "sha256": "8bc42be4ac660c389dcdb64ba86167d58c3f9a142cda12d85aa8e564801236bd"
+  },
+  {
+    "file": "src/Tedd.Voxtree/HotOctreeChunk.cs",
+    "sha256": "1dca94d984da0c46d75ed722db037508aa9fa67b656fd333aba08afb0a4721d1"
+  },
+  {
+    "file": "src/Tedd.Voxtree/MaskedVoxelSearch.cs",
+    "sha256": "712cdba9e7573c73fe8c98552c3616e3570ed6afeb353ee6f605225a9f7d1983"
+  },
+  {
+    "file": "src/Tedd.Voxtree/Octree.Blocks.cs",
+    "sha256": "f54847afe7baead88989b320c7dfa087940e1096366514802c953c58377f86ae"
+  },
+  {
+    "file": "src/Tedd.Voxtree/Octree.Generic.Queries.cs",
+    "sha256": "1cad9faf387cc7fa06238979458c52325790f445ddbb57fab327b499e5fb5ec9"
+  },
+  {
+    "file": "src/Tedd.Voxtree/Octree.Generic.cs",
+    "sha256": "7ab77f4ebab2b46dbf78e42fdc2295e56747d073cd7b586b97d7199f2dc2a995"
+  },
+  {
+    "file": "src/Tedd.Voxtree/Octree.Search.cs",
+    "sha256": "df4dde17c01734c1b9a9d923dd289cb9f61bf4500774ea89da7608ca06206761"
+  },
+  {
+    "file": "src/Tedd.Voxtree/Octree.cs",
+    "sha256": "33a4d20edef4195608df76f777e42e5b7548cab2223d660c7fae47994a6e4b41"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeChunk.Generic.cs",
+    "sha256": "95f90780f8e2eb59a8019973db234046171fe18958d6f3e5e7d280a8e4a950de"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeChunk.cs",
+    "sha256": "2b9996fd4e5ada0975c3f7d27e551cfece866d4284dc4bb26122f69540f03676"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeChunkSpan.cs",
+    "sha256": "a2eba7b8a7647715e0ec464edd35c9542e050f38a90d072dc17850d71370e3e1"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeCodec.cs",
+    "sha256": "03fa6fe6542db019ac10581ecc7d13076e650d7d8e86c025db1ed6a2b5dc9d95"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeLookup.cs",
+    "sha256": "cf726ef8280aa9c30b6a4d54619dc72096cd42d84ec78edd1f490c48a45b9482"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeNeighborhood.Generic.cs",
+    "sha256": "99fb1e6e283a38920145cf664a0af5216fbae436454b4d4399aca5dd44b3b92a"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeNeighborhoodCache.cs",
+    "sha256": "2a38928936710a83bc39951586cfcacc934663aa92c4bacd5dbfa76b5890dc4c"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeNeighborhoodSpan.cs",
+    "sha256": "c7852f7925c85133456479fbca2600537e516fc15baea97ceb61ed59c4f3d839"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeQueries.cs",
+    "sha256": "00a6b141a243f4a643678fdfc79e35643862abd0f1764e05313ac66046dc9b82"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeSpan.Search.cs",
+    "sha256": "f61673300e68a2efb8e8d6299d13e0411d9708c23affd68cd57d8c02f17f6cf6"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeSpan.cs",
+    "sha256": "1d1b61281b16ff9ef8cc95f12173ad2e89d9719d0ed71fa29ef17f9a785686ce"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeThrowHelper.cs",
+    "sha256": "bd481fc9b44b86975a730e814c3b85fc7ec513585f817507596bc4fbe720591f"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeWorld.Generic.Hot.cs",
+    "sha256": "95874e4ffc7137318508e32231d5fd653617b72204b8d8ea578f21542ff63b31"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeWorld.Generic.cs",
+    "sha256": "eb8bf4bca44a65d888fb4701f43f486ec7a1873feb2f557391ea16ef25e7c371"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeWorld.Hot.cs",
+    "sha256": "0b285ab8c7cc96e350e5fa303d34037249b3c0b5116c4908982bb442176c12b2"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeWorld.Queries.cs",
+    "sha256": "97d2d6dda62193385cd9da9aabd81afc73420fd725edfd2f424d46569b4da94b"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeWorld.Threading.cs",
+    "sha256": "c62ae7b56dbb674839c8fa47dc7819218d77b08086ec80bc0ac89f80fddb4e4b"
+  },
+  {
+    "file": "src/Tedd.Voxtree/OctreeWorld.cs",
+    "sha256": "4ed6043940f50518e4bb4e58b6b614f3aeec2f32424da0f68195351f74dfdfb5"
+  },
+  {
+    "file": "src/Tedd.Voxtree/PartialVoxelEdits.cs",
+    "sha256": "dac199a1f929446c320aea157b41ef1dd8378c846c9df41e02a36d41dab24fbb"
+  },
+  {
+    "file": "src/Tedd.Voxtree/SideChannelCollection.cs",
+    "sha256": "1091058cda7edc9f6760a25d971f5ff8b7619ccd0eb1e9a66dbfbc367b5426d9"
+  },
+  {
+    "file": "src/Tedd.Voxtree/SparseVoxelEdits.cs",
+    "sha256": "22f4b5ea8be057e91c9b40c932d7121f71c90d65b089bd395e53b57e59809760"
+  },
+  {
+    "file": "src/Tedd.Voxtree/StorageInteger.cs",
+    "sha256": "99b0d399b2f2ab3801757b59e193a47fbb5010db12b69c7f5983ac0af00d2ad1"
+  },
+  {
+    "file": "src/Tedd.Voxtree/Tedd.Voxtree.csproj",
+    "sha256": "79cdda83cea42161a096473a7ee2953cd8175e9177adad5f2a3a145fa3b60010"
+  },
+  {
+    "file": "src/Tedd.Voxtree/VoxelBox.cs",
+    "sha256": "fefd278311a5a0ce01f46f961ddac912d51cff9f4c1a3ede0062bb53e628b969"
+  },
+  {
+    "file": "src/Tedd.Voxtree/VoxelFilter.Generic.cs",
+    "sha256": "40b0a5bd8f35ea9f1208a9d5ace4dd340a83d5d93f8ade8095b8f3fe55989711"
+  },
+  {
+    "file": "src/Tedd.Voxtree/VoxelFilter.cs",
+    "sha256": "91e4ed0943cc673d273d2af5562a686faf4160d0f65bdef1f63f2f11215b469e"
+  },
+  {
+    "file": "src/Tedd.Voxtree/VoxelHit.cs",
+    "sha256": "a7fed6dab9e01d6fa483d25203cd7444bfea7bb6d1fa4906dc612678452ef1a1"
+  },
+  {
+    "file": "src/Tedd.Voxtree/VoxelType.cs",
+    "sha256": "91ff17ee400a1d7358321aa96cd551518e7c927bf764f2b9586a276f2caa911b"
+  },
+  {
+    "file": "src/Tedd.Voxtree/WorldEntity.Generic.Hot.cs",
+    "sha256": "63b46b079e3621542985713c77cf599742e5d874fe0b6decbfc65f0bfb5c36ef"
+  },
+  {
+    "file": "src/Tedd.Voxtree/WorldEntity.Generic.Storage.cs",
+    "sha256": "35f319dc42b1d5b26dfaeb7b16358fc3ff4d63704ffd7ad067322a5ac25a6674"
+  },
+  {
+    "file": "src/Tedd.Voxtree/WorldEntity.Generic.cs",
+    "sha256": "c895b9dacd04722207dbaae054d8ed30b2e325875754182d9b28ee6293f99bc4"
+  },
+  {
+    "file": "src/Tedd.Voxtree/WorldEntity.Hot.cs",
+    "sha256": "78565e1a519f5697b462b7e51210b0d29d3fa875ea2aff2ab27e01537d56be5d"
+  },
+  {
+    "file": "src/Tedd.Voxtree/WorldEntity.Storage.cs",
+    "sha256": "656e7c5f6a071906e262d25e6dd32ddb4de3a68d8337b3ea83ff19b37ec037ab"
+  },
+  {
+    "file": "src/Tedd.Voxtree/WorldEntity.cs",
+    "sha256": "560ce5a8fb6cfdf5487e7b92c2180ebc3a3f333f09aa686320657c6471a96baf"
+  }
+]

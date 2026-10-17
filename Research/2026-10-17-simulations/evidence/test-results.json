@@ -1,0 +1,86 @@
+[
+  {
+    "framework": "net10.0",
+    "outcome": "Completed",
+    "counters": {
+      "total": 383,
+      "executed": 383,
+      "passed": 383,
+      "failed": 0,
+      "error": 0,
+      "timeout": 0,
+      "aborted": 0,
+      "inconclusive": 0,
+      "passedButRunAborted": 0,
+      "notRunnable": 0,
+      "notExecuted": 0,
+      "disconnected": 0,
+      "warning": 0,
+      "completed": 0,
+      "inProgress": 0,
+      "pending": 0
+    },
+    "times": {
+      "creation": "2026-10-17T11:06:03.4724367+02:00",
+      "queuing": "2026-10-17T11:06:03.4724368+02:00",
+      "start": "2026-10-17T11:06:02.5824769+02:00",
+      "finish": "2026-10-17T11:06:07.9168234+02:00"
+    }
+  },
+  {
+    "framework": "net11.0",
+    "outcome": "Completed",
+    "counters": {
+      "total": 384,
+      "executed": 384,
+      "passed": 384,
+      "failed": 0,
+      "error": 0,
+      "timeout": 0,
+      "aborted": 0,
+      "inconclusive": 0,
+      "passedButRunAborted": 0,
+      "notRunnable": 0,
+      "notExecuted": 0,
+      "disconnected": 0,
+      "warning": 0,
+      "completed": 0,
+      "inProgress": 0,
+      "pending": 0
+    },
+    "times": {
+      "creation": "2026-10-17T11:06:13.4266744+02:00",
+      "queuing": "2026-10-17T11:06:13.4266746+02:00",
+      "start": "2026-10-17T11:06:12.5905293+02:00",
+      "finish": "2026-10-17T11:06:18.4125925+02:00"
+    }
+  },
+  {
+    "framework": "net8.0",
+    "outcome": "Completed",
+    "counters": {
+      "total": 382,
+      "executed": 382,
+      "passed": 382,
+      "failed": 0,
+      "error": 0,
+      "timeout": 0,
+      "aborted": 0,
+      "inconclusive": 0,
+      "passedButRunAborted": 0,
+      "notRunnable": 0,
+      "notExecuted": 0,
+      "disconnected": 0,
+      "warning": 0,
+      "completed": 0,
+      "inProgress": 0,
+      "pending": 0
+    },
+    "times": {
+      "creation": "2026-10-17T11:05:53.6515275+02:00",
+      "queuing": "2026-10-17T11:05:53.6515277+02:00",
+      "start": "2026-10-17T11:05:52.8715625+02:00",
+      "finish": "2026-10-17T11:05:57.6913050+02:00"
+    }
+  }
+]

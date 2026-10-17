@@ -80,8 +80,8 @@ public sealed class HotOctreeChunk
     /// <summary>Reads or writes a chunk-local voxel.</summary>
     public uint this[int channel, int x, int y, int z]
     {
-        get => GetChannelSpan(channel)[DenseVoxel.GetIndex(x, y, z, Levels, DenseVoxelLayout.Morton)];
-        set => GetChannelSpan(channel)[DenseVoxel.GetIndex(x, y, z, Levels, DenseVoxelLayout.Morton)] = value;
+        get => GetChannelSpan(channel)[DenseVoxel.CheckedIndex(x, y, z, SideLength, DenseVoxelLayout.Morton)];
+        set => GetChannelSpan(channel)[DenseVoxel.CheckedIndex(x, y, z, SideLength, DenseVoxelLayout.Morton)] = value;
     }
 
     /// <summary>Returns the mutable Morton-ordered slice for one channel.</summary>

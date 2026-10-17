@@ -1,0 +1,412 @@
+[
+  {
+    "arm": "baseline",
+    "file": "Azure.Core.dll",
+    "sha256": "1d6df436afdc73c30d476be938f6513c90ef8fc884a7bae280091a9bed0a5490"
+  },
+  {
+    "arm": "baseline",
+    "file": "Azure.Identity.dll",
+    "sha256": "31574a3d35ffeb0e25a00ebb317937222fe5283b91af608613f2e3bf0f26c50a"
+  },
+  {
+    "arm": "baseline",
+    "file": "BenchmarkDotNet.Annotations.dll",
+    "sha256": "4ad97f39af4014b8219eadf29f201e291e886b3cf6ed1d2836a527e909fecb33"
+  },
+  {
+    "arm": "baseline",
+    "file": "BenchmarkDotNet.dll",
+    "sha256": "50e80fac523f08360a4e3022c5c77134025d14884215995b8f9d68af05ec2bff"
+  },
+  {
+    "arm": "baseline",
+    "file": "CommandLine.dll",
+    "sha256": "8a55501cd1a1590a4bd93a17c6fdd2c01a0ed5bff1aea9036bdc78d98c9a3fad"
+  },
+  {
+    "arm": "baseline",
+    "file": "deniszykov.WebSocketListener.dll",
+    "sha256": "c86cfb93e32192ae12fb1a132b4ae785a7d2f325e8583c03c99abf8e832d25d6"
+  },
+  {
+    "arm": "baseline",
+    "file": "Dia2Lib.dll",
+    "sha256": "6c4cac68010fe032218efe5e9fcf46eef9f77bfaa5f3bd33f03c5ff77d5a8fac"
+  },
+  {
+    "arm": "baseline",
+    "file": "Gee.External.Capstone.dll",
+    "sha256": "6dfda67784598de9677173b89d0692593935f1a4024d36040c95dea48c1b5965"
+  },
+  {
+    "arm": "baseline",
+    "file": "Iced.dll",
+    "sha256": "f058c01321b4cdfc9b9151879e88e59571c8d0ba176fbcf95bc936a8f3d073ed"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Bcl.AsyncInterfaces.dll",
+    "sha256": "94805b8f147e2ace9fd058f5be82aa06dbcb92b8d6f5284dc2cc870905f0a870"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.CodeAnalysis.CSharp.dll",
+    "sha256": "54142770a00e594942ee8923726ea49126303d0c523932886c2417eb66dc07f8"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.CodeAnalysis.dll",
+    "sha256": "ad857f1ce7f8e26c2722ade705fac3f90502a47590c14075df1327210f10b1ef"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Diagnostics.FastSerialization.dll",
+    "sha256": "e509e211a72e70ff93967fb4823d33590c05c7cb0dd7e4c713d0ec928275fea8"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Diagnostics.NETCore.Client.dll",
+    "sha256": "e2cc9e1f6c97b3c4ee45ebabaa92408eb9b2fc81cb08ceeb342fe48bf79db15f"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Diagnostics.Runtime.dll",
+    "sha256": "c117c85dd8261426d8f1a6a0b748d3be40f2949185f1f8a37ce7466a2efbee7b"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Diagnostics.Tracing.TraceEvent.dll",
+    "sha256": "c71e742ddeff551f65a86a25c0465d3e3b018bd229d3f25927a4795fadfce535"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.DotNet.PlatformAbstractions.dll",
+    "sha256": "b1f4ad169fb192747f5d2d3111c01db4257e3ec1f7f18f301f7fc4be3b869ff3"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Extensions.Configuration.Abstractions.dll",
+    "sha256": "da2203cd85e701598210999e6714e4cc83d20b833b4afa923e3b84196d6f72aa"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+    "sha256": "5fd164a8313b3255fe51a74e5d30ff41c5d6bff8eb3aff5155d2f036d7c66df4"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Extensions.Diagnostics.Abstractions.dll",
+    "sha256": "4d20c015406a7bf1a6478f1b6af567d972fa2ba4727de6134ff2c641f90ab36c"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Extensions.FileProviders.Abstractions.dll",
+    "sha256": "39e7fcd41d10abeffcf2b224237bed64ae98f99d94e329bd19f447451eda3abc"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Extensions.Hosting.Abstractions.dll",
+    "sha256": "fb21feb2c6aafe2607a8b1d500c2b86535cd1b48b67ef878139dc7818c70ce4d"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Extensions.Logging.Abstractions.dll",
+    "sha256": "691c9db1f9603c09b16c3ea8cd4d7756ff3489b3209d16203584426dd62e7829"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Extensions.Options.dll",
+    "sha256": "1cf29273a44b434ea207206cb217cad896c48cbf4bbe947383785536ee89418b"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Extensions.Primitives.dll",
+    "sha256": "302d1f1cc4586a0f96016352595ed5ffeeeb18e99ea63bf54a8d5fe044c9642e"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Identity.Client.dll",
+    "sha256": "5795027e9ae95eececb310a4fed3c502bb368039d186ab0884f64b7792b84717"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.Identity.Client.Extensions.Msal.dll",
+    "sha256": "07109a2f30df782300077a567ade47cbd0a0502c75cd7c8a62192f7d64bb004e"
+  },
+  {
+    "arm": "baseline",
+    "file": "Microsoft.IdentityModel.Abstractions.dll",
+    "sha256": "24e97b54b6b5c234a124a336757e3116617ac6c30b655cdae74517dc2ecb5746"
+  },
+  {
+    "arm": "baseline",
+    "file": "Perfolizer.dll",
+    "sha256": "4204e375c22e5460b9ce1d819be84943b23c4639ede0bd9473e775e86abd65e2"
+  },
+  {
+    "arm": "baseline",
+    "file": "Pragmastat.dll",
+    "sha256": "c095b3a8cde2584ce548b61aea820f726800bff5082ceddfcedb5f993d6745f8"
+  },
+  {
+    "arm": "baseline",
+    "file": "System.ClientModel.dll",
+    "sha256": "dec5e22b71a1685c5e6e97cd28b629f0aa6703fb87b6950df28e79fc1804290c"
+  },
+  {
+    "arm": "baseline",
+    "file": "System.CodeDom.dll",
+    "sha256": "1f691141a657dc04a1e1637081f12b5348121dda0589367411f3283c88ad75e4"
+  },
+  {
+    "arm": "baseline",
+    "file": "System.Management.dll",
+    "sha256": "f448f97aeb3ee1f95dc7dca4dbffc7bc5f5c97efd4d28df33bbb1f7a5de2993c"
+  },
+  {
+    "arm": "baseline",
+    "file": "System.Memory.Data.dll",
+    "sha256": "2c1035b0106dbb2de7913d151e06071ed617bb58bbb3d6cd46a2dd0f6a03617b"
+  },
+  {
+    "arm": "baseline",
+    "file": "System.Security.Cryptography.ProtectedData.dll",
+    "sha256": "80566f0839ece5946e66bf9f00d723e59e371ba1341a18e00c7c7a7c49298e1d"
+  },
+  {
+    "arm": "baseline",
+    "file": "Tedd.MortonEncoding.dll",
+    "sha256": "978e446481eebe8b562e8d52f35f33c443886e726b106a5dec5c340c314fce83"
+  },
+  {
+    "arm": "baseline",
+    "file": "Tedd.Voxtree.Benchmark.deps.json",
+    "sha256": "37d7c79aa9c7d8601adadcfe9032bb077276c8ae36a000f9f90a578aba3056a0"
+  },
+  {
+    "arm": "baseline",
+    "file": "Tedd.Voxtree.Benchmark.dll",
+    "sha256": "5ea07c81d4600a99deaa07f9c66018355f84b99aea914abdc4be3e9329ad602e"
+  },
+  {
+    "arm": "baseline",
+    "file": "Tedd.Voxtree.Benchmark.runtimeconfig.json",
+    "sha256": "c230a317a54dd960bcbeb5f347f52e18dc665a26f7efda2159fced9a5ac7e097"
+  },
+  {
+    "arm": "baseline",
+    "file": "Tedd.Voxtree.dll",
+    "sha256": "ff2862a4223b4d5787fe72bd81c9bce914254afd6c50d85835f124df1413c37f"
+  },
+  {
+    "arm": "baseline",
+    "file": "TraceReloggerLib.dll",
+    "sha256": "6830c0f1d3f3c17719181e73dd5cfa8ccbb3f3c575329d2120576545103467b5"
+  },
+  {
+    "arm": "candidate",
+    "file": "Azure.Core.dll",
+    "sha256": "1d6df436afdc73c30d476be938f6513c90ef8fc884a7bae280091a9bed0a5490"
+  },
+  {
+    "arm": "candidate",
+    "file": "Azure.Identity.dll",
+    "sha256": "31574a3d35ffeb0e25a00ebb317937222fe5283b91af608613f2e3bf0f26c50a"
+  },
+  {
+    "arm": "candidate",
+    "file": "BenchmarkDotNet.Annotations.dll",
+    "sha256": "4ad97f39af4014b8219eadf29f201e291e886b3cf6ed1d2836a527e909fecb33"
+  },
+  {
+    "arm": "candidate",
+    "file": "BenchmarkDotNet.dll",
+    "sha256": "50e80fac523f08360a4e3022c5c77134025d14884215995b8f9d68af05ec2bff"
+  },
+  {
+    "arm": "candidate",
+    "file": "CommandLine.dll",
+    "sha256": "8a55501cd1a1590a4bd93a17c6fdd2c01a0ed5bff1aea9036bdc78d98c9a3fad"
+  },
+  {
+    "arm": "candidate",
+    "file": "deniszykov.WebSocketListener.dll",
+    "sha256": "c86cfb93e32192ae12fb1a132b4ae785a7d2f325e8583c03c99abf8e832d25d6"
+  },
+  {
+    "arm": "candidate",
+    "file": "Dia2Lib.dll",
+    "sha256": "6c4cac68010fe032218efe5e9fcf46eef9f77bfaa5f3bd33f03c5ff77d5a8fac"
+  },
+  {
+    "arm": "candidate",
+    "file": "Gee.External.Capstone.dll",
+    "sha256": "6dfda67784598de9677173b89d0692593935f1a4024d36040c95dea48c1b5965"
+  },
+  {
+    "arm": "candidate",
+    "file": "Iced.dll",
+    "sha256": "f058c01321b4cdfc9b9151879e88e59571c8d0ba176fbcf95bc936a8f3d073ed"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Bcl.AsyncInterfaces.dll",
+    "sha256": "94805b8f147e2ace9fd058f5be82aa06dbcb92b8d6f5284dc2cc870905f0a870"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.CodeAnalysis.CSharp.dll",
+    "sha256": "54142770a00e594942ee8923726ea49126303d0c523932886c2417eb66dc07f8"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.CodeAnalysis.dll",
+    "sha256": "ad857f1ce7f8e26c2722ade705fac3f90502a47590c14075df1327210f10b1ef"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Diagnostics.FastSerialization.dll",
+    "sha256": "e509e211a72e70ff93967fb4823d33590c05c7cb0dd7e4c713d0ec928275fea8"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Diagnostics.NETCore.Client.dll",
+    "sha256": "e2cc9e1f6c97b3c4ee45ebabaa92408eb9b2fc81cb08ceeb342fe48bf79db15f"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Diagnostics.Runtime.dll",
+    "sha256": "c117c85dd8261426d8f1a6a0b748d3be40f2949185f1f8a37ce7466a2efbee7b"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Diagnostics.Tracing.TraceEvent.dll",
+    "sha256": "c71e742ddeff551f65a86a25c0465d3e3b018bd229d3f25927a4795fadfce535"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.DotNet.PlatformAbstractions.dll",
+    "sha256": "b1f4ad169fb192747f5d2d3111c01db4257e3ec1f7f18f301f7fc4be3b869ff3"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Extensions.Configuration.Abstractions.dll",
+    "sha256": "da2203cd85e701598210999e6714e4cc83d20b833b4afa923e3b84196d6f72aa"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+    "sha256": "5fd164a8313b3255fe51a74e5d30ff41c5d6bff8eb3aff5155d2f036d7c66df4"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Extensions.Diagnostics.Abstractions.dll",
+    "sha256": "4d20c015406a7bf1a6478f1b6af567d972fa2ba4727de6134ff2c641f90ab36c"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Extensions.FileProviders.Abstractions.dll",
+    "sha256": "39e7fcd41d10abeffcf2b224237bed64ae98f99d94e329bd19f447451eda3abc"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Extensions.Hosting.Abstractions.dll",
+    "sha256": "fb21feb2c6aafe2607a8b1d500c2b86535cd1b48b67ef878139dc7818c70ce4d"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Extensions.Logging.Abstractions.dll",
+    "sha256": "691c9db1f9603c09b16c3ea8cd4d7756ff3489b3209d16203584426dd62e7829"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Extensions.Options.dll",
+    "sha256": "1cf29273a44b434ea207206cb217cad896c48cbf4bbe947383785536ee89418b"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Extensions.Primitives.dll",
+    "sha256": "302d1f1cc4586a0f96016352595ed5ffeeeb18e99ea63bf54a8d5fe044c9642e"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Identity.Client.dll",
+    "sha256": "5795027e9ae95eececb310a4fed3c502bb368039d186ab0884f64b7792b84717"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.Identity.Client.Extensions.Msal.dll",
+    "sha256": "07109a2f30df782300077a567ade47cbd0a0502c75cd7c8a62192f7d64bb004e"
+  },
+  {
+    "arm": "candidate",
+    "file": "Microsoft.IdentityModel.Abstractions.dll",
+    "sha256": "24e97b54b6b5c234a124a336757e3116617ac6c30b655cdae74517dc2ecb5746"
+  },
+  {
+    "arm": "candidate",
+    "file": "Perfolizer.dll",
+    "sha256": "4204e375c22e5460b9ce1d819be84943b23c4639ede0bd9473e775e86abd65e2"
+  },
+  {
+    "arm": "candidate",
+    "file": "Pragmastat.dll",
+    "sha256": "c095b3a8cde2584ce548b61aea820f726800bff5082ceddfcedb5f993d6745f8"
+  },
+  {
+    "arm": "candidate",
+    "file": "System.ClientModel.dll",
+    "sha256": "dec5e22b71a1685c5e6e97cd28b629f0aa6703fb87b6950df28e79fc1804290c"
+  },
+  {
+    "arm": "candidate",
+    "file": "System.CodeDom.dll",
+    "sha256": "1f691141a657dc04a1e1637081f12b5348121dda0589367411f3283c88ad75e4"
+  },
+  {
+    "arm": "candidate",
+    "file": "System.Management.dll",
+    "sha256": "f448f97aeb3ee1f95dc7dca4dbffc7bc5f5c97efd4d28df33bbb1f7a5de2993c"
+  },
+  {
+    "arm": "candidate",
+    "file": "System.Memory.Data.dll",
+    "sha256": "2c1035b0106dbb2de7913d151e06071ed617bb58bbb3d6cd46a2dd0f6a03617b"
+  },
+  {
+    "arm": "candidate",
+    "file": "System.Security.Cryptography.ProtectedData.dll",
+    "sha256": "80566f0839ece5946e66bf9f00d723e59e371ba1341a18e00c7c7a7c49298e1d"
+  },
+  {
+    "arm": "candidate",
+    "file": "Tedd.MortonEncoding.dll",
+    "sha256": "978e446481eebe8b562e8d52f35f33c443886e726b106a5dec5c340c314fce83"
+  },
+  {
+    "arm": "candidate",
+    "file": "Tedd.Voxtree.Benchmark.deps.json",
+    "sha256": "37d7c79aa9c7d8601adadcfe9032bb077276c8ae36a000f9f90a578aba3056a0"
+  },
+  {
+    "arm": "candidate",
+    "file": "Tedd.Voxtree.Benchmark.dll",
+    "sha256": "2a99a4f82c463e8bfae7e1c4df0bc578e8ec0c893bdeb8da31928766bdf86e05"
+  },
+  {
+    "arm": "candidate",
+    "file": "Tedd.Voxtree.Benchmark.runtimeconfig.json",
+    "sha256": "c230a317a54dd960bcbeb5f347f52e18dc665a26f7efda2159fced9a5ac7e097"
+  },
+  {
+    "arm": "candidate",
+    "file": "Tedd.Voxtree.dll",
+    "sha256": "60ecbc61a4f5a3bf892668cb13b1b3aefa1982b814c4af83d3e253d015e8ebb2"
+  },
+  {
+    "arm": "candidate",
+    "file": "TraceReloggerLib.dll",
+    "sha256": "6830c0f1d3f3c17719181e73dd5cfa8ccbb3f3c575329d2120576545103467b5"
+  }
+]

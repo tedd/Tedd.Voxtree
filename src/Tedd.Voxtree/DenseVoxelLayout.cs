@@ -38,8 +38,8 @@ public ref struct DenseVoxelBlockSpan
     /// <summary>Reads or writes one channel's voxel.</summary>
     public uint this[int channel, int x, int y, int z]
     {
-        readonly get => GetChannelSpan(channel)[DenseVoxel.GetIndex(x, y, z, Levels, Layout)];
-        set => GetChannelSpan(channel)[DenseVoxel.GetIndex(x, y, z, Levels, Layout)] = value;
+        readonly get => GetChannelSpan(channel)[DenseVoxel.CheckedIndex(x, y, z, SideLength, Layout)];
+        set => GetChannelSpan(channel)[DenseVoxel.CheckedIndex(x, y, z, SideLength, Layout)] = value;
     }
     /// <summary>Obtains one channel's contiguous dense slice for bulk editing.</summary>
     public readonly Span<uint> GetChannelSpan(int channel)
@@ -62,8 +62,15 @@ public static class DenseVoxel
     public static int GetIndex(int x, int y, int z, int levels, DenseVoxelLayout layout)
     {
         OctreeCodec.ValidateLevels(levels); Validate(layout);
-        var side = 1 << levels;
-        if ((uint)x >= (uint)side || (uint)y >= (uint)side || (uint)z >= (uint)side)
+        return CheckedIndex(x, y, z, 1 << levels, layout);
+    }
+
+    // Constructed views/editors have already validated depth and layout. The side
+    // is a power of two, so OR combines all three coordinate bounds checks.
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static int CheckedIndex(int x, int y, int z, int side, DenseVoxelLayout layout)
+    {
+        if ((uint)(x | y | z) >= (uint)side)
             throw new ArgumentOutOfRangeException(nameof(x));
         return Index(x, y, z, side, layout);
     }

@@ -1,0 +1,11 @@
+{
+  "os": "Microsoft Windows NT 10.0.26200.0",
+  "cpu": "AMD Ryzen 9 5950X 16-Core Processor",
+  "logicalProcessors": 32,
+  "sdk": "11.0.100-rc.2.26504.105",
+  "runtime": "Microsoft.NETCore.App 10.0.13 x64",
+  "gc": "runtimeconfig leaves GC defaults; mode not directly observed",
+  "tieredCompilation": "disabled for fullopts epochs",
+  "workload": "simulation-kernel/v1",
+  "seed": 1729
+}

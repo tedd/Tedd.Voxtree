@@ -35,8 +35,8 @@ public ref struct DenseVoxelBlockSpan<T> where T : unmanaged
     /// <summary>Reads or writes one channel voxel.</summary>
     public T this[int channel, int x, int y, int z]
     {
-        readonly get => GetChannelSpan(channel)[DenseVoxel.GetIndex(x, y, z, Levels, Layout)];
-        set => GetChannelSpan(channel)[DenseVoxel.GetIndex(x, y, z, Levels, Layout)] = value;
+        readonly get => GetChannelSpan(channel)[DenseVoxel.CheckedIndex(x, y, z, SideLength, Layout)];
+        set => GetChannelSpan(channel)[DenseVoxel.CheckedIndex(x, y, z, SideLength, Layout)] = value;
     }
 
     /// <summary>Obtains one channel's contiguous dense slice.</summary>
