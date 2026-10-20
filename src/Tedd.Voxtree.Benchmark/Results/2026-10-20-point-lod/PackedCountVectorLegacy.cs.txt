@@ -1,0 +1,22 @@
+#if NET10_0_OR_GREATER
+    private static int CountPackedVector(ReadOnlySpan<byte> data, int levels, VoxelBox box, VoxelFilter filter)
+    {
+        var side = 1 << levels;
+        var words = MemoryMarshal.Cast<byte, uint>(data[OctreeCodec.HeaderSize..]);
+        if (box.MinY == 0 && box.MaxY == side && box.MinZ == 0 && box.MaxZ == side)
+            return CountPackedRange(words.Slice(box.MinX * side * side, (box.MaxX - box.MinX) * side * side), levels, filter);
+        var count = 0;
+        for (var x = box.MinX; x < box.MaxX; x++)
+        for (var y = box.MinY; y < box.MaxY; y++)
+            count += CountPackedRange(words.Slice((x * side + y) * side + box.MinZ, box.MaxZ - box.MinZ), levels, filter);
+        return count;
+    }
+
+    private static int CountPackedRange(ReadOnlySpan<uint> words, int levels, VoxelFilter filter)
+    {
+        var maximumWord = ((uint)levels << 28) | 0x0fffffff;
+        if (words.IndexOfAnyExceptInRange(0u, maximumWord) >= 0)
+            throw new FormatException("Malformed packed leaf.");
+        return filter.CountPackedWords(words);
+    }
+#endif

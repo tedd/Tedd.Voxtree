@@ -1,0 +1,246 @@
+using System.Buffers.Binary;
+using System.Runtime.InteropServices;
+using Xunit;
+
+namespace Tedd.Voxtree.Tests;
+
+public class PackedLeafTests
+{
+    private static uint[] Values()
+    {
+        var result = Enumerable.Range(0, 512).Select(i => (uint)((i * 13 + i / 8 * 7) & 31)).ToArray();
+        for (int x = 0; x < 2; x++) for (int y = 0; y < 2; y++) for (int z = 0; z < 2; z++) result[(x * 8 + y) * 8 + z] = 7;
+        for (int x = 4; x < 8; x++) for (int y = 4; y < 8; y++) for (int z = 4; z < 8; z++) result[(x * 8 + y) * 8 + z] = 1877;
+        return result;
+    }
+
+    private static int Lod(uint[] values, int x, int y, int z)
+    {
+        var value = values[(x * 8 + y) * 8 + z];
+        for (int lod = 3; lod > 0; lod--)
+        {
+            int size = 1 << lod, a = x & -size, b = y & -size, c = z & -size;
+            bool same = true;
+            for (int xx = a; xx < a + size && same; xx++)
+            for (int yy = b; yy < b + size && same; yy++)
+            for (int zz = c; zz < c + size; zz++) if (values[(xx * 8 + yy) * 8 + zz] != value) { same = false; break; }
+            if (same) return lod;
+        }
+        return 0;
+    }
+
+    [Fact]
+    public void LegacyAndGenericWordsPreserveEveryValueAndExactLeafDepth()
+    {
+        var values = Values();
+        var tree = new Octree(3, values);
+        var narrow = new Octree<ushort>(3, values.Select(v => (ushort)v).ToArray());
+        var generic = new Octree<uint>(3, values);
+        Assert.Equal(3, tree.Data.Span[1] & 3);
+        Assert.Equal(3, narrow.Data.Span[1] & 3);
+        Assert.Equal(3, generic.Data.Span[1] & 3);
+        Assert.Equal(Octree.GetMaximumSize(3), tree.EncodedLength);
+        Assert.Equal(Octree<ushort>.GetMaximumSize(3), narrow.EncodedLength);
+        Assert.True(tree.AsSpan().IsWellFormed()); Assert.True(narrow.AsSpan().IsWellFormed());
+        var lookup = tree.CreateLookup();
+        var restored = Octree.FromEncoded(tree.Data.Span);
+        for (int i = 0; i < values.Length; i++)
+        {
+            int x = i / 64, y = i / 8 % 8, z = i % 8, expected = Lod(values, x, y, z);
+            Assert.Equal(values[i], tree.Get(x, y, z, out int a)); Assert.Equal(expected, a);
+            Assert.Equal((ushort)values[i], narrow.Get(x, y, z, out int b)); Assert.Equal(expected, b);
+            Assert.Equal(values[i], generic.Get(x, y, z, out int c)); Assert.Equal(expected, c);
+            Assert.Equal(values[i], lookup.Get(x, y, z, out int d)); Assert.Equal(expected, d);
+            Assert.Equal(values[i], restored.Get(x, y, z, out int e)); Assert.Equal(expected, e);
+        }
+        var output = new uint[512]; tree.CopyTo(output); Assert.Equal(values, output);
+        var small = new ushort[512]; narrow.CopyTo(small); Assert.Equal(values.Select(v => (ushort)v), small);
+        var morton = new uint[512];
+        for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) for (int z = 0; z < 8; z++)
+            morton[(int)global::Tedd.MortonEncoding.Encode((uint)x, (uint)y, (uint)z)] = values[(x * 8 + y) * 8 + z];
+        var reordered = new Octree(3); reordered.Build(morton, DenseVoxelLayout.Morton);
+        Assert.Equal(tree.Data.ToArray(), reordered.Data.ToArray());
+        var decoded = new uint[512]; tree.CopyTo(decoded, DenseVoxelLayout.Morton); Assert.Equal(morton, decoded);
+        var buffer = new byte[tree.EncodedLength];
+        Assert.True(Octree.TryBuild(values, 3, buffer, out int written)); Assert.Equal(buffer.Length, written);
+        Assert.Equal(tree.Data.ToArray(), buffer);
+        Assert.Equal(buffer.Length, Octree.GetRequiredSize(values, 3));
+    }
+
+    [Theory]
+    [InlineData(4095, true)]
+    [InlineData(4096, false)]
+    [InlineData(65535, false)]
+    public void UInt16ReservedBitBoundaryNeverTruncatesValues(int maximum, bool packed)
+    {
+        var values = Values().Select(v => (ushort)v).ToArray(); values[123] = (ushort)maximum;
+        var tree = new Octree<ushort>(3, values);
+        Assert.Equal(packed, (tree.Data.Span[1] & 3) == 3);
+        Assert.Equal((ushort)maximum, tree.Get(1, 7, 3));
+    }
+
+    [Theory]
+    [InlineData(268435455u, true)]
+    [InlineData(268435456u, false)]
+    [InlineData(uint.MaxValue, false)]
+    public void UInt32ReservedBitBoundaryNeverTruncatesValues(uint maximum, bool packed)
+    {
+        var values = Values(); values[123] = maximum;
+        var tree = new Octree(3, values);
+        Assert.Equal(packed, (tree.Data.Span[1] & 3) == 3);
+        Assert.Equal(maximum, tree.Get(1, 7, 3));
+    }
+
+    [Fact]
+    public void EveryQueryKindUsesUnpackedValueBits()
+    {
+        var values = Values(); var tree = new Octree(3, values);
+        var narrow = new Octree<ushort>(3, values.Select(v => (ushort)v).ToArray());
+        var box = new VoxelBox(0, 0, 0, 8, 8, 8);
+        foreach (uint wanted in new uint[] { 0, 7, 1877, 4095, 0x10000007 })
+        {
+            var filter = VoxelFilter.EqualTo(wanted);
+            int expected = values.Count(v => v == wanted);
+            Assert.Equal(expected, tree.CountMatches(box, filter)); Assert.Equal(expected != 0, tree.Any(box, filter));
+            var hits = new VoxelHit[expected]; Assert.True(tree.Query(box, filter, hits, out int written)); Assert.Equal(expected, written);
+            Assert.All(hits, hit => Assert.Equal(wanted, hit.Value));
+            if (wanted <= ushort.MaxValue)
+            {
+                var smallFilter = VoxelFilter<ushort>.EqualTo((ushort)wanted);
+                Assert.Equal(expected, narrow.CountMatches(box, smallFilter)); Assert.Equal(expected != 0, narrow.Any(box, smallFilter));
+            }
+            var nearest = Enumerable.Range(0, values.Length).Where(i => values[i] == wanted)
+                .Select(i => (X: i / 64, Y: i / 8 % 8, Z: i % 8))
+                .Where(p => p.X * p.X + p.Y * p.Y + p.Z * p.Z <= 9)
+                .OrderBy(p => p.X * p.X + p.Y * p.Y + p.Z * p.Z).ThenBy(p => p.X).ThenBy(p => p.Y).ThenBy(p => p.Z).ToArray();
+            Assert.Equal(nearest.Length != 0, tree.TryFindNearest(0, 0, 0, 3, filter, out var found));
+            if (nearest.Length != 0) Assert.Equal((nearest[0].X, nearest[0].Y, nearest[0].Z), (found.X, found.Y, found.Z));
+        }
+        var clipped = new VoxelBox(1, 2, 3, 7, 6, 5);
+        var expectedCopy = new List<uint>();
+        for (int x = 1; x < 7; x++) for (int y = 2; y < 6; y++) for (int z = 3; z < 5; z++) expectedCopy.Add(values[(x * 8 + y) * 8 + z]);
+        var copy = new uint[clipped.Count]; tree.CopyRegionTo(clipped, copy); Assert.Equal(expectedCopy, copy);
+        var narrowCopy = new ushort[clipped.Count]; narrow.CopyRegionTo(clipped, narrowCopy); Assert.Equal(expectedCopy.Select(v => (ushort)v), narrowCopy);
+    }
+
+    [Fact]
+    public void ValidationRejectsImpossibleLodsAndInconsistentCoarsePartitions()
+    {
+        var original = new Octree(3, Values()).Data.ToArray();
+        foreach (var bytes in new[] { original[..^1], original.Concat(new byte[] { 0 }).ToArray() })
+            Assert.False(OctreeSpan.TryCreate(bytes, out _));
+        var impossible = original.ToArray(); BinaryPrimitives.WriteUInt32LittleEndian(impossible.AsSpan(2, 4), 0xa0000007);
+        Assert.True(OctreeSpan.TryCreate(impossible, out var view)); Assert.False(view.IsWellFormed());
+        Assert.False(view.TryGet(0, 0, 0, out _, out _));
+        Assert.Throws<FormatException>(() => Octree.FromEncoded(impossible));
+        var partition = original.ToArray(); BinaryPrimitives.WriteUInt32LittleEndian(partition.AsSpan(6, 4), 0x10000008);
+        Assert.False(new OctreeSpan(partition).IsWellFormed());
+        Assert.Throws<FormatException>(() => Octree.FromEncoded(partition));
+        var wrongVersion = original.ToArray(); wrongVersion[1] &= 0x7f;
+        Assert.False(OctreeSpan.TryCreate(wrongVersion, out _));
+        var typed = new Octree<ushort>(3, Values().Select(v => (ushort)v).ToArray()).Data.ToArray(); typed[2] = 2;
+        Assert.False(OctreeSpan<ushort>.TryCreate(typed, out _));
+    }
+
+    [Fact]
+    public void BorrowedSlicesCopyAndRebuildsDoNotChangePublishedLookups()
+    {
+        var values = Values(); var tree = new Octree(3, values);
+        var backing = new byte[tree.EncodedLength + 17]; tree.Data.Span.CopyTo(backing.AsSpan(7));
+        var snapshot = new OctreeSpan(backing.AsSpan(7, tree.EncodedLength)).CreateLookup();
+        var owned = tree.CreateLookup(); Array.Clear(backing); tree.BuildUniform(0);
+        Parallel.For(0, values.Length, i =>
+        {
+            int x = i / 64, y = i / 8 % 8, z = i % 8;
+            Assert.Equal(values[i], snapshot.Get(x, y, z, out int a)); Assert.Equal(Lod(values, x, y, z), a);
+            Assert.Equal(values[i], owned.Get(x, y, z, out int b)); Assert.Equal(a, b);
+        });
+    }
+}
+
+public class PackedCountCases
+{
+    static uint[] Values()
+    {
+        var values=Enumerable.Range(0,512).Select(i=>(uint)((i*13+i/8*7)&31)).ToArray();
+        for(int x=0;x<2;x++)for(int y=0;y<2;y++)for(int z=0;z<2;z++)values[(x*8+y)*8+z]=7;
+        for(int x=4;x<8;x++)for(int y=4;y<8;y++)for(int z=4;z<8;z++)values[(x*8+y)*8+z]=1877;
+        return values;
+    }
+    static VoxelBox[] Boxes()
+    {
+        var boxes=new List<VoxelBox>{new(0,0,0,8,8,8),new(0,0,0,0,0,0),new(7,7,7,8,8,8),new(1,2,3,7,6,5)};
+        var random=new Random(20261024);
+        for(int i=0;i<32;i++){
+            int x=random.Next(9),y=random.Next(9),z=random.Next(9);
+            boxes.Add(new(x,y,z,random.Next(x,9),random.Next(y,9),random.Next(z,9)));
+        }
+        return boxes.ToArray();
+    }
+    static int Expected(uint[] values,VoxelBox box,uint mask,uint wanted,bool negate)
+    {
+        int count=0;
+        for(int x=box.MinX;x<box.MaxX;x++)for(int y=box.MinY;y<box.MaxY;y++)for(int z=box.MinZ;z<box.MaxZ;z++)
+            if((((values[(x*8+y)*8+z]&mask)==(wanted&mask)))!=negate)count++;
+        return count;
+    }
+    [Fact]
+    public void LegacyAndGenericUInt32CountEveryFilterOverArbitraryBoxes()
+    {
+        var values=Values();var tree=new Octree(3,values);var generic=new Octree<uint>(3,values);
+        Assert.Equal(3,tree.Data.Span[1]&3);Assert.Equal(3,generic.Data.Span[1]&3);
+        var filters=new (uint Mask,uint Wanted,bool Negate,VoxelFilter Legacy,VoxelFilter<uint> Generic)[]{
+            (0,0,false,default,default),(uint.MaxValue,0,false,VoxelFilter.EqualTo(0),VoxelFilter<uint>.EqualTo(0)),
+            (uint.MaxValue,7,false,VoxelFilter.EqualTo(7),VoxelFilter<uint>.EqualTo(7)),
+            (uint.MaxValue,1877,false,VoxelFilter.EqualTo(1877),VoxelFilter<uint>.EqualTo(1877)),
+            (uint.MaxValue,0,true,VoxelFilter.NonZero,VoxelFilter<uint>.NonZero),
+            (uint.MaxValue,7,true,VoxelFilter.NotEqualTo(7),VoxelFilter<uint>.NotEqualTo(7)),
+            (15,3,false,VoxelFilter.Masked(15,3),VoxelFilter<uint>.Masked(15,3)),
+            (0xf0000000,0x10000000,false,VoxelFilter.Masked(0xf0000000,0x10000000),VoxelFilter<uint>.Masked(0xf0000000,0x10000000)),
+            (uint.MaxValue,uint.MaxValue,false,VoxelFilter.EqualTo(uint.MaxValue),VoxelFilter<uint>.EqualTo(uint.MaxValue))};
+        foreach(var box in Boxes())foreach(var f in filters){
+            int expected=Expected(values,box,f.Mask,f.Wanted,f.Negate);
+            Assert.Equal(expected,tree.CountMatches(box,f.Legacy));Assert.Equal(expected,generic.CountMatches(box,f.Generic));
+            Assert.Equal(expected!=0,tree.Any(box,f.Legacy));Assert.Equal(expected!=0,generic.Any(box,f.Generic));
+        }
+    }
+    [Fact]
+    public void UInt16CountsMaskedBitsAndMissesWithoutLeakingStoredLod()
+    {
+        var values=Values();var tree=new Octree<ushort>(3,values.Select(v=>(ushort)v).ToArray());
+        Assert.Equal(3,tree.Data.Span[1]&3);
+        var filters=new (uint Mask,uint Wanted,bool Negate,VoxelFilter<ushort> Filter)[]{
+            (0,0,false,default),(65535,0,false,VoxelFilter<ushort>.EqualTo(0)),
+            (65535,7,false,VoxelFilter<ushort>.EqualTo(7)),(65535,1877,false,VoxelFilter<ushort>.EqualTo(1877)),
+            (65535,0,true,VoxelFilter<ushort>.NonZero),(65535,7,true,VoxelFilter<ushort>.NotEqualTo(7)),
+            (15,3,false,VoxelFilter<ushort>.Masked(15,3)),(0xf000,0x1000,false,VoxelFilter<ushort>.Masked(0xf000,0x1000)),
+            (65535,65535,false,VoxelFilter<ushort>.EqualTo(65535))};
+        foreach(var box in Boxes())foreach(var f in filters){
+            int expected=Expected(values,box,f.Mask,f.Wanted,f.Negate);
+            Assert.Equal(expected,tree.CountMatches(box,f.Filter));Assert.Equal(expected!=0,tree.Any(box,f.Filter));
+        }
+    }
+    [Fact]
+    public void MalformedUInt32LodIsRejectedEvenWhenValueDoesNotMatch()
+    {
+        var data=new Octree(3,Values()).Data.ToArray();
+        BinaryPrimitives.WriteUInt32LittleEndian(data.AsSpan(2+511*4,4),0xf0000007);
+        var safe=new VoxelBox(0,0,0,1,1,1);var full=new VoxelBox(0,0,0,8,8,8);
+        Assert.Equal(1,new OctreeSpan(data).CountMatches(safe,VoxelFilter.Any));
+        Assert.Equal(0,new OctreeSpan(data).CountMatches(new VoxelBox(0,0,0,0,0,0),VoxelFilter.Any));
+        Assert.Throws<FormatException>(()=>new OctreeSpan(data).CountMatches(full,VoxelFilter.EqualTo(uint.MaxValue)));
+    }
+    [Fact]
+    public void MalformedUInt16AndGenericUInt32LodsHaveTheSameQueryBoundary()
+    {
+        var values=Values();var small=new Octree<ushort>(3,values.Select(v=>(ushort)v).ToArray()).Data.ToArray();
+        var wide=new Octree<uint>(3,values).Data.ToArray();
+        BinaryPrimitives.WriteUInt16LittleEndian(small.AsSpan(3+511*2,2),0xf007);
+        BinaryPrimitives.WriteUInt32LittleEndian(wide.AsSpan(3+511*4,4),0xf0000007);
+        var safe=new VoxelBox(0,0,0,1,1,1);var full=new VoxelBox(0,0,0,8,8,8);
+        Assert.Equal(1,new OctreeSpan<ushort>(small).CountMatches(safe,VoxelFilter<ushort>.Any));
+        Assert.Equal(1,new OctreeSpan<uint>(wide).CountMatches(safe,VoxelFilter<uint>.Any));
+        Assert.Throws<FormatException>(()=>new OctreeSpan<ushort>(small).CountMatches(full,VoxelFilter<ushort>.EqualTo(65535)));
+        Assert.Throws<FormatException>(()=>new OctreeSpan<uint>(wide).CountMatches(full,VoxelFilter<uint>.EqualTo(uint.MaxValue)));
+    }
+}

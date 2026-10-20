@@ -1,0 +1,71 @@
+--- a/src/Tedd.Voxtree/GenericOctreeQueries.cs
++++ b/src/Tedd.Voxtree/GenericOctreeQueries.cs
+@@ -288,6 +288,11 @@
+     private static void Packed<TStorage>(ReadOnlySpan<byte> data, int levels, ref State state)
+         where TStorage : unmanaged, IEquatable<TStorage>
+     {
++        if (state.Kind == QueryKind.Count)
++        {
++            state.Count += CountPacked<TStorage>(data, levels, state.Box, state.Filter);
++            return;
++        }
+         var box = state.Box;
+         for (var x = box.MinX; x < box.MaxX && !state.Done; x++)
+         for (var y = box.MinY; y < box.MaxY && !state.Done; y++)
+@@ -297,6 +302,21 @@
+                 throw new FormatException("Malformed packed leaf.");
+             state.Accept(new VoxelBox(x, y, z, x + 1, y + 1, z + 1), ToValue(value));
+         }
++    }
++
++    private static int CountPacked<TStorage>(ReadOnlySpan<byte> data, int levels, VoxelBox box, VoxelFilter<T> filter)
++        where TStorage : unmanaged, IEquatable<TStorage>
++    {
++        var count = 0;
++        for (var x = box.MinX; x < box.MaxX; x++)
++        for (var y = box.MinY; y < box.MaxY; y++)
++        for (var z = box.MinZ; z < box.MaxZ; z++)
++        {
++            if (!PackedLeafEncoding<TStorage>.TryGet(data, GenericOctreeCodec<TStorage>.HeaderSize, levels, x, y, z, out var value, out _))
++                throw new FormatException("Malformed packed leaf.");
++            if (filter.Matches(ToValue(value))) count++;
++        }
++        return count;
+     }
+ 
+     private static void Dense<TStorage>(ReadOnlySpan<byte> data, int side, ref State state)
+--- a/src/Tedd.Voxtree/OctreeQueries.cs
++++ b/src/Tedd.Voxtree/OctreeQueries.cs
+@@ -242,6 +242,11 @@
+ 
+     private static void Packed(ReadOnlySpan<byte> data, int levels, ref State state)
+     {
++        if (state.Kind == QueryKind.Count)
++        {
++            state.Count += CountPacked(data, levels, state.Box, state.Filter);
++            return;
++        }
+         var box = state.Box;
+         for (var x = box.MinX; x < box.MaxX && !state.Done; x++)
+         for (var y = box.MinY; y < box.MaxY && !state.Done; y++)
+@@ -251,6 +256,20 @@
+                 throw new FormatException("Malformed packed leaf.");
+             state.Accept(new VoxelBox(x, y, z, x + 1, y + 1, z + 1), value);
+         }
++    }
++
++    private static int CountPacked(ReadOnlySpan<byte> data, int levels, VoxelBox box, VoxelFilter filter)
++    {
++        var count = 0;
++        for (var x = box.MinX; x < box.MaxX; x++)
++        for (var y = box.MinY; y < box.MaxY; y++)
++        for (var z = box.MinZ; z < box.MaxZ; z++)
++        {
++            if (!PackedLeafEncoding<uint>.TryGet(data, OctreeCodec.HeaderSize, levels, x, y, z, out var value, out _))
++                throw new FormatException("Malformed packed leaf.");
++            if (filter.Matches(value)) count++;
++        }
++        return count;
+     }
+ 
+     private static void Dense(ReadOnlySpan<byte> data, int side, ref State state)

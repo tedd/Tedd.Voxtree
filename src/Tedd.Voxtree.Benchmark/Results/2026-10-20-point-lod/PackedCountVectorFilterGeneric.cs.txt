@@ -1,0 +1,30 @@
+#if NET10_0_OR_GREATER
+    // Packed storage is unsigned raw bits, independently of public T semantics.
+    internal int CountPackedWords(ReadOnlySpan<byte> bytes)
+    {
+        var rawMask = _mask;
+        var rawExpected = _expected;
+        switch (Unsafe.SizeOf<T>())
+        {
+            case 2:
+            {
+                var words = MemoryMarshal.Cast<byte, ushort>(bytes);
+                var expected = Unsafe.As<T, ushort>(ref rawExpected);
+                if ((expected & 0xf000) != 0) return _negate ? words.Length : 0;
+                var mask = (ushort)(Unsafe.As<T, ushort>(ref rawMask) & 0x0fff);
+                if (mask == 0) return _negate ? 0 : words.Length;
+                return MaskedVoxelSearch<ushort>.Count(words, mask, expected, _negate);
+            }
+            case 4:
+            {
+                var words = MemoryMarshal.Cast<byte, uint>(bytes);
+                var expected = Unsafe.As<T, uint>(ref rawExpected);
+                if ((expected & 0xf0000000) != 0) return _negate ? words.Length : 0;
+                var mask = Unsafe.As<T, uint>(ref rawMask) & 0x0fffffff;
+                if (mask == 0) return _negate ? 0 : words.Length;
+                return MaskedVoxelSearch<uint>.Count(words, mask, expected, _negate);
+            }
+            default: throw new FormatException("Malformed packed leaf.");
+        }
+    }
+#endif

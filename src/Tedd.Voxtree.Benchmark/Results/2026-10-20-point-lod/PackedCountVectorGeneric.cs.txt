@@ -1,0 +1,28 @@
+#if NET10_0_OR_GREATER
+    private static int CountPackedVector<TStorage>(ReadOnlySpan<byte> data, int levels, VoxelBox box, VoxelFilter<T> filter)
+        where TStorage : unmanaged, IEquatable<TStorage>
+    {
+        var side = 1 << levels;
+        var words = MemoryMarshal.Cast<byte, TStorage>(data[GenericOctreeCodec<TStorage>.HeaderSize..]);
+        if (box.MinY == 0 && box.MaxY == side && box.MinZ == 0 && box.MaxZ == side)
+            return CountPackedRange(words.Slice(box.MinX * side * side, (box.MaxX - box.MinX) * side * side), levels, filter);
+        var count = 0;
+        for (var x = box.MinX; x < box.MaxX; x++)
+        for (var y = box.MinY; y < box.MaxY; y++)
+            count += CountPackedRange(words.Slice((x * side + y) * side + box.MinZ, box.MaxZ - box.MinZ), levels, filter);
+        return count;
+    }
+
+    private static int CountPackedRange<TStorage>(ReadOnlySpan<TStorage> words, int levels, VoxelFilter<T> filter)
+        where TStorage : unmanaged
+    {
+        bool malformed;
+        if (Unsafe.SizeOf<TStorage>() == 2)
+            malformed = MemoryMarshal.Cast<TStorage, ushort>(words).IndexOfAnyExceptInRange((ushort)0, (ushort)((levels << 12) | 0x0fff)) >= 0;
+        else if (Unsafe.SizeOf<TStorage>() == 4)
+            malformed = MemoryMarshal.Cast<TStorage, uint>(words).IndexOfAnyExceptInRange(0u, ((uint)levels << 28) | 0x0fffffff) >= 0;
+        else malformed = true;
+        if (malformed) throw new FormatException("Malformed packed leaf.");
+        return filter.CountPackedWords(MemoryMarshal.AsBytes(words));
+    }
+#endif

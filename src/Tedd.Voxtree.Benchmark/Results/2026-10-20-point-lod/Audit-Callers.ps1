@@ -1,6 +1,7 @@
 param([Parameter(Mandatory)][string]$TaskRoot,
       [ValidatePattern('^caller-audit[a-z0-9-]*$')][string]$Label='caller-audit',
-      [string[]]$BundleLabels=@('p7w','p9','p10a','p10b'))
+      [string[]]$BundleLabels=@('p7w','p9','p10a','p10b'),
+      [ValidateSet('callers','count-boundary')][string]$Mode='callers')
 $ErrorActionPreference='Stop'
 if([IO.Path]::GetFullPath($TaskRoot).TrimEnd('\') -ne 'D:\Workspaces\AI\voxtree-point-lod-20261020'){throw 'Unexpected task root'}
 . (Join-Path $PSScriptRoot 'Host-Lock.ps1')
@@ -27,8 +28,12 @@ try {
             if(-not(Test-Path -LiteralPath $path)){throw "Missing caller bundle: $_"}
             $path
         })
-        & dotnet exec --fx-version 10.0.13 (Join-Path $directory 'out/Audit.dll') (Join-Path $TaskRoot "$Label.json") @bundles
+        $auditArguments=@()
+        if($Mode -eq 'count-boundary'){$auditArguments+='--count-boundary'}
+        $auditArguments+=(Join-Path $TaskRoot "$Label.json")
+        $auditArguments+=$bundles
+        & dotnet exec --fx-version 10.0.13 (Join-Path $directory 'out/Audit.dll') @auditArguments
         if($LASTEXITCODE -ne 0){throw 'Caller audit failed'}
-        @{runtime='10.0.13';sourceSha256=(Get-FileHash -LiteralPath (Join-Path $directory 'Program.cs')).Hash;toolSha256=(Get-FileHash -LiteralPath (Join-Path $directory 'out/Audit.dll')).Hash;selftestPassed=$true;bundleLabels=$BundleLabels;observer='metadata-only caller identity audit; no fixture executed'} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $TaskRoot "$Label-identity.json")
+        @{runtime='10.0.13';sourceSha256=(Get-FileHash -LiteralPath (Join-Path $directory 'Program.cs')).Hash;toolSha256=(Get-FileHash -LiteralPath (Join-Path $directory 'out/Audit.dll')).Hash;selftestPassed=$true;bundleLabels=$BundleLabels;mode=$Mode;observer='metadata-only caller identity audit; no fixture executed'} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $TaskRoot "$Label-identity.json")
     } finally {Pop-Location}
 } finally {Exit-VoxtreePerformanceHost $leases}

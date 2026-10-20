@@ -1,0 +1,11 @@
+#if NET10_0_OR_GREATER
+    // Caller validates all queried LOD words before any predicate shortcut.
+    internal int CountPackedWords(ReadOnlySpan<uint> words)
+    {
+        const uint valueMask = 0x0fffffff;
+        if ((_expected & ~valueMask) != 0) return _negate ? words.Length : 0;
+        var mask = _mask & valueMask;
+        if (mask == 0) return _negate ? 0 : words.Length;
+        return MaskedVoxelSearch<uint>.Count(words, mask, _expected, _negate);
+    }
+#endif

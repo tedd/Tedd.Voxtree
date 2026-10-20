@@ -9,14 +9,18 @@ using System.Text.Json;
 
 var codes = typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static).Where(f => f.FieldType == typeof(OpCode))
     .Select(f => (OpCode)f.GetValue(null)!).ToDictionary(c => unchecked((ushort)c.Value));
+bool countBoundary = args.Length > 0 && args[0] == "--count-boundary";
+if (countBoundary) args = args[1..];
 if (args.Length == 1 && args[0] == "--selftest")
 {
     var a = Audit(Fixture(false, false, 17));
     var b = Audit(Fixture(true, false, 17));
     var c = Audit(Fixture(true, true, 17));
     var d = Audit(Fixture(true, false, 18));
+    var e = Audit(Fixture(false, false, 17, true));
     if (a.rawIlSha256 == b.rawIlSha256 || a.resolvedIlSha256 != b.resolvedIlSha256 ||
-        a.resolvedIlSha256 == c.resolvedIlSha256 || a.resolvedIlSha256 == d.resolvedIlSha256)
+        a.resolvedIlSha256 == c.resolvedIlSha256 || a.resolvedIlSha256 == d.resolvedIlSha256 ||
+        a.resolvedIlSha256 != e.resolvedIlSha256 || a.implementationFlags == e.implementationFlags)
         throw new Exception("Semantic caller identity falsification failed");
     Console.WriteLine("Metadata renumbering preserves identity; changed API calls and literals are rejected.");
     return;
@@ -33,8 +37,11 @@ foreach (var path in args.Skip(1).Select(Path.GetFullPath))
     try
     {
         var assembly = context.LoadFromAssemblyPath(path);
-        var methods = assembly.GetTypes().Where(t => t.Namespace == null && t.Name.EndsWith("Scenario", StringComparison.Ordinal))
-            .SelectMany(t => t.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic).Where(m => m.Name.StartsWith("AfterBatch", StringComparison.Ordinal)))
+        var methods = assembly.GetTypes().Where(t => countBoundary
+                ? t.Namespace == "Tedd.Voxtree" && (t.Name == "OctreeQueries" || t.Name == "GenericOctreeQueries`1")
+                : t.Namespace == null && t.Name.EndsWith("Scenario", StringComparison.Ordinal))
+            .SelectMany(t => t.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                .Where(m => countBoundary ? m.Name == "CountPackedVector" : m.Name.StartsWith("AfterBatch", StringComparison.Ordinal)))
             .OrderBy(m => m.DeclaringType!.FullName, StringComparer.Ordinal).ThenBy(m => m.Name, StringComparer.Ordinal).Select(Audit).ToArray();
         inventories.Add(new { entry = path, sha256 = Hash(File.ReadAllBytes(path)), methods });
     }
@@ -90,7 +97,7 @@ CallerIdentity Audit(MethodInfo method)
             catchType = c.Flags == ExceptionHandlingClauseOptions.Clause ? TypeName(c.CatchType!) : null,
             filter = c.Flags == ExceptionHandlingClauseOptions.Filter ? c.FilterOffset : -1 }), instructions };
     return new(method.DeclaringType!.FullName + "." + method.Name, Hash(bytes),
-        Hash(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(canonical))), canonical);
+        Hash(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(canonical))), canonical, method.GetMethodImplementationFlags().ToString());
     void Require(int size) { if (size < 0 || cursor > bytes.Length - size) throw new InvalidDataException("Truncated IL operand"); }
 }
 
@@ -107,7 +114,7 @@ static string TypeName(Type type) => type.IsByRef ? TypeName(type.GetElementType
     type.IsGenericType ? type.GetGenericTypeDefinition().FullName + "<" + string.Join(',', type.GetGenericArguments().Select(TypeName)) + ">" : type.FullName ?? type.Name;
 static string Hash(byte[] bytes) => Convert.ToHexString(SHA256.HashData(bytes));
 
-static MethodInfo Fixture(bool reversed, bool changedCall, int constant)
+static MethodInfo Fixture(bool reversed, bool changedCall, int constant, bool noInlining = false)
 {
     var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("AuditFalsifier" + Guid.NewGuid().ToString("N")), AssemblyBuilderAccess.RunAndCollect);
     var type = assembly.DefineDynamicModule("fixture").DefineType("CallerAuditFixture", TypeAttributes.Public);
@@ -120,7 +127,8 @@ static MethodInfo Fixture(bool reversed, bool changedCall, int constant)
     if (reversed) { second = Api("Second");first = Api("First"); }
     else { first = Api("First");second = Api("Second"); }
     var kernel = type.DefineMethod("AfterBatch", MethodAttributes.Public | MethodAttributes.Static, typeof(int), [typeof(int)]);
+    if (noInlining) kernel.SetImplementationFlags(MethodImplAttributes.NoInlining);
     var il = kernel.GetILGenerator();il.Emit(OpCodes.Ldarg_0);il.Emit(OpCodes.Call, changedCall ? second : first);il.Emit(OpCodes.Ldc_I4, constant);il.Emit(OpCodes.Add);il.Emit(OpCodes.Ret);
     return type.CreateType()!.GetMethod("AfterBatch")!;
 }
-record CallerIdentity(string method, string rawIlSha256, string resolvedIlSha256, object canonical);
+record CallerIdentity(string method, string rawIlSha256, string resolvedIlSha256, object canonical, string implementationFlags);

@@ -1,0 +1,155 @@
+--- a/src/Tedd.Voxtree/GenericOctreeQueries.cs
++++ b/src/Tedd.Voxtree/GenericOctreeQueries.cs
+@@ -307,6 +307,11 @@
+     private static int CountPacked<TStorage>(ReadOnlySpan<byte> data, int levels, VoxelBox box, VoxelFilter<T> filter)
+         where TStorage : unmanaged, IEquatable<TStorage>
+     {
++#if NET10_0_OR_GREATER
++        if (BitConverter.IsLittleEndian && System.Runtime.Intrinsics.Vector128.IsHardwareAccelerated &&
++            ((box.MinY == 0 && box.MaxY == (1 << levels) && box.MinZ == 0 && box.MaxZ == (1 << levels)) || box.MaxZ - box.MinZ >= 16))
++            return CountPackedVector<TStorage>(data, levels, box, filter);
++#endif
+         var count = 0;
+         for (var x = box.MinX; x < box.MaxX; x++)
+         for (var y = box.MinY; y < box.MaxY; y++)
+@@ -318,6 +323,35 @@
+         }
+         return count;
+     }
++
++#if NET10_0_OR_GREATER
++    private static int CountPackedVector<TStorage>(ReadOnlySpan<byte> data, int levels, VoxelBox box, VoxelFilter<T> filter)
++        where TStorage : unmanaged, IEquatable<TStorage>
++    {
++        var side = 1 << levels;
++        var words = MemoryMarshal.Cast<byte, TStorage>(data[GenericOctreeCodec<TStorage>.HeaderSize..]);
++        if (box.MinY == 0 && box.MaxY == side && box.MinZ == 0 && box.MaxZ == side)
++            return CountPackedRange(words.Slice(box.MinX * side * side, (box.MaxX - box.MinX) * side * side), levels, filter);
++        var count = 0;
++        for (var x = box.MinX; x < box.MaxX; x++)
++        for (var y = box.MinY; y < box.MaxY; y++)
++            count += CountPackedRange(words.Slice((x * side + y) * side + box.MinZ, box.MaxZ - box.MinZ), levels, filter);
++        return count;
++    }
++
++    private static int CountPackedRange<TStorage>(ReadOnlySpan<TStorage> words, int levels, VoxelFilter<T> filter)
++        where TStorage : unmanaged
++    {
++        bool malformed;
++        if (Unsafe.SizeOf<TStorage>() == 2)
++            malformed = MemoryMarshal.Cast<TStorage, ushort>(words).IndexOfAnyExceptInRange((ushort)0, (ushort)((levels << 12) | 0x0fff)) >= 0;
++        else if (Unsafe.SizeOf<TStorage>() == 4)
++            malformed = MemoryMarshal.Cast<TStorage, uint>(words).IndexOfAnyExceptInRange(0u, ((uint)levels << 28) | 0x0fffffff) >= 0;
++        else malformed = true;
++        if (malformed) throw new FormatException("Malformed packed leaf.");
++        return filter.CountPackedWords(MemoryMarshal.AsBytes(words));
++    }
++#endif
+ 
+     private static void Dense<TStorage>(ReadOnlySpan<byte> data, int side, ref State state)
+         where TStorage : unmanaged, IEquatable<TStorage>
+--- a/src/Tedd.Voxtree/OctreeQueries.cs
++++ b/src/Tedd.Voxtree/OctreeQueries.cs
+@@ -260,6 +260,11 @@
+ 
+     private static int CountPacked(ReadOnlySpan<byte> data, int levels, VoxelBox box, VoxelFilter filter)
+     {
++#if NET10_0_OR_GREATER
++        if (BitConverter.IsLittleEndian && System.Runtime.Intrinsics.Vector128.IsHardwareAccelerated &&
++            ((box.MinY == 0 && box.MaxY == (1 << levels) && box.MinZ == 0 && box.MaxZ == (1 << levels)) || box.MaxZ - box.MinZ >= 16))
++            return CountPackedVector(data, levels, box, filter);
++#endif
+         var count = 0;
+         for (var x = box.MinX; x < box.MaxX; x++)
+         for (var y = box.MinY; y < box.MaxY; y++)
+@@ -271,6 +276,29 @@
+         }
+         return count;
+     }
++
++#if NET10_0_OR_GREATER
++    private static int CountPackedVector(ReadOnlySpan<byte> data, int levels, VoxelBox box, VoxelFilter filter)
++    {
++        var side = 1 << levels;
++        var words = MemoryMarshal.Cast<byte, uint>(data[OctreeCodec.HeaderSize..]);
++        if (box.MinY == 0 && box.MaxY == side && box.MinZ == 0 && box.MaxZ == side)
++            return CountPackedRange(words.Slice(box.MinX * side * side, (box.MaxX - box.MinX) * side * side), levels, filter);
++        var count = 0;
++        for (var x = box.MinX; x < box.MaxX; x++)
++        for (var y = box.MinY; y < box.MaxY; y++)
++            count += CountPackedRange(words.Slice((x * side + y) * side + box.MinZ, box.MaxZ - box.MinZ), levels, filter);
++        return count;
++    }
++
++    private static int CountPackedRange(ReadOnlySpan<uint> words, int levels, VoxelFilter filter)
++    {
++        var maximumWord = ((uint)levels << 28) | 0x0fffffff;
++        if (words.IndexOfAnyExceptInRange(0u, maximumWord) >= 0)
++            throw new FormatException("Malformed packed leaf.");
++        return filter.CountPackedWords(words);
++    }
++#endif
+ 
+     private static void Dense(ReadOnlySpan<byte> data, int side, ref State state)
+     {
+--- a/src/Tedd.Voxtree/VoxelFilter.Generic.cs
++++ b/src/Tedd.Voxtree/VoxelFilter.Generic.cs
+@@ -36,6 +36,37 @@
+     public bool Matches(T value) => BitwiseEquals(value, _mask, _expected) != _negate;
+ 
+ #if NET10_0_OR_GREATER
++    // Packed storage is unsigned raw bits, independently of public T semantics.
++    internal int CountPackedWords(ReadOnlySpan<byte> bytes)
++    {
++        var rawMask = _mask;
++        var rawExpected = _expected;
++        switch (Unsafe.SizeOf<T>())
++        {
++            case 2:
++            {
++                var words = MemoryMarshal.Cast<byte, ushort>(bytes);
++                var expected = Unsafe.As<T, ushort>(ref rawExpected);
++                if ((expected & 0xf000) != 0) return _negate ? words.Length : 0;
++                var mask = (ushort)(Unsafe.As<T, ushort>(ref rawMask) & 0x0fff);
++                if (mask == 0) return _negate ? 0 : words.Length;
++                return MaskedVoxelSearch<ushort>.Count(words, mask, expected, _negate);
++            }
++            case 4:
++            {
++                var words = MemoryMarshal.Cast<byte, uint>(bytes);
++                var expected = Unsafe.As<T, uint>(ref rawExpected);
++                if ((expected & 0xf0000000) != 0) return _negate ? words.Length : 0;
++                var mask = Unsafe.As<T, uint>(ref rawMask) & 0x0fffffff;
++                if (mask == 0) return _negate ? 0 : words.Length;
++                return MaskedVoxelSearch<uint>.Count(words, mask, expected, _negate);
++            }
++            default: throw new FormatException("Malformed packed leaf.");
++        }
++    }
++#endif
++
++#if NET10_0_OR_GREATER
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     internal int CountPacked(ulong values)
+     {
+--- a/src/Tedd.Voxtree/VoxelFilter.cs
++++ b/src/Tedd.Voxtree/VoxelFilter.cs
+@@ -29,6 +29,18 @@
+     /// <summary>Tests a value.</summary>
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     public bool Matches(uint value) => ((value & _mask) == _expected) != _negate;
++
++#if NET10_0_OR_GREATER
++    // Caller validates all queried LOD words before any predicate shortcut.
++    internal int CountPackedWords(ReadOnlySpan<uint> words)
++    {
++        const uint valueMask = 0x0fffffff;
++        if ((_expected & ~valueMask) != 0) return _negate ? words.Length : 0;
++        var mask = _mask & valueMask;
++        if (mask == 0) return _negate ? 0 : words.Length;
++        return MaskedVoxelSearch<uint>.Count(words, mask, _expected, _negate);
++    }
++#endif
+ 
+ #if NET10_0_OR_GREATER
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
