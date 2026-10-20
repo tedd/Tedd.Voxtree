@@ -1,12 +1,14 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Tedd.Voxtree;
 
 /// <summary>An immutable point-lookup snapshot with predecoded 32-bit child indexes.</summary>
 /// <remarks>
 /// Create with <see cref="Octree.CreateLookup"/> or <see cref="OctreeSpan.CreateLookup"/> when repeated reads justify compilation and
-/// extra memory. Tree nodes occupy 36 bytes each. Dense storage is borrowed from the immutable
+/// extra memory. Fully expanded trees compile to dense values; other tree nodes occupy 36 bytes each.
+/// Dense storage is borrowed from the immutable
 /// source snapshot when available; borrowed dense spans are copied. Uniform storage retains one value. Rebuilding the source does not change
 /// this snapshot. Concurrent reads need no locks. Serialized bytes retain their existing format.
 /// </remarks>
@@ -37,7 +39,20 @@ public sealed class OctreeLookup
 
         var body = encoded[..^1];
         var root = body.Length - encoded[^1];
-        _nodes = new uint[checked(CountNodes(body, root) * NodeWords)];
+        var nodeCount = CountNodes(body, root);
+        // A full 8-ary tree has (leaves - 1) / 7 internal nodes. Reaching
+        // that maximum proves every stored leaf is one voxel, preserving LOD 0.
+        if (BitConverter.IsLittleEndian && nodeCount == (Count - 1) / 7)
+        {
+            var dense = new byte[checked(OctreeCodec.HeaderSize + Count * sizeof(uint))];
+            encoded[..OctreeCodec.HeaderSize].CopyTo(dense);
+            dense[1] |= (byte)StorageKind.Dense;
+            CompileDense(body, root, Levels, SideLength, 0,
+                MemoryMarshal.Cast<byte, uint>(dense.AsSpan(OctreeCodec.HeaderSize)));
+            _dense = dense;
+            return;
+        }
+        _nodes = new uint[checked(nodeCount * NodeWords)];
         var next = 0;
         Compile(body, root, _nodes, ref next);
     }
@@ -151,7 +166,18 @@ public sealed class OctreeLookup
     {
         var cursor = offset;
         var mask = body[cursor++];
+        // Construction has already validated every token. With no internal
+        // children, values cannot affect the node count.
+        if (mask == byte.MaxValue) return 1;
         var count = 1;
+#if NET10_0_OR_GREATER
+        if (PackedVoxelSearch.TryReadTokens(body, offset, out var packed))
+        {
+            for (var child = 0; child < 8; child++, packed >>= 8)
+                if ((mask & (1 << child)) == 0) count += CountNodes(body, offset - (byte)packed);
+            return count;
+        }
+#endif
         for (var child = 0; child < 8; child++)
         {
             OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
@@ -167,6 +193,18 @@ public sealed class OctreeLookup
         var cursor = offset;
         var mask = body[cursor++];
         nodes[result] = mask;
+#if NET10_0_OR_GREATER
+        if (PackedVoxelSearch.TryReadTokens(body, offset, out var packed))
+        {
+            for (var child = 0; child < 8; child++, packed >>= 8)
+            {
+                var token = (byte)packed;
+                nodes[result + child + 1] = (mask & (1 << child)) != 0
+                    ? token : (uint)Compile(body, offset - token, nodes, ref next);
+            }
+            return result;
+        }
+#endif
         for (var child = 0; child < 8; child++)
         {
             OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
@@ -174,5 +212,37 @@ public sealed class OctreeLookup
                 ? token : (uint)Compile(body, offset - (int)token, nodes, ref next);
         }
         return result;
+    }
+
+    // The validated maximum node count guarantees internal children above
+    // level one and value tokens at level one. Store each value exactly once.
+    private static void CompileDense(ReadOnlySpan<byte> body, int offset, int level,
+        int side, int origin, Span<uint> output)
+    {
+#if NET10_0_OR_GREATER
+        if (level == 1 && PackedVoxelSearch.TryReadTokens(body, offset, out var packed))
+        {
+            output[origin] = (byte)packed;
+            output[origin + 1] = (byte)(packed >> 8);
+            output[origin + side] = (byte)(packed >> 16);
+            output[origin + side + 1] = (byte)(packed >> 24);
+            origin += side * side;
+            output[origin] = (byte)(packed >> 32);
+            output[origin + 1] = (byte)(packed >> 40);
+            output[origin + side] = (byte)(packed >> 48);
+            output[origin + side + 1] = (byte)(packed >> 56);
+            return;
+        }
+#endif
+        var cursor = offset + 1;
+        var half = 1 << (level - 1);
+        for (var child = 0; child < 8; child++)
+        {
+            OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
+            var destination = origin + (child >> 2) * half * side * side +
+                              ((child >> 1) & 1) * half * side + (child & 1) * half;
+            if (level == 1) output[destination] = token;
+            else CompileDense(body, offset - (int)token, level - 1, side, destination, output);
+        }
     }
 }

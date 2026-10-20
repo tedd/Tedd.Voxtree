@@ -3,6 +3,54 @@ namespace Tedd.Voxtree.Tests;
 public class OctreeLookupTests
 {
     [Theory]
+    [InlineData(1, false)]
+    [InlineData(3, false)]
+    [InlineData(5, false)]
+    [InlineData(1, true)]
+    [InlineData(3, true)]
+    [InlineData(5, true)]
+    public void FullyExpandedLookupRetainsValuesAndZeroLodWithSmallerPayload(int levels, bool wide)
+    {
+        var side = 1 << levels;
+        var source = Enumerable.Range(0, side * side * side)
+            .Select(i => (uint)((i / (side * side) * 13 + i / side % side * 7 + i % side) & 31)).ToArray();
+        if (wide) source[source.Length / 3] = uint.MaxValue;
+        var encoded = new Octree(levels, source).Data.ToArray();
+        Assert.Equal(0, encoded[1] & 3);
+        var lookup = new OctreeSpan(encoded).CreateLookup();
+        if (BitConverter.IsLittleEndian) Assert.Equal(2 + source.Length * sizeof(uint), lookup.StorageBytes);
+        Array.Clear(encoded);
+        for (var i = 0; i < source.Length; i++)
+        {
+            var x = i / (side * side); var y = i / side % side; var z = i % side;
+            Assert.Equal(source[i], lookup.Get(x, y, z, out var lod));
+            Assert.Equal(0, lod);
+            Assert.True(lookup.TryGet(x, y, z, out var value, out lod));
+            Assert.Equal(source[i], value);
+            Assert.Equal(0, lod);
+        }
+    }
+
+    [Fact]
+    public void NearlyFullTreeRetainsItsCoarserLeafLod()
+    {
+        const int side = 8;
+        var source = Enumerable.Range(0, side * side * side)
+            .Select(i => (uint)((i / (side * side) * 13 + i / side % side * 7 + i % side) & 31)).ToArray();
+        for (var x = 0; x < 2; x++) for (var y = 0; y < 2; y++) for (var z = 0; z < 2; z++)
+            source[(x * side + y) * side + z] = 7;
+        var tree = new Octree(3, source);
+        var lookup = tree.CreateLookup();
+        Assert.Equal(((source.Length - 1) / 7 - 1) * 36, lookup.StorageBytes);
+        for (var i = 0; i < source.Length; i++)
+        {
+            var x = i / (side * side); var y = i / side % side; var z = i % side;
+            Assert.Equal(tree.Get(x, y, z, out var expectedLod), lookup.Get(x, y, z, out var lod));
+            Assert.Equal(expectedLod, lod);
+        }
+    }
+
+    [Theory]
     [InlineData(0)]
     [InlineData(1)]
     [InlineData(3)]

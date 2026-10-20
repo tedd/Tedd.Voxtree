@@ -655,10 +655,14 @@ internal static class GenericOctreeCodec<TStorage>
 
     private static bool IsUniform(ReadOnlySpan<TStorage> source)
     {
-        var value = source[0];
-        for (var index = 1; index < source.Length; index++)
-            if (!source[index].Equals(value)) return false;
-        return true;
+#if NET10_0_OR_GREATER
+        if (Unsafe.SizeOf<TStorage>() <= sizeof(ulong))
+            return source.IndexOfAnyExcept(source[0]) < 0;
+#endif
+        // Storage cells are padding-free unsigned integers, including VoxelUInt128.
+        // Equal adjacent cells imply a uniform region. Byte spans let the runtime
+        // vectorize every storage width without invoking user-defined equality.
+        return MemoryMarshal.AsBytes(source[1..]).SequenceEqual(MemoryMarshal.AsBytes(source[..^1]));
     }
 
     private static bool IsUniformRegion(ReadOnlySpan<TStorage> source, int start, int size,
@@ -672,8 +676,14 @@ internal static class GenericOctreeCodec<TStorage>
             for (var y = 0; y < size; y++)
             {
                 var row = source.Slice(plane + y * rowStride, size);
-                for (var z = 0; z < row.Length; z++)
-                    if (!row[z].Equals(value)) return false;
+#if NET10_0_OR_GREATER
+                if (Unsafe.SizeOf<TStorage>() <= sizeof(ulong))
+                {
+                    if (row.IndexOfAnyExcept(value) >= 0) return false;
+                    continue;
+                }
+#endif
+                if (!row[0].Equals(value) || !IsUniform(row)) return false;
             }
         }
         return true;

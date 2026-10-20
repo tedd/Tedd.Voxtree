@@ -30,6 +30,11 @@ public readonly struct VoxelFilter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Matches(uint value) => ((value & _mask) == _expected) != _negate;
 
+#if NET10_0_OR_GREATER
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal int CountPacked(ulong values) => PackedVoxelSearch.Count(values, _mask, _expected, _negate);
+#endif
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal int CountIn(ReadOnlySpan<uint> values)
     {

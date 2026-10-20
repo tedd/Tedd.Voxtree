@@ -1,0 +1,150 @@
+using System.Runtime.InteropServices;
+using Tedd.DotNetLab.Contracts;
+using Tedd.DotNetLab.Harness;
+using Tedd.Voxtree;
+using Before = Snapshot.Voxtree;
+
+FixtureMode.Validation = args[0] == "--validate";
+if (OperatingSystem.IsWindows())
+{
+    using var process = System.Diagnostics.Process.GetCurrentProcess();
+    process.ProcessorAffinity = (nint)4;
+}
+if (args[0] == "--inventory")
+{
+    var flags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance |
+        System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.DeclaredOnly;
+    var inventory = typeof(Octree).Assembly.GetExportedTypes().Where(t => t.Namespace == "Tedd.Voxtree")
+        .OrderBy(t => t.FullName).Select(t => new {
+            type = t.FullName,
+            methods = t.GetMethods(flags).Select(m => new { signature = m.ToString(), accessor = m.IsSpecialName }).ToArray(),
+            constructors = t.GetConstructors(flags).Select(c => c.ToString()).ToArray()
+        });
+    Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(inventory));
+    return;
+}
+var registry = new ScenarioRegistry();
+QueryFixtures.Register(registry);
+PointFixtures.Register(registry);
+foreach (var pattern in new[] { "uniform", "first", "last", "clustered", "sparse", "random" })
+{
+    registry.Register(new BuildScenario<byte>(pattern, "size"));
+    registry.Register(new BuildScenario<ushort>(pattern, "size"));
+    registry.Register(new BuildScenario<uint>(pattern, "size"));
+    registry.Register(new BuildScenario<ulong>(pattern, "size"));
+    registry.Register(new BuildScenario<Cell128>(pattern, "size"));
+}
+foreach (var operation in new[] { "span", "owned" })
+foreach (var pattern in new[] { "uniform", "clustered", "random" })
+    registry.Register(new BuildScenario<uint>(pattern, operation));
+foreach (var operation in new[] { "span", "owned" })
+{
+    registry.Register(new BuildScenario<byte>("uniform", operation));
+    registry.Register(new BuildScenario<ushort>("uniform", operation));
+}
+if (args[0] is "--validate" or "--code")
+{
+    foreach (var descriptor in registry.Describe())
+    {
+        if (args[0] == "--code" &&
+            (!descriptor.Id.EndsWith("-size") || !(descriptor.Id.Contains("-uniform-") || descriptor.Id.Contains("-last-")))) continue;
+        var scenario = (ISynchronousScenario)registry.Get(descriptor.Id);
+        scenario.Prepare(new ScenarioContext("candidate", CancellationToken.None));
+        scenario.Reset(new ResetContext(ResetLevel.LogicalState));
+        for (var batch = 0; batch < (args[0] == "--code" ? 32 : 1); batch++) scenario.ExecuteBatch(args[0] == "--code" ? 256 : 1);
+        if (!scenario.Validate().Correct) throw new InvalidOperationException(descriptor.Id);
+        scenario.Cleanup();
+    }
+    Console.WriteLine("All differential scenarios passed.");
+    return;
+}
+var host = new HarnessHost(registry, args[1]);
+if (args[0] == "--harness-owned" || Environment.GetEnvironmentVariable("DOTNET_EnableDiagnostics") == "0") await host.RunOwnedAsync();
+else
+{
+    Console.WriteLine(Wire.Serialize(host.Target));
+    using var cancel = new CancellationTokenSource();
+    _ = Task.Run(async () => { await Console.In.ReadLineAsync(); cancel.Cancel(); });
+    await host.ListenAsync(cancel.Token);
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct Cell128 { public ulong Low, High; }
+
+public sealed class BuildScenario<T> : ISynchronousScenario where T : unmanaged
+{
+    private readonly string pattern, operation;
+    private readonly T[] source = new T[1 << 15];
+    private readonly T[] decoded = new T[1 << 15];
+    private readonly byte[] destination = new byte[Octree<T>.GetMaximumSize(5)];
+    private readonly Octree<T> tree = new(5);
+    private readonly Before.Octree<T> before = new(5);
+    private readonly byte[] oracle;
+    private bool baseline;
+    private long sum, completed;
+    private CancellationToken cancellation;
+    private bool baselinePrimed, candidatePrimed;
+
+    public BuildScenario(string pattern, string operation)
+    {
+        this.pattern = pattern; this.operation = operation;
+        var bytes = MemoryMarshal.AsBytes(source.AsSpan());
+        if (pattern == "random") new Random(20261020).NextBytes(bytes);
+        else
+        {
+            for (var i = 0; i < source.Length; i++)
+            {
+                var cell = bytes.Slice(i * Marshal.SizeOf<T>(), Marshal.SizeOf<T>());
+                cell.Fill(7);
+                if (pattern == "first" && i == 0 || pattern == "last" && i == source.Length - 1 ||
+                    pattern == "sparse" && i % 1009 == 0 || pattern == "clustered" && i >= source.Length / 2)
+                    cell.Fill(11);
+            }
+        }
+        before.Build(source); oracle = before.Data.ToArray();
+    }
+    public ScenarioDescriptor Describe() => new($"build-{typeof(T).Name}-{pattern}-{operation}", "2",
+        Wire.Hash(new { pattern, operation, type = typeof(T).Name, levels = 5, seed = 20261020, affinity = 4, primeMilliseconds = 1000 }),
+        ResetLevel.LogicalState, ThreadAffinity.Any, false,
+        "One complete public build or exact encoded-size calculation for a 32^3 volume",
+        ["baseline", "candidate"]);
+    public void Prepare(ScenarioContext context)
+    {
+        baseline = context.Variant == "baseline"; cancellation = context.Cancellation;
+        tree.Build(source);
+        if (!tree.Data.Span.SequenceEqual(oracle)) throw new InvalidOperationException("Encoding parity");
+        tree.CopyTo(decoded);
+        if (!MemoryMarshal.AsBytes(source.AsSpan()).SequenceEqual(MemoryMarshal.AsBytes(decoded.AsSpan())))
+            throw new InvalidOperationException("Dense oracle");
+        var n = Octree<T>.Build(source, 5, destination);
+        if (!oracle.AsSpan().SequenceEqual(destination.AsSpan(0, n))) throw new InvalidOperationException("Span parity");
+        if (Octree<T>.GetRequiredSize(source, 5) != oracle.Length) throw new InvalidOperationException("Size parity");
+        if (!FixtureMode.Validation && (baseline ? !baselinePrimed : !candidatePrimed))
+        {
+            var priming = System.Diagnostics.Stopwatch.StartNew();
+            do { ExecuteBatch(64); } while (priming.ElapsedMilliseconds < 1000);
+            if (baseline) baselinePrimed = true; else candidatePrimed = true;
+        }
+    }
+    public void Reset(ResetContext context) { sum = completed = 0; }
+    public long ExecuteBatch(int operationCount)
+    {
+        for (var i = 0; i < operationCount; i++)
+        {
+            cancellation.ThrowIfCancellationRequested();
+            int n;
+            if (operation == "size") n = baseline ? Before.Octree<T>.GetRequiredSize(source, 5) : Octree<T>.GetRequiredSize(source, 5);
+            else if (operation == "span") n = baseline ? Before.Octree<T>.Build(source, 5, destination) : Octree<T>.Build(source, 5, destination);
+            else if (baseline) { before.Build(source); n = before.EncodedLength; }
+            else { tree.Build(source); n = tree.EncodedLength; }
+            sum += n; completed++;
+        }
+        return operationCount;
+    }
+    public ValidationResult Validate() => new(sum == completed * oracle.Length &&
+        (operation != "span" || oracle.AsSpan().SequenceEqual(destination.AsSpan(0, oracle.Length))) &&
+        (operation != "owned" || (baseline ? before.Data.Span : tree.Data.Span).SequenceEqual(oracle)));
+    public void Cleanup() { }
+}
+
+public static class FixtureMode { public static bool Validation; }

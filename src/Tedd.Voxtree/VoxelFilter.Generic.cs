@@ -35,6 +35,29 @@ public readonly struct VoxelFilter<T> where T : unmanaged
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Matches(T value) => BitwiseEquals(value, _mask, _expected) != _negate;
 
+#if NET10_0_OR_GREATER
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal int CountPacked(ulong values)
+    {
+        var mask = _mask;
+        var expected = _expected;
+        switch (Unsafe.SizeOf<T>())
+        {
+            case 1: return PackedVoxelSearch.Count(values, Unsafe.As<T, byte>(ref mask), Unsafe.As<T, byte>(ref expected), _negate);
+            case 2: return PackedVoxelSearch.Count(values, Unsafe.As<T, ushort>(ref mask), Unsafe.As<T, ushort>(ref expected), _negate);
+            case 4: return PackedVoxelSearch.Count(values, Unsafe.As<T, uint>(ref mask), Unsafe.As<T, uint>(ref expected), _negate);
+            case 8: return PackedVoxelSearch.Count(values, Unsafe.As<T, ulong>(ref mask), Unsafe.As<T, ulong>(ref expected), _negate);
+            case 16:
+            {
+                var wide = Unsafe.As<T, VoxelUInt128>(ref expected);
+                return wide.High != 0 ? (_negate ? 8 : 0) :
+                    PackedVoxelSearch.Count(values, Unsafe.As<T, VoxelUInt128>(ref mask).Low, wide.Low, _negate);
+            }
+            default: VoxelType<T>.Validate(); return 0;
+        }
+    }
+#endif
+
     internal int CountIn(ReadOnlySpan<T> values)
     {
         if (IsZero(_mask)) return _negate ? 0 : values.Length;

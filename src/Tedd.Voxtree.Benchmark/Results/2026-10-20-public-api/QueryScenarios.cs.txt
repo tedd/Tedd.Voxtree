@@ -1,0 +1,176 @@
+using System.Runtime.InteropServices;
+using Tedd.DotNetLab.Contracts;
+using Tedd.DotNetLab.Harness;
+using Tedd.Voxtree;
+using Before = Snapshot.Voxtree;
+
+public static class QueryFixtures
+{
+    public static void Register(ScenarioRegistry registry)
+    {
+        foreach (var generic in new[] { false, true })
+        {
+            foreach (var level in new[] { 3, 5 })
+            foreach (var clipped in new[] { false, true })
+            foreach (var operation in new[] { "count", "miss", "first" })
+                registry.Register(new QueryScenario(generic, level, "tree", clipped, operation));
+            foreach (var pattern in new[] { "uniform", "dense" })
+            foreach (var operation in new[] { "count", "miss", "first" })
+                registry.Register(new QueryScenario(generic, 5, pattern, false, operation));
+            foreach (var level in new[] { 3, 5 })
+            foreach (var operation in new[] { "copy", "collect", "nearest" })
+                registry.Register(new QueryScenario(generic, level, "tree", true, operation));
+            foreach (var clipped in new[] { false, true })
+            foreach (var operation in new[] { "count", "miss", "first" })
+                registry.Register(new QueryScenario(generic, 5, "wide", clipped, operation));
+        }
+    }
+}
+
+public sealed class QueryScenario : ISynchronousScenario
+{
+    private readonly bool generic, clipped;
+    private readonly int levels, side;
+    private readonly string pattern, operation;
+    private readonly uint[] source32, output32;
+    private readonly ulong[] source64, output64;
+    private readonly VoxelHit[] hits32;
+    private readonly VoxelHit<ulong>[] hits64;
+    private readonly Before.VoxelHit[] beforeHits32;
+    private readonly Before.VoxelHit<ulong>[] beforeHits64;
+    private readonly Octree tree32;
+    private readonly Octree<ulong> tree64;
+    private readonly Before.Octree before32;
+    private readonly Before.Octree<ulong> before64;
+    private readonly VoxelBox box;
+    private readonly Before.VoxelBox beforeBox;
+    private readonly long expected;
+    private bool baseline;
+    private long sum, completed;
+    private int lastWritten;
+    private CancellationToken cancellation;
+    private bool baselinePrimed, candidatePrimed;
+
+    public QueryScenario(bool generic, int levels, string pattern, bool clipped, string operation)
+    {
+        this.generic=generic; this.levels=levels; this.pattern=pattern; this.clipped=clipped; this.operation=operation;
+        side=1<<levels; var count=side*side*side;
+        source32=new uint[count]; source64=new ulong[count];
+        for(var i=0;i<count;i++)
+        {
+            source32[i]=pattern=="uniform"?7u:pattern=="tree"?(uint)((i*13+i/17)%32):unchecked((uint)i*2654435761u)&0x7fffffffu;
+            source64[i]=pattern=="uniform"?7ul:pattern=="tree"?source32[i]:unchecked((ulong)(i+1)*11400714819323198485UL)&0x7fffffffffffffffUL;
+            if(pattern=="wide")
+            {
+                var x=i/(side*side);var y=i/side%side;var z=i%side;
+                var p=(uint)(((x>>1)*13+(y>>1)*7+(z>>1))%32);
+                source32[i]=0x10000000u+p;source64[i]=0x1000000000000000UL+p;
+            }
+        }
+        var margin=clipped?1:0;
+        box=new VoxelBox(margin,margin,margin,side-margin,side-margin,side-margin);
+        beforeBox=new Before.VoxelBox(box.MinX,box.MinY,box.MinZ,box.MaxX,box.MaxY,box.MaxZ);
+        tree32=new Octree(levels); tree64=new Octree<ulong>(levels);
+        before32=new Before.Octree(levels); before64=new Before.Octree<ulong>(levels);
+        if(generic) { tree64.Build(source64); before64.Build(source64); }
+        else { tree32.Build(source32); before32.Build(source32); }
+        var storage=(generic?tree64.Data.Span[1]:tree32.Data.Span[1])&3;
+        if(storage!=(pattern is "tree" or "wide"?0:pattern=="uniform"?1:2))
+            throw new InvalidOperationException("Fixture storage-kind contract");
+        output32=operation=="copy"?new uint[box.Count]:[]; output64=operation=="copy"?new ulong[box.Count]:[];
+        hits32=operation=="collect"?new VoxelHit[box.Count]:[];
+        hits64=operation=="collect"?new VoxelHit<ulong>[box.Count]:[];
+        beforeHits32=operation=="collect"?new Before.VoxelHit[box.Count]:[];
+        beforeHits64=operation=="collect"?new Before.VoxelHit<ulong>[box.Count]:[];
+        long matches=0, nearest=0, distance=long.MaxValue;
+        for(var x=box.MinX;x<box.MaxX;x++)
+        for(var y=box.MinY;y<box.MaxY;y++)
+        for(var z=box.MinZ;z<box.MaxZ;z++)
+            if((Value((x*side+y)*side+z)&15)==7) matches++;
+        if(operation=="nearest")
+            for(var x=0;x<side;x++) for(var y=0;y<side;y++) for(var z=0;z<side;z++)
+            {
+                var index=(x*side+y)*side+z;
+                if((Value(index)&15)!=7) continue;
+                var dx=x-side/2;var dy=y-side/2;var dz=z-side/2;
+                var d=(long)dx*dx+(long)dy*dy+(long)dz*dz;
+                if(d<distance) { distance=d;nearest=index+1; }
+            }
+        expected=operation switch { "count" or "collect"=>matches,"miss"=>0,"first"=>1,"nearest"=>nearest,_=>box.Count };
+    }
+    private ulong Value(int index)=>generic?source64[index]:source32[index];
+    public ScenarioDescriptor Describe()
+    {
+        var input=new {generic,levels,pattern,clipped,operation,seed=20261020,affinity=4,primeMilliseconds=1000};
+        return new($"query-{(generic?"u64":"u32")}-L{levels}-{pattern}-{(clipped?"clip":"full")}-{operation}",pattern=="wide"?"3":"2",
+            pattern=="wide"?Wire.Hash(new {input,distribution="aligned-two-cubes-v2"}):Wire.Hash(input),ResetLevel.LogicalState,
+            ThreadAffinity.Any,false,"One complete public voxel query, including validation and output materialization",["baseline","candidate"]);
+    }
+    public void Prepare(ScenarioContext context)
+    {
+        cancellation=context.Cancellation;
+        if(generic?!tree64.Data.Span.SequenceEqual(before64.Data.Span):!tree32.Data.Span.SequenceEqual(before32.Data.Span)) throw new InvalidOperationException("Query source parity");
+        baseline=true; if(Invoke()!=expected||!CheckOutput()) throw new InvalidOperationException("Baseline dense oracle");
+        baseline=false; if(Invoke()!=expected||!CheckOutput()) throw new InvalidOperationException("Candidate dense oracle");
+        baseline=context.Variant=="baseline";
+        if(!FixtureMode.Validation&&(baseline?!baselinePrimed:!candidatePrimed))
+        {
+            var priming=System.Diagnostics.Stopwatch.StartNew();
+            do { ExecuteBatch(1); } while(priming.ElapsedMilliseconds<1000);
+            if(baseline)baselinePrimed=true;else candidatePrimed=true;
+        }
+    }
+    public void Reset(ResetContext context) {sum=completed=0;}
+    public long ExecuteBatch(int operationCount)
+    {
+        for(var i=0;i<operationCount;i++) { cancellation.ThrowIfCancellationRequested();sum+=Invoke();completed++; }
+        return operationCount;
+    }
+    public ValidationResult Validate()=>new(sum==completed*expected&&CheckOutput());
+    public void Cleanup() { }
+    private long Invoke()
+    {
+        if(generic)
+        {
+            if(operation=="count") return baseline?before64.CountMatches(beforeBox,Before.VoxelFilter<ulong>.Masked(15,7)):tree64.CountMatches(box,VoxelFilter<ulong>.Masked(15,7));
+            if(operation=="miss") return (baseline?before64.Any(beforeBox,Before.VoxelFilter<ulong>.EqualTo(ulong.MaxValue)):tree64.Any(box,VoxelFilter<ulong>.EqualTo(ulong.MaxValue)))?1:0;
+            if(operation=="first") return (baseline?before64.Any(beforeBox,Before.VoxelFilter<ulong>.NonZero):tree64.Any(box,VoxelFilter<ulong>.NonZero))?1:0;
+            if(operation=="copy") { if(baseline)before64.CopyRegionTo(beforeBox,output64);else tree64.CopyRegionTo(box,output64);return output64.Length; }
+            if(operation=="collect") { if(baseline)before64.Query(beforeBox,Before.VoxelFilter<ulong>.Masked(15,7),beforeHits64,out lastWritten);else tree64.Query(box,VoxelFilter<ulong>.Masked(15,7),hits64,out lastWritten);return lastWritten; }
+            if(baseline)return before64.TryFindNearest(side/2,side/2,side/2,side,Before.VoxelFilter<ulong>.Masked(15,7),out var a)?(a.X*side+a.Y)*side+a.Z+1:0;
+            return tree64.TryFindNearest(side/2,side/2,side/2,side,VoxelFilter<ulong>.Masked(15,7),out var b)?(b.X*side+b.Y)*side+b.Z+1:0;
+        }
+        if(operation=="count") return baseline?before32.CountMatches(beforeBox,Before.VoxelFilter.Masked(15,7)):tree32.CountMatches(box,VoxelFilter.Masked(15,7));
+        if(operation=="miss") return (baseline?before32.Any(beforeBox,Before.VoxelFilter.EqualTo(uint.MaxValue)):tree32.Any(box,VoxelFilter.EqualTo(uint.MaxValue)))?1:0;
+        if(operation=="first") return (baseline?before32.Any(beforeBox,Before.VoxelFilter.NonZero):tree32.Any(box,VoxelFilter.NonZero))?1:0;
+        if(operation=="copy") { if(baseline)before32.CopyRegionTo(beforeBox,output32);else tree32.CopyRegionTo(box,output32);return output32.Length; }
+        if(operation=="collect") { if(baseline)before32.Query(beforeBox,Before.VoxelFilter.Masked(15,7),beforeHits32,out lastWritten);else tree32.Query(box,VoxelFilter.Masked(15,7),hits32,out lastWritten);return lastWritten; }
+        if(baseline)return before32.TryFindNearest(side/2,side/2,side/2,side,Before.VoxelFilter.Masked(15,7),out var c)?(c.X*side+c.Y)*side+c.Z+1:0;
+        return tree32.TryFindNearest(side/2,side/2,side/2,side,VoxelFilter.Masked(15,7),out var d)?(d.X*side+d.Y)*side+d.Z+1:0;
+    }
+    private bool CheckOutput()
+    {
+        if(operation=="copy")
+        {
+            var offset=0;
+            for(var x=box.MinX;x<box.MaxX;x++)for(var y=box.MinY;y<box.MaxY;y++)for(var z=box.MinZ;z<box.MaxZ;z++)
+                if((generic?output64[offset++]:output32[offset++])!=Value((x*side+y)*side+z))return false;
+        }
+        if(operation=="collect")
+        {
+            if(lastWritten!=expected)return false;
+            var seen=new HashSet<int>();
+            for(var i=0;i<lastWritten;i++)
+            {
+                int x,y,z;ulong v;
+                if(generic&&baseline){var h=beforeHits64[i];x=h.X;y=h.Y;z=h.Z;v=h.Value;}
+                else if(generic){var h=hits64[i];x=h.X;y=h.Y;z=h.Z;v=h.Value;}
+                else if(baseline){var h=beforeHits32[i];x=h.X;y=h.Y;z=h.Z;v=h.Value;}
+                else {var h=hits32[i];x=h.X;y=h.Y;z=h.Z;v=h.Value;}
+                var index=(x*side+y)*side+z;
+                if(!box.Contains(x,y,z)||(v&15)!=7||v!=Value(index)||!seen.Add(index))return false;
+            }
+        }
+        return true;
+    }
+}

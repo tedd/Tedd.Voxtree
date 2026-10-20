@@ -1,0 +1,169 @@
+using Tedd.DotNetLab.Contracts;
+using System.Runtime.CompilerServices;
+using Tedd.DotNetLab.Harness;
+using Tedd.Voxtree;
+using Before = Snapshot.Voxtree;
+
+public static class PointFixtures
+{
+    public static void Register(ScenarioRegistry registry)
+    {
+        foreach(var level in new[]{3,5,6})
+        foreach(var pattern in new[]{"full","sparse"})
+        foreach(var operation in new[]{"get","lod","create"})
+            registry.Register(new PointScenario(level,pattern,"random",operation));
+        foreach(var pattern in new[]{"uniform","dense"})
+        foreach(var operation in new[]{"get","lod","create"})
+            registry.Register(new PointScenario(5,pattern,"random",operation));
+        foreach(var operation in new[]{"get","lod"})
+            registry.Register(new PointScenario(5,"full","sequential",operation));
+        foreach(var level in new[]{5,6})
+            registry.Register(new PointScenario(level,"full","random","lifecycle"));
+    }
+}
+
+public sealed class PointScenario : ISynchronousScenario
+{
+    private readonly int levels,side;
+    private readonly string pattern,order,operation;
+    private readonly (int X,int Y,int Z)[] points=new (int,int,int)[1024];
+    private readonly long[] prefix=new long[1025];
+    private uint[] source=null!;
+    private Octree tree=null!;
+    private Before.Octree beforeTree=null!;
+    private OctreeLookup lookup=null!,last=null!;
+    private Before.OctreeLookup beforeLookup=null!,beforeLast=null!;
+    private bool initialized,baseline,baselinePrimed,candidatePrimed;
+    private int position,baselineBytes,candidateBytes;
+    private long sum,completed;
+    private CancellationToken cancellation;
+
+    public PointScenario(int levels,string pattern,string order,string operation)
+    { this.levels=levels;side=1<<levels;this.pattern=pattern;this.order=order;this.operation=operation; }
+
+    public ScenarioDescriptor Describe()=>new($"point-L{levels}-{pattern}-{order}-{operation}","2",
+        Wire.Hash(new{levels,pattern,order,operation,seed=20261020,points=1024,lifecycleReads=65536,affinity=4,primeMilliseconds=1000,batchDispatch="separate-noinline-helpers"}),
+        ResetLevel.LogicalState,ThreadAffinity.Any,false,
+        operation=="lifecycle"?"One CreateLookup plus 65536 public Get calls":operation=="create"?"One complete public CreateLookup":"One complete public compiled-lookup point read",
+        ["baseline","candidate"]);
+
+    private void Initialize()
+    {
+        if(initialized)return;
+        var count=side*side*side;
+        source=new uint[count];
+        for(var i=0;i<count;i++)source[i]=pattern switch
+        {
+            "full"=>(uint)((i/(side*side)*13+i/side%side*7+i%side)&31),
+            "uniform"=>7u,"sparse"=>i==0?1u:i==count-1?2u:0u,
+            _=>unchecked((uint)i*2654435761u)
+        };
+        tree=new Octree(levels,source);beforeTree=new Before.Octree(levels,source);
+        if(!tree.Data.Span.SequenceEqual(beforeTree.Data.Span))throw new InvalidOperationException("Point encoding parity");
+        var expectedKind=pattern=="uniform"?1:pattern=="dense"?2:0;
+        if((tree.Data.Span[1]&3)!=expectedKind)throw new InvalidOperationException("Point storage-kind contract");
+        lookup=last=tree.CreateLookup();beforeLookup=beforeLast=beforeTree.CreateLookup();
+        baselineBytes=pattern switch{"full"=>(count-1)/7*36,"sparse"=>(2*levels-1)*36,"uniform"=>4,_=>count*4+2};
+        candidateBytes=lookup.StorageBytes;
+        if(beforeLookup.StorageBytes!=baselineBytes||
+            (candidateBytes!=baselineBytes&&!(pattern=="full"&&BitConverter.IsLittleEndian&&candidateBytes==count*4+2)))
+            throw new InvalidOperationException("Lookup payload oracle");
+        var random=new Random(20261020);
+        for(var p=0;p<points.Length;p++)
+        {
+            var index=order=="sequential"?p%count:p==0?0:p==1?count-1:random.Next(count);
+            var x=index/(side*side);var y=index/side%side;var z=index%side;
+            points[p]=(x,y,z);
+            prefix[p+1]=prefix[p]+source[index]+(operation=="lod"?((long)Lod(x,y,z)<<32):0);
+        }
+        initialized=true;
+    }
+
+    private int Lod(int x,int y,int z)
+    {
+        if(pattern=="uniform")return levels;
+        if(pattern!="sparse")return 0;
+        for(var lod=levels;lod>0;lod--)
+        {
+            var size=1<<lod;var minX=x&-size;var minY=y&-size;var minZ=z&-size;
+            if(!(minX==0&&minY==0&&minZ==0)&&!(minX+size==side&&minY+size==side&&minZ+size==side))return lod;
+        }
+        return 0;
+    }
+
+    private bool Check()
+    {
+        for(var i=0;i<points.Length;i++)
+        {
+            var p=points[i];var expected=source[(p.X*side+p.Y)*side+p.Z];var lod=Lod(p.X,p.Y,p.Z);
+            if(lookup.Get(p.X,p.Y,p.Z,out var a)!=expected||a!=lod||beforeLookup.Get(p.X,p.Y,p.Z,out var b)!=expected||b!=lod)return false;
+            if(last.Get(p.X,p.Y,p.Z,out a)!=expected||a!=lod||beforeLast.Get(p.X,p.Y,p.Z,out b)!=expected||b!=lod)return false;
+        }
+        return true;
+    }
+
+    public void Prepare(ScenarioContext context)
+    {
+        Initialize();cancellation=context.Cancellation;baseline=context.Variant=="baseline";
+        if(!Check())throw new InvalidOperationException("Independent point/LOD oracle");
+        if(!FixtureMode.Validation&&(baseline?!baselinePrimed:!candidatePrimed))
+        {
+            var clock=System.Diagnostics.Stopwatch.StartNew();
+            do{ExecuteBatch(operation is "create" or "lifecycle"?1:8192);}while(clock.ElapsedMilliseconds<1000);
+            if(baseline)baselinePrimed=true;else candidatePrimed=true;
+        }
+    }
+    public void Reset(ResetContext context){position=0;sum=completed=0;}
+    public long ExecuteBatch(int operationCount)
+    {
+        cancellation.ThrowIfCancellationRequested();
+        if(operation=="create")
+        {
+            if(baseline)BeforeCreate(operationCount);else CandidateCreate(operationCount);
+        }
+        else if(operation=="lifecycle")
+        {
+            if(baseline)BeforeLifecycle(operationCount);else CandidateLifecycle(operationCount);
+        }
+        else if(baseline)
+        {
+            if(operation=="get")BeforeGet(operationCount);else BeforeLod(operationCount);
+        }
+        else
+        {
+            if(operation=="get")CandidateGet(operationCount);else CandidateLod(operationCount);
+        }
+        completed+=operationCount;return operationCount;
+    }
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void BeforeGet(int count)
+    {for(var i=0;i<count;i++){var p=points[position++&1023];sum+=beforeLookup.Get(p.X,p.Y,p.Z);}}
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void CandidateGet(int count)
+    {for(var i=0;i<count;i++){var p=points[position++&1023];sum+=lookup.Get(p.X,p.Y,p.Z);}}
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void BeforeLod(int count)
+    {for(var i=0;i<count;i++){var p=points[position++&1023];var v=beforeLookup.Get(p.X,p.Y,p.Z,out var lod);sum+=v+((long)lod<<32);}}
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void CandidateLod(int count)
+    {for(var i=0;i<count;i++){var p=points[position++&1023];var v=lookup.Get(p.X,p.Y,p.Z,out var lod);sum+=v+((long)lod<<32);}}
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void BeforeCreate(int count)
+    {for(var i=0;i<count;i++){beforeLast=beforeTree.CreateLookup();sum+=beforeLast.StorageBytes;}}
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void CandidateCreate(int count)
+    {for(var i=0;i<count;i++){last=tree.CreateLookup();sum+=last.StorageBytes;}}
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void BeforeLifecycle(int count)
+    {for(var i=0;i<count;i++){beforeLast=beforeTree.CreateLookup();for(var j=0;j<65536;j++){var p=points[j&1023];sum+=beforeLast.Get(p.X,p.Y,p.Z);}}}
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void CandidateLifecycle(int count)
+    {for(var i=0;i<count;i++){last=tree.CreateLookup();for(var j=0;j<65536;j++){var p=points[j&1023];sum+=last.Get(p.X,p.Y,p.Z);}}}
+    public ValidationResult Validate()
+    {
+        var expected=operation=="create"?completed*(baseline?baselineBytes:candidateBytes):operation=="lifecycle"?
+            completed*prefix[1024]*64:completed/1024*prefix[1024]+prefix[(int)(completed%1024)];
+        return new(sum==expected&&Check());
+    }
+    public void Cleanup(){}
+}

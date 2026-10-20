@@ -60,7 +60,128 @@ internal static class OctreeQueries
             return;
         }
         var body = data[..^1];
-        Visit(body, body.Length - data[^1], tree.Levels, 0, 0, 0, ref state);
+        var root = body.Length - data[^1];
+        if (state.Kind == QueryKind.Count || state.Kind == QueryKind.Any)
+            VisitMatches(body, root, tree.Levels, 0, 0, 0, ref state);
+        else
+            Visit(body, root, tree.Levels, 0, 0, 0, ref state);
+    }
+
+    // Covered subtrees need values and volumes, not per-child geometry. Keep the
+    // boundary walk separate so other query kinds retain their original traversal.
+    private static void VisitMatches(ReadOnlySpan<byte> data, int offset, int level,
+        int x, int y, int z, ref State state)
+    {
+        var size = 1 << level;
+        if (state.Box.MinX <= x && state.Box.MinY <= y && state.Box.MinZ <= z &&
+            state.Box.MaxX >= x + size && state.Box.MaxY >= y + size && state.Box.MaxZ >= z + size)
+        {
+            if (state.Kind == QueryKind.Count) state.Count += CountWhole(data, offset, level, state.Filter);
+            else if (AnyWhole(data, offset, level, state.Filter)) { state.Count = 1; state.Done = true; }
+            return;
+        }
+        Span<uint> tokens = stackalloc uint[8];
+        var mask = ReadNode(data, offset, level, tokens);
+        var half = 1 << (level - 1);
+        var box = state.Box;
+        for (var child = 0; child < 8 && !state.Done; child++)
+        {
+            var cx = x + (child >> 2) * half;
+            var cy = y + ((child >> 1) & 1) * half;
+            var cz = z + (child & 1) * half;
+            if (cx >= box.MaxX || cy >= box.MaxY || cz >= box.MaxZ ||
+                cx + half <= box.MinX || cy + half <= box.MinY || cz + half <= box.MinZ) continue;
+            if ((mask & (1 << child)) != 0)
+            {
+                if (!state.Filter.Matches(tokens[child])) continue;
+                if (state.Kind == QueryKind.Any) { state.Count = 1; state.Done = true; }
+                else state.Count += (Math.Min(box.MaxX, cx + half) - Math.Max(box.MinX, cx)) *
+                                    (Math.Min(box.MaxY, cy + half) - Math.Max(box.MinY, cy)) *
+                                    (Math.Min(box.MaxZ, cz + half) - Math.Max(box.MinZ, cz));
+            }
+            else
+            {
+                var distance = tokens[child];
+                if (level == 1 || distance == 0 || distance > (uint)(offset - OctreeCodec.HeaderSize))
+                    throw new FormatException("Malformed child offset.");
+                VisitMatches(data, offset - (int)distance, level - 1, cx, cy, cz, ref state);
+            }
+        }
+    }
+
+    private static int CountWhole(ReadOnlySpan<byte> data, int offset, int level, VoxelFilter filter)
+    {
+#if NET10_0_OR_GREATER
+        if (PackedVoxelSearch.TryReadNode(data, offset, level, OctreeCodec.HeaderSize, out var packed))
+            return filter.CountPacked(packed) << ((level - 1) * 3);
+#endif
+        Span<uint> tokens = stackalloc uint[8];
+        var mask = ReadNode(data, offset, level, tokens);
+        var volumeShift = (level - 1) * 3;
+        if (mask == byte.MaxValue) return filter.CountIn(tokens) << volumeShift;
+        var count = 0;
+        for (var child = 0; child < 8; child++)
+        {
+            if ((mask & (1 << child)) != 0)
+            {
+                if (filter.Matches(tokens[child])) count += 1 << volumeShift;
+            }
+            else
+            {
+                var distance = tokens[child];
+                if (level == 1 || distance == 0 || distance > (uint)(offset - OctreeCodec.HeaderSize))
+                    throw new FormatException("Malformed child offset.");
+                count += CountWhole(data, offset - (int)distance, level - 1, filter);
+            }
+        }
+        return count;
+    }
+
+    private static bool AnyWhole(ReadOnlySpan<byte> data, int offset, int level, VoxelFilter filter)
+    {
+#if NET10_0_OR_GREATER
+        if (PackedVoxelSearch.TryReadNode(data, offset, level, OctreeCodec.HeaderSize, out var packed))
+            return filter.CountPacked(packed) != 0;
+#endif
+        Span<uint> tokens = stackalloc uint[8];
+        var mask = ReadNode(data, offset, level, tokens);
+        if (mask == byte.MaxValue) return filter.AnyIn(tokens);
+        for (var child = 0; child < 8; child++)
+        {
+            if ((mask & (1 << child)) != 0)
+            {
+                if (filter.Matches(tokens[child])) return true;
+            }
+            else
+            {
+                var distance = tokens[child];
+                if (level == 1 || distance == 0 || distance > (uint)(offset - OctreeCodec.HeaderSize))
+                    throw new FormatException("Malformed child offset.");
+                if (AnyWhole(data, offset - (int)distance, level - 1, filter)) return true;
+            }
+        }
+        return false;
+    }
+
+    private static byte ReadNode(ReadOnlySpan<byte> data, int offset, int level, Span<uint> tokens)
+    {
+        if (level <= 0 || offset < OctreeCodec.HeaderSize || offset >= data.Length)
+            throw new FormatException("Malformed tree node.");
+        var cursor = offset;
+        var mask = data[cursor++];
+        if (data.Length - cursor >= sizeof(ulong))
+        {
+            var packed = BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(cursor, sizeof(ulong)));
+            if ((packed & 0x8080808080808080UL) == 0)
+            {
+                for (var child = 0; child < 8; child++, packed >>= 8) tokens[child] = (byte)packed;
+                return mask;
+            }
+        }
+        for (var child = 0; child < 8; child++)
+            if (!OctreeCodec.TryReadVarUInt(data, ref cursor, out tokens[child]))
+                throw new FormatException("Malformed tree token.");
+        return mask;
     }
 
     private static void Visit(ReadOnlySpan<byte> data, int offset, int level,

@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -71,7 +72,150 @@ internal static class GenericOctreeQueries<T> where T : unmanaged
             return;
         }
         var body = data[..^1];
-        Visit<TStorage>(body, body.Length - data[^1], tree.Levels, 0, 0, 0, ref state);
+        var root = body.Length - data[^1];
+        if (state.Kind == QueryKind.Count || state.Kind == QueryKind.Any)
+            VisitMatches<TStorage>(body, root, tree.Levels, 0, 0, 0, ref state);
+        else
+            Visit<TStorage>(body, root, tree.Levels, 0, 0, 0, ref state);
+    }
+
+    private static void VisitMatches<TStorage>(ReadOnlySpan<byte> data, int offset, int level,
+        int x, int y, int z, ref State state)
+        where TStorage : unmanaged, IEquatable<TStorage>
+    {
+        var size = 1 << level;
+        if (state.Box.MinX <= x && state.Box.MinY <= y && state.Box.MinZ <= z &&
+            state.Box.MaxX >= x + size && state.Box.MaxY >= y + size && state.Box.MaxZ >= z + size)
+        {
+            if (state.Kind == QueryKind.Count) state.Count += CountWhole<TStorage>(data, offset, level, state.Filter);
+            else if (AnyWhole<TStorage>(data, offset, level, state.Filter)) { state.Count = 1; state.Done = true; }
+            return;
+        }
+        Span<TStorage> values = stackalloc TStorage[8];
+        Span<uint> distances = stackalloc uint[8];
+        var mask = ReadNode(data, offset, level, values, distances);
+        var half = 1 << (level - 1);
+        var box = state.Box;
+        for (var child = 0; child < 8 && !state.Done; child++)
+        {
+            var cx = x + (child >> 2) * half;
+            var cy = y + ((child >> 1) & 1) * half;
+            var cz = z + (child & 1) * half;
+            if (cx >= box.MaxX || cy >= box.MaxY || cz >= box.MaxZ ||
+                cx + half <= box.MinX || cy + half <= box.MinY || cz + half <= box.MinZ) continue;
+            if ((mask & (1 << child)) != 0)
+            {
+                if (!state.Filter.Matches(ToValue(values[child]))) continue;
+                if (state.Kind == QueryKind.Any) { state.Count = 1; state.Done = true; }
+                else state.Count += (Math.Min(box.MaxX, cx + half) - Math.Max(box.MinX, cx)) *
+                                    (Math.Min(box.MaxY, cy + half) - Math.Max(box.MinY, cy)) *
+                                    (Math.Min(box.MaxZ, cz + half) - Math.Max(box.MinZ, cz));
+            }
+            else
+            {
+                var distance = distances[child];
+                if (level == 1 || distance == 0 || distance > (uint)(offset - GenericOctreeCodec<TStorage>.HeaderSize))
+                    throw new FormatException("Malformed child offset.");
+                VisitMatches<TStorage>(data, offset - (int)distance, level - 1, cx, cy, cz, ref state);
+            }
+        }
+    }
+
+    private static int CountWhole<TStorage>(ReadOnlySpan<byte> data, int offset, int level, VoxelFilter<T> filter)
+        where TStorage : unmanaged, IEquatable<TStorage>
+    {
+#if NET10_0_OR_GREATER
+        if (PackedVoxelSearch.TryReadNode(data, offset, level, GenericOctreeCodec<TStorage>.HeaderSize, out var packed))
+            return filter.CountPacked(packed) << ((level - 1) * 3);
+#endif
+        Span<TStorage> values = stackalloc TStorage[8];
+        Span<uint> distances = stackalloc uint[8];
+        var mask = ReadNode(data, offset, level, values, distances);
+        var volumeShift = (level - 1) * 3;
+        if (mask == byte.MaxValue) return filter.CountIn(MemoryMarshal.Cast<TStorage, T>(values)) << volumeShift;
+        var count = 0;
+        for (var child = 0; child < 8; child++)
+        {
+            if ((mask & (1 << child)) != 0)
+            {
+                if (filter.Matches(ToValue(values[child]))) count += 1 << volumeShift;
+            }
+            else
+            {
+                var distance = distances[child];
+                if (level == 1 || distance == 0 || distance > (uint)(offset - GenericOctreeCodec<TStorage>.HeaderSize))
+                    throw new FormatException("Malformed child offset.");
+                count += CountWhole<TStorage>(data, offset - (int)distance, level - 1, filter);
+            }
+        }
+        return count;
+    }
+
+    private static bool AnyWhole<TStorage>(ReadOnlySpan<byte> data, int offset, int level, VoxelFilter<T> filter)
+        where TStorage : unmanaged, IEquatable<TStorage>
+    {
+#if NET10_0_OR_GREATER
+        if (PackedVoxelSearch.TryReadNode(data, offset, level, GenericOctreeCodec<TStorage>.HeaderSize, out var packed))
+            return filter.CountPacked(packed) != 0;
+#endif
+        Span<TStorage> values = stackalloc TStorage[8];
+        Span<uint> distances = stackalloc uint[8];
+        var mask = ReadNode(data, offset, level, values, distances);
+        if (mask == byte.MaxValue) return filter.AnyIn(MemoryMarshal.Cast<TStorage, T>(values));
+        for (var child = 0; child < 8; child++)
+        {
+            if ((mask & (1 << child)) != 0)
+            {
+                if (filter.Matches(ToValue(values[child]))) return true;
+            }
+            else
+            {
+                var distance = distances[child];
+                if (level == 1 || distance == 0 || distance > (uint)(offset - GenericOctreeCodec<TStorage>.HeaderSize))
+                    throw new FormatException("Malformed child offset.");
+                if (AnyWhole<TStorage>(data, offset - (int)distance, level - 1, filter)) return true;
+            }
+        }
+        return false;
+    }
+
+    private static byte ReadNode<TStorage>(ReadOnlySpan<byte> data, int offset, int level,
+        Span<TStorage> values, Span<uint> distances)
+        where TStorage : unmanaged, IEquatable<TStorage>
+    {
+        if (level <= 0 || offset < GenericOctreeCodec<TStorage>.HeaderSize || offset >= data.Length)
+            throw new FormatException("Malformed tree node.");
+        var cursor = offset;
+        var mask = data[cursor++];
+        if (data.Length - cursor >= sizeof(ulong))
+        {
+            var packed = BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(cursor, sizeof(ulong)));
+            if ((packed & 0x8080808080808080UL) == 0)
+            {
+                for (var child = 0; child < 8; child++, packed >>= 8)
+                {
+                    if ((mask & (1 << child)) != 0)
+                    {
+                        var value = default(TStorage);
+                        StorageInteger<TStorage>.TryAppendSevenBits(ref value, (byte)packed, 0);
+                        values[child] = value;
+                    }
+                    else distances[child] = (byte)packed;
+                }
+                return mask;
+            }
+        }
+        for (var child = 0; child < 8; child++)
+        {
+            if ((mask & (1 << child)) != 0)
+            {
+                if (!GenericOctreeCodec<TStorage>.TryReadValue(data, ref cursor, out values[child]))
+                    throw new FormatException("Malformed tree value.");
+            }
+            else if (!OctreeCodec.TryReadVarUInt(data, ref cursor, out distances[child]))
+                throw new FormatException("Malformed tree offset.");
+        }
+        return mask;
     }
 
     private static void Visit<TStorage>(ReadOnlySpan<byte> data, int offset, int level,
