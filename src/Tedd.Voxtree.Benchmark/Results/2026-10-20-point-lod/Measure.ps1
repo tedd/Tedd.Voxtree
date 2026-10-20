@@ -5,7 +5,7 @@ param(
     [string]$Filter = '*',
     [string[]]$SelectedScenarios = @(),
     [string]$Label = 'exploration',
-    [ValidateSet('fixed','scaled')][string]$Budget = 'fixed',
+    [ValidateSet('fixed','scaled','precision','bounded-lifecycle')][string]$Budget = 'fixed',
     [ValidateSet('quiet-validation','cpu-diagnostic')][string]$Profile = 'quiet-validation',
     [string]$JitDisasm = '',
     [string]$JitAssembly = '',
@@ -93,6 +93,13 @@ try {
         $operations = 256
         if ($Budget -eq 'scaled') {
             $operations = if ($scenario.id -like 'point-*') { if($scenario.id -like '*-create'){8}elseif($scenario.id -like '*-lifecycle'){1}else{16384} } elseif ($scenario.id -like 'query-*') { 16 } elseif ($scenario.id -like '*-random-*') { 16 } elseif ($scenario.id -like '*-uniform-*') { 4096 } elseif ($scenario.id -like '*-clustered-*') { 1024 } elseif ($scenario.id -like '*-sparse-*') { 128 } else { 256 }
+        }
+        if ($Budget -in @('precision','bounded-lifecycle')) {
+            $operations = if($scenario.id -like '*-create'){if($Budget -eq 'bounded-lifecycle'){256}else{4096}}
+                elseif($scenario.id -like '*-lifecycle'){if($Budget -eq 'bounded-lifecycle'){16}else{128}}
+                elseif($scenario.id -like '*-compiled-*' -or $scenario.id -like '*-uniform-*' -or $scenario.id -like '*-dense-*'){33554432}
+                elseif($scenario.id -like '*-Huge-*-long-*'){1048576}
+                elseif($scenario.id -like '*-sparse-*'){4194304}else{2097152}
         }
         $plan = Invoke-Lab 'lab.experiment' @{
             action='create_plan';scenario_id=$scenario.id;scenario_version=$scenario.version;input_hash=$scenario.input_hash

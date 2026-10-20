@@ -5,7 +5,8 @@ param(
     [Parameter(Mandatory)][string]$CandidateBundle,
     [Parameter(Mandatory)][string[]]$Scenarios,
     [string]$Label = 'confirmation',
-    [string]$ExplorationLabel = 'g3'
+    [string]$ExplorationLabel = 'g3',
+    [ValidateSet('original','precision')][string]$Budget = 'original'
 )
 $ErrorActionPreference = 'Stop'
 $dotnetExecutable = (Get-Command dotnet).Source
@@ -87,6 +88,13 @@ try {
             if($scenario -like '*-create'){16}elseif($scenario -like '*-lifecycle'){2}else{65536}
         } elseif($scenario -like 'query-*' -and ($scenario -like '*-count' -or $scenario -like '*-miss')) { 64 }
         elseif ($scenario -like '*-random-*') { 256 } elseif ($scenario -like '*-uniform-*') { 8192 } else { 1024 }
+        if($Budget -eq 'precision') {
+            $experiment.operations_per_run = if($scenario -like '*-create'){4096}
+                elseif($scenario -like '*-lifecycle'){128}
+                elseif($scenario -like '*-compiled-*' -or $scenario -like '*-uniform-*' -or $scenario -like '*-dense-*'){33554432}
+                elseif($scenario -like '*-Huge-*-long-*'){1048576}
+                elseif($scenario -like '*-sparse-*'){4194304}else{2097152}
+        }
         $experiment.analysis.family_size=2*$Scenarios.Count
         if($scenario -like '*-create'){$experiment.analysis.meaningful_regression_ratio=1.25}
         $experiment.guardrail_metrics=@('scenario.thread_allocation_bytes_per_operation')

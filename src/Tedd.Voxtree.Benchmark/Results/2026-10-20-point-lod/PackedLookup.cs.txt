@@ -1,0 +1,108 @@
+using System;
+
+namespace Tedd.Voxtree;
+
+public sealed partial class OctreeLookup
+{
+    // One LOD nibble per 2^3 cube suffices: either every child is a leaf at
+    // LOD zero or this cube belongs to one larger aligned uniform leaf.
+    private static bool TryCompilePacked(ReadOnlySpan<byte> body, int root, int levels,
+        int nodeCount, out uint[] palette, out byte[] payload)
+    {
+        palette = Array.Empty<uint>();
+        payload = Array.Empty<byte>();
+        int count = 1 << (levels * 3);
+        if (levels < 3 || count / 2L + count / 16L + 64 > nodeCount * 36L) return false;
+        Span<uint> entries = stackalloc uint[16];
+        int used = 0;
+        if (!CollectPalette(body, root, entries, ref used)) return false;
+        palette = entries[..used].ToArray();
+        payload = new byte[checked(count / 2 + count / 16)];
+        WritePacked(body, root, levels, 0, 0, 0, levels, palette, payload);
+        return true;
+    }
+
+    private static bool CollectPalette(ReadOnlySpan<byte> body, int node, Span<uint> palette, ref int used)
+    {
+        int cursor = node + 1;
+        int mask = body[node];
+        for (int child = 0; child < 8; child++)
+        {
+            OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
+            if ((mask & (1 << child)) == 0)
+            {
+                if (!CollectPalette(body, node - (int)token, palette, ref used)) return false;
+                continue;
+            }
+            int index = 0;
+            while (index < used && palette[index] != token) index++;
+            if (index != used) continue;
+            if (used == palette.Length) return false;
+            palette[used++] = token;
+        }
+        return true;
+    }
+
+    private static void WritePacked(ReadOnlySpan<byte> body, int node, int level,
+        int x, int y, int z, int levels, uint[] palette, byte[] payload)
+    {
+        int cursor = node + 1, mask = body[node], half = 1 << (level - 1);
+        for (int child = 0; child < 8; child++)
+        {
+            OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
+            int a = x + (child >> 2) * half;
+            int b = y + ((child >> 1) & 1) * half;
+            int c = z + (child & 1) * half;
+            if ((mask & (1 << child)) == 0)
+                WritePacked(body, node - (int)token, level - 1, a, b, c, levels, palette, payload);
+            else
+            {
+                int index = Array.IndexOf(palette, token);
+                if (index < 0) throw new InvalidOperationException("Packed palette construction");
+                FillPackedRegion(payload, levels, a, b, c, level - 1, (byte)index);
+            }
+        }
+    }
+
+    private static void FillPackedRegion(byte[] payload, int levels, int x, int y, int z, int lod, byte index)
+    {
+        int width = 1 << lod;
+        for (int a = x; a < x + width; a++)
+            for (int b = y; b < y + width; b++)
+                FillNibbles(payload, 0, (a << (levels * 2)) + (b << levels) + z, width, index);
+        if (lod == 0) return;
+        int gridLevels = levels - 1;
+        int lodOffset = (1 << (levels * 3)) / 2;
+        int gridWidth = width / 2;
+        for (int a = x / 2; a < x / 2 + gridWidth; a++)
+            for (int b = y / 2; b < y / 2 + gridWidth; b++)
+                FillNibbles(payload, lodOffset, (a << (gridLevels * 2)) + (b << gridLevels) + z / 2, gridWidth, (byte)lod);
+    }
+
+    private static void FillNibbles(byte[] payload, int offset, int start, int count, byte value)
+    {
+        if ((start & 1) != 0)
+        {
+            int i = offset + start / 2;
+            payload[i] = (byte)((payload[i] & 15) | (value << 4));
+            start++; count--;
+        }
+        payload.AsSpan(offset + start / 2, count / 2).Fill((byte)(value | (value << 4)));
+        if ((count & 1) != 0)
+        {
+            int i = offset + (start + count - 1) / 2;
+            payload[i] = (byte)((payload[i] & 240) | value);
+        }
+    }
+
+    private uint GetPacked(int x, int y, int z, uint[] palette, out int lod)
+    {
+        var data = _dense.Span;
+        int index = (x << (Levels * 2)) + (y << Levels) + z;
+        int entry = (data[index >> 1] >> ((index & 1) << 2)) & 15;
+        int gridLevels = Levels - 1;
+        int cube = ((x >> 1) << (gridLevels * 2)) + ((y >> 1) << gridLevels) + (z >> 1);
+        lod = (data[Count / 2 + (cube >> 1)] >> ((cube & 1) << 2)) & 15;
+        return palette[entry];
+    }
+}

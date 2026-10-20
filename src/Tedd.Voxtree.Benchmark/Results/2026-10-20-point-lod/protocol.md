@@ -185,3 +185,67 @@ control and the same 12-block screening protocol. Require >=5% useful benefit
 on full reads and no >5% adverse guard. Inspect actual Tier1 key generation,
 range checks, spills and fixed stack reservation. A supported source would
 require its own identical-caller fresh confirmation before integration.
+
+## Precision epoch (version 3; frozen before new observations)
+
+The full first confirmation completed 576 correct, joined sessions. Four timing
+contrasts improved; twenty were inconclusive, with several sub-millisecond
+batches interrupted by multi-fold elapsed-time excursions. Preserve this epoch
+unchanged. No cause is assigned from wall time alone. RTree's BlockClocks uses
+independent thread/process and wall clocks outside its kernels; that distinction
+motivates longer windows, rather than interpreting every wall-time excursion as
+additional CPU work. High performance power scheme remains active.
+
+Version 3 keeps the same read work/consumer and ordinary tiering/PGO, increases
+per-variant prime to 3,000 ms, and freezes larger batches from retained cost
+strata: 33,554,432 compiled/uniform/dense reads; 1,048,576 Huge long-token reads;
+4,194,304 sparse serialized reads; 2,097,152 other serialized reads; 4,096
+constructors; 128 complete 65,536-read lifecycles. No timer calibration or adaptive
+sample counts are performed after results. Affinity/mutexes and uncontrolled
+host-load limitations are unchanged. Preserve allocations and zero-variance
+model limitations separately from exact observed allocation counts.
+
+First run a six-scenario precision control with both primary namespaces built
+from f0772c8, distinct entries, matching AfterBatch IL and distinct arm labels:
+Legacy full owned Get/LOD, full/sparse compiled Get, Wide long owned LOD, Huge
+long owned LOD. Twelve fresh pairs each, eight warmups, quiet profile, family
+size twelve for time and allocation. Require time equivalence within 0.95..1.05
+for every control before treating the selected-source precision epoch as
+qualified. Execute the complete control budget, retaining all outliers/failures.
+Failure returns to host/measurement diagnosis; it does not authorize replacing
+unfavorable sessions. Control timing is not an optimization gain.
+
+The full API 10x objective remains active. A future dense-byte serialized
+candidate will be investigated after verifying its eligibility, exact LOD
+semantics, byte-size selection, old-format reading, bulk/query consumers,
+ownership, malformed-data checks, and build/read lifecycle costs. A compact
+format cannot be selected merely because its point kernel is faster.
+
+### Precision control result and C1 diagnostic (prospective)
+
+All six unchanged-source controls completed the frozen 12-pair budget. No
+control established 5% timing equivalence; all six time contrasts remain
+inconclusive. Approximate family-adjusted candidate/baseline intervals are
+0.788..1.184 (owned Get), 0.878..1.186 (owned LOD), 0.899..1.113 (full compiled),
+0.924..1.123 (sparse compiled), 0.711..1.311 (UInt64 long LOD), 0.809..1.234
+(UInt128 long LOD). Do not extend these plans or use the candidate point
+estimates as gains. The selected-source precision experiment is not qualified.
+
+C1 diagnostic separates elapsed wall time from Windows thread/process CPU time
+outside the unchanged f0772c8 callers, following the clock distinction in the
+RTree work. Four fresh processes run in fixed Normal, High, High, Normal order;
+priority changes apply only to the task-owned process. Each process primes both
+variants for 3 seconds, then runs four alternating-order paired blocks for
+Legacy full owned Get (2,097,152 reads) and full compiled Get (33,554,432).
+Record PID/start, runtime, bundle hash, priority/affinity, correctness, wall,
+thread/process CPU and GC deltas. Hold both host mutexes. No other process,
+power scheme, global priority or user application is modified.
+
+Prediction: if preemption dominates the wall excursions, excess wall time
+should occur without commensurate thread CPU, and an owned-priority intervention
+may reduce that discrepancy. If wall and thread CPU vary together, this cut does
+not support assigning the variance to time off CPU; generated code/frequency/
+other mechanisms remain open. Windows accounting is coarse and the observer
+includes boundary work. This is diagnostic, four processes are not a precision
+qualification, and neither CPU ratios nor High priority results replace the
+latency objective or authorize selective exclusions. Keep every block.

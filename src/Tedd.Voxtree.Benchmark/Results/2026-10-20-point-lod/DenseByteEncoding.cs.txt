@@ -1,0 +1,116 @@
+using System;
+using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
+
+namespace Tedd.Voxtree;
+
+// P6 source-fork prototype. The format is not selected for production yet.
+internal static class DenseByteEncoding
+{
+    internal const int Version = 3;
+    internal const int HeaderSize = 3;
+    private const byte UInt32SizeCode = 2;
+
+    internal static bool IsEligible(ReadOnlySpan<uint> source, int levels, DenseVoxelLayout layout)
+    {
+        if (levels == 0 || (source[0] | source[1] | source[^1]) > byte.MaxValue) return false;
+        // A uniform cube above LOD zero necessarily contains a uniform 2^3
+        // cube. Rejecting every such cube preserves all original leaf LODs.
+        if (layout == DenseVoxelLayout.Morton)
+        {
+            for (var offset = 0; offset < source.Length; offset += 8)
+                if (CubeUniform(source, offset, 2, 4)) return false;
+        }
+        else
+        {
+            var side = 1 << levels;
+            var plane = side * side;
+            for (var x = 0; x < side; x += 2)
+            for (var y = 0; y < side; y += 2)
+            for (var z = 0; z < side; z += 2)
+                if (CubeUniform(source, x * plane + y * side + z, side, plane)) return false;
+        }
+#if NET10_0_OR_GREATER
+        return source.IndexOfAnyExceptInRange(0u, (uint)byte.MaxValue) < 0;
+#else
+        foreach (var value in source)
+            if (value > byte.MaxValue) return false;
+        return true;
+#endif
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool CubeUniform(ReadOnlySpan<uint> source, int offset, int row, int plane)
+    {
+        var value = source[offset];
+        return source[offset + 1] == value && source[offset + row] == value &&
+               source[offset + row + 1] == value && source[offset + plane] == value &&
+               source[offset + plane + 1] == value && source[offset + plane + row] == value &&
+               source[offset + plane + row + 1] == value;
+    }
+
+    internal static bool TryReadHeader(ReadOnlySpan<byte> data, out int levels)
+    {
+        levels = 0;
+        if (data.Length < HeaderSize || data[0] != OctreeCodec.Magic ||
+            data[1] >> 6 != Version || (data[1] & 3) != (byte)StorageKind.DenseByte ||
+            data[2] != UInt32SizeCode) return false;
+        levels = (data[1] >> 2) & 15;
+        return levels > 0 && levels <= Octree.MaxLevels &&
+               data.Length == HeaderSize + OctreeCodec.GetVoxelCount(levels);
+    }
+
+    internal static void Write(ReadOnlySpan<uint> source, int levels, DenseVoxelLayout layout, Span<byte> destination)
+    {
+        destination[0] = OctreeCodec.Magic;
+        destination[1] = (byte)((Version << 6) | (levels << 2) | (byte)StorageKind.DenseByte);
+        destination[2] = UInt32SizeCode;
+        var output = destination.Slice(HeaderSize, source.Length);
+        if (layout == DenseVoxelLayout.Linear)
+        {
+            for (var index = 0; index < output.Length; index++) output[index] = (byte)source[index];
+            return;
+        }
+        var side = 1 << levels;
+        Span<uint> axis = stackalloc uint[side];
+        for (var i = 0; i < side; i++) axis[i] = (uint)global::Tedd.MortonEncoding.Encode((uint)i, 0u, 0u);
+        var linear = 0;
+        for (var x = 0; x < side; x++)
+        for (var y = 0; y < side; y++)
+        {
+            var xy = axis[x] | (axis[y] << 1);
+            for (var z = 0; z < side; z++) output[linear++] = (byte)source[(int)(xy | (axis[z] << 2))];
+        }
+    }
+
+    internal static void CopyTo(ReadOnlySpan<byte> data, int levels, Span<uint> destination, DenseVoxelLayout layout)
+    {
+        var values = data[HeaderSize..];
+        if (layout == DenseVoxelLayout.Linear)
+        {
+            for (var index = 0; index < values.Length; index++) destination[index] = values[index];
+            return;
+        }
+        var side = 1 << levels;
+        Span<uint> axis = stackalloc uint[side];
+        for (var i = 0; i < side; i++) axis[i] = (uint)global::Tedd.MortonEncoding.Encode((uint)i, 0u, 0u);
+        var linear = 0;
+        for (var x = 0; x < side; x++)
+        for (var y = 0; y < side; y++)
+        {
+            var xy = axis[x] | (axis[y] << 1);
+            for (var z = 0; z < side; z++) destination[(int)(xy | (axis[z] << 2))] = values[linear++];
+        }
+    }
+
+    internal static byte[] ExpandForLookup(ReadOnlySpan<byte> data, int levels)
+    {
+        var values = data[HeaderSize..];
+        var dense = new byte[checked(OctreeCodec.HeaderSize + values.Length * sizeof(uint))];
+        dense[0] = OctreeCodec.Magic;
+        dense[1] = (byte)((Octree.FormatVersion << 6) | (levels << 2) | (byte)StorageKind.Dense);
+        for (var index = 0; index < values.Length; index++)
+            BinaryPrimitives.WriteUInt32LittleEndian(dense.AsSpan(OctreeCodec.HeaderSize + index * sizeof(uint), sizeof(uint)), values[index]);
+        return dense;
+    }
+}

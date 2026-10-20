@@ -7,6 +7,7 @@ param(
     [string]$BaselineSource = '',
     [string]$CandidateSource = '',
     [switch]$PrimaryBaselineCaller,
+    [string]$FixtureName = 'Scenarios.cs.txt',
     [string]$Sdk = '11.0.100-rc.2.26504.105'
 )
 $ErrorActionPreference = 'Stop'
@@ -25,7 +26,8 @@ $hostLeases = Enter-VoxtreePerformanceHost
 try {
     $baselineFiles = @(& git -C $repoRoot ls-tree -r --name-only $BaselineRevision -- src/Tedd.Voxtree)
     $candidateFiles = if ($CandidateRevision) { @(& git -C $repoRoot ls-tree -r --name-only $CandidateRevision -- src/Tedd.Voxtree) } else { @() }
-    foreach ($file in Get-ChildItem (Join-Path $repoRoot 'src/Tedd.Voxtree') -Filter '*.cs') {
+    $sourceDirectory = if ($CandidateSource) { $CandidateSource } else { Join-Path $repoRoot 'src/Tedd.Voxtree' }
+    foreach ($file in Get-ChildItem $sourceDirectory -Filter '*.cs') {
         $relative = 'src/Tedd.Voxtree/' + $file.Name
         if ($baselineFiles -contains $relative) {
             if ($BaselineSource) {
@@ -45,7 +47,7 @@ try {
         } else { $current = Get-Content -LiteralPath $file.FullName -Raw }
         Set-Content -LiteralPath (Join-Path $candidateDirectory $file.Name) -Value $current
     }
-    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'Scenarios.cs.txt') -Destination (Join-Path $rigDirectory 'Program.cs')
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot $FixtureName) -Destination (Join-Path $rigDirectory 'Program.cs')
 
 
     $escapedLab = [Security.SecurityElement]::Escape($LabDirectory.Replace('\','/'))

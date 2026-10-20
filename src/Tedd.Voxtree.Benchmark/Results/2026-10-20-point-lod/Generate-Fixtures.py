@@ -1,4 +1,11 @@
 from pathlib import Path
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--prime-ms', type=int, default=1000)
+parser.add_argument('--version', default='2')
+parser.add_argument('--output', type=Path, default=Path(__file__).with_name('Scenarios.cs.txt'))
+options = parser.parse_args()
 
 header = r'''using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -229,4 +236,7 @@ for cls, typ, tree, compiled, shift in [("Legacy", "uint", "Octree", True, 27), 
         fragment = fragment.replace(a, b.replace("VALUE", typ))
     source += fragment
 source = "\n".join(line.rstrip() for line in source.splitlines()).rstrip() + "\n"
-Path(__file__).with_name("Scenarios.cs.txt").write_text(source, encoding="utf-8")
+source = source.replace('primeMs=1000', f'primeMs={options.prime_ms}')
+source = source.replace('clock.ElapsedMilliseconds<1000', f'clock.ElapsedMilliseconds<{options.prime_ms}')
+source = source.replace(',"2",', f',"{options.version}",')
+options.output.write_text(source, encoding="utf-8")

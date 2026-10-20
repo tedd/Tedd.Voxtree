@@ -11,7 +11,11 @@ from pathlib import Path
 parser = argparse.ArgumentParser()
 parser.add_argument("task_root", type=Path)
 parser.add_argument("output", type=Path)
+parser.add_argument("--label", default="")
 args = parser.parse_args()
+if args.label and not args.label.replace('-', '').isalnum():
+    raise SystemExit('Archive label must be alphanumeric with optional hyphens')
+suffix = '-' + args.label if args.label else ''
 root = args.task_root.resolve()
 if root.parent != Path("D:/Workspaces/AI").resolve():
     raise SystemExit("Expected a dedicated task directory under D:/Workspaces/AI")
@@ -47,7 +51,7 @@ for path in sorted(root.glob("**/*comparison.json")) + sorted(root.glob("**/*obj
             "reason_codes": ";".join(effect.get("reason_codes", [])),
         })
 if rows:
-    with (args.output / "measurements.csv").open("w", newline="", encoding="utf-8") as stream:
+    with (args.output / f"measurements{suffix}.csv").open("w", newline="", encoding="utf-8") as stream:
         writer = csv.DictWriter(stream, fieldnames=rows[0].keys())
         writer.writeheader()
         writer.writerows(rows)
@@ -57,8 +61,9 @@ catalog_directories = {p.parent.name for p in catalogs}
 source_directories = {"baseline", "rig", "g2", "g3", "q1", "q2", "q3", "q4", "normal-baseline", "normal-candidate", "steady-baseline", "steady-candidate"}
 source_directories.update(p.parent.name for p in root.glob("*/Rig.csproj"))
 source_directories.update(p.name for p in root.iterdir() if p.is_dir() and (p.name.endswith("-baseline") or p.name.endswith("-source")))
+source_directories.update(p.name for p in root.iterdir() if p.is_dir() and p.name.startswith(('forcecraft-scanner', 'dense-byte-validation', 'packed-lookup-validation')))
 manifest = []
-archive_path = args.output / "evidence.zip"
+archive_path = args.output / f"evidence{suffix}.zip"
 with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
     def add(name, data):
         archive.writestr(name, data)
@@ -73,7 +78,7 @@ with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compre
             continue
         if any(p in {"obj", "bin", "temp", "incoming"} for p in parts[1:-1]):
             continue
-        include = len(parts) == 1 and path.suffix in {".json", ".txt", ".log", ".ps1", ".diff", ".asm"}
+        include = len(parts) == 1 and path.suffix in {".json", ".jsonl", ".txt", ".log", ".ps1", ".diff", ".asm"}
         if parts[0] in catalog_directories and not any(p in {"temp", "incoming"} for p in parts[1:-1]):
             include = True
         if parts[0] in source_directories and not any(p in {"obj", "bin"} for p in parts[1:-1]):
@@ -82,6 +87,8 @@ with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compre
             include = path.suffix in {".dll", ".json"}
         if parts[0].endswith("-results"):
             include = path.suffix in {".trx", ".json", ".xml"}
+        if parts[0].startswith('forcecraft-census'):
+            include = path.suffix in {'.csv', '.json', '.u16le'}
         if include:
             add(relative.as_posix(), path.read_bytes())
 
@@ -103,5 +110,5 @@ with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compre
     archive.writestr("manifest.json", json.dumps(manifest, indent=2).encode())
 
 digest = hashlib.sha256(archive_path.read_bytes()).hexdigest()
-(args.output / "evidence.sha256").write_text(digest + "  evidence.zip\n", encoding="utf-8")
+(args.output / f"evidence{suffix}.sha256").write_text(digest + "  " + archive_path.name + "\n", encoding="utf-8")
 print(json.dumps({"archive_bytes": archive_path.stat().st_size, "files": len(manifest), "catalogs": len(catalogs), "metric_rows": len(rows), "sha256": digest}))

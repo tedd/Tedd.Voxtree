@@ -1,0 +1,151 @@
+{
+  "format": "Forcecraft region v1, chunk layout 5 (32 cubed), LZ4 pickle envelope",
+  "records": 1286,
+  "blockRecords": 1286,
+  "uniqueVoxelArrays": 686,
+  "files": [
+    {
+      "region": "DefaultWorld/Planets/5FC165254F4F817BA6F8B6F80C08B3174C0FEA225398B5B84C17C0AF975FEACF/r.0.132.0.region",
+      "bytes": 263680,
+      "sha256": "AB31565256B55F6DA1AA0B5346375F46B109234940EB80AF2784CBD4D3C15EC7",
+      "records": 1
+    },
+    {
+      "region": "DefaultWorld/r.-2.488.-2.region",
+      "bytes": 54595584,
+      "sha256": "E00F65EDABE2265E13903FBAD170B8DA28B7E25E6DD9807EAFC8FAE29C39E959",
+      "records": 544
+    },
+    {
+      "region": "DefaultWorld/r.-2.488.-3.region",
+      "bytes": 27095040,
+      "sha256": "A8C1AE045ABA88A6BD6F6227A744D19268A64FC0929DC596DF525CFDEA5AFCDB",
+      "records": 181
+    },
+    {
+      "region": "DefaultWorld/r.4.488.0.region",
+      "bytes": 28673024,
+      "sha256": "58CAE9DE5C50B1A78655176702ED4CCE47478F3D1261006722E4DCE7C2E84D74",
+      "records": 189
+    },
+    {
+      "region": "DefaultWorld/r.4.488.1.region",
+      "bytes": 65484800,
+      "sha256": "66AD3BF29FFB8D112C1B51EF6DDC4D124171A42BBAC02BBE728EB69CEA3FBEBF",
+      "records": 349
+    },
+    {
+      "region": "DefaultWorld/r.5.488.0.region",
+      "bytes": 4241920,
+      "sha256": "D141D8092CED92C873B3190C6C9B23BC566A98F0E53E704815AB1CA284C73DDD",
+      "records": 22
+    }
+  ],
+  "payloadCounts": {
+    "1": 1286,
+    "2": 600,
+    "4": 1286,
+    "6": 686,
+    "8": 1286,
+    "12": 1286
+  },
+  "payloadBytes": {
+    "1": 10288,
+    "2": 1200,
+    "4": 1286,
+    "6": 14826106,
+    "8": 6120741,
+    "12": 336964074
+  },
+  "selection": "First lexical region and slot per predeclared semantic stratum; full census retained",
+  "samples": {
+    "uniform-u7-empty": {
+      "region": "DefaultWorld/Planets/5FC165254F4F817BA6F8B6F80C08B3174C0FEA225398B5B84C17C0AF975FEACF/r.0.132.0.region",
+      "slot": 9239,
+      "sampleName": "uniform-u7-empty.u16le",
+      "hash": "DE2F256064A0AF797747C2B97505DC0B9F3DF0DE4F489EAC731C23AE9CA9CC31",
+      "statistics": {
+        "Distinct": 1,
+        "Maximum": 0,
+        "Nonzero": 0,
+        "Runs": 1,
+        "Uniform2": 4096,
+        "LodVoxels": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          32768
+        ],
+        "Stratum": "uniform-u7-empty"
+      }
+    },
+    "mixed-u16-air": {
+      "region": "DefaultWorld/r.-2.488.-2.region",
+      "slot": 2714,
+      "sampleName": "mixed-u16-air.u16le",
+      "hash": "48A799A3EEBA729CB9DCE28F1EA54E9B19A9D46E7AA7CA8F0696E90E0F6F10FB",
+      "statistics": {
+        "Distinct": 14,
+        "Maximum": 1910,
+        "Nonzero": 29994,
+        "Runs": 4977,
+        "Uniform2": 2719,
+        "LodVoxels": [
+          11016,
+          13880,
+          7360,
+          512,
+          0,
+          0
+        ],
+        "Stratum": "mixed-u16-air"
+      }
+    },
+    "mixed-u8-air": {
+      "region": "DefaultWorld/r.4.488.1.region",
+      "slot": 1401,
+      "sampleName": "mixed-u8-air.u16le",
+      "hash": "5FFD2CF86EF7B6527F314734C048ADCC08C5924C01D2B9C93ABAF1C6814DB8D7",
+      "statistics": {
+        "Distinct": 2,
+        "Maximum": 157,
+        "Nonzero": 1,
+        "Runs": 3,
+        "Uniform2": 4095,
+        "LodVoxels": [
+          8,
+          56,
+          448,
+          3584,
+          28672,
+          0
+        ],
+        "Stratum": "mixed-u8-air"
+      }
+    },
+    "mixed-u7-air": {
+      "region": "DefaultWorld/r.4.488.1.region",
+      "slot": 5905,
+      "sampleName": "mixed-u7-air.u16le",
+      "hash": "87DB869D775B6A5525CAA5E55463CCC8F4A0F56F6D6770EC5A336E7F63F421DE",
+      "statistics": {
+        "Distinct": 3,
+        "Maximum": 2,
+        "Nonzero": 488,
+        "Runs": 207,
+        "Uniform2": 4004,
+        "LodVoxels": [
+          736,
+          1056,
+          2816,
+          11776,
+          16384,
+          0
+        ],
+        "Stratum": "mixed-u7-air"
+      }
+    }
+  }
+}

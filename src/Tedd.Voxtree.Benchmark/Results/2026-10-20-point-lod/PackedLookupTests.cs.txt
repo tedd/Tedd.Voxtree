@@ -1,0 +1,56 @@
+using Xunit;
+
+namespace Tedd.Voxtree.Tests;
+
+public class PackedLookupTests
+{
+    [Theory]
+    [InlineData(3, 2)]
+    [InlineData(3, 16)]
+    [InlineData(3, 17)]
+    [InlineData(5, 2)]
+    [InlineData(5, 16)]
+    [InlineData(5, 17)]
+    public void MixedLodsAndFullWidthPaletteValuesRetainEveryVoxel(int levels, int entries)
+    {
+        int side = 1 << levels;
+        var values = new uint[side * side * side];
+        for (int x = 0; x < side; x++) for (int y = 0; y < side; y++) for (int z = 0; z < side; z++)
+        {
+            int code = (x * 13 + y * 7 + z) % entries;
+            values[(x * side + y) * side + z] = uint.MaxValue - (uint)code * 65537u;
+        }
+        // Seven uniform octants keep even full-width values in tree storage.
+        // One detailed octant retains all palette entries and odd/even indices.
+        int half = side / 2;
+        for (int x = 0; x < side; x++) for (int y = 0; y < side; y++) for (int z = 0; z < side; z++)
+            if (x < half || y < half || z < half ||
+                (levels == 5 && x < half + 2 && y < half + 2 && z < half + 2))
+                values[(x * side + y) * side + z] = uint.MaxValue;
+        var source = new Octree(levels, values);
+        Assert.Equal(0, source.Data.Span[1] & 3);
+        var bytes = source.Data.ToArray();
+        var lookup = new OctreeSpan(bytes).CreateLookup();
+        if (entries <= 16) Assert.Equal(values.Length / 2 + values.Length / 16 + entries * 4, lookup.StorageBytes);
+        else Assert.True(lookup.StorageBytes > values.Length / 2 + values.Length / 16 + entries * 4);
+        Array.Clear(bytes);
+        source.BuildUniform(0);
+        Parallel.For(0, values.Length, i =>
+        {
+            int x = i / (side * side), y = i / side % side, z = i % side;
+            int expectedLod = x < half || y < half || z < half ? levels - 1 :
+                levels == 5 && x < half + 2 && y < half + 2 && z < half + 2 ? 1 : 0;
+            Assert.Equal(values[i], lookup.Get(x, y, z, out var lod));
+            Assert.Equal(expectedLod, lod);
+            Assert.True(lookup.TryGet(x, y, z, out var value, out lod));
+            Assert.Equal(values[i], value);
+            Assert.Equal(expectedLod, lod);
+            Assert.Equal(expectedLod, lookup.GetLod(x, y, z, out value));
+            Assert.Equal(values[i], value);
+            Assert.Equal(values[i], lookup[x, y, z]);
+        });
+        Assert.False(lookup.TryGet(-1, 0, 0, out var invalid, out var invalidLod));
+        Assert.Equal(0u, invalid);
+        Assert.Equal(0, invalidLod);
+    }
+}
