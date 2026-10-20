@@ -18,7 +18,7 @@
     <RepositoryUrl>https://github.com/tedd/Tedd.Voxtree</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>octree;voxel;span;zero-allocation;performance;streaming;lod;zstandard</PackageTags>
-    <PackageReleaseNotes>Point getters return both voxel values and compressed leaf LOD levels for trees, spans, compiled lookups, and channel-aware worlds, including generic variants. LOD 0 represents one voxel; LOD N represents an aligned uniform cube of side 2^N. Dense storage returns LOD 0. Serialized formats remain compatible.</PackageReleaseNotes>
+    <PackageReleaseNotes>Accelerates generic uniform encoding, compressed count and existence queries, and compiled point lookups. Fully expanded lookup snapshots use less payload while preserving stored LOD levels. Checked dense voxel access and deferred chunk writes are also optimized. Public APIs and serialized formats remain compatible.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IncludeSymbols>true</IncludeSymbols>

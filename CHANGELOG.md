@@ -2,6 +2,20 @@
 
 All notable changes to Tedd.Voxtree are documented here.
 
+## 2026-10-20
+
+### Performance
+
+- Faster generic uniform size calculation and encoding on .NET 10 and later.
+- Compressed count and existence queries avoid redundant spatial calculations
+  for covered subtrees and batch eligible byte tokens.
+- Fully expanded compiled lookups use a compact dense snapshot for faster point
+  reads and lower payload memory while preserving stored leaf LOD levels.
+- Checked dense voxel access and deferred chunk writes perform fewer redundant
+  bounds and layout calculations.
+
+Public APIs and serialized formats remain compatible.
+
 ## 2026-10-06
 
 ### Added
