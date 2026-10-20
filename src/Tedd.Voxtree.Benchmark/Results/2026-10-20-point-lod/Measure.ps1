@@ -20,11 +20,13 @@ $driverSnapshot = Join-Path $Workspace 'driver-source'
 New-Item -ItemType Directory -Path $driverSnapshot -Force | Out-Null
 Get-ChildItem -LiteralPath $PSScriptRoot -File | Where-Object { $_.Extension -eq '.ps1' -or $_.Name.EndsWith('.cs.txt') -or $_.Name -eq 'protocol.md' } | Copy-Item -Destination $driverSnapshot
 . (Join-Path $PSScriptRoot 'Host-Lock.ps1')
-$hostLeases = Enter-VoxtreePerformanceHost
+$hostLeases = Enter-VoxtreePerformanceHost -ControllerAdmission
 $targetProcess = $null
 $controller = $null
 $rpcSequence = 0
+$preparationLeases = $null
 try {
+    $preparationLeases = Enter-VoxtreePerformanceHost
     function Invoke-Rpc([string]$Method, $Parameters) {
         $script:rpcSequence++
         $rpcId = $script:rpcSequence
@@ -73,10 +75,13 @@ try {
         @{scope='owned_target_only';methods=$JitDisasm;assembly=$JitAssembly;output=$JitOutput}|
             ConvertTo-Json|Set-Content -LiteralPath (Join-Path $Workspace "$Label-target-diagnostics.json")
     }
+    $startupLeases = Enter-VoxtreePerformanceHost
+    try {
     $targetProcess = [Diagnostics.Process]::Start($start)
     $identityLine = $targetProcess.StandardOutput.ReadLine()
     if (-not $identityLine) { throw $targetProcess.StandardError.ReadToEnd() }
     $identity = $identityLine | ConvertFrom-Json
+    } finally { Exit-VoxtreePerformanceHost $startupLeases }
     $identityLine | Set-Content -LiteralPath (Join-Path $Workspace "$Label-target.json")
     $discovery = Invoke-Lab 'lab.discover' @{action='targets';limit=1000}
     $discovered = @($discovery.rows | Where-Object process_id -EQ $identity.process_id)
@@ -132,6 +137,8 @@ try {
     Invoke-Rpc 'initialize' @{protocolVersion='2025-03-26';capabilities=@{};clientInfo=@{name='voxtree-performance';version='1'}} | Out-Null
     $controller.StandardInput.WriteLine('{"jsonrpc":"2.0","method":"notifications/initialized"}')
     Invoke-Lab 'lab.discover' @{action='scenarios';target_id=$identity.id} | Out-Null
+    Exit-VoxtreePerformanceHost $preparationLeases
+    $preparationLeases = $null
     foreach ($item in $plans) {
         $request = @{action='start';target_id=$identity.id;expected_target_epoch=[string]$identity.epoch;plan_id=$item.plan.id;grant_id=$grant.id;idempotency_key="$Label-$($item.scenario)"}
         if ($observationGrant) { $request.observation_grant_id=$observationGrant.id }
@@ -177,5 +184,6 @@ finally {
         $targetProcess.StandardInput.WriteLine('shutdown'); $targetProcess.StandardInput.Close()
         if (-not $targetProcess.WaitForExit(30000)) { throw 'Owned harness did not exit; preserve its workspace.' }
     }
+    if ($preparationLeases) { Exit-VoxtreePerformanceHost $preparationLeases }
     Exit-VoxtreePerformanceHost $hostLeases
 }

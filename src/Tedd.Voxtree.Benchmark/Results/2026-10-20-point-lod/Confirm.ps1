@@ -6,14 +6,18 @@ param(
     [Parameter(Mandatory)][string[]]$Scenarios,
     [string]$Label = 'confirmation',
     [string]$ExplorationLabel = 'g3',
-    [ValidateSet('original','precision')][string]$Budget = 'original'
+    [ValidateSet('original','precision','long-window','grouped-window')][string]$Budget = 'original',
+    [string]$SourcePatchFile='',
+    [string]$SourceEquivalenceRationale=''
 )
 $ErrorActionPreference = 'Stop'
 $dotnetExecutable = (Get-Command dotnet).Source
 $controller = $null; $rpcSequence = 0
 . (Join-Path $PSScriptRoot 'Host-Lock.ps1')
-$hostLeases = Enter-VoxtreePerformanceHost
+$hostLeases = Enter-VoxtreePerformanceHost -ControllerAdmission
+$preparationLeases = $null
 try {
+    $preparationLeases = Enter-VoxtreePerformanceHost
     $driverSnapshot=Join-Path $Workspace "$Label-driver-source"
     New-Item -ItemType Directory -Path $driverSnapshot -Force|Out-Null
     Get-ChildItem -LiteralPath $PSScriptRoot -File|Where-Object{$_.Extension -eq '.ps1' -or $_.Name.EndsWith('.cs.txt') -or $_.Name -eq 'protocol.md'}|Copy-Item -Destination $driverSnapshot
@@ -69,7 +73,8 @@ try {
     }
     $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '../../../..')).Path
     $patchPath = Join-Path $Workspace "$Label-source.diff"
-    & git -C $repoRoot diff f0772c8 -- src/Tedd.Voxtree | Set-Content -LiteralPath $patchPath
+    if($SourcePatchFile){Copy-Item -LiteralPath $SourcePatchFile -Destination $patchPath}
+    else {& git -C $repoRoot diff f0772c8 -- src/Tedd.Voxtree | Set-Content -LiteralPath $patchPath}
     $source = Import-File $patchPath 'text/x-diff'
     $candidate = Invoke-Lab 'lab.experiment' @{action='create_candidate';name=$Label;build_identity=$builds[1].content_hash;components=@()}
     $selected = @()
@@ -95,6 +100,20 @@ try {
                 elseif($scenario -like '*-Huge-*-long-*'){1048576}
                 elseif($scenario -like '*-sparse-*'){4194304}else{2097152}
         }
+        if($Budget -eq 'long-window') {
+            throw 'Historical C2 budget exceeds the installed plan limits; use the prospectively defined C3 grouped-window fixture.'
+            $experiment.warmup_batches=1
+        }
+        if($Budget -eq 'grouped-window') {
+            # Version 11 declares sixteen public reads per logical operation.
+            # Counts and reported units must not be used with older fixtures.
+            if($experiment.scenario_version -ne '11'){throw 'Grouped budget requires version-11 sixteen-read units'}
+            $experiment.warmup_batches=1
+            $experiment.maximum_duration_seconds=600
+            $experiment.operations_per_run=if($scenario -like '*-compiled-*'){33554432}
+                elseif($scenario -like '*-Huge-*-long-*'){1048576}
+                elseif($scenario -like '*-Wide-*-long-*'){2097152}else{4194304}
+        }
         $experiment.analysis.family_size=2*$Scenarios.Count
         if($scenario -like '*-create'){$experiment.analysis.meaningful_regression_ratio=1.25}
         $experiment.guardrail_metrics=@('scenario.thread_allocation_bytes_per_operation')
@@ -103,9 +122,11 @@ try {
             direction='lower_is_better';scale='absolute_difference';equivalence_lower=-0.01;equivalence_upper=0.01
             useful_improvement=-0.01;meaningful_regression=0.01;minimum_blocks=10;descriptive_only=$false
         })
+        $rationale=if($SourceEquivalenceRationale){$SourceEquivalenceRationale}else{'Both entry assemblies compile the complete source and identical harness. The baseline label is compile-time mapped to AfterBatch in the control build. The candidate label invokes AfterBatch in the treatment build. The AfterBatch caller IL hashes match exactly across builds; both invoke the ordinary Tedd.Voxtree namespace. This dispatch difference occurs once per batch, outside the identical read loops. The baseline entry compiles f0772c8 there; the treatment entry compiles the selected implementation there. Snapshot helpers are correctness and screening controls only. The attached source patch records every library change; entry identities differ. Dependency DLLs and runtime settings match; Prepare checks encoded byte parity and independent dense-value or query oracles before timing.'}
+        if($experiment.operations_per_run -gt 100000000 -or $experiment.maximum_duration_seconds -gt 600){throw 'Plan exceeds installed revision 9c23369 limits'}
         $plan = Invoke-Lab 'lab.experiment' @{
             action='create_confirmation_plan';selected_candidate_id=$candidate.id;source_patch_artifact_id=$source.id
-            source_equivalence_rationale='Both entry assemblies compile the complete source and identical harness. The baseline label is compile-time mapped to AfterBatch in the control build. The candidate label invokes AfterBatch in the treatment build. The AfterBatch caller IL hashes match exactly across builds; both invoke the ordinary Tedd.Voxtree namespace. This dispatch difference occurs once per batch, outside the identical read loops. The baseline entry compiles f0772c8 there; the treatment entry compiles the selected implementation there. Snapshot helpers are correctness and screening controls only. The attached source patch records every library change; entry identities differ. Dependency DLLs and runtime settings match; Prepare checks encoded byte parity and independent dense-value or query oracles before timing.'
+            source_equivalence_rationale=$rationale
             baseline_build_id=$builds[0].id;candidate_build_id=$builds[1].id;baseline_variant='baseline';candidate_variant='candidate'
             experiment=$experiment;exploratory_evidence_ids=@($exploration.id)
         }
@@ -128,6 +149,8 @@ try {
     $controller = [Diagnostics.Process]::Start($start); $errors = $controller.StandardError.ReadToEndAsync()
     Invoke-Rpc 'initialize' @{protocolVersion='2025-03-26';capabilities=@{};clientInfo=@{name='voxtree-confirmation';version='1'}} | Out-Null
     $controller.StandardInput.WriteLine('{"jsonrpc":"2.0","method":"notifications/initialized"}')
+    Exit-VoxtreePerformanceHost $preparationLeases
+    $preparationLeases = $null
     foreach ($item in $selected) {
         $operationPath = Join-Path $Workspace "$Label-$($item.scenario)-operation.json"
         if (Test-Path -LiteralPath $operationPath) {
@@ -165,5 +188,6 @@ finally {
         if (-not $controller.WaitForExit(30000)) { throw 'Controller did not exit; preserve workspace.' }
         $errors.GetAwaiter().GetResult() | Set-Content -LiteralPath (Join-Path $Workspace "$Label-controller.log")
     }
+    if ($preparationLeases) { Exit-VoxtreePerformanceHost $preparationLeases }
     Exit-VoxtreePerformanceHost $hostLeases
 }

@@ -29,7 +29,7 @@ $scenarios=@(
 $env:TEMP=Join-Path $TaskRoot 'temp';$env:TMP=$env:TEMP
 $env:NUGET_HTTP_CACHE_PATH=Join-Path $TaskRoot 'nuget-http'
 . (Join-Path $PSScriptRoot 'Host-Lock.ps1')
-$leases=Enter-VoxtreePerformanceHost
+$leases=Enter-VoxtreePerformanceHost -ControllerAdmission
 try {
     $scenarios|ConvertTo-Json|Set-Content (Join-Path $TaskRoot 'final-scenarios.json')
     if(-not $ResumePrepared) {
@@ -41,10 +41,12 @@ try {
             if((Get-FileHash -LiteralPath $file.Path).Hash -ne $file.Hash){throw 'Prepared bundle hash mismatch'}
         }
         if($ResumePrepared){continue}
+        Invoke-VoxtreeExternalPhase {
         & dotnet exec --fx-version 10.0.13 (Join-Path $TaskRoot "bundles/$label/$label.dll") --validate *> (Join-Path $TaskRoot "$label-validation.log")
         if($LASTEXITCODE -ne 0){throw "$label fixture validation failed"}
         & dotnet exec --fx-version 10.0.13 (Join-Path $TaskRoot "bundles/$label/$label.dll") --fuzz *> (Join-Path $TaskRoot "$label-fuzz.log")
         if($LASTEXITCODE -ne 0){throw "$label malformed differential failed"}
+        }
     }
     $workspace=Join-Path $TaskRoot 'final-catalog'
     & (Join-Path $PSScriptRoot 'Measure.ps1') -Rig (Join-Path $TaskRoot 'bundles/n1/n1.dll') -LabHost (Join-Path $LabDirectory 'Tedd.DotNetLab.Host.dll') -Workspace $workspace -SelectedScenarios $scenarios -Label selected -Budget scaled
