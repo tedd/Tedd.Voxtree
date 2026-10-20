@@ -1,6 +1,7 @@
 # Mixed-LOD layouts and measurement admission
 
 Integration branch: main. Full public-method 10x objective remains active.
+Continuation: REPORT-PHASE4.md records full-corpus validation and fresh callers.
 The layouts below are isolated experiments, not adopted production changes.
 Runtime: x64 CoreCLR 10.0.13, ordinary tiering/PGO, Ryzen 9 5950X, affinity 4.
 The verified Forcecraft corpus and its four deterministic strata are unchanged.

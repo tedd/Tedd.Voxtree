@@ -1,0 +1,82 @@
+public sealed class @CLASS@ : ISynchronousScenario
+{
+    readonly string pattern,op;
+    readonly @TYPE@[] values;
+    readonly byte[] lods;
+    readonly @TYPE@[] destination = new @TYPE@[32768];
+    readonly byte[] buffer = new byte[@AFTERTREE@.GetMaximumSize(5)];
+    @BEFORETREE@ before = null!;
+    @AFTERTREE@ after = null!;
+    byte[] originalBefore = null!,originalAfter = null!;
+    bool baseline,initialized,beforePrimed,afterPrimed;
+    long sum,completed,readFold;
+    int zeros;
+    public @CLASS@(string pattern,string op)
+    {
+        this.pattern=pattern;this.op=op;
+        var raw=ForcecraftCorpus.Load(pattern);
+        values=raw.Select(v=>(@TYPE@)v).ToArray();lods=ForcecraftCorpus.Lods(raw);
+        zeros=values.Count(v=>v==0);
+        for(int i=0;i<32768;i++)readFold=unchecked(readFold+(long)values[i]+((long)lods[i]<<32));
+    }
+    public ScenarioDescriptor Describe()=>new($"bulk-@WIDTH@-L5-{pattern}-{op}","13",
+        Wire.Hash(new{pattern,op,voxelSha256=ForcecraftCorpus.Hash(pattern),affinity=4,primeMs=3000,buildReads=65536,layout="linear",consumer="complete-public-operation-with-result-fold"}),
+        ResetLevel.LogicalState,ThreadAffinity.Any,false,
+        op=="buildread"?"One owned construction plus 65536 sequential public value/LOD reads":
+        op is "construct" or "fromencoded"?"One owned construction or FromEncoded plus first public Get":
+        "One complete public bulk operation, with returned result or copied element consumed",["baseline","candidate"]);
+    void Initialize()
+    {
+        if(initialized)return;
+        before=new @BEFORETREE@(5,values);after=new @AFTERTREE@(5,values);
+        originalBefore=before.Data.ToArray();originalAfter=after.Data.ToArray();
+        CheckTrees(); initialized=true;
+    }
+    void CheckTrees()
+    {
+        for(int i=0;i<32768;i++)
+        {
+            int x=i/1024,y=i/32%32,z=i%32;
+            if(before.Get(x,y,z,out int b)!=values[i]||after.Get(x,y,z,out int a)!=values[i]||b!=lods[i]||a!=lods[i])throw new Exception("Bulk dense/LOD oracle");
+        }
+        if(!before.AsSpan().IsWellFormed()||!after.AsSpan().IsWellFormed())throw new Exception("Bulk validation oracle");
+    }
+    public void Prepare(ScenarioContext context)
+    {
+        Initialize();baseline=context.Variant=="baseline";
+        if(!FixtureMode.Validation && !(baseline?beforePrimed:afterPrimed))
+        {
+            var clock=Stopwatch.StartNew();
+            do{ExecuteBatch(1);}while(clock.ElapsedMilliseconds<3000);
+            if(baseline)beforePrimed=true;else afterPrimed=true;
+        }
+    }
+    public void Reset(ResetContext context){sum=completed=0;}
+    public long ExecuteBatch(int count)
+    {
+#if PRIMARY_BASELINE_CALLER
+        AfterBatch(count);
+#else
+        if(baseline)BeforeBatch(count);else AfterBatch(count);
+#endif
+        completed+=count;return count;
+    }
+    @BATCHES@
+    public ValidationResult Validate()
+    {
+        CheckTrees();
+        long expected=op switch{
+            "construct" or "build" or "fromencoded"=>(long)values[0],
+            "callerbuild" or "trybuild" or "required"=>baseline?originalBefore.Length:originalAfter.Length,
+            "copy"=>(long)values[2047],"validate"=>1,"count"=>zeros,"miss"=>values.Count(v=>v==65535),
+            "buildread"=>unchecked(readFold*2),_=>throw new Exception("Unknown bulk op")};
+        if(op=="copy"&&!destination.AsSpan().SequenceEqual(values))return new(false);
+        if(op is "callerbuild" or "trybuild")
+        {
+            var original=baseline?originalBefore:originalAfter;
+            if(!buffer.AsSpan(0,original.Length).SequenceEqual(original))return new(false);
+        }
+        return new(sum==unchecked(expected*completed));
+    }
+    public void Cleanup(){}
+}

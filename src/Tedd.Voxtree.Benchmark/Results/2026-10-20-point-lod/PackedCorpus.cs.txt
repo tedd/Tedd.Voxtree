@@ -1,0 +1,128 @@
+// Offline semantic/footprint census; no latency or allocation inference.
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Candidate = Tedd.Voxtree;
+using Baseline = Snapshot.Voxtree;
+
+static class PackedCorpus
+{
+    static readonly List<object> Rows = new();
+    static long cells;
+    static string root = "";
+    static StreamWriter csv = null!;
+
+    public static void Begin(string output)
+    {
+        root = output;
+        csv = new StreamWriter(Path.Combine(root, "packed-chunks.csv"));
+        csv.WriteLine("region,slot,sha256,maximum,baseline_u32,candidate_u32,baseline_u16,candidate_u16,baseline_generic_u32,candidate_generic_u32,packed_u32,packed_u16,packed_generic_u32,old_lookup_payload,new_lookup_payload,shared_encoding");
+    }
+
+    public static void Check(ushort[] small, string region, int slot, string hash)
+    {
+        var values = Array.ConvertAll(small, v => (uint)v);
+        var naturalLod = new int[values.Length];
+        FillLod(values, naturalLod, 0, 0, 0, 5);
+        var before = new Baseline.Octree(5, values);
+        var before16 = new Baseline.Octree<ushort>(5, small);
+        var before32 = new Baseline.Octree<uint>(5, values);
+        var after = new Candidate.Octree(5, values);
+        var after16 = new Candidate.Octree<ushort>(5, small);
+        var after32 = new Candidate.Octree<uint>(5, values);
+        var view = after.AsSpan(); var view16 = after16.AsSpan(); var view32 = after32.AsSpan();
+        Require(view.IsWellFormed() && view16.IsWellFormed() && view32.IsWellFormed(), "Full validation");
+        var restored = Candidate.Octree.FromEncoded(after.Data.Span);
+        var restored16 = Candidate.Octree<ushort>.FromEncoded(after16.Data.Span);
+        var restored32 = Candidate.Octree<uint>.FromEncoded(after32.Data.Span);
+        var oldLookup = before.CreateLookup(); var lookup = after.CreateLookup();
+        var copy = new uint[values.Length]; after.CopyTo(copy);
+        Require(copy.AsSpan().SequenceEqual(values), "UInt32 copy");
+        after32.CopyTo(copy); Require(copy.AsSpan().SequenceEqual(values), "Generic UInt32 copy");
+        var copy16 = new ushort[small.Length]; after16.CopyTo(copy16);
+        Require(copy16.AsSpan().SequenceEqual(small), "UInt16 copy");
+        for (int i = 0; i < values.Length; i++)
+        {
+            int x = i / 1024, y = i / 32 % 32, z = i % 32;
+            int lod = (before.Data.Span[1] & 3) == 2 ? 0 : naturalLod[i];
+            int lod16 = (before16.Data.Span[1] & 3) == 2 ? 0 : naturalLod[i];
+            int lod32 = (before32.Data.Span[1] & 3) == 2 ? 0 : naturalLod[i];
+            uint expected = values[i];
+            Require(before.Get(x,y,z,out int b) == expected && b == lod, "Baseline UInt32 partition");
+            Require(before16.Get(x,y,z,out int b16) == expected && b16 == lod16, "Baseline UInt16 partition");
+            Require(before32.Get(x,y,z,out int b32) == expected && b32 == lod32, "Baseline generic UInt32 partition");
+            Require(after.Get(x,y,z,out int a) == expected && a == lod && after.Get(x,y,z) == expected, "Owned UInt32");
+            Require(after16.Get(x,y,z,out int a16) == expected && a16 == lod16 && after16.Get(x,y,z) == expected, "Owned UInt16");
+            Require(after32.Get(x,y,z,out int a32) == expected && a32 == lod32 && after32.Get(x,y,z) == expected, "Owned generic UInt32");
+            Require(view.Get(x,y,z,out int s) == expected && s == lod && view.Get(x,y,z) == expected, "Span UInt32");
+            Require(view16.Get(x,y,z,out int s16) == expected && s16 == lod16 && view16.Get(x,y,z) == expected, "Span UInt16");
+            Require(view32.Get(x,y,z,out int s32) == expected && s32 == lod32 && view32.Get(x,y,z) == expected, "Span generic UInt32");
+            Require(lookup.Get(x,y,z,out int l) == expected && l == lod && lookup.Get(x,y,z) == expected, "Lookup");
+            Require(oldLookup.Get(x,y,z,out int o) == expected && o == lod, "Baseline lookup");
+            Require(restored.Get(x,y,z,out int r) == expected && r == lod, "Restored UInt32");
+            Require(restored16.Get(x,y,z,out int r16) == expected && r16 == lod16, "Restored UInt16");
+            Require(restored32.Get(x,y,z,out int r32) == expected && r32 == lod32, "Restored generic UInt32");
+        }
+        int maximum = small.Max();
+        bool packed = Packed(after.Data), packed16 = Packed(after16.Data), packed32 = Packed(after32.Data);
+        Require(packed == Eligible(before.Data, maximum, 4, 2), "UInt32 eligibility");
+        Require(packed16 == Eligible(before16.Data, maximum, 2, 3), "UInt16 eligibility");
+        Require(packed32 == Eligible(before32.Data, maximum, 4, 3), "Generic UInt32 eligibility");
+        if (!packed) Require(before.Data.Span.SequenceEqual(after.Data.Span), "UInt32 fallback bytes");
+        if (!packed16) Require(before16.Data.Span.SequenceEqual(after16.Data.Span), "UInt16 fallback bytes");
+        if (!packed32) Require(before32.Data.Span.SequenceEqual(after32.Data.Span), "Generic UInt32 fallback bytes");
+        var box = new Candidate.VoxelBox(0,0,0,32,32,32);
+        foreach (uint wanted in new uint[] {0, (uint)maximum, 65535}.Distinct())
+        {
+            int count = values.Count(v => v == wanted);
+            var filter = Candidate.VoxelFilter.EqualTo(wanted);
+            var filter16 = Candidate.VoxelFilter<ushort>.EqualTo((ushort)wanted);
+            var filter32 = Candidate.VoxelFilter<uint>.EqualTo(wanted);
+            Require(after.CountMatches(box,filter) == count && after.Any(box,filter) == (count != 0), "UInt32 count/any");
+            Require(after16.CountMatches(box,filter16) == count && after16.Any(box,filter16) == (count != 0), "UInt16 count/any");
+            Require(after32.CountMatches(box,filter32) == count && after32.Any(box,filter32) == (count != 0), "Generic UInt32 count/any");
+        }
+        bool shares = Shares(lookup, after.Data);
+        if (packed) Require(shares, "Packed lookup must share owned encoding");
+        var row = new {region,slot,hash,maximum,baselineUInt32Bytes=before.EncodedLength,candidateUInt32Bytes=after.EncodedLength,
+            baselineUInt16Bytes=before16.EncodedLength,candidateUInt16Bytes=after16.EncodedLength,
+            baselineGenericUInt32Bytes=before32.EncodedLength,candidateGenericUInt32Bytes=after32.EncodedLength,
+            packedUInt32=packed,packedUInt16=packed16,packedGenericUInt32=packed32,
+            baselineLookupPayload=oldLookup.StorageBytes,candidateLookupPayload=lookup.StorageBytes,sharesOwnedEncoding=shares};
+        Rows.Add(row); cells += values.Length;
+        csv.WriteLine($"{region},{slot},{hash},{maximum},{before.EncodedLength},{after.EncodedLength},{before16.EncodedLength},{after16.EncodedLength},{before32.EncodedLength},{after32.EncodedLength},{packed},{packed16},{packed32},{oldLookup.StorageBytes},{lookup.StorageBytes},{shares}");
+        csv.Flush();
+    }
+
+    public static void Finish()
+    {
+        csv.Dispose();
+        File.WriteAllText(Path.Combine(root,"packed-corpus.json"), JsonSerializer.Serialize(new {
+            runtime=RuntimeInformation.FrameworkDescription,architecture=RuntimeInformation.ProcessArchitecture.ToString(),
+            assembly=typeof(Candidate.Octree).Assembly.Location,
+            assemblySha256=Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(typeof(Candidate.Octree).Assembly.Location))),
+            chunks=Rows.Count,cells,allChecksPassed=true,
+            scope="Every chunk and cell, no duplicate exclusion; independent dense partition plus released-source control; semantic and payload census only",rows=Rows
+        },new JsonSerializerOptions{WriteIndented=true}));
+    }
+
+    static bool Packed(ReadOnlyMemory<byte> data) => data.Span[1] >> 6 == 3 && (data.Span[1] & 3) == 3;
+    static bool Eligible(ReadOnlyMemory<byte> old, int maximum, int width, int header) => (old.Span[1] & 3) == 0 &&
+        old.Length * 8L >= header + 32768 * width && maximum <= (width == 2 ? 4095 : 268435455);
+    static bool Shares(object lookup, ReadOnlyMemory<byte> encoding)
+    {
+        Require(MemoryMarshal.TryGetArray(encoding,out var segment), "Owned encoding array");
+        return lookup.GetType().GetFields(System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance)
+            .Any(f => f.GetValue(lookup) is ReadOnlyMemory<byte> memory && MemoryMarshal.TryGetArray(memory,out var other) && ReferenceEquals(segment.Array,other.Array));
+    }
+    static void FillLod(uint[] values, int[] result, int x, int y, int z, int level)
+    {
+        int side=1<<level; uint first=values[(x*32+y)*32+z]; bool same=true;
+        for(int a=x;a<x+side && same;a++) for(int b=y;b<y+side && same;b++) for(int c=z;c<z+side;c++)
+            if(values[(a*32+b)*32+c]!=first){same=false;break;}
+        if(same){for(int a=x;a<x+side;a++) for(int b=y;b<y+side;b++) Array.Fill(result,level,(a*32+b)*32+z,side);return;}
+        int half=side/2;
+        for(int a=0;a<2;a++) for(int b=0;b<2;b++) for(int c=0;c<2;c++) FillLod(values,result,x+a*half,y+b*half,z+c*half,level-1);
+    }
+    static void Require(bool value,string reason){if(!value)throw new InvalidDataException($"Chunk {Rows.Count}: {reason}");}
+}

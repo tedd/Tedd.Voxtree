@@ -1,0 +1,9 @@
+{
+  "archive_bytes": 43636870,
+  "manifest_paths": 23430,
+  "unique_blobs": 18629,
+  "catalogs": 28,
+  "metric_rows": 594,
+  "sha256": "da27ca826ca5e88640a22cc3bfda6c5a8978273766ce2a8f1278b59e0e49bddd",
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

@@ -6,7 +6,7 @@ param(
     [Parameter(Mandatory)][string[]]$Scenarios,
     [string]$Label = 'confirmation',
     [string]$ExplorationLabel = 'g3',
-    [ValidateSet('original','precision','long-window','grouped-window')][string]$Budget = 'original',
+    [ValidateSet('original','precision','long-window','grouped-window','point-window')][string]$Budget = 'original',
     [string]$SourcePatchFile='',
     [string]$SourceEquivalenceRationale=''
 )
@@ -114,6 +114,15 @@ try {
                 elseif($scenario -like '*-Huge-*-long-*'){1048576}
                 elseif($scenario -like '*-Wide-*-long-*'){2097152}else{4194304}
         }
+        if($Budget -eq 'point-window') {
+            if($experiment.scenario_version -ne '12' -or $scenario -notmatch '^point-ForceUInt(16|32)-L5-mixed-u16-air-(owned|span)-(get|lod)$'){
+                throw 'Point window requires the frozen version-12 eight-read family'
+            }
+            $experiment.blocks=12
+            $experiment.operations_per_run=8388608
+            $experiment.warmup_batches=1
+            $experiment.maximum_duration_seconds=600
+        }
         $experiment.analysis.family_size=2*$Scenarios.Count
         if($scenario -like '*-create'){$experiment.analysis.meaningful_regression_ratio=1.25}
         $experiment.guardrail_metrics=@('scenario.thread_allocation_bytes_per_operation')
@@ -167,7 +176,13 @@ try {
             $op = Invoke-Lab 'lab.run' @{action='status';operation_id=$op.id}
         }
         $op | ConvertTo-Json -Depth 30 | Set-Content -LiteralPath (Join-Path $Workspace "$Label-$($item.scenario)-terminal.json")
-        if ($op.state -ne 'completed') { throw ($op | ConvertTo-Json -Depth 30) }
+        if ($op.state -ne 'completed') {
+            if($op.result_id){
+                $failure=Invoke-Lab 'lab.inspect' @{action='record';id=$op.result_id}
+                $failure | ConvertTo-Json -Depth 65 | Set-Content -LiteralPath (Join-Path $Workspace "$Label-$($item.scenario)-failed-execution.json")
+            }
+            throw ($op | ConvertTo-Json -Depth 30)
+        }
         $record = Invoke-Lab 'lab.inspect' @{action='record';id=$op.result_id}
         $execution = $record.json | ConvertFrom-Json
         $sessions = foreach ($sessionId in $execution.session_ids) { Invoke-Lab 'lab.inspect' @{action='record';id=$sessionId} }
@@ -187,6 +202,9 @@ finally {
         $controller.StandardInput.Close()
         if (-not $controller.WaitForExit(30000)) { throw 'Controller did not exit; preserve workspace.' }
         $errors.GetAwaiter().GetResult() | Set-Content -LiteralPath (Join-Path $Workspace "$Label-controller.log")
+    }
+    if($controller){
+        @{controllerPid=$controller.Id;controllerExited=$controller.HasExited;exitCode=if($controller.HasExited){$controller.ExitCode}else{$null};checkedAt=[DateTimeOffset]::UtcNow.ToString('o');sessionJoinEvidence='Inspect each retained normal-build session; controller exit alone does not prove child quiescence'} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $Workspace "$Label-controller-shutdown.json")
     }
     if ($preparationLeases) { Exit-VoxtreePerformanceHost $preparationLeases }
     Exit-VoxtreePerformanceHost $hostLeases

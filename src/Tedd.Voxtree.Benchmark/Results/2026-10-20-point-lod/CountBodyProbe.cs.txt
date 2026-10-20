@@ -1,0 +1,13 @@
+// Native-code diagnostic on the exact bulk assembly; no timing result exported.
+using System.Diagnostics;
+using Tedd.DotNetLab.Contracts;
+using Tedd.DotNetLab.Harness;
+if(OperatingSystem.IsWindows())Process.GetCurrentProcess().ProcessorAffinity=(nint)4;
+foreach(ISynchronousScenario scenario in new ISynchronousScenario[]{new BulkUInt32Scenario("mixed-u16-air","count"),new BulkUInt16Scenario("mixed-u16-air","count")})
+foreach(string variant in new[]{"baseline","candidate"}){
+    scenario.Prepare(new ScenarioContext(variant,CancellationToken.None));
+    scenario.Reset(new ResetContext(ResetLevel.LogicalState));
+    if(scenario.ExecuteBatch(64)!=64||!scenario.Validate().Correct)throw new Exception("Native count-body oracle failed");
+    scenario.Cleanup();
+    Console.WriteLine(scenario.Describe().Id+" "+variant+" valid");
+}

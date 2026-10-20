@@ -9,6 +9,7 @@ $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'Host-Lock.ps1')
 $leases=Enter-VoxtreePerformanceHost
 try {
+    if((Test-Path -LiteralPath (Join-Path $TaskRoot "$Label.asm")) -or (Test-Path -LiteralPath (Join-Path $TaskRoot "$Label-identity.json"))){throw 'Diagnostic label exists; preserve its code evidence'}
     $entry=(Get-ChildItem -LiteralPath $Bundle -Filter '*.runtimeconfig.json').Name.Replace('.runtimeconfig.json','.dll')
     $start=[Diagnostics.ProcessStartInfo]::new((Get-Command dotnet).Source)
     foreach($argument in @('exec','--fx-version','10.0.13',(Join-Path $Bundle $entry),'--code',$Scenario)){$start.ArgumentList.Add($argument)}
@@ -25,6 +26,7 @@ try {
     while(-not $process.WaitForExit(1000)){}
     $stdout.GetAwaiter().GetResult()|Set-Content (Join-Path $TaskRoot "$Label-output.log")
     $stderr.GetAwaiter().GetResult()|Set-Content (Join-Path $TaskRoot "$Label-error.log")
+    @{pid=$process.Id;exited=$process.HasExited;exitCode=$process.ExitCode;checkedAt=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $TaskRoot "$Label-shutdown.json")
     if($process.ExitCode -ne 0){throw "Diagnostic failed: $Label"}
     "$Label JIT evidence complete"
 } finally {Exit-VoxtreePerformanceHost $leases}

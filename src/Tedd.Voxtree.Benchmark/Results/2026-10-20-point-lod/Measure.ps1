@@ -5,7 +5,7 @@ param(
     [string]$Filter = '*',
     [string[]]$SelectedScenarios = @(),
     [string]$Label = 'exploration',
-    [ValidateSet('fixed','scaled','precision','bounded-lifecycle','bounded-point')][string]$Budget = 'fixed',
+    [ValidateSet('fixed','scaled','precision','bounded-lifecycle','bounded-point','bounded-consumer')][string]$Budget = 'fixed',
     [ValidateSet('quiet-validation','cpu-diagnostic')][string]$Profile = 'quiet-validation',
     [string]$JitDisasm = '',
     [string]$JitAssembly = '',
@@ -108,6 +108,10 @@ try {
         }
         if ($Budget -eq 'bounded-point') {
             $operations=if($scenario.id -like '*-create'){256}elseif($scenario.id -like '*-lifecycle'){16}else{2097152}
+        }
+        if ($Budget -eq 'bounded-consumer') {
+            if($scenario.version -ne '13' -or $scenario.id -notlike 'bulk-*'){throw 'Consumer budget requires version-13 bulk fixtures'}
+            $operations=if($scenario.id -like '*-buildread'){2}elseif($scenario.id -match '-(copy|validate|count|miss)$'){64}else{16}
         }
         $plan = Invoke-Lab 'lab.experiment' @{
             action='create_plan';scenario_id=$scenario.id;scenario_version=$scenario.version;input_hash=$scenario.input_hash

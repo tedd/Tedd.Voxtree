@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("task_root", type=Path)
 parser.add_argument("output", type=Path)
 parser.add_argument("--label", default="")
+parser.add_argument("--content-addressed", action="store_true", help="Store identical bytes once; manifest maps every original path")
 args = parser.parse_args()
 if args.label and not args.label.replace('-', '').isalnum():
     raise SystemExit('Archive label must be alphanumeric with optional hyphens')
@@ -65,13 +66,23 @@ catalog_directories = {p.parent.name for p in catalogs}
 source_directories = {"baseline", "rig", "g2", "g3", "q1", "q2", "q3", "q4", "normal-baseline", "normal-candidate", "steady-baseline", "steady-candidate"}
 source_directories.update(p.parent.name for p in root.glob("*/Rig.csproj"))
 source_directories.update(p.name for p in root.iterdir() if p.is_dir() and (p.name.endswith("-baseline") or p.name.endswith("-source")))
-source_directories.update(p.name for p in root.iterdir() if p.is_dir() and p.name.startswith(('forcecraft-scanner', 'dense-byte-validation', 'packed-lookup-validation', 'caller-audit', 'footprint-')))
+source_directories.update(p.name for p in root.iterdir() if p.is_dir() and p.name.startswith(('forcecraft-scanner', 'dense-byte-validation', 'packed-lookup-validation', 'caller-audit', 'footprint-', 'packed-corpus-')))
 manifest = []
+stored_blobs = set()
 archive_path = args.output / f"evidence{suffix}.zip"
 with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
     def add(name, data):
-        archive.writestr(name, data)
-        manifest.append({"path": name, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
+        digest = hashlib.sha256(data).hexdigest()
+        item = {"path": name, "bytes": len(data), "sha256": digest}
+        if args.content_addressed:
+            blob = "blobs/" + digest
+            if digest not in stored_blobs:
+                archive.writestr(blob, data)
+                stored_blobs.add(digest)
+            item["blob"] = blob
+        else:
+            archive.writestr(name, data)
+        manifest.append(item)
 
     for path in sorted(root.rglob("*")):
         if not path.is_file():
@@ -88,6 +99,8 @@ with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compre
         if parts[0] in source_directories and not any(p in {"obj", "bin"} for p in parts[1:-1]):
             include = path.suffix in {".cs", ".csproj", ".txt", ".json"}
             if parts[0].startswith('caller-audit') and path.suffix == '.dll':
+                include = True
+            if parts[0].startswith(('packed-corpus-', 'footprint-', 'count-body-')) and 'out' in parts[1:-1] and path.suffix == '.dll':
                 include = True
         if parts[0] == "bundles":
             include = path.suffix in {".dll", ".json"}
@@ -117,4 +130,5 @@ with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compre
 
 digest = hashlib.sha256(archive_path.read_bytes()).hexdigest()
 (args.output / f"evidence{suffix}.sha256").write_text(digest + "  " + archive_path.name + "\n", encoding="utf-8")
-print(json.dumps({"archive_bytes": archive_path.stat().st_size, "files": len(manifest), "catalogs": len(catalogs), "metric_rows": len(rows), "sha256": digest}))
+print(json.dumps({"archive_bytes": archive_path.stat().st_size, "files": len(manifest), "catalogs": len(catalogs), "metric_rows": len(rows), "sha256": digest,
+                  "content_addressed": args.content_addressed, "unique_blobs": len(stored_blobs) if args.content_addressed else None}))
