@@ -1,0 +1,29 @@
+{
+  "reason": "Unqualified P1/P3/P5 experiment retained for confirmation; not adopted",
+  "source": [
+    {
+      "file": "GenericOctreeCodec.cs",
+      "matchesFrozenCandidate": "n1c/source",
+      "sha256": "99D6C43FB1972CB24AD7506B46630D40C7F82555229FF81355EA7864F8DDAB0B"
+    },
+    {
+      "file": "OctreeCodec.cs",
+      "matchesFrozenCandidate": "n1c/source",
+      "sha256": "03C886914A78CFBA83DF13BC6F214A6CBE02C3F5AC54187F0AADC7C7D4FC50E2"
+    },
+    {
+      "file": "OctreeLookup.cs",
+      "matchesFrozenCandidate": "n1c/source",
+      "sha256": "F0D342C50791104CD03CE37AC588CB8AEA6757690FC1B82EED6FC557094B8D0D"
+    },
+    {
+      "file": "PackedVoxelSearch.cs",
+      "matchesFrozenCandidate": "n1c/source",
+      "sha256": "0972350164A64F2B5F31157A0B2755388E11FE8E203F3B876268230C27C8ADCF"
+    }
+  ],
+  "testSha256": "9C9C4FF4CE4A39569152486A247A5203B37729E59B9F17C9B30D39CF2A1973BD",
+  "restoredHead": "661f85e80dccd3ef59b18a001b8b5ee6bb2333cd",
+  "patchSha256": "4CD9F2A7D4ECEBEAC60A4A00E35B1BB8C878A21FDC715FDEB3F8CBA723A47970",
+  "integrationBranch": "main"
+}

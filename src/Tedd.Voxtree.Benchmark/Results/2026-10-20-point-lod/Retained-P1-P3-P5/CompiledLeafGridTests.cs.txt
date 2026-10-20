@@ -1,0 +1,80 @@
+using Xunit;
+
+namespace Tedd.Voxtree.Tests;
+
+public class CompiledLeafGridTests
+{
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public void RegularLeafGridPreservesEveryValueAndStoredLod(int leafLod)
+    {
+        const int levels = 5, side = 1 << levels;
+        var values = new uint[side * side * side];
+        for (var x = 0; x < side; x++)
+        for (var y = 0; y < side; y++)
+        for (var z = 0; z < side; z++)
+        {
+            var code = (uint)(((x >> leafLod) * 13 + (y >> leafLod) * 7 + (z >> leafLod)) & 31);
+            values[(x * side + y) * side + z] = code == 31 ? uint.MaxValue : code;
+        }
+        var tree = new Octree(levels, values);
+        var encoding = tree.Data.ToArray();
+        var lookup = tree.CreateLookup();
+        Assert.Equal((values.Length >> (3 * leafLod)) * sizeof(uint), lookup.StorageBytes);
+        Assert.Equal(encoding, tree.Data.ToArray());
+        for (var x = 0; x < side; x++)
+        for (var y = 0; y < side; y++)
+        for (var z = 0; z < side; z++)
+        {
+            var expected = values[(x * side + y) * side + z];
+            Assert.Equal(expected, lookup.Get(x, y, z));
+            Assert.Equal(expected, lookup.Get(x, y, z, out var lod));
+            Assert.Equal(leafLod, lod);
+            Assert.Equal(leafLod, lookup.GetLod(x, y, z, out var value));
+            Assert.Equal(expected, value);
+            Assert.True(lookup.TryGet(x, y, z, out value, out lod));
+            Assert.Equal(expected, value);
+            Assert.Equal(leafLod, lod);
+        }
+        Assert.False(lookup.TryGet(-1, 0, 0, out var failedValue, out var failedLod));
+        Assert.Equal(0u, failedValue);
+        Assert.Equal(0, failedLod);
+    }
+
+    [Fact]
+    public void PerfectNodeCountDoesNotImplyRegularLeafDepth()
+    {
+        // Two opposite paths at depth five have nine nodes: the same count as
+        // a full two-level tree, but their leaves have several different LODs.
+        var values = new uint[32 * 32 * 32];
+        values[0] = 1; values[^1] = 2;
+        var tree = new Octree(5, values);
+        var lookup = tree.CreateLookup();
+        Assert.Equal(9 * 36, lookup.StorageBytes);
+        for (var x = 0; x < 32; x++)
+        for (var y = 0; y < 32; y++)
+        for (var z = 0; z < 32; z++)
+        {
+            Assert.Equal(tree.Get(x, y, z, out var expectedLod), lookup.Get(x, y, z, out var lod));
+            Assert.Equal(expectedLod, lod);
+        }
+    }
+
+    [Fact]
+    public void CompiledGridOwnsItsValuesAfterBorrowedBufferReuse()
+    {
+        var values = new uint[8 * 8 * 8];
+        for (var x = 0; x < 8; x++)
+        for (var y = 0; y < 8; y++)
+        for (var z = 0; z < 8; z++)
+            values[(x * 8 + y) * 8 + z] = (uint)((x >> 1) * 16 + (y >> 1) * 4 + (z >> 1));
+        var bytes = new Octree(3, values).Data.ToArray();
+        var lookup = new OctreeSpan(bytes).CreateLookup();
+        Assert.Equal(64 * sizeof(uint), lookup.StorageBytes);
+        bytes.AsSpan().Fill(255);
+        Assert.Equal(63u, lookup.Get(7, 7, 7, out var lod));
+        Assert.Equal(1, lod);
+    }
+}

@@ -1,0 +1,145 @@
+diff --git a/src/Tedd.Voxtree/GenericOctreeCodec.cs b/src/Tedd.Voxtree/GenericOctreeCodec.cs
+index 8fdb49f..b161b43 100644
+--- a/src/Tedd.Voxtree/GenericOctreeCodec.cs
++++ b/src/Tedd.Voxtree/GenericOctreeCodec.cs
+@@ -425,7 +425,17 @@ internal static class GenericOctreeCodec<TStorage>
+ 
+     private static bool SkipValue(ReadOnlySpan<byte> data, ref int offset)
+     {
+-        return TryReadValue(data, ref offset, out _);
++        var start = offset;
++        for (var shift = 0; shift < StorageInteger<TStorage>.BitCount; shift += 7)
++        {
++            if ((uint)offset >= (uint)data.Length) return false;
++            var current = data[offset++];
++            var remaining = StorageInteger<TStorage>.BitCount - shift;
++            if (remaining < 7 && (current & 0x7f) >= (1 << remaining)) return false;
++            if ((current & 0x80) == 0)
++                return offset - start == 1 || current != 0;
++        }
++        return false;
+     }
+ 
+     private static void ValidateSource(ReadOnlySpan<TStorage> source, int levels)
+diff --git a/src/Tedd.Voxtree/OctreeCodec.cs b/src/Tedd.Voxtree/OctreeCodec.cs
+index ec719df..86e6b26 100644
+--- a/src/Tedd.Voxtree/OctreeCodec.cs
++++ b/src/Tedd.Voxtree/OctreeCodec.cs
+@@ -379,15 +379,21 @@ internal static class OctreeCodec
+                         (((y >> bit) & 1) << 1) |
+                         ((z >> bit) & 1);
+ 
+-            for (var index = 0; index < child; index++)
++            uint token;
++#if NET10_0_OR_GREATER
++            if (!PackedVoxelSearch.TryReadByteToken(body, cursor, child, out token))
++#endif
+             {
+-                if (!TryReadVarUInt(body, ref cursor, out _))
++                for (var index = 0; index < child; index++)
++                {
++                    if (!TryReadVarUInt(body, ref cursor, out _))
++                        return false;
++                }
++
++                if (!TryReadVarUInt(body, ref cursor, out token))
+                     return false;
+             }
+ 
+-            if (!TryReadVarUInt(body, ref cursor, out var token))
+-                return false;
+-
+             if ((uniformMask & (1 << child)) != 0)
+             {
+                 value = token;
+diff --git a/src/Tedd.Voxtree/OctreeLookup.cs b/src/Tedd.Voxtree/OctreeLookup.cs
+index 4470bf0..7951b27 100644
+--- a/src/Tedd.Voxtree/OctreeLookup.cs
++++ b/src/Tedd.Voxtree/OctreeLookup.cs
+@@ -52,6 +52,27 @@ public sealed class OctreeLookup
+             _dense = dense;
+             return;
+         }
++        // A perfect node count is only a candidate: mixed leaf depths can have
++        // the same count. Verify the topology before using one value per leaf.
++        var gridCount = checked(nodeCount * 7 + 1);
++        var remaining = gridCount;
++        var gridLevels = 0;
++        while (remaining > 1 && (remaining & 7) == 0)
++        {
++            remaining >>= 3;
++            gridLevels++;
++        }
++        if (remaining == 1 && gridLevels >= 2 && gridLevels < Levels &&
++            IsRegularGrid(body, root, gridLevels))
++        {
++            var grid = new uint[gridCount];
++            CompileDense(body, root, gridLevels, 1 << gridLevels, 0, grid);
++            _nodes = grid;
++            // With a node/grid array present, zero denotes the node index and
++            // a positive value denotes the grid's common stored leaf LOD.
++            _uniform = (uint)(Levels - gridLevels);
++            return;
++        }
+         _nodes = new uint[checked(nodeCount * NodeWords)];
+         var next = 0;
+         Compile(body, root, _nodes, ref next);
+@@ -146,6 +167,13 @@ public sealed class OctreeLookup
+             return BinaryPrimitives.ReadUInt32LittleEndian(_dense.Span.Slice(
+                 OctreeCodec.HeaderSize + index * sizeof(uint), sizeof(uint)));
+         }
++        if (_uniform != 0)
++        {
++            lodLevel = (int)_uniform;
++            var gridLevels = Levels - lodLevel;
++            var index = (((x >> lodLevel) << gridLevels) + (y >> lodLevel)) << gridLevels;
++            return nodes[index + (z >> lodLevel)];
++        }
+         var offset = 0;
+         for (var bit = Levels - 1; bit >= 0; bit--)
+         {
+@@ -162,6 +190,19 @@ public sealed class OctreeLookup
+         return OctreeThrowHelper.ThrowMalformed();
+     }
+ 
++    private static bool IsRegularGrid(ReadOnlySpan<byte> body, int offset, int levels)
++    {
++        if (levels == 1) return body[offset] == byte.MaxValue;
++        if (body[offset] != 0) return false;
++        var cursor = offset + 1;
++        for (var child = 0; child < 8; child++)
++        {
++            OctreeCodec.TryReadVarUInt(body, ref cursor, out var distance);
++            if (!IsRegularGrid(body, offset - (int)distance, levels - 1)) return false;
++        }
++        return true;
++    }
++
+     private static int CountNodes(ReadOnlySpan<byte> body, int offset)
+     {
+         var cursor = offset;
+diff --git a/src/Tedd.Voxtree/PackedVoxelSearch.cs b/src/Tedd.Voxtree/PackedVoxelSearch.cs
+index 7c04a45..f413d86 100644
+--- a/src/Tedd.Voxtree/PackedVoxelSearch.cs
++++ b/src/Tedd.Voxtree/PackedVoxelSearch.cs
+@@ -8,6 +8,20 @@ namespace Tedd.Voxtree;
+ 
+ internal static class PackedVoxelSearch
+ {
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    internal static bool TryReadByteToken(ReadOnlySpan<byte> data, int cursor, int child, out uint token)
++    {
++        token = 0;
++        if (data.Length - cursor < sizeof(ulong)) return false;
++        var packed = BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(cursor, sizeof(ulong)));
++        // Only preceding tokens and the selected token must be single-byte.
++        // A continuation in a later sibling does not affect this read.
++        var prefixMask = 0x8080808080808080UL >> ((7 - child) * 8);
++        if ((packed & prefixMask) != 0) return false;
++        token = (byte)(packed >> (child * 8));
++        return true;
++    }
++
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     internal static bool TryReadTokens(ReadOnlySpan<byte> data, int offset, out ulong values)
+     {

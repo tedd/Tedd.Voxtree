@@ -1,0 +1,251 @@
+{
+  "runtime": ".NET 10.0.13",
+  "architecture": "X64",
+  "entryAssembly": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\footprint-artifacts-p15\\bin\\Footprint\\release\\p15.dll",
+  "rows": [
+    {
+      "sample": "mixed-u16-air.u16le",
+      "inputSha256": "48a799a3eeba729cb9dce28f1ea54e9b19a9d46e7aa7ca8f0696e90e0f6f10fb",
+      "baselineEncodedBytes": 27550,
+      "candidateEncodedBytes": 131074,
+      "baselineUInt16EncodedBytes": 27551,
+      "candidateUInt16EncodedBytes": 65539,
+      "baselineFormat": 84,
+      "candidateFormat": 215,
+      "baselineUInt16Format": 148,
+      "candidateUInt16Format": 215,
+      "baselineLookupPayload": 66168,
+      "candidateLookupPayload": 131074,
+      "baselineAllocated": [
+        66240,
+        66240,
+        66240,
+        66240,
+        66240
+      ],
+      "candidateAllocated": [
+        48,
+        48,
+        48,
+        48,
+        48
+      ],
+      "encodingGenerations": {
+        "baseline": 0,
+        "candidate": 2,
+        "baselineUInt16": 0,
+        "candidateUInt16": 0
+      },
+      "lookupArrays": {
+        "baseline": [
+          {
+            "field": "_nodes",
+            "type": "System.UInt32[]",
+            "bytes": 66168,
+            "generation": 0,
+            "sharesSourceEncoding": false
+          }
+        ],
+        "candidate": [
+          {
+            "field": "_dense",
+            "type": "System.Byte[]",
+            "bytes": 131074,
+            "generation": 2,
+            "sharesSourceEncoding": true
+          }
+        ]
+      },
+      "collectionsBefore": [
+        0,
+        0,
+        0
+      ],
+      "collectionsAfter": [
+        0,
+        0,
+        0
+      ],
+      "everyValueAndLodAgreed": true
+    },
+    {
+      "sample": "mixed-u7-air.u16le",
+      "inputSha256": "87db869d775b6a5525caa5e55463ccc8f4a0f56f6d6770ec5a336e7f63f421de",
+      "baselineEncodedBytes": 1222,
+      "candidateEncodedBytes": 1222,
+      "baselineUInt16EncodedBytes": 1223,
+      "candidateUInt16EncodedBytes": 1223,
+      "baselineFormat": 84,
+      "candidateFormat": 84,
+      "baselineUInt16Format": 148,
+      "candidateUInt16Format": 148,
+      "baselineLookupPayload": 4824,
+      "candidateLookupPayload": 4824,
+      "baselineAllocated": [
+        4896,
+        4896,
+        4896,
+        4896,
+        4896
+      ],
+      "candidateAllocated": [
+        4896,
+        4896,
+        4896,
+        4896,
+        4896
+      ],
+      "encodingGenerations": {
+        "baseline": 0,
+        "candidate": 0,
+        "baselineUInt16": 0,
+        "candidateUInt16": 0
+      },
+      "lookupArrays": {
+        "baseline": [
+          {
+            "field": "_nodes",
+            "type": "System.UInt32[]",
+            "bytes": 4824,
+            "generation": 0,
+            "sharesSourceEncoding": false
+          }
+        ],
+        "candidate": [
+          {
+            "field": "_nodes",
+            "type": "System.UInt32[]",
+            "bytes": 4824,
+            "generation": 0,
+            "sharesSourceEncoding": false
+          }
+        ]
+      },
+      "collectionsBefore": [
+        0,
+        0,
+        0
+      ],
+      "collectionsAfter": [
+        0,
+        0,
+        0
+      ],
+      "everyValueAndLodAgreed": true
+    },
+    {
+      "sample": "mixed-u8-air.u16le",
+      "inputSha256": "5ffd2cf86ef7b6527f314734c048adcc08c5924c01d2b9c93abaf1c6814db8d7",
+      "baselineEncodedBytes": 49,
+      "candidateEncodedBytes": 49,
+      "baselineUInt16EncodedBytes": 50,
+      "candidateUInt16EncodedBytes": 50,
+      "baselineFormat": 84,
+      "candidateFormat": 84,
+      "baselineUInt16Format": 148,
+      "candidateUInt16Format": 148,
+      "baselineLookupPayload": 180,
+      "candidateLookupPayload": 180,
+      "baselineAllocated": [
+        256,
+        256,
+        256,
+        256,
+        256
+      ],
+      "candidateAllocated": [
+        256,
+        256,
+        256,
+        256,
+        256
+      ],
+      "encodingGenerations": {
+        "baseline": 0,
+        "candidate": 0,
+        "baselineUInt16": 0,
+        "candidateUInt16": 0
+      },
+      "lookupArrays": {
+        "baseline": [
+          {
+            "field": "_nodes",
+            "type": "System.UInt32[]",
+            "bytes": 180,
+            "generation": 0,
+            "sharesSourceEncoding": false
+          }
+        ],
+        "candidate": [
+          {
+            "field": "_nodes",
+            "type": "System.UInt32[]",
+            "bytes": 180,
+            "generation": 0,
+            "sharesSourceEncoding": false
+          }
+        ]
+      },
+      "collectionsBefore": [
+        0,
+        0,
+        0
+      ],
+      "collectionsAfter": [
+        0,
+        0,
+        0
+      ],
+      "everyValueAndLodAgreed": true
+    },
+    {
+      "sample": "uniform-u7-empty.u16le",
+      "inputSha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+      "baselineEncodedBytes": 3,
+      "candidateEncodedBytes": 3,
+      "baselineUInt16EncodedBytes": 4,
+      "candidateUInt16EncodedBytes": 4,
+      "baselineFormat": 85,
+      "candidateFormat": 85,
+      "baselineUInt16Format": 149,
+      "candidateUInt16Format": 149,
+      "baselineLookupPayload": 4,
+      "candidateLookupPayload": 4,
+      "baselineAllocated": [
+        48,
+        48,
+        48,
+        48,
+        48
+      ],
+      "candidateAllocated": [
+        48,
+        48,
+        48,
+        48,
+        48
+      ],
+      "encodingGenerations": {
+        "baseline": 0,
+        "candidate": 0,
+        "baselineUInt16": 0,
+        "candidateUInt16": 0
+      },
+      "lookupArrays": {
+        "baseline": [],
+        "candidate": []
+      },
+      "collectionsBefore": [
+        0,
+        0,
+        0
+      ],
+      "collectionsAfter": [
+        0,
+        0,
+        0
+      ],
+      "everyValueAndLodAgreed": true
+    }
+  ]
+}

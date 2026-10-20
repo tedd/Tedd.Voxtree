@@ -1,0 +1,10 @@
+{
+  "blockedWhileOwned": true,
+  "start": "2026-10-20T20:07:14.8204874Z",
+  "joined": true,
+  "hostLockSha256": "0B967AAD8D173E848269905EC4E1FAC117F0EAB9F9CEA2B537F6D01032F3F471",
+  "exitCode": 0,
+  "mutex": "Global\\Tedd.DotNetLab.Measurement.v1",
+  "admittedAfterRelease": true,
+  "pid": 61448
+}

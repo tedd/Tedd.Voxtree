@@ -1,0 +1,112 @@
+using System;
+
+namespace Tedd.Voxtree;
+
+public sealed partial class OctreeLookup
+{
+    // Words 0..15 hold full-width palette values. Subsequent words hold eight
+    // voxel indices each, followed by eight per-2^3-cube LODs per word.
+    private static bool TryCompilePacked(ReadOnlySpan<byte> body, int root, int levels,
+        int nodeCount, out uint[] result)
+    {
+        result = Array.Empty<uint>();
+        int count = 1 << (levels * 3);
+        if (levels < 3 || count / 2L + count / 16L + 64 > nodeCount * 36L) return false;
+        Span<uint> entries = stackalloc uint[16];
+        int used = 0;
+        if (!CollectPalette(body, root, entries, ref used)) return false;
+        result = new uint[checked(16 + count / 8 + count / 64)];
+        entries[..used].CopyTo(result);
+        WritePacked(body, root, levels, 0, 0, 0, levels, used, result);
+        return true;
+    }
+
+    private static bool CollectPalette(ReadOnlySpan<byte> body, int node, Span<uint> palette, ref int used)
+    {
+        int cursor = node + 1;
+        int mask = body[node];
+        for (int child = 0; child < 8; child++)
+        {
+            OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
+            if ((mask & (1 << child)) == 0)
+            {
+                if (!CollectPalette(body, node - (int)token, palette, ref used)) return false;
+                continue;
+            }
+            int index = 0;
+            while (index < used && palette[index] != token) index++;
+            if (index != used) continue;
+            if (used == palette.Length) return false;
+            palette[used++] = token;
+        }
+        return true;
+    }
+
+    private static void WritePacked(ReadOnlySpan<byte> body, int node, int level,
+        int x, int y, int z, int levels, int used, uint[] result)
+    {
+        int cursor = node + 1, mask = body[node], half = 1 << (level - 1);
+        for (int child = 0; child < 8; child++)
+        {
+            OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
+            int a = x + (child >> 2) * half;
+            int b = y + ((child >> 1) & 1) * half;
+            int c = z + (child & 1) * half;
+            if ((mask & (1 << child)) == 0)
+                WritePacked(body, node - (int)token, level - 1, a, b, c, levels, used, result);
+            else
+            {
+                int index = 0;
+                while (index < used && result[index] != token) index++;
+                if (index == used) throw new InvalidOperationException("Packed palette construction");
+                FillPackedRegion(result, levels, a, b, c, level - 1, (uint)index);
+            }
+        }
+    }
+
+    private static void FillPackedRegion(uint[] result, int levels, int x, int y, int z, int lod, uint index)
+    {
+        int width = 1 << lod;
+        for (int a = x; a < x + width; a++)
+            for (int b = y; b < y + width; b++)
+                FillNibbles(result, 16, (a << (levels * 2)) + (b << levels) + z, width, index);
+        if (lod == 0) return;
+        int gridLevels = levels - 1;
+        int lodOffset = 16 + (1 << (levels * 3)) / 8;
+        int gridWidth = width / 2;
+        for (int a = x / 2; a < x / 2 + gridWidth; a++)
+            for (int b = y / 2; b < y / 2 + gridWidth; b++)
+                FillNibbles(result, lodOffset, (a << (gridLevels * 2)) + (b << gridLevels) + z / 2, gridWidth, (uint)lod);
+    }
+
+    private static void FillNibbles(uint[] result, int offset, int start, int count, uint value)
+    {
+        while ((start & 7) != 0 && count != 0)
+        {
+            SetNibble(result, offset, start++, value);
+            count--;
+        }
+        int wholeWords = count / 8;
+        if (wholeWords != 0) result.AsSpan(offset + start / 8, wholeWords).Fill(value * 0x11111111u);
+        start += wholeWords * 8;
+        count -= wholeWords * 8;
+        while (count-- != 0) SetNibble(result, offset, start++, value);
+    }
+
+    private static void SetNibble(uint[] result, int offset, int index, uint value)
+    {
+        int shift = (index & 7) * 4;
+        int word = offset + index / 8;
+        result[word] = (result[word] & ~(15u << shift)) | (value << shift);
+    }
+
+    private uint GetPacked(int x, int y, int z, uint[] data, out int lod)
+    {
+        int index = (x << (Levels * 2)) + (y << Levels) + z;
+        int entry = (int)((data[16 + (index >> 3)] >> ((index & 7) << 2)) & 15);
+        int gridLevels = Levels - 1;
+        int cube = ((x >> 1) << (gridLevels * 2)) + ((y >> 1) << gridLevels) + (z >> 1);
+        lod = (int)((data[16 + Count / 8 + (cube >> 3)] >> ((cube & 7) << 2)) & 15);
+        return data[entry];
+    }
+}

@@ -1,0 +1,126 @@
+// Resolve caller metadata operands so equivalent IL remains comparable when a
+// private library helper changes MethodDef numbering. Never executes a fixture.
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.Loader;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+
+var codes = typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static).Where(f => f.FieldType == typeof(OpCode))
+    .Select(f => (OpCode)f.GetValue(null)!).ToDictionary(c => unchecked((ushort)c.Value));
+if (args.Length == 1 && args[0] == "--selftest")
+{
+    var a = Audit(Fixture(false, false, 17));
+    var b = Audit(Fixture(true, false, 17));
+    var c = Audit(Fixture(true, true, 17));
+    var d = Audit(Fixture(true, false, 18));
+    if (a.rawIlSha256 == b.rawIlSha256 || a.resolvedIlSha256 != b.resolvedIlSha256 ||
+        a.resolvedIlSha256 == c.resolvedIlSha256 || a.resolvedIlSha256 == d.resolvedIlSha256)
+        throw new Exception("Semantic caller identity falsification failed");
+    Console.WriteLine("Metadata renumbering preserves identity; changed API calls and literals are rejected.");
+    return;
+}
+if (args.Length < 2) throw new ArgumentException("output-json bundle.dll...");
+var output = Path.GetFullPath(args[0]);
+if (!output.StartsWith(@"D:\Workspaces\AI\voxtree-point-lod-20261020\", StringComparison.OrdinalIgnoreCase)) throw new ArgumentException("Task-local output required");
+var inventories = new List<object>();
+foreach (var path in args.Skip(1).Select(Path.GetFullPath))
+{
+    if (!path.StartsWith(@"D:\Workspaces\AI\voxtree-point-lod-20261020\bundles\", StringComparison.OrdinalIgnoreCase)) throw new ArgumentException("Only task-owned bundles");
+    var context = new AssemblyLoadContext("audit-" + Path.GetFileNameWithoutExtension(path), isCollectible: true);
+    context.Resolving += (_, name) => { var dependency = Path.Combine(Path.GetDirectoryName(path)!, name.Name + ".dll"); return File.Exists(dependency) ? context.LoadFromAssemblyPath(dependency) : null; };
+    try
+    {
+        var assembly = context.LoadFromAssemblyPath(path);
+        var methods = assembly.GetTypes().Where(t => t.Namespace == null && t.Name.EndsWith("Scenario", StringComparison.Ordinal))
+            .SelectMany(t => t.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic).Where(m => m.Name.StartsWith("AfterBatch", StringComparison.Ordinal)))
+            .OrderBy(m => m.DeclaringType!.FullName, StringComparer.Ordinal).ThenBy(m => m.Name, StringComparer.Ordinal).Select(Audit).ToArray();
+        inventories.Add(new { entry = path, sha256 = Hash(File.ReadAllBytes(path)), methods });
+    }
+    finally { context.Unload(); }
+}
+File.WriteAllText(output, JsonSerializer.Serialize(inventories, new JsonSerializerOptions { WriteIndented = true }));
+Console.WriteLine($"Audited {inventories.Count} task-owned assemblies; no scenario methods executed.");
+
+CallerIdentity Audit(MethodInfo method)
+{
+    var body = method.GetMethodBody() ?? throw new InvalidOperationException("Missing IL");
+    var bytes = body.GetILAsByteArray()!;
+    var instructions = new List<object>();
+    var module = method.Module;
+    int cursor = 0;
+    while (cursor < bytes.Length)
+    {
+        int offset = cursor;
+        ushort raw = bytes[cursor++];
+        if (raw == 0xfe) { Require(1); raw = (ushort)(0xfe00 | bytes[cursor++]); }
+        if (!codes.TryGetValue(raw, out var code)) throw new InvalidDataException("Unknown opcode");
+        object operand;
+        int width;
+        switch (code.OperandType)
+        {
+            case OperandType.InlineNone: width = 0; break;
+            case OperandType.ShortInlineBrTarget: case OperandType.ShortInlineI: case OperandType.ShortInlineVar: width = 1; break;
+            case OperandType.InlineVar: width = 2; break;
+            case OperandType.InlineI8: case OperandType.InlineR: width = 8; break;
+            case OperandType.InlineSwitch:
+                Require(4); int count = BitConverter.ToInt32(bytes, cursor);
+                if (count < 0) throw new InvalidDataException("Negative switch size");
+                width = checked(4 + count * 4); break;
+            case OperandType.InlineBrTarget: case OperandType.InlineI: case OperandType.ShortInlineR:
+            case OperandType.InlineMethod: case OperandType.InlineField: case OperandType.InlineType:
+            case OperandType.InlineTok: case OperandType.InlineSig: case OperandType.InlineString: width = 4; break;
+            default: throw new NotSupportedException("Unsupported operand type " + code.OperandType);
+        }
+        Require(width);
+        if (code.OperandType is OperandType.InlineMethod or OperandType.InlineField or OperandType.InlineType or OperandType.InlineTok)
+            operand = Member(module.ResolveMember(BitConverter.ToInt32(bytes, cursor), method.DeclaringType!.GetGenericArguments(), method.GetGenericArguments())!);
+        else if (code.OperandType == OperandType.InlineString)
+            operand = module.ResolveString(BitConverter.ToInt32(bytes, cursor));
+        else if (code.OperandType == OperandType.InlineSig)
+            throw new NotSupportedException("Standalone call signatures require a separate semantic decoder");
+        else operand = Convert.ToHexString(bytes.AsSpan(cursor, width));
+        cursor += width;
+        instructions.Add(new { offset, opcode = code.Name, operand });
+    }
+    var canonical = new { signature = Member(method), body.InitLocals, body.MaxStackSize,
+        locals = body.LocalVariables.Select(v => new { type = TypeName(v.LocalType), v.IsPinned }),
+        exceptions = body.ExceptionHandlingClauses.Select(c => new { flags = c.Flags.ToString(), c.TryOffset, c.TryLength, c.HandlerOffset, c.HandlerLength,
+            catchType = c.Flags == ExceptionHandlingClauseOptions.Clause ? TypeName(c.CatchType!) : null,
+            filter = c.Flags == ExceptionHandlingClauseOptions.Filter ? c.FilterOffset : -1 }), instructions };
+    return new(method.DeclaringType!.FullName + "." + method.Name, Hash(bytes),
+        Hash(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(canonical))), canonical);
+    void Require(int size) { if (size < 0 || cursor > bytes.Length - size) throw new InvalidDataException("Truncated IL operand"); }
+}
+
+static string Member(MemberInfo member) => member switch
+{
+    MethodBase m => TypeName(m.DeclaringType!) + "::" + m.Name + "<" + string.Join(',', (m is MethodInfo generic ? generic.GetGenericArguments() : Type.EmptyTypes).Select(TypeName)) + ">(" +
+        string.Join(',', m.GetParameters().Select(p => TypeName(p.ParameterType))) + "):" + (m is MethodInfo info ? TypeName(info.ReturnType) : "void"),
+    FieldInfo f => TypeName(f.DeclaringType!) + "::" + f.Name + ":" + TypeName(f.FieldType),
+    Type t => TypeName(t),
+    _ => throw new NotSupportedException("Unsupported metadata operand " + member.MemberType)
+};
+static string TypeName(Type type) => type.IsByRef ? TypeName(type.GetElementType()!) + "&" : type.IsPointer ? TypeName(type.GetElementType()!) + "*" :
+    type.IsArray ? TypeName(type.GetElementType()!) + "[" + new string(',', type.GetArrayRank() - 1) + "]" :
+    type.IsGenericType ? type.GetGenericTypeDefinition().FullName + "<" + string.Join(',', type.GetGenericArguments().Select(TypeName)) + ">" : type.FullName ?? type.Name;
+static string Hash(byte[] bytes) => Convert.ToHexString(SHA256.HashData(bytes));
+
+static MethodInfo Fixture(bool reversed, bool changedCall, int constant)
+{
+    var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("AuditFalsifier" + Guid.NewGuid().ToString("N")), AssemblyBuilderAccess.RunAndCollect);
+    var type = assembly.DefineDynamicModule("fixture").DefineType("CallerAuditFixture", TypeAttributes.Public);
+    MethodBuilder Api(string name)
+    {
+        var method = type.DefineMethod(name, MethodAttributes.Public | MethodAttributes.Static, typeof(int), [typeof(int)]);
+        var code = method.GetILGenerator();code.Emit(OpCodes.Ldarg_0);code.Emit(OpCodes.Ret);return method;
+    }
+    MethodBuilder first, second;
+    if (reversed) { second = Api("Second");first = Api("First"); }
+    else { first = Api("First");second = Api("Second"); }
+    var kernel = type.DefineMethod("AfterBatch", MethodAttributes.Public | MethodAttributes.Static, typeof(int), [typeof(int)]);
+    var il = kernel.GetILGenerator();il.Emit(OpCodes.Ldarg_0);il.Emit(OpCodes.Call, changedCall ? second : first);il.Emit(OpCodes.Ldc_I4, constant);il.Emit(OpCodes.Add);il.Emit(OpCodes.Ret);
+    return type.CreateType()!.GetMethod("AfterBatch")!;
+}
+record CallerIdentity(string method, string rawIlSha256, string resolvedIlSha256, object canonical);

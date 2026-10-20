@@ -1,0 +1,79 @@
+using Xunit;
+
+namespace Tedd.Voxtree.Tests;
+
+public class LeafStateLookupTests
+{
+    [Theory]
+    [InlineData(254)]
+    [InlineData(255)]
+    [InlineData(256)]
+    public void JointStateCapacityIs255Or256WithoutWrappingThe257th(int valuesCount)
+    {
+        const int side = 8;
+        var values = Enumerable.Range(0, side * side * side).Select(i => (uint)(i % valuesCount)).ToArray();
+        var lods = new int[values.Length];
+        for (int x = 0; x < 2; x++) for (int y = 0; y < 2; y++) for (int z = 0; z < 2; z++)
+        {
+            int i = (x * side + y) * side + z;
+            values[i] = 0;
+            lods[i] = 1;
+        }
+        Assert.Equal(valuesCount + 1, values.Zip(lods).Distinct().Count());
+        var lookup = CheckSnapshot(3, values, lods);
+        Assert.Equal(valuesCount <= 255 ? values.Length + (valuesCount + 1) * 8 : 72 * 36, lookup.StorageBytes);
+    }
+
+    [Theory]
+    [InlineData(3)]
+    [InlineData(5)]
+    public void FullWidthValuesAtDifferentStoredLodsRemainDistinctStates(int levels)
+    {
+        int side = 1 << levels;
+        var values = Enumerable.Range(0, side * side * side).Select(i => i % 16 == 15 ? uint.MaxValue : (uint)(i % 16)).ToArray();
+        var lods = new int[values.Length];
+        int width = levels == 3 ? 2 : 8;
+        for (int x = 0; x < width; x++) for (int y = 0; y < width; y++) for (int z = 0; z < width; z++)
+        {
+            int i = (x * side + y) * side + z;
+            values[i] = 0;
+            lods[i] = levels == 3 ? 1 : 3;
+        }
+        for (int x = side - 2; x < side; x++) for (int y = side - 2; y < side; y++) for (int z = side - 2; z < side; z++)
+        {
+            int i = (x * side + y) * side + z;
+            values[i] = uint.MaxValue;
+            lods[i] = 1;
+        }
+        int states = values.Zip(lods).Distinct().Count();
+        var lookup = CheckSnapshot(levels, values, lods);
+        Assert.Equal(values.Length + states * 8, lookup.StorageBytes);
+    }
+
+    private static OctreeLookup CheckSnapshot(int levels, uint[] values, int[] lods)
+    {
+        int side = 1 << levels;
+        var source = new Octree(levels, values);
+        Assert.Equal(0, source.Data.Span[1] & 3);
+        var encoded = source.Data.ToArray();
+        var lookup = new OctreeSpan(encoded).CreateLookup();
+        Array.Clear(encoded);
+        source.BuildUniform(0);
+        Parallel.For(0, values.Length, i =>
+        {
+            int x = i / (side * side), y = i / side % side, z = i % side;
+            Assert.Equal(values[i], lookup.Get(x, y, z, out var lod));
+            Assert.Equal(lods[i], lod);
+            Assert.Equal(values[i], lookup.Get(x, y, z));
+            Assert.True(lookup.TryGet(x, y, z, out var value, out lod));
+            Assert.Equal(values[i], value);
+            Assert.Equal(lods[i], lod);
+            Assert.Equal(lods[i], lookup.GetLod(x, y, z, out value));
+            Assert.Equal(values[i], value);
+        });
+        Assert.False(lookup.TryGet(0, side, 0, out var invalid, out var invalidLod));
+        Assert.Equal(0u, invalid);
+        Assert.Equal(0, invalidLod);
+        return lookup;
+    }
+}

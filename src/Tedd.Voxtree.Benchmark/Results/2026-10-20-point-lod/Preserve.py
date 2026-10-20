@@ -20,6 +20,9 @@ root = args.task_root.resolve()
 if root.parent != Path("D:/Workspaces/AI").resolve():
     raise SystemExit("Expected a dedicated task directory under D:/Workspaces/AI")
 args.output.mkdir(parents=True, exist_ok=True)
+if any((args.output / name).exists() for name in
+       (f'evidence{suffix}.zip', f'evidence{suffix}.sha256', f'measurements{suffix}.csv')):
+    raise SystemExit('Evidence label exists; never overwrite a frozen archive or metric export')
 
 def unwrap(value):
     return json.loads(value["json"]) if isinstance(value, dict) and "json" in value else value
@@ -37,6 +40,7 @@ for path in sorted(root.glob("**/*comparison.json")) + sorted(root.glob("**/*obj
         latency = effect["metric"] == "scenario.ns_per_operation"
         rows.append({
             "evidence": str(path.relative_to(root)).replace("\\", "/"),
+            "work_unit": "sixteen public reads" if path.parent.name == "control-c3" else "registered scenario operation",
             "scope_validity": "unchanged_namespace_control" if path.parent.name == "p0-quiet" else "namespace_screening_only" if path.name.endswith("comparison.json") else "identical_caller_fresh_confirmation",
             "regime": "cpu_diagnostic" if path.parent.name.endswith("-diagnostic") else "fresh_normal" if path.name.endswith("objective_vector.json") else "descriptive_paired",
             "execution_id": value.get("execution_id"), "plan_id": value.get("plan_id"),
@@ -61,7 +65,7 @@ catalog_directories = {p.parent.name for p in catalogs}
 source_directories = {"baseline", "rig", "g2", "g3", "q1", "q2", "q3", "q4", "normal-baseline", "normal-candidate", "steady-baseline", "steady-candidate"}
 source_directories.update(p.parent.name for p in root.glob("*/Rig.csproj"))
 source_directories.update(p.name for p in root.iterdir() if p.is_dir() and (p.name.endswith("-baseline") or p.name.endswith("-source")))
-source_directories.update(p.name for p in root.iterdir() if p.is_dir() and p.name.startswith(('forcecraft-scanner', 'dense-byte-validation', 'packed-lookup-validation')))
+source_directories.update(p.name for p in root.iterdir() if p.is_dir() and p.name.startswith(('forcecraft-scanner', 'dense-byte-validation', 'packed-lookup-validation', 'caller-audit', 'footprint-')))
 manifest = []
 archive_path = args.output / f"evidence{suffix}.zip"
 with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
@@ -83,6 +87,8 @@ with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compre
             include = True
         if parts[0] in source_directories and not any(p in {"obj", "bin"} for p in parts[1:-1]):
             include = path.suffix in {".cs", ".csproj", ".txt", ".json"}
+            if parts[0].startswith('caller-audit') and path.suffix == '.dll':
+                include = True
         if parts[0] == "bundles":
             include = path.suffix in {".dll", ".json"}
         if parts[0].endswith("-results"):

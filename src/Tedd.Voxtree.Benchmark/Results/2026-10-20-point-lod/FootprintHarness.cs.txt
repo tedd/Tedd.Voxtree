@@ -1,0 +1,78 @@
+using System.Buffers.Binary;
+using System.IO.Compression;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Candidate = Tedd.Voxtree;
+using Baseline = Snapshot.Voxtree;
+
+using var archive = ZipFile.OpenRead(args[0]);
+var rows = new List<object>();
+foreach (var entry in archive.Entries.Where(e => e.FullName.EndsWith(".u16le")).OrderBy(e => e.FullName))
+{
+    using var stream = entry.Open();
+    var raw = new byte[checked((int)entry.Length)]; stream.ReadExactly(raw);
+    var values = new uint[raw.Length / 2]; var small = new ushort[values.Length];
+    for (int i = 0; i < values.Length; i++) values[i] = small[i] = BinaryPrimitives.ReadUInt16LittleEndian(raw.AsSpan(i * 2, 2));
+    var beforeCollections = Collections();
+    var before = new Baseline.Octree(5, values);
+    var after = new Candidate.Octree(5, values);
+    var beforeNarrow = new Baseline.Octree<ushort>(5, small);
+    var afterNarrow = new Candidate.Octree<ushort>(5, small);
+    var beforeData = ArrayOf(before.Data); var afterData = ArrayOf(after.Data);
+    var encodingGenerations = new { baseline = GC.GetGeneration(beforeData), candidate = GC.GetGeneration(afterData),
+        baselineUInt16 = GC.GetGeneration(ArrayOf(beforeNarrow.Data)), candidateUInt16 = GC.GetGeneration(ArrayOf(afterNarrow.Data)) };
+    _ = before.CreateLookup(); _ = after.CreateLookup();
+    long[] baselineAllocated = new long[5], candidateAllocated = new long[5];
+    Baseline.OctreeLookup baselineLookup = null!; Candidate.OctreeLookup candidateLookup = null!;
+    for (int trial = 0; trial < 5; trial++)
+    {
+        var start = GC.GetAllocatedBytesForCurrentThread(); baselineLookup = before.CreateLookup();
+        baselineAllocated[trial] = GC.GetAllocatedBytesForCurrentThread() - start;
+        start = GC.GetAllocatedBytesForCurrentThread(); candidateLookup = after.CreateLookup();
+        candidateAllocated[trial] = GC.GetAllocatedBytesForCurrentThread() - start;
+    }
+    var lookupArrays = new { baseline = Arrays(baselineLookup, beforeData), candidate = Arrays(candidateLookup, afterData) };
+    var afterCollections = Collections();
+    for (int i = 0; i < values.Length; i++)
+    {
+        int x = i / 1024, y = i / 32 % 32, z = i % 32;
+        var expected = before.Get(x, y, z, out int expectedLod);
+        if (expected != values[i] || after.Get(x, y, z, out int a) != expected || a != expectedLod ||
+            baselineLookup.Get(x, y, z, out int b) != expected || b != expectedLod ||
+            candidateLookup.Get(x, y, z, out int c) != expected || c != expectedLod ||
+            beforeNarrow.Get(x, y, z, out int d) != small[i] || d != expectedLod ||
+            afterNarrow.Get(x, y, z, out int e) != small[i] || e != expectedLod)
+            throw new Exception($"Footprint correctness failed: {entry.FullName}/{i}");
+    }
+    rows.Add(new { sample = entry.FullName, inputSha256 = Convert.ToHexStringLower(SHA256.HashData(raw)),
+        baselineEncodedBytes = before.EncodedLength, candidateEncodedBytes = after.EncodedLength,
+        baselineUInt16EncodedBytes = beforeNarrow.EncodedLength, candidateUInt16EncodedBytes = afterNarrow.EncodedLength,
+        baselineFormat = before.Data.Span[1], candidateFormat = after.Data.Span[1],
+        baselineUInt16Format = beforeNarrow.Data.Span[1], candidateUInt16Format = afterNarrow.Data.Span[1],
+        baselineLookupPayload = baselineLookup.StorageBytes, candidateLookupPayload = candidateLookup.StorageBytes,
+        baselineAllocated, candidateAllocated, encodingGenerations, lookupArrays,
+        collectionsBefore = beforeCollections, collectionsAfter = afterCollections, everyValueAndLodAgreed = true });
+}
+Console.WriteLine(JsonSerializer.Serialize(new { runtime = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription,
+    architecture = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture.ToString(),
+    entryAssembly = typeof(Candidate.Octree).Assembly.Location, rows }, new JsonSerializerOptions { WriteIndented = true }));
+
+static int[] Collections() => [GC.CollectionCount(0), GC.CollectionCount(1), GC.CollectionCount(2)];
+static byte[] ArrayOf(ReadOnlyMemory<byte> value) => MemoryMarshal.TryGetArray(value, out var segment) && segment.Array is not null
+    ? segment.Array : throw new Exception("Expected owned array storage");
+static object[] Arrays(object lookup, byte[] encoding)
+{
+    var result = new List<object>();
+    foreach (var field in lookup.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
+    {
+        var value = field.GetValue(lookup);
+        Array? array = value as Array;
+        if (value is ReadOnlyMemory<byte> memory && !memory.IsEmpty) array = ArrayOf(memory);
+        if (array is null || array.Length == 0) continue;
+        result.Add(new { field = field.Name, type = array.GetType().FullName, bytes = Buffer.ByteLength(array),
+            generation = GC.GetGeneration(array), sharesSourceEncoding = ReferenceEquals(array, encoding) });
+    }
+    return result.ToArray();
+}

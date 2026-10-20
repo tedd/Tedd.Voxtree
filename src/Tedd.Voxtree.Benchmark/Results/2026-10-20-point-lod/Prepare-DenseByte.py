@@ -1,19 +1,27 @@
 """Prepare P6 in the task-owned source fork; never edit production source."""
 import argparse
+import re
 from pathlib import Path
 import shutil
 import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument('task_root', type=Path)
+parser.add_argument('--name', default='dense-byte-source')
+parser.add_argument('--fixture-name', default='Scenarios-byte.cs.txt')
+parser.add_argument('--fixture-version', default='4')
 args = parser.parse_args()
 task = args.task_root.resolve()
 if task.parent != Path('D:/Workspaces/AI').resolve():
     raise SystemExit('Expected a dedicated task workspace')
 here = Path(__file__).resolve().parent
 repo = here.parents[3]
-fork = task / 'dense-byte-source'
-fork.mkdir(exist_ok=True)
+if not re.fullmatch('[a-z][a-z0-9-]*', args.name) or not re.fullmatch(r'[A-Za-z][A-Za-z0-9.-]*\.cs\.txt', args.fixture_name):
+    raise SystemExit('Invalid source/fixture label')
+fork = task / args.name
+if fork.exists():
+    raise SystemExit('Fork exists; inspect prior operations before recovery')
+fork.mkdir()
 paths = subprocess.check_output(['git', '-C', str(repo), 'ls-tree', '-r', '--name-only', 'f0772c8', '--', 'src/Tedd.Voxtree'], text=True).splitlines()
 for path in paths:
     if path.endswith('.cs'):
@@ -179,5 +187,5 @@ legacy = legacy.replace('if(!tree.Data.Span.SequenceEqual(before.Data.Span))thro
 legacy = legacy.replace('if((tree.Data.Span[1]&3)!=expectedKind)throw new Exception("Storage kind");', 'if((tree.Data.Span[1]&3)!=expectedKind && !(pattern=="full" && (tree.Data.Span[1]&3)==3))throw new Exception("Storage kind");')
 legacy = legacy.replace('new Octree(2,dense).Data.ToArray()', 'new Before.Octree(2,dense).Data.ToArray()')
 fixture = head + 'public sealed class LegacyScenario' + legacy + 'public sealed class WideScenario' + rest
-fixture = fixture.replace(',"3",', ',"4",')
-(here / 'Scenarios-byte.cs.txt').write_text(fixture, encoding='utf-8')
+fixture = fixture.replace(',"3",', f',"{args.fixture_version}",')
+(here / args.fixture_name).write_text(fixture, encoding='utf-8')

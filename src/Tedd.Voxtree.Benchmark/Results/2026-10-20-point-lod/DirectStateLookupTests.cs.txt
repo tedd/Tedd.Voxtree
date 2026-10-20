@@ -1,0 +1,66 @@
+using Xunit;
+
+namespace Tedd.Voxtree.Tests;
+
+public class DirectStateLookupTests
+{
+    [Theory]
+    [InlineData(3, 254)]
+    [InlineData(3, 255)]
+    [InlineData(3, 256)]
+    [InlineData(5, 16)]
+    public void DirectWordsRetainFullValuesAndJointStatesBeyondABytePalette(int levels, int distinct)
+    {
+        int side = 1 << levels;
+        var values = Enumerable.Range(0, side * side * side).Select(i => (uint)(i % distinct)).ToArray();
+        if (levels == 5) for (int i = 15; i < values.Length; i += 16) values[i] = uint.MaxValue;
+        int width = levels == 3 ? 2 : 8;
+        for (int x = 0; x < width; x++) for (int y = 0; y < width; y++) for (int z = 0; z < width; z++)
+            values[(x * side + y) * side + z] = 0;
+        var source = new Octree(levels, values);
+        Assert.Equal(0, source.Data.Span[1] & 3);
+        var expectedLods = Enumerable.Range(0, values.Length).Select(i => source.GetLod(i / (side * side), i / side % side, i % side, out _)).ToArray();
+        var backing = new byte[source.EncodedLength + 13];
+        source.Data.Span.CopyTo(backing.AsSpan(5));
+        var lookup = new OctreeSpan(backing.AsSpan(5, source.EncodedLength)).CreateLookup();
+        Assert.Equal(values.Length * 8, lookup.StorageBytes);
+        Array.Clear(backing);
+        source.BuildUniform(0);
+        Parallel.For(0, values.Length, i =>
+        {
+            int x = i / (side * side), y = i / side % side, z = i % side;
+            Assert.Equal(values[i], lookup.Get(x, y, z, out var lod));
+            Assert.Equal(expectedLods[i], lod);
+            Assert.Equal(values[i], lookup[x, y, z]);
+            Assert.True(lookup.TryGet(x, y, z, out var value, out lod));
+            Assert.Equal(values[i], value);
+            Assert.Equal(expectedLods[i], lod);
+        });
+    }
+
+    [Fact]
+    public void MaximumDepthSparseTreeUsesBoundedFallbackStorage()
+    {
+        int levels = Octree.MaxLevels;
+        var bytes = new List<byte> { 0x4f, (byte)((Octree.FormatVersion << 6) | (levels << 2)) };
+        int previous = 0, root = 0;
+        for (int level = 1; level <= levels; level++)
+        {
+            root = bytes.Count;
+            bytes.Add(level == 1 ? byte.MaxValue : (byte)254);
+            uint token = level == 1 ? 1u : (uint)(root - previous);
+            while (token >= 128) { bytes.Add((byte)(token | 128)); token >>= 7; }
+            bytes.Add((byte)token);
+            bytes.AddRange(new byte[7]);
+            previous = root;
+        }
+        bytes.Add((byte)(bytes.Count - root));
+        var source = Octree.FromEncoded(bytes.ToArray());
+        var lookup = source.CreateLookup();
+        Assert.Equal(levels * 36, lookup.StorageBytes);
+        Assert.Equal(1u, lookup.Get(0, 0, 0, out var lod));
+        Assert.Equal(0, lod);
+        Assert.Equal(0u, lookup.Get(source.SideLength - 1, source.SideLength - 1, source.SideLength - 1, out lod));
+        Assert.Equal(levels - 1, lod);
+    }
+}

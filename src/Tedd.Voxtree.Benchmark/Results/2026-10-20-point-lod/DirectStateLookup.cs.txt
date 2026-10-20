@@ -1,0 +1,58 @@
+using System;
+using System.Runtime.InteropServices;
+
+namespace Tedd.Voxtree;
+
+public sealed partial class OctreeLookup
+{
+    private static bool TryCompileDirectState(ReadOnlySpan<byte> body, int root, int levels,
+        int nodeCount, out uint[] result)
+    {
+        result = Array.Empty<uint>();
+        if (levels < 3 || levels > 6) return false;
+        int count = 1 << (levels * 3);
+        if (count * 8L > nodeCount * 36L * 4) return false;
+#if NET10_0_OR_GREATER
+        result = GC.AllocateUninitializedArray<uint>(checked(count * 2));
+#else
+        result = new uint[checked(count * 2)];
+#endif
+        // Validated tree children partition the full volume. Every output word
+        // is initialized before the constructor publishes the private snapshot.
+        WriteDirectState(body, root, levels, 0, 0, 0, levels,
+            MemoryMarshal.Cast<uint, ulong>(result.AsSpan()));
+        return true;
+    }
+
+    private static void WriteDirectState(ReadOnlySpan<byte> body, int node, int level,
+        int x, int y, int z, int levels, Span<ulong> output)
+    {
+        int cursor = node + 1, mask = body[node], half = 1 << (level - 1);
+        for (int child = 0; child < 8; child++)
+        {
+            OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
+            int a = x + (child >> 2) * half;
+            int b = y + ((child >> 1) & 1) * half;
+            int c = z + (child & 1) * half;
+            if ((mask & (1 << child)) == 0)
+                WriteDirectState(body, node - (int)token, level - 1, a, b, c, levels, output);
+            else
+            {
+                ulong state = ((ulong)(uint)(level - 1) << 32) | token;
+                if (half == 1) output[(a << (levels * 2)) + (b << levels) + c] = state;
+                else
+                    for (int xx = a; xx < a + half; xx++)
+                        for (int yy = b; yy < b + half; yy++)
+                            output.Slice((xx << (levels * 2)) + (yy << levels) + c, half).Fill(state);
+            }
+        }
+    }
+
+    private uint GetDirectState(int x, int y, int z, uint[] data, out int lod)
+    {
+        int index = (x << (Levels * 2)) + (y << Levels) + z;
+        ulong state = MemoryMarshal.Cast<uint, ulong>(data.AsSpan())[index];
+        lod = (int)(state >> 32);
+        return (uint)state;
+    }
+}

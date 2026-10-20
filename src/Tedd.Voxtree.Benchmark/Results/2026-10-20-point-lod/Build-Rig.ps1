@@ -29,7 +29,7 @@ try {
     $sourceDirectory = if ($CandidateSource) { $CandidateSource } else { Join-Path $repoRoot 'src/Tedd.Voxtree' }
     foreach ($file in Get-ChildItem $sourceDirectory -Filter '*.cs') {
         $relative = 'src/Tedd.Voxtree/' + $file.Name
-        if ($baselineFiles -contains $relative) {
+        if (($BaselineSource -and (Test-Path -LiteralPath (Join-Path $BaselineSource $file.Name))) -or $baselineFiles -contains $relative) {
             if ($BaselineSource) {
                 $original = Get-Content -LiteralPath (Join-Path $BaselineSource $file.Name) -Raw
             } else {

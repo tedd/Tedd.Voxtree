@@ -1,5 +1,8 @@
 # Point and stored-LOD investigation: first confirmation
 
+Later layout, admission, control and packed-leaf evidence is retained in
+[REPORT-PHASE3.md](REPORT-PHASE3.md). This report preserves the earlier epoch.
+
 Baseline: `f0772c8`. Integration branch: `main`. The active objective remains
 10x for every public method; this investigation does not establish that result.
 The selected implementation is pending precision and guard verification and is

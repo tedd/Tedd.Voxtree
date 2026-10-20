@@ -1,0 +1,289 @@
+using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace Tedd.Voxtree;
+
+/// <summary>An immutable point-lookup snapshot with predecoded 32-bit child indexes.</summary>
+/// <remarks>
+/// Create with <see cref="Octree.CreateLookup"/> or <see cref="OctreeSpan.CreateLookup"/> when repeated reads justify compilation and
+/// extra memory. Fully expanded trees compile to dense values; other tree nodes occupy 36 bytes each.
+/// Dense storage is borrowed from the immutable
+/// source snapshot when available; borrowed dense spans are copied. Uniform storage retains one value. Rebuilding the source does not change
+/// this snapshot. Concurrent reads need no locks. Serialized bytes retain their existing format.
+/// </remarks>
+public sealed class OctreeLookup
+{
+    private const int NodeWords = 9;
+    private readonly uint[]? _nodes;
+    private readonly ReadOnlyMemory<byte> _dense;
+    private readonly uint _uniform;
+
+    internal OctreeLookup(ReadOnlySpan<byte> encoded, ReadOnlyMemory<byte> ownedEncoding)
+    {
+        var view = new OctreeSpan(encoded);
+        if (!view.IsWellFormed()) throw new FormatException("The octree data is malformed.");
+        Levels = view.Levels;
+        var kind = OctreeCodec.GetStorageKindUnchecked(encoded);
+        if (kind == StorageKind.Dense)
+        {
+            _dense = ownedEncoding.IsEmpty ? encoded.ToArray() : ownedEncoding;
+            return;
+        }
+        if (kind == StorageKind.Uniform)
+        {
+            var cursor = OctreeCodec.HeaderSize;
+            OctreeCodec.TryReadVarUInt(encoded, ref cursor, out _uniform);
+            return;
+        }
+
+        var body = encoded[..^1];
+        var root = body.Length - encoded[^1];
+        var nodeCount = CountNodes(body, root);
+        // A full 8-ary tree has (leaves - 1) / 7 internal nodes. Reaching
+        // that maximum proves every stored leaf is one voxel, preserving LOD 0.
+        if (BitConverter.IsLittleEndian && nodeCount == (Count - 1) / 7)
+        {
+            var dense = new byte[checked(OctreeCodec.HeaderSize + Count * sizeof(uint))];
+            encoded[..OctreeCodec.HeaderSize].CopyTo(dense);
+            dense[1] |= (byte)StorageKind.Dense;
+            CompileDense(body, root, Levels, SideLength, 0,
+                MemoryMarshal.Cast<byte, uint>(dense.AsSpan(OctreeCodec.HeaderSize)));
+            _dense = dense;
+            return;
+        }
+        // A perfect node count is only a candidate: mixed leaf depths can have
+        // the same count. Verify the topology before using one value per leaf.
+        var gridCount = checked(nodeCount * 7 + 1);
+        var remaining = gridCount;
+        var gridLevels = 0;
+        while (remaining > 1 && (remaining & 7) == 0)
+        {
+            remaining >>= 3;
+            gridLevels++;
+        }
+        if (remaining == 1 && gridLevels >= 2 && gridLevels < Levels &&
+            IsRegularGrid(body, root, gridLevels))
+        {
+            var grid = new uint[gridCount];
+            CompileDense(body, root, gridLevels, 1 << gridLevels, 0, grid);
+            _nodes = grid;
+            // With a node/grid array present, zero denotes the node index and
+            // a positive value denotes the grid's common stored leaf LOD.
+            _uniform = (uint)(Levels - gridLevels);
+            return;
+        }
+        _nodes = new uint[checked(nodeCount * NodeWords)];
+        var next = 0;
+        Compile(body, root, _nodes, ref next);
+    }
+
+    /// <summary>The depth of the captured volume.</summary>
+    public int Levels { get; }
+    /// <summary>The number of voxels along each axis.</summary>
+    public int SideLength => 1 << Levels;
+    /// <summary>The number of represented voxels.</summary>
+    public int Count => 1 << (Levels * 3);
+    /// <summary>Backing payload bytes, excluding CLR object headers; dense bytes are shared with the source.</summary>
+    public int StorageBytes => _nodes is not null ? _nodes.Length * sizeof(uint) :
+        !_dense.IsEmpty ? _dense.Length : sizeof(uint);
+    /// <summary>Gets a value from this snapshot.</summary>
+    public uint this[int x, int y, int z] => Get(x, y, z);
+
+    /// <summary>Gets a value, throwing when a coordinate is outside the volume.</summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public uint Get(int x, int y, int z)
+    {
+        if ((uint)x >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(x), x);
+        if ((uint)y >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(y), y);
+        if ((uint)z >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(z), z);
+        return GetUnchecked(x, y, z);
+    }
+
+    /// <summary>Gets the voxel value and the LOD level of its stored leaf in one query.</summary>
+    /// <param name="x">Voxel X coordinate.</param>
+    /// <param name="y">Voxel Y coordinate.</param>
+    /// <param name="z">Voxel Z coordinate.</param>
+    /// <param name="lodLevel">Zero for a single voxel; N for an aligned uniform cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</param>
+    /// <exception cref="ArgumentOutOfRangeException">A coordinate is outside the volume.</exception>
+    public uint Get(int x, int y, int z, out int lodLevel)
+    {
+        lodLevel = 0;
+        if ((uint)x >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(x), x);
+        if ((uint)y >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(y), y);
+        if ((uint)z >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(z), z);
+        return GetUnchecked(x, y, z, out lodLevel);
+    }
+
+    /// <summary>Gets the stored leaf LOD level at a coordinate and returns its voxel value.</summary>
+    /// <remarks>LOD zero is one voxel, and LOD N is an aligned uniform cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</remarks>
+    public int GetLod(int x, int y, int z, out uint value)
+    {
+        value = Get(x, y, z, out var lodLevel);
+        return lodLevel;
+    }
+
+    /// <summary>Attempts to get a value and its stored leaf LOD level; failure returns zero in both outputs.</summary>
+    /// <remarks>LOD zero is one voxel, and LOD N is an aligned cube with side 2^N.
+    /// Uniform storage returns <see cref="Levels"/>; dense storage returns zero.</remarks>
+    public bool TryGet(int x, int y, int z, out uint value, out int lodLevel)
+    {
+        value = default;
+        lodLevel = 0;
+        if ((uint)(x | y | z) >= (uint)SideLength) return false;
+        value = GetUnchecked(x, y, z, out lodLevel);
+        return true;
+    }
+
+    /// <summary>Attempts a read, returning false for coordinates outside the volume.</summary>
+    public bool TryGet(int x, int y, int z, out uint value)
+    {
+        if ((uint)(x | y | z) >= (uint)SideLength)
+        {
+            value = default;
+            return false;
+        }
+        value = GetUnchecked(x, y, z);
+        return true;
+    }
+
+    private uint GetUnchecked(int x, int y, int z)
+        => GetUnchecked(x, y, z, out _);
+
+    private uint GetUnchecked(int x, int y, int z, out int lodLevel)
+    {
+        lodLevel = 0;
+        var nodes = _nodes;
+        if (nodes is null)
+        {
+            if (_dense.IsEmpty)
+            {
+                lodLevel = Levels;
+                return _uniform;
+            }
+            var index = ((x << Levels) + y) * SideLength + z;
+            return BinaryPrimitives.ReadUInt32LittleEndian(_dense.Span.Slice(
+                OctreeCodec.HeaderSize + index * sizeof(uint), sizeof(uint)));
+        }
+        if (_uniform != 0)
+        {
+            lodLevel = (int)_uniform;
+            var gridLevels = Levels - lodLevel;
+            var index = (((x >> lodLevel) << gridLevels) + (y >> lodLevel)) << gridLevels;
+            return nodes[index + (z >> lodLevel)];
+        }
+        var offset = 0;
+        for (var bit = Levels - 1; bit >= 0; bit--)
+        {
+            var child = (((x >> bit) & 1) << 2) | (((y >> bit) & 1) << 1) | ((z >> bit) & 1);
+            var token = nodes[offset + child + 1];
+            if ((nodes[offset] & (1u << child)) != 0)
+            {
+                lodLevel = bit;
+                return token;
+            }
+            offset = (int)token;
+        }
+        // Construction validates the complete source before compiling the private index.
+        return OctreeThrowHelper.ThrowMalformed();
+    }
+
+    private static bool IsRegularGrid(ReadOnlySpan<byte> body, int offset, int levels)
+    {
+        if (levels == 1) return body[offset] == byte.MaxValue;
+        if (body[offset] != 0) return false;
+        var cursor = offset + 1;
+        for (var child = 0; child < 8; child++)
+        {
+            OctreeCodec.TryReadVarUInt(body, ref cursor, out var distance);
+            if (!IsRegularGrid(body, offset - (int)distance, levels - 1)) return false;
+        }
+        return true;
+    }
+
+    private static int CountNodes(ReadOnlySpan<byte> body, int offset)
+    {
+        var cursor = offset;
+        var mask = body[cursor++];
+        // Construction has already validated every token. With no internal
+        // children, values cannot affect the node count.
+        if (mask == byte.MaxValue) return 1;
+        var count = 1;
+#if NET10_0_OR_GREATER
+        if (PackedVoxelSearch.TryReadTokens(body, offset, out var packed))
+        {
+            for (var child = 0; child < 8; child++, packed >>= 8)
+                if ((mask & (1 << child)) == 0) count += CountNodes(body, offset - (byte)packed);
+            return count;
+        }
+#endif
+        for (var child = 0; child < 8; child++)
+        {
+            OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
+            if ((mask & (1 << child)) == 0) count += CountNodes(body, offset - (int)token);
+        }
+        return count;
+    }
+
+    private static int Compile(ReadOnlySpan<byte> body, int offset, uint[] nodes, ref int next)
+    {
+        var result = next;
+        next += NodeWords;
+        var cursor = offset;
+        var mask = body[cursor++];
+        nodes[result] = mask;
+#if NET10_0_OR_GREATER
+        if (PackedVoxelSearch.TryReadTokens(body, offset, out var packed))
+        {
+            for (var child = 0; child < 8; child++, packed >>= 8)
+            {
+                var token = (byte)packed;
+                nodes[result + child + 1] = (mask & (1 << child)) != 0
+                    ? token : (uint)Compile(body, offset - token, nodes, ref next);
+            }
+            return result;
+        }
+#endif
+        for (var child = 0; child < 8; child++)
+        {
+            OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
+            nodes[result + child + 1] = (mask & (1 << child)) != 0
+                ? token : (uint)Compile(body, offset - (int)token, nodes, ref next);
+        }
+        return result;
+    }
+
+    // The validated maximum node count guarantees internal children above
+    // level one and value tokens at level one. Store each value exactly once.
+    private static void CompileDense(ReadOnlySpan<byte> body, int offset, int level,
+        int side, int origin, Span<uint> output)
+    {
+#if NET10_0_OR_GREATER
+        if (level == 1 && PackedVoxelSearch.TryReadTokens(body, offset, out var packed))
+        {
+            output[origin] = (byte)packed;
+            output[origin + 1] = (byte)(packed >> 8);
+            output[origin + side] = (byte)(packed >> 16);
+            output[origin + side + 1] = (byte)(packed >> 24);
+            origin += side * side;
+            output[origin] = (byte)(packed >> 32);
+            output[origin + 1] = (byte)(packed >> 40);
+            output[origin + side] = (byte)(packed >> 48);
+            output[origin + side + 1] = (byte)(packed >> 56);
+            return;
+        }
+#endif
+        var cursor = offset + 1;
+        var half = 1 << (level - 1);
+        for (var child = 0; child < 8; child++)
+        {
+            OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
+            var destination = origin + (child >> 2) * half * side * side +
+                              ((child >> 1) & 1) * half * side + (child & 1) * half;
+            if (level == 1) output[destination] = token;
+            else CompileDense(body, offset - (int)token, level - 1, side, destination, output);
+        }
+    }
+}

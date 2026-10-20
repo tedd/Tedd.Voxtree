@@ -84,3 +84,28 @@ complete lifecycles per batch; point counts, primes, 12-pair budget and policies
 remain unchanged. All old results stay separate. This is a prospective budget
 correction to fit complete work within the 120-second execution limit, not
 sample replacement or precision qualification. Candidate code remains frozen.
+
+## P7w: exact array representation (prospective)
+
+The P7 Tier1 packed helper is 346 native bytes with a 56-byte fixed stack
+reservation and a ReadOnlyMemory span path containing possible MemoryManager
+dispatch, span-bound validation and three subsequent range checks. The complete
+value-only caller is 628 bytes versus the original index's 338. These are code
+observations, not a measured cost attribution.
+
+Test a separate word-grid source fork: one UInt32 array holds 16 full-width
+palette slots, then eight voxel-index nibbles per word and eight LOD nibbles per
+word. Direct array reads remove the MemoryManager-capable span conversion and
+one CLR array allocation. Logical shifts make packing independent of host byte
+order. All public semantics, eligibility and the conservative payload bound
+stay fixed; padding unused palette slots adds at most 60 payload bytes while
+removing one array header. Preserve the original P7 and bounded screens.
+
+First compare P7w to the exact P7 source (not f0772c8) with identical version-6
+terrain callers, all-voxel/LOD oracles, 16 compiled scenarios and the frozen
+bounded-lifecycle screening budget. Inspect actual default-tiered native code
+and fixed stack reservations separately. Cross-check 2/16/17-entry palettes,
+UInt32 extremes, coarse/fine boundaries, ownership and concurrency. Value-only
+specialization and unsafe indexing are excluded from this first causal change.
+Any promising source still requires fresh confirmation against the original
+API baseline, full synthetic fallback guards and resolved adoption tradeoffs.

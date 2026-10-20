@@ -1,0 +1,39 @@
+// Read-only Windows x64 core topology. Layout follows PROCESSOR_RELATIONSHIP:
+// https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-processor_relationship
+using System.Runtime.InteropServices;
+using System.Text.Json;
+
+if (!OperatingSystem.IsWindows() || IntPtr.Size != 8) throw new PlatformNotSupportedException("Windows x64 probe");
+if (args.Length != 1 || !Path.GetFullPath(args[0]).StartsWith(@"D:\Workspaces\AI\voxtree-point-lod-20261020\", StringComparison.OrdinalIgnoreCase)) throw new ArgumentException("Task-local output required");
+uint length = 0;
+if (Native.GetLogicalProcessorInformationEx(0, 0, ref length) || Marshal.GetLastWin32Error() != 122 || length is 0 or > 1048576)
+    throw new InvalidOperationException("Unexpected topology sizing response");
+nint memory = Marshal.AllocHGlobal(checked((int)length));
+try
+{
+    if (!Native.GetLogicalProcessorInformationEx(0, memory, ref length)) throw new System.ComponentModel.Win32Exception();
+    var cores = new List<object>();
+    int cursor = 0;
+    while (cursor < length)
+    {
+        if (length - cursor < 48) throw new InvalidDataException("Topology record truncated");
+        int relation = Marshal.ReadInt32(memory, cursor), size = Marshal.ReadInt32(memory, cursor + 4);
+        if (relation != 0 || size < 48 || size > length - cursor || Marshal.ReadInt16(memory, cursor + 30) != 1)
+            throw new InvalidDataException("Unsupported core topology record");
+        ulong mask = unchecked((ulong)Marshal.ReadInt64(memory, cursor + 32));
+        int group = (ushort)Marshal.ReadInt16(memory, cursor + 40);
+        var logical = Enumerable.Range(0, 64).Where(i => (mask & (1UL << i)) != 0).ToArray();
+        if (logical.Length == 0) throw new InvalidDataException("Empty core affinity");
+        cores.Add(new { group, logical, flags = Marshal.ReadByte(memory, cursor + 8), efficiencyClass = Marshal.ReadByte(memory, cursor + 9), nativeSize = size });
+        cursor += size;
+    }
+    File.WriteAllText(args[0], JsonSerializer.Serialize(cores, new JsonSerializerOptions { WriteIndented = true }));
+    Console.WriteLine($"Read {cores.Count} physical core records without changing affinity.");
+}
+finally { Marshal.FreeHGlobal(memory); }
+static class Native
+{
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool GetLogicalProcessorInformationEx(int relationship, nint buffer, ref uint returnedLength);
+}

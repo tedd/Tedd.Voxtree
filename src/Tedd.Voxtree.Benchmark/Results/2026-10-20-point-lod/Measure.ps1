@@ -5,7 +5,7 @@ param(
     [string]$Filter = '*',
     [string[]]$SelectedScenarios = @(),
     [string]$Label = 'exploration',
-    [ValidateSet('fixed','scaled','precision','bounded-lifecycle')][string]$Budget = 'fixed',
+    [ValidateSet('fixed','scaled','precision','bounded-lifecycle','bounded-point')][string]$Budget = 'fixed',
     [ValidateSet('quiet-validation','cpu-diagnostic')][string]$Profile = 'quiet-validation',
     [string]$JitDisasm = '',
     [string]$JitAssembly = '',
@@ -106,6 +106,9 @@ try {
                 elseif($scenario.id -like '*-Huge-*-long-*'){1048576}
                 elseif($scenario.id -like '*-sparse-*'){4194304}else{2097152}
         }
+        if ($Budget -eq 'bounded-point') {
+            $operations=if($scenario.id -like '*-create'){256}elseif($scenario.id -like '*-lifecycle'){16}else{2097152}
+        }
         $plan = Invoke-Lab 'lab.experiment' @{
             action='create_plan';scenario_id=$scenario.id;scenario_version=$scenario.version;input_hash=$scenario.input_hash
             variants=@('baseline','candidate');blocks=12;operations_per_run=$operations;warmup_batches=4;seed='20261022'
@@ -149,7 +152,14 @@ try {
             Start-Sleep -Milliseconds 100
             $op = Invoke-Lab 'lab.run' @{action='status';operation_id=$op.id}
         }
-        if ($op.state -ne 'completed') { throw ($op | ConvertTo-Json -Depth 30) }
+        $op | ConvertTo-Json -Depth 30 | Set-Content -LiteralPath (Join-Path $Workspace "$Label-$($item.scenario)-terminal.json")
+        if ($op.state -ne 'completed') {
+            if ($op.result_id) {
+                Invoke-Lab 'lab.inspect' @{action='record';id=$op.result_id} |
+                    ConvertTo-Json -Depth 60 | Set-Content -LiteralPath (Join-Path $Workspace "$Label-$($item.scenario)-failed-execution.json")
+            }
+            throw ($op | ConvertTo-Json -Depth 30)
+        }
         $result = Invoke-Lab 'lab.inspect' @{action='record';id=$op.result_id}
         $execution = $result.json | ConvertFrom-Json -Depth 50
         if ($execution.capture_id) {
@@ -184,6 +194,13 @@ finally {
         $targetProcess.StandardInput.WriteLine('shutdown'); $targetProcess.StandardInput.Close()
         if (-not $targetProcess.WaitForExit(30000)) { throw 'Owned harness did not exit; preserve its workspace.' }
     }
+    @{targetId=$identity.id;targetPid=$(if($targetProcess){$targetProcess.Id}else{$null});
+        targetExited=$(if($targetProcess){$targetProcess.HasExited}else{$null});
+        targetExitCode=$(if($targetProcess -and $targetProcess.HasExited){$targetProcess.ExitCode}else{$null});
+        controllerPid=$(if($controller){$controller.Id}else{$null});
+        controllerExited=$(if($controller){$controller.HasExited}else{$null});
+        checkedAt=[DateTimeOffset]::UtcNow.ToString('O')} | ConvertTo-Json |
+        Set-Content -LiteralPath (Join-Path $Workspace "$Label-shutdown.json")
     if ($preparationLeases) { Exit-VoxtreePerformanceHost $preparationLeases }
     Exit-VoxtreePerformanceHost $hostLeases
 }

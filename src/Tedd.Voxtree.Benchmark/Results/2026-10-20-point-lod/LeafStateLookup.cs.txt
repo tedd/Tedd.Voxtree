@@ -1,0 +1,102 @@
+using System;
+
+namespace Tedd.Voxtree;
+
+public sealed partial class OctreeLookup
+{
+    // Prefix pairs contain exact value and leaf LOD. The remaining words each
+    // contain four byte-sized state indices, independent of native byte order.
+    private static bool TryCompilePacked(ReadOnlySpan<byte> body, int root, int levels,
+        int nodeCount, out uint[] result, out uint prefixWords)
+    {
+        result = Array.Empty<uint>();
+        prefixWords = 0;
+        int count = 1 << (levels * 3);
+        if (levels < 3 || count + 16L > nodeCount * 36L) return false;
+        Span<ulong> states = stackalloc ulong[256];
+        int used = 0;
+        if (!CollectStates(body, root, levels, states, ref used) || count + used * 8L > nodeCount * 36L) return false;
+        prefixWords = (uint)(used * 2);
+        result = new uint[checked(used * 2 + count / 4)];
+        for (int i = 0; i < used; i++)
+        {
+            result[i * 2] = (uint)states[i];
+            result[i * 2 + 1] = (uint)(states[i] >> 32);
+        }
+        WriteStates(body, root, levels, 0, 0, 0, levels, states[..used], (int)prefixWords, result);
+        return true;
+    }
+
+    private static bool CollectStates(ReadOnlySpan<byte> body, int node, int level, Span<ulong> states, ref int used)
+    {
+        int cursor = node + 1, mask = body[node];
+        for (int child = 0; child < 8; child++)
+        {
+            OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
+            if ((mask & (1 << child)) == 0)
+            {
+                if (!CollectStates(body, node - (int)token, level - 1, states, ref used)) return false;
+                continue;
+            }
+            ulong state = ((ulong)(uint)(level - 1) << 32) | token;
+            int index = 0;
+            while (index < used && states[index] != state) index++;
+            if (index != used) continue;
+            if (used == states.Length) return false;
+            states[used++] = state;
+        }
+        return true;
+    }
+
+    private static void WriteStates(ReadOnlySpan<byte> body, int node, int level,
+        int x, int y, int z, int levels, ReadOnlySpan<ulong> states, int prefix, uint[] result)
+    {
+        int cursor = node + 1, mask = body[node], half = 1 << (level - 1);
+        for (int child = 0; child < 8; child++)
+        {
+            OctreeCodec.TryReadVarUInt(body, ref cursor, out var token);
+            int a = x + (child >> 2) * half;
+            int b = y + ((child >> 1) & 1) * half;
+            int c = z + (child & 1) * half;
+            if ((mask & (1 << child)) == 0)
+                WriteStates(body, node - (int)token, level - 1, a, b, c, levels, states, prefix, result);
+            else
+            {
+                ulong state = ((ulong)(uint)(level - 1) << 32) | token;
+                int index = states.IndexOf(state);
+                if (index < 0) throw new InvalidOperationException("Leaf-state construction");
+                for (int xx = a; xx < a + half; xx++)
+                    for (int yy = b; yy < b + half; yy++)
+                        FillStateBytes(result, prefix, (xx << (levels * 2)) + (yy << levels) + c, half, (uint)index);
+            }
+        }
+    }
+
+    private static void FillStateBytes(uint[] result, int prefix, int start, int count, uint value)
+    {
+        while ((start & 3) != 0 && count != 0)
+        {
+            SetStateByte(result, prefix, start++, value);
+            count--;
+        }
+        int whole = count / 4;
+        if (whole != 0) result.AsSpan(prefix + start / 4, whole).Fill(value * 0x01010101u);
+        start += whole * 4;
+        count -= whole * 4;
+        while (count-- != 0) SetStateByte(result, prefix, start++, value);
+    }
+
+    private static void SetStateByte(uint[] result, int prefix, int index, uint value)
+    {
+        int shift = (index & 3) * 8, word = prefix + index / 4;
+        result[word] = (result[word] & ~(255u << shift)) | (value << shift);
+    }
+
+    private uint GetPacked(int x, int y, int z, uint[] data, out int lod)
+    {
+        int index = (x << (Levels * 2)) + (y << Levels) + z;
+        int state = (int)((data[(int)_uniform + (index >> 2)] >> ((index & 3) << 3)) & 255) * 2;
+        lod = (int)data[state + 1];
+        return data[state];
+    }
+}
