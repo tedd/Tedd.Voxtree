@@ -1,0 +1,447 @@
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using Tedd.DotNetLab.Contracts;
+using Tedd.DotNetLab.Harness;
+using Tedd.Voxtree;
+using Before = Snapshot.Voxtree;
+
+FixtureMode.Validation = args[0] == "--validate";
+if (OperatingSystem.IsWindows()) Process.GetCurrentProcess().ProcessorAffinity = (nint)4;
+if(args[0]=="--fuzz") {LegacyScenario.Fuzz();WideScenario.Fuzz();HugeScenario.Fuzz();return;}
+var registry = new ScenarioRegistry();
+foreach (var pattern in new[]{"full","coarse","long","sparse","uniform","dense"})
+foreach (var op in new[]{"get","lod"}) registry.Register(new LegacyScenario(5,pattern,"owned",op));
+foreach (var op in new[]{"get","lod"}) registry.Register(new LegacyScenario(5,"full","span",op));
+registry.Register(new LegacyScenario(5,"long","span","lod"));
+foreach (var op in new[]{"try","trylod","getlod","indexer"}) registry.Register(new LegacyScenario(5,"full","owned",op));
+foreach (var op in new[]{"get","lod"}) registry.Register(new LegacyScenario(5,"full","sequential",op));
+foreach (var pattern in new[]{"full","sparse"})
+foreach (var op in new[]{"get","lod"}) registry.Register(new LegacyScenario(5,pattern,"compiled",op));
+foreach (var pattern in new[]{"coarse","long"})
+foreach (var op in new[]{"get","lod"}) registry.Register(new LegacyScenario(5,pattern,"compiled",op));
+foreach (var pattern in new[]{"full","coarse","sparse"})
+foreach (var op in new[]{"create","lifecycle"}) registry.Register(new LegacyScenario(5,pattern,"compiled",op));
+foreach (var levels in new[]{3,6})
+foreach (var op in new[]{"get","lod"}) registry.Register(new LegacyScenario(levels,"full","owned",op));
+foreach (var pattern in new[]{"full","coarse","long"})
+foreach (var op in new[]{"get","lod"}) registry.Register(new WideScenario(5,pattern,"owned",op));
+foreach (var pattern in new[]{"full","long"})
+foreach (var op in new[]{"get","lod"}) registry.Register(new HugeScenario(5,pattern,"owned",op));
+foreach (var op in new[]{"get","lod"}) registry.Register(new WideScenario(5,"full","span",op));
+if (args[0] == "--inventory") {
+    var flags=System.Reflection.BindingFlags.Public|System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.Static|System.Reflection.BindingFlags.DeclaredOnly;
+    Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(typeof(Octree).Assembly.GetExportedTypes().Where(t=>t.Namespace=="Tedd.Voxtree").OrderBy(t=>t.FullName).Select(t=>new {type=t.FullName,methods=t.GetMethods(flags).Select(m=>m.ToString()),constructors=t.GetConstructors(flags).Select(c=>c.ToString())})));
+    return;
+}
+if(args[0]=="--callers") {
+    var types=new[]{typeof(LegacyScenario),typeof(WideScenario),typeof(HugeScenario)};
+    var inventory=types.SelectMany(t=>t.GetMethods(System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance).Where(m=>m.Name.StartsWith("AfterBatch")).Select(m=>new {method=t.Name+"."+m.Name,sha256=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(m.GetMethodBody()!.GetILAsByteArray()!))}));
+    Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(inventory));return;
+}
+if (args[0] is "--validate" or "--code") {
+    foreach (var d in registry.Describe()) {
+        if(args.Length>1&&!d.Id.Contains(args[1]))continue;
+        var s=(ISynchronousScenario)registry.Get(d.Id);
+        foreach(var v in new[]{"baseline","candidate"}) {
+            s.Prepare(new ScenarioContext(v,CancellationToken.None));
+            s.Reset(new ResetContext(ResetLevel.LogicalState));
+            s.ExecuteBatch(d.Id.EndsWith("-create")||d.Id.EndsWith("-lifecycle")?1:args[0]=="--code"?65536:2048);
+            if(!s.Validate().Correct)throw new InvalidOperationException(d.Id+v);
+            s.Cleanup();
+        }
+        Console.WriteLine(d.Id+" valid");
+    }
+    return;
+}
+var host=new HarnessHost(registry,args[1]);
+if(args[0]=="--harness-owned"||Environment.GetEnvironmentVariable("DOTNET_EnableDiagnostics")=="0")await host.RunOwnedAsync();
+else {
+    Console.WriteLine(Wire.Serialize(host.Target));
+    using var cancel=new CancellationTokenSource();
+    _=Task.Run(async()=>{await Console.In.ReadLineAsync();cancel.Cancel();});
+    await host.ListenAsync(cancel.Token);
+}
+public static class FixtureMode {public static bool Validation;}
+
+public sealed class LegacyScenario : ISynchronousScenario {
+    private readonly int levels,side;
+    private readonly string pattern,access,op;
+    private readonly (int X,int Y,int Z)[] points=new (int,int,int)[1024];
+    private readonly long[] prefix=new long[1025];
+    private readonly uint[] values;
+    private Octree tree=null!;
+    private Before.Octree before=null!;
+    private OctreeLookup lookup=null!;private Before.OctreeLookup beforeLookup=null!;private int beforeBytes,afterBytes;
+    private bool initialized,baseline,beforePrimed,afterPrimed;
+    private int position;
+    private long sum,completed;
+    public LegacyScenario(int levels,string pattern,string access,string op) {
+        this.levels=levels;side=1<<levels;this.pattern=pattern;this.access=access;this.op=op;
+        values=new uint[side*side*side];
+    }
+    public ScenarioDescriptor Describe()=>new($"point-Legacy-L{levels}-{pattern}-{access}-{op}","2",
+        Wire.Hash(new{levels,pattern,access,op,seed=20261022,points=1024,lifecycleReads=65536,affinity=4,primeMs=1000,consumer="unchecked-full-value-fold-plus-lod"}),
+        ResetLevel.LogicalState,ThreadAffinity.Any,false,op=="create"?"One complete CreateLookup":op=="lifecycle"?"One CreateLookup plus 65536 public reads":"One complete public point or stored-LOD read",["baseline","candidate"]);
+    private int ExpectedLod(int x,int y,int z) {
+        if(pattern=="uniform")return levels;
+        if(pattern is "coarse" or "long")return Math.Min(2,levels);
+        if(pattern!="sparse")return 0;
+        for(var lod=levels;lod>0;lod--) {
+            var size=1<<lod;var a=x&-size;var b=y&-size;var c=z&-size;
+            if(!(a==0&&b==0&&c==0)&&!(a+size==side&&b+size==side&&c+size==side))return lod;
+        }
+        return 0;
+    }
+    private void Initialize() {
+        if(initialized)return;
+        for(var x=0;x<side;x++)for(var y=0;y<side;y++)for(var z=0;z<side;z++) {
+            var index=(x*side+y)*side+z;
+            var code=(uint)((x*13+y*7+z)&31);
+            var coarse=(uint)(((x>>2)*13+(y>>2)*7+(z>>2))&31);
+            values[index]=pattern switch {
+                "uniform"=>(uint)7,"sparse"=>(uint)(index==0?1u:index==values.Length-1?2u:0u),
+                "coarse"=>(uint)coarse,"long"=>((uint)1<<27)+(uint)coarse,
+                "dense"=>(uint)unchecked((uint)index*2654435761u),_ =>(uint)code
+            };
+        }
+        tree=new Octree(levels,values);before=new Before.Octree(levels,values);
+        if(!tree.Data.Span.SequenceEqual(before.Data.Span))throw new Exception("Encoding parity");
+        var expectedKind=pattern=="uniform"?1:pattern=="dense"?2:0;
+        if((tree.Data.Span[1]&3)!=expectedKind)throw new Exception("Storage kind");
+        lookup=tree.CreateLookup();beforeLookup=before.CreateLookup();beforeBytes=beforeLookup.StorageBytes;afterBytes=lookup.StorageBytes;
+        var random=new Random(20261022);
+        for(var i=0;i<points.Length;i++) {
+            var index=access=="sequential"?i%values.Length:i==0?0:i==1?values.Length-1:random.Next(values.Length);
+            var x=index/(side*side);var y=index/side%side;var z=index%side;points[i]=(x,y,z);
+            var lod=op is "lod" or "trylod" or "getlod"?ExpectedLod(x,y,z):0;
+            prefix[i+1]=unchecked(prefix[i]+(long)values[index]+((long)lod<<32));
+        }
+        initialized=true;
+    }
+    private bool Check() {
+        foreach(var p in points) {
+            var expected=values[(p.X*side+p.Y)*side+p.Z];var lod=ExpectedLod(p.X,p.Y,p.Z);
+            if(tree.Get(p.X,p.Y,p.Z,out var a)!=expected||a!=lod||before.Get(p.X,p.Y,p.Z,out var b)!=expected||b!=lod)return false;
+            var s=tree.AsSpan();var bs=before.AsSpan();
+            if(s.Get(p.X,p.Y,p.Z,out a)!=expected||a!=lod||bs.Get(p.X,p.Y,p.Z,out b)!=expected||b!=lod)return false;
+            if(lookup.Get(p.X,p.Y,p.Z,out a)!=expected||a!=lod||beforeLookup.Get(p.X,p.Y,p.Z,out b)!=expected||b!=lod)return false;
+        }
+        return true;
+    }
+    public static void Fuzz() {
+        var dense=new uint[64];
+        for(var i=0;i<64;i++)dense[i]=(uint)(uint)((i*13+i/4)&31);
+        var original=new Octree(2,dense).Data.ToArray();
+        var random=new Random(20261022);
+        for(var trial=0;trial<2048;trial++) {
+            var length=trial<original.Length?trial:original.Length;
+            var bytes=original.AsSpan(0,length).ToArray();
+            if(bytes.Length>0)for(var mutation=0;mutation<1+trial%3;mutation++)bytes[random.Next(bytes.Length)]=(byte)random.Next(256);
+            for(var child=0;child<8;child++) {
+                var x=child>>2;var y=child>>1&1;var z=child&1;
+                if(ProbeBefore(bytes,x,y,z)!=ProbeAfter(bytes,x,y,z))throw new Exception($"Legacy malformed differential trial {trial} child {child}");
+            }
+        }
+        Console.WriteLine("Legacy: 16384 malformed path probes agree");
+    }
+    private static string ProbeBefore(byte[] bytes,int x,int y,int z) {
+        try {var view=new Before.OctreeSpan(bytes);var a=view.TryGet(x,y,z,out var value);var first=$"{a}:{value}";a=view.TryGet(x,y,z,out value,out var lod);return $"{first}:{a}:{value}:{lod}";}
+        catch(Exception e){return e.GetType().FullName!;}
+    }
+    private static string ProbeAfter(byte[] bytes,int x,int y,int z) {
+        try {var view=new OctreeSpan(bytes);var a=view.TryGet(x,y,z,out var value);var first=$"{a}:{value}";a=view.TryGet(x,y,z,out value,out var lod);return $"{first}:{a}:{value}:{lod}";}
+        catch(Exception e){return e.GetType().FullName!;}
+    }
+    public void Prepare(ScenarioContext context) {
+        Initialize();baseline=context.Variant=="baseline";
+        if(!Check())throw new Exception("Dense and aligned-leaf oracle");
+        if(!FixtureMode.Validation&&(baseline?!beforePrimed:!afterPrimed)) {
+            var clock=Stopwatch.StartNew();
+            do {ExecuteBatch(op is "create" or "lifecycle"?1:8192);}while(clock.ElapsedMilliseconds<1000);
+            if(baseline)beforePrimed=true;else afterPrimed=true;
+        }
+    }
+    public void Reset(ResetContext context){position=0;sum=completed=0;}
+    public long ExecuteBatch(int count) {
+#if PRIMARY_BASELINE_CALLER
+        AfterBatch(count);
+#else
+        if(baseline)BeforeBatch(count);else AfterBatch(count);
+#endif
+        completed+=count;return count;
+    }
+    [MethodImpl(MethodImplOptions.NoInlining)] private void BeforeBatch(int count) {
+        if(access=="span"){BeforeBatchSpan(count);return;}
+        if(access=="compiled"){BeforeBatchCompiled(count);return;}
+        BeforeBatchOwned(count);
+    }
+[MethodImpl(MethodImplOptions.NoInlining)] private void BeforeBatchOwned(int count){if(op=="get"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=before.Get(p.X,p.Y,p.Z);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="lod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=before.Get(p.X,p.Y,p.Z,out lod);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="try"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;if(!before.TryGet(p.X,p.Y,p.Z,out value))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="trylod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;if(!before.TryGet(p.X,p.Y,p.Z,out value,out lod))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="getlod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;lod=before.GetLod(p.X,p.Y,p.Z,out value);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="indexer"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=before[p.X,p.Y,p.Z];sum=unchecked(sum+(long)value+((long)lod<<32));}return;}throw new Exception();}
+[MethodImpl(MethodImplOptions.NoInlining)] private void BeforeBatchSpan(int count){var view=before.AsSpan();if(op=="get"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=view.Get(p.X,p.Y,p.Z);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="lod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=view.Get(p.X,p.Y,p.Z,out lod);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="try"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;if(!view.TryGet(p.X,p.Y,p.Z,out value))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="trylod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;if(!view.TryGet(p.X,p.Y,p.Z,out value,out lod))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="getlod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;lod=view.GetLod(p.X,p.Y,p.Z,out value);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="indexer"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=view[p.X,p.Y,p.Z];sum=unchecked(sum+(long)value+((long)lod<<32));}return;}throw new Exception();}
+[MethodImpl(MethodImplOptions.NoInlining)] private void BeforeBatchCompiled(int count){if(op=="create"){for(var i=0;i<count;i++){beforeLookup=before.CreateLookup();sum+=beforeLookup.StorageBytes;}return;}
+            if(op=="lifecycle"){for(var i=0;i<count;i++){beforeLookup=before.CreateLookup();for(var j=0;j<65536;j++){var p=points[j&1023];sum=unchecked(sum+(long)beforeLookup.Get(p.X,p.Y,p.Z));}}return;}if(op=="get"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=beforeLookup.Get(p.X,p.Y,p.Z);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="lod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=beforeLookup.Get(p.X,p.Y,p.Z,out lod);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="try"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;if(!beforeLookup.TryGet(p.X,p.Y,p.Z,out value))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="trylod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;if(!beforeLookup.TryGet(p.X,p.Y,p.Z,out value,out lod))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="getlod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;lod=beforeLookup.GetLod(p.X,p.Y,p.Z,out value);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="indexer"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=beforeLookup[p.X,p.Y,p.Z];sum=unchecked(sum+(long)value+((long)lod<<32));}return;}throw new Exception();}
+[MethodImpl(MethodImplOptions.NoInlining)] private void AfterBatch(int count) {
+        if(access=="span"){AfterBatchSpan(count);return;}
+        if(access=="compiled"){AfterBatchCompiled(count);return;}
+        AfterBatchOwned(count);
+    }
+[MethodImpl(MethodImplOptions.NoInlining)] private void AfterBatchOwned(int count){if(op=="get"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=tree.Get(p.X,p.Y,p.Z);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="lod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=tree.Get(p.X,p.Y,p.Z,out lod);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="try"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;if(!tree.TryGet(p.X,p.Y,p.Z,out value))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="trylod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;if(!tree.TryGet(p.X,p.Y,p.Z,out value,out lod))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="getlod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;lod=tree.GetLod(p.X,p.Y,p.Z,out value);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="indexer"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=tree[p.X,p.Y,p.Z];sum=unchecked(sum+(long)value+((long)lod<<32));}return;}throw new Exception();}
+[MethodImpl(MethodImplOptions.NoInlining)] private void AfterBatchSpan(int count){var view=tree.AsSpan();if(op=="get"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=view.Get(p.X,p.Y,p.Z);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="lod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=view.Get(p.X,p.Y,p.Z,out lod);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="try"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;if(!view.TryGet(p.X,p.Y,p.Z,out value))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="trylod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;if(!view.TryGet(p.X,p.Y,p.Z,out value,out lod))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="getlod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;lod=view.GetLod(p.X,p.Y,p.Z,out value);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="indexer"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=view[p.X,p.Y,p.Z];sum=unchecked(sum+(long)value+((long)lod<<32));}return;}throw new Exception();}
+[MethodImpl(MethodImplOptions.NoInlining)] private void AfterBatchCompiled(int count){if(op=="create"){for(var i=0;i<count;i++){lookup=tree.CreateLookup();sum+=lookup.StorageBytes;}return;}
+            if(op=="lifecycle"){for(var i=0;i<count;i++){lookup=tree.CreateLookup();for(var j=0;j<65536;j++){var p=points[j&1023];sum=unchecked(sum+(long)lookup.Get(p.X,p.Y,p.Z));}}return;}if(op=="get"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=lookup.Get(p.X,p.Y,p.Z);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="lod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=lookup.Get(p.X,p.Y,p.Z,out lod);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="try"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;if(!lookup.TryGet(p.X,p.Y,p.Z,out value))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="trylod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;if(!lookup.TryGet(p.X,p.Y,p.Z,out value,out lod))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="getlod"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;lod=lookup.GetLod(p.X,p.Y,p.Z,out value);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="indexer"){for(var i=0;i<count;i++){var p=points[position++&1023];uint value;int lod=0;value=lookup[p.X,p.Y,p.Z];sum=unchecked(sum+(long)value+((long)lod<<32));}return;}throw new Exception();}
+    public ValidationResult Validate()=>new(sum==(op=="create"?completed*(baseline?beforeBytes:afterBytes):op=="lifecycle"?unchecked(completed*prefix[1024]*64):unchecked(completed/1024*prefix[1024]+prefix[(int)(completed%1024)]))&&Check());
+    public void Cleanup(){}
+}
+
+public sealed class WideScenario : ISynchronousScenario {
+    private readonly int levels,side;
+    private readonly string pattern,access,op;
+    private readonly (int X,int Y,int Z)[] points=new (int,int,int)[1024];
+    private readonly long[] prefix=new long[1025];
+    private readonly ulong[] values;
+    private Octree<ulong> tree=null!;
+    private Before.Octree<ulong> before=null!;
+
+    private bool initialized,baseline,beforePrimed,afterPrimed;
+    private int position;
+    private long sum,completed;
+    public WideScenario(int levels,string pattern,string access,string op) {
+        this.levels=levels;side=1<<levels;this.pattern=pattern;this.access=access;this.op=op;
+        values=new ulong[side*side*side];
+    }
+    public ScenarioDescriptor Describe()=>new($"point-Wide-L{levels}-{pattern}-{access}-{op}","2",
+        Wire.Hash(new{levels,pattern,access,op,seed=20261022,points=1024,lifecycleReads=65536,affinity=4,primeMs=1000,consumer="unchecked-full-value-fold-plus-lod"}),
+        ResetLevel.LogicalState,ThreadAffinity.Any,false,op=="create"?"One complete CreateLookup":op=="lifecycle"?"One CreateLookup plus 65536 public reads":"One complete public point or stored-LOD read",["baseline","candidate"]);
+    private int ExpectedLod(int x,int y,int z) {
+        if(pattern=="uniform")return levels;
+        if(pattern is "coarse" or "long")return Math.Min(2,levels);
+        if(pattern!="sparse")return 0;
+        for(var lod=levels;lod>0;lod--) {
+            var size=1<<lod;var a=x&-size;var b=y&-size;var c=z&-size;
+            if(!(a==0&&b==0&&c==0)&&!(a+size==side&&b+size==side&&c+size==side))return lod;
+        }
+        return 0;
+    }
+    private void Initialize() {
+        if(initialized)return;
+        for(var x=0;x<side;x++)for(var y=0;y<side;y++)for(var z=0;z<side;z++) {
+            var index=(x*side+y)*side+z;
+            var code=(uint)((x*13+y*7+z)&31);
+            var coarse=(uint)(((x>>2)*13+(y>>2)*7+(z>>2))&31);
+            values[index]=pattern switch {
+                "uniform"=>(ulong)7,"sparse"=>(ulong)(index==0?1u:index==values.Length-1?2u:0u),
+                "coarse"=>(ulong)coarse,"long"=>((ulong)1<<55)+(ulong)coarse,
+                "dense"=>(ulong)unchecked((uint)index*2654435761u),_ =>(ulong)code
+            };
+        }
+        tree=new Octree<ulong>(levels,values);before=new Before.Octree<ulong>(levels,values);
+        if(!tree.Data.Span.SequenceEqual(before.Data.Span))throw new Exception("Encoding parity");
+        var expectedKind=pattern=="uniform"?1:pattern=="dense"?2:0;
+        if((tree.Data.Span[1]&3)!=expectedKind)throw new Exception("Storage kind");
+
+        var random=new Random(20261022);
+        for(var i=0;i<points.Length;i++) {
+            var index=access=="sequential"?i%values.Length:i==0?0:i==1?values.Length-1:random.Next(values.Length);
+            var x=index/(side*side);var y=index/side%side;var z=index%side;points[i]=(x,y,z);
+            var lod=op is "lod" or "trylod" or "getlod"?ExpectedLod(x,y,z):0;
+            prefix[i+1]=unchecked(prefix[i]+(long)values[index]+((long)lod<<32));
+        }
+        initialized=true;
+    }
+    private bool Check() {
+        foreach(var p in points) {
+            var expected=values[(p.X*side+p.Y)*side+p.Z];var lod=ExpectedLod(p.X,p.Y,p.Z);
+            if(tree.Get(p.X,p.Y,p.Z,out var a)!=expected||a!=lod||before.Get(p.X,p.Y,p.Z,out var b)!=expected||b!=lod)return false;
+            var s=tree.AsSpan();var bs=before.AsSpan();
+            if(s.Get(p.X,p.Y,p.Z,out a)!=expected||a!=lod||bs.Get(p.X,p.Y,p.Z,out b)!=expected||b!=lod)return false;
+
+        }
+        return true;
+    }
+    public static void Fuzz() {
+        var dense=new ulong[64];
+        for(var i=0;i<64;i++)dense[i]=(ulong)(uint)((i*13+i/4)&31);
+        var original=new Octree<ulong>(2,dense).Data.ToArray();
+        var random=new Random(20261022);
+        for(var trial=0;trial<2048;trial++) {
+            var length=trial<original.Length?trial:original.Length;
+            var bytes=original.AsSpan(0,length).ToArray();
+            if(bytes.Length>0)for(var mutation=0;mutation<1+trial%3;mutation++)bytes[random.Next(bytes.Length)]=(byte)random.Next(256);
+            for(var child=0;child<8;child++) {
+                var x=child>>2;var y=child>>1&1;var z=child&1;
+                if(ProbeBefore(bytes,x,y,z)!=ProbeAfter(bytes,x,y,z))throw new Exception($"Wide malformed differential trial {trial} child {child}");
+            }
+        }
+        Console.WriteLine("Wide: 16384 malformed path probes agree");
+    }
+    private static string ProbeBefore(byte[] bytes,int x,int y,int z) {
+        try {var view=new Before.OctreeSpan<ulong>(bytes);var a=view.TryGet(x,y,z,out var value);var first=$"{a}:{value}";a=view.TryGet(x,y,z,out value,out var lod);return $"{first}:{a}:{value}:{lod}";}
+        catch(Exception e){return e.GetType().FullName!;}
+    }
+    private static string ProbeAfter(byte[] bytes,int x,int y,int z) {
+        try {var view=new OctreeSpan<ulong>(bytes);var a=view.TryGet(x,y,z,out var value);var first=$"{a}:{value}";a=view.TryGet(x,y,z,out value,out var lod);return $"{first}:{a}:{value}:{lod}";}
+        catch(Exception e){return e.GetType().FullName!;}
+    }
+    public void Prepare(ScenarioContext context) {
+        Initialize();baseline=context.Variant=="baseline";
+        if(!Check())throw new Exception("Dense and aligned-leaf oracle");
+        if(!FixtureMode.Validation&&(baseline?!beforePrimed:!afterPrimed)) {
+            var clock=Stopwatch.StartNew();
+            do {ExecuteBatch(op is "create" or "lifecycle"?1:8192);}while(clock.ElapsedMilliseconds<1000);
+            if(baseline)beforePrimed=true;else afterPrimed=true;
+        }
+    }
+    public void Reset(ResetContext context){position=0;sum=completed=0;}
+    public long ExecuteBatch(int count) {
+#if PRIMARY_BASELINE_CALLER
+        AfterBatch(count);
+#else
+        if(baseline)BeforeBatch(count);else AfterBatch(count);
+#endif
+        completed+=count;return count;
+    }
+    [MethodImpl(MethodImplOptions.NoInlining)] private void BeforeBatch(int count) {
+        if(access=="span"){BeforeBatchSpan(count);return;}
+        if(access=="compiled"){BeforeBatchCompiled(count);return;}
+        BeforeBatchOwned(count);
+    }
+[MethodImpl(MethodImplOptions.NoInlining)] private void BeforeBatchOwned(int count){if(op=="get"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;value=before.Get(p.X,p.Y,p.Z);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="lod"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;value=before.Get(p.X,p.Y,p.Z,out lod);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="try"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;if(!before.TryGet(p.X,p.Y,p.Z,out value))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="trylod"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;if(!before.TryGet(p.X,p.Y,p.Z,out value,out lod))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="getlod"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;lod=before.GetLod(p.X,p.Y,p.Z,out value);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="indexer"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;value=before[p.X,p.Y,p.Z];sum=unchecked(sum+(long)value+((long)lod<<32));}return;}throw new Exception();}
+[MethodImpl(MethodImplOptions.NoInlining)] private void BeforeBatchSpan(int count){var view=before.AsSpan();if(op=="get"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;value=view.Get(p.X,p.Y,p.Z);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="lod"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;value=view.Get(p.X,p.Y,p.Z,out lod);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="try"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;if(!view.TryGet(p.X,p.Y,p.Z,out value))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="trylod"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;if(!view.TryGet(p.X,p.Y,p.Z,out value,out lod))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="getlod"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;lod=view.GetLod(p.X,p.Y,p.Z,out value);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="indexer"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;value=view[p.X,p.Y,p.Z];sum=unchecked(sum+(long)value+((long)lod<<32));}return;}throw new Exception();}
+private void BeforeBatchCompiled(int count)=>throw new NotSupportedException();
+[MethodImpl(MethodImplOptions.NoInlining)] private void AfterBatch(int count) {
+        if(access=="span"){AfterBatchSpan(count);return;}
+        if(access=="compiled"){AfterBatchCompiled(count);return;}
+        AfterBatchOwned(count);
+    }
+[MethodImpl(MethodImplOptions.NoInlining)] private void AfterBatchOwned(int count){if(op=="get"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;value=tree.Get(p.X,p.Y,p.Z);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="lod"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;value=tree.Get(p.X,p.Y,p.Z,out lod);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="try"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;if(!tree.TryGet(p.X,p.Y,p.Z,out value))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="trylod"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;if(!tree.TryGet(p.X,p.Y,p.Z,out value,out lod))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="getlod"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;lod=tree.GetLod(p.X,p.Y,p.Z,out value);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="indexer"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;value=tree[p.X,p.Y,p.Z];sum=unchecked(sum+(long)value+((long)lod<<32));}return;}throw new Exception();}
+[MethodImpl(MethodImplOptions.NoInlining)] private void AfterBatchSpan(int count){var view=tree.AsSpan();if(op=="get"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;value=view.Get(p.X,p.Y,p.Z);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="lod"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;value=view.Get(p.X,p.Y,p.Z,out lod);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="try"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;if(!view.TryGet(p.X,p.Y,p.Z,out value))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="trylod"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;if(!view.TryGet(p.X,p.Y,p.Z,out value,out lod))throw new Exception();sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="getlod"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;lod=view.GetLod(p.X,p.Y,p.Z,out value);sum=unchecked(sum+(long)value+((long)lod<<32));}return;}if(op=="indexer"){for(var i=0;i<count;i++){var p=points[position++&1023];ulong value;int lod=0;value=view[p.X,p.Y,p.Z];sum=unchecked(sum+(long)value+((long)lod<<32));}return;}throw new Exception();}
+private void AfterBatchCompiled(int count)=>throw new NotSupportedException();
+    public ValidationResult Validate()=>new(sum==unchecked(completed/1024*prefix[1024]+prefix[(int)(completed%1024)])&&Check());
+    public void Cleanup(){}
+}
+
+public sealed class HugeScenario : ISynchronousScenario {
+    private readonly int levels,side;
+    private readonly string pattern,access,op;
+    private readonly (int X,int Y,int Z)[] points=new (int,int,int)[1024];
+    private readonly long[] prefix=new long[1025];
+    private readonly UInt128[] values;
+    private Octree<UInt128> tree=null!;
+    private Before.Octree<UInt128> before=null!;
+
+    private bool initialized,baseline,beforePrimed,afterPrimed;
+    private int position;
+    private long sum,completed;
+    public HugeScenario(int levels,string pattern,string access,string op) {
+        this.levels=levels;side=1<<levels;this.pattern=pattern;this.access=access;this.op=op;
+        values=new UInt128[side*side*side];
+    }
+    public ScenarioDescriptor Describe()=>new($"point-Huge-L{levels}-{pattern}-{access}-{op}","2",
+        Wire.Hash(new{levels,pattern,access,op,seed=20261022,points=1024,lifecycleReads=65536,affinity=4,primeMs=1000,consumer="unchecked-full-value-fold-plus-lod"}),
+        ResetLevel.LogicalState,ThreadAffinity.Any,false,op=="create"?"One complete CreateLookup":op=="lifecycle"?"One CreateLookup plus 65536 public reads":"One complete public point or stored-LOD read",["baseline","candidate"]);
+    private int ExpectedLod(int x,int y,int z) {
+        if(pattern=="uniform")return levels;
+        if(pattern is "coarse" or "long")return Math.Min(2,levels);
+        if(pattern!="sparse")return 0;
+        for(var lod=levels;lod>0;lod--) {
+            var size=1<<lod;var a=x&-size;var b=y&-size;var c=z&-size;
+            if(!(a==0&&b==0&&c==0)&&!(a+size==side&&b+size==side&&c+size==side))return lod;
+        }
+        return 0;
+    }
+    private void Initialize() {
+        if(initialized)return;
+        for(var x=0;x<side;x++)for(var y=0;y<side;y++)for(var z=0;z<side;z++) {
+            var index=(x*side+y)*side+z;
+            var code=(uint)((x*13+y*7+z)&31);
+            var coarse=(uint)(((x>>2)*13+(y>>2)*7+(z>>2))&31);
+            values[index]=pattern switch {
+                "uniform"=>(UInt128)7,"sparse"=>(UInt128)(index==0?1u:index==values.Length-1?2u:0u),
+                "coarse"=>(UInt128)coarse,"long"=>((UInt128)1<<100)+(UInt128)coarse,
+                "dense"=>(UInt128)unchecked((uint)index*2654435761u),_ =>(UInt128)code
+            };
+        }
+        tree=new Octree<UInt128>(levels,values);before=new Before.Octree<UInt128>(levels,values);
+        if(!tree.Data.Span.SequenceEqual(before.Data.Span))throw new Exception("Encoding parity");
+        var expectedKind=pattern=="uniform"?1:pattern=="dense"?2:0;
+        if((tree.Data.Span[1]&3)!=expectedKind)throw new Exception("Storage kind");
+
+        var random=new Random(20261022);
+        for(var i=0;i<points.Length;i++) {
+            var index=access=="sequential"?i%values.Length:i==0?0:i==1?values.Length-1:random.Next(values.Length);
+            var x=index/(side*side);var y=index/side%side;var z=index%side;points[i]=(x,y,z);
+            var lod=op is "lod" or "trylod" or "getlod"?ExpectedLod(x,y,z):0;
+            prefix[i+1]=unchecked(prefix[i]+(long)((ulong)values[index]^(ulong)(values[index]>>64))+((long)lod<<32));
+        }
+        initialized=true;
+    }
+    private bool Check() {
+        foreach(var p in points) {
+            var expected=values[(p.X*side+p.Y)*side+p.Z];var lod=ExpectedLod(p.X,p.Y,p.Z);
+            if(tree.Get(p.X,p.Y,p.Z,out var a)!=expected||a!=lod||before.Get(p.X,p.Y,p.Z,out var b)!=expected||b!=lod)return false;
+            var s=tree.AsSpan();var bs=before.AsSpan();
+            if(s.Get(p.X,p.Y,p.Z,out a)!=expected||a!=lod||bs.Get(p.X,p.Y,p.Z,out b)!=expected||b!=lod)return false;
+
+        }
+        return true;
+    }
+    public static void Fuzz() {
+        var dense=new UInt128[64];
+        for(var i=0;i<64;i++)dense[i]=(UInt128)(uint)((i*13+i/4)&31);
+        var original=new Octree<UInt128>(2,dense).Data.ToArray();
+        var random=new Random(20261022);
+        for(var trial=0;trial<2048;trial++) {
+            var length=trial<original.Length?trial:original.Length;
+            var bytes=original.AsSpan(0,length).ToArray();
+            if(bytes.Length>0)for(var mutation=0;mutation<1+trial%3;mutation++)bytes[random.Next(bytes.Length)]=(byte)random.Next(256);
+            for(var child=0;child<8;child++) {
+                var x=child>>2;var y=child>>1&1;var z=child&1;
+                if(ProbeBefore(bytes,x,y,z)!=ProbeAfter(bytes,x,y,z))throw new Exception($"Huge malformed differential trial {trial} child {child}");
+            }
+        }
+        Console.WriteLine("Huge: 16384 malformed path probes agree");
+    }
+    private static string ProbeBefore(byte[] bytes,int x,int y,int z) {
+        try {var view=new Before.OctreeSpan<UInt128>(bytes);var a=view.TryGet(x,y,z,out var value);var first=$"{a}:{value}";a=view.TryGet(x,y,z,out value,out var lod);return $"{first}:{a}:{value}:{lod}";}
+        catch(Exception e){return e.GetType().FullName!;}
+    }
+    private static string ProbeAfter(byte[] bytes,int x,int y,int z) {
+        try {var view=new OctreeSpan<UInt128>(bytes);var a=view.TryGet(x,y,z,out var value);var first=$"{a}:{value}";a=view.TryGet(x,y,z,out value,out var lod);return $"{first}:{a}:{value}:{lod}";}
+        catch(Exception e){return e.GetType().FullName!;}
+    }
+    public void Prepare(ScenarioContext context) {
+        Initialize();baseline=context.Variant=="baseline";
+        if(!Check())throw new Exception("Dense and aligned-leaf oracle");
+        if(!FixtureMode.Validation&&(baseline?!beforePrimed:!afterPrimed)) {
+            var clock=Stopwatch.StartNew();
+            do {ExecuteBatch(op is "create" or "lifecycle"?1:8192);}while(clock.ElapsedMilliseconds<1000);
+            if(baseline)beforePrimed=true;else afterPrimed=true;
+        }
+    }
+    public void Reset(ResetContext context){position=0;sum=completed=0;}
+    public long ExecuteBatch(int count) {
+#if PRIMARY_BASELINE_CALLER
+        AfterBatch(count);
+#else
+        if(baseline)BeforeBatch(count);else AfterBatch(count);
+#endif
+        completed+=count;return count;
+    }
+    [MethodImpl(MethodImplOptions.NoInlining)] private void BeforeBatch(int count) {
+        if(access=="span"){BeforeBatchSpan(count);return;}
+        if(access=="compiled"){BeforeBatchCompiled(count);return;}
+        BeforeBatchOwned(count);
+    }
+[MethodImpl(MethodImplOptions.NoInlining)] private void BeforeBatchOwned(int count){if(op=="get"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;value=before.Get(p.X,p.Y,p.Z);sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="lod"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;value=before.Get(p.X,p.Y,p.Z,out lod);sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="try"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;if(!before.TryGet(p.X,p.Y,p.Z,out value))throw new Exception();sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="trylod"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;if(!before.TryGet(p.X,p.Y,p.Z,out value,out lod))throw new Exception();sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="getlod"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;lod=before.GetLod(p.X,p.Y,p.Z,out value);sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="indexer"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;value=before[p.X,p.Y,p.Z];sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}throw new Exception();}
+[MethodImpl(MethodImplOptions.NoInlining)] private void BeforeBatchSpan(int count){var view=before.AsSpan();if(op=="get"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;value=view.Get(p.X,p.Y,p.Z);sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="lod"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;value=view.Get(p.X,p.Y,p.Z,out lod);sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="try"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;if(!view.TryGet(p.X,p.Y,p.Z,out value))throw new Exception();sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="trylod"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;if(!view.TryGet(p.X,p.Y,p.Z,out value,out lod))throw new Exception();sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="getlod"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;lod=view.GetLod(p.X,p.Y,p.Z,out value);sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="indexer"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;value=view[p.X,p.Y,p.Z];sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}throw new Exception();}
+private void BeforeBatchCompiled(int count)=>throw new NotSupportedException();
+[MethodImpl(MethodImplOptions.NoInlining)] private void AfterBatch(int count) {
+        if(access=="span"){AfterBatchSpan(count);return;}
+        if(access=="compiled"){AfterBatchCompiled(count);return;}
+        AfterBatchOwned(count);
+    }
+[MethodImpl(MethodImplOptions.NoInlining)] private void AfterBatchOwned(int count){if(op=="get"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;value=tree.Get(p.X,p.Y,p.Z);sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="lod"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;value=tree.Get(p.X,p.Y,p.Z,out lod);sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="try"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;if(!tree.TryGet(p.X,p.Y,p.Z,out value))throw new Exception();sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="trylod"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;if(!tree.TryGet(p.X,p.Y,p.Z,out value,out lod))throw new Exception();sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="getlod"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;lod=tree.GetLod(p.X,p.Y,p.Z,out value);sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="indexer"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;value=tree[p.X,p.Y,p.Z];sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}throw new Exception();}
+[MethodImpl(MethodImplOptions.NoInlining)] private void AfterBatchSpan(int count){var view=tree.AsSpan();if(op=="get"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;value=view.Get(p.X,p.Y,p.Z);sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="lod"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;value=view.Get(p.X,p.Y,p.Z,out lod);sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="try"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;if(!view.TryGet(p.X,p.Y,p.Z,out value))throw new Exception();sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="trylod"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;if(!view.TryGet(p.X,p.Y,p.Z,out value,out lod))throw new Exception();sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="getlod"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;lod=view.GetLod(p.X,p.Y,p.Z,out value);sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}if(op=="indexer"){for(var i=0;i<count;i++){var p=points[position++&1023];UInt128 value;int lod=0;value=view[p.X,p.Y,p.Z];sum=unchecked(sum+(long)((ulong)value^(ulong)(value>>64))+((long)lod<<32));}return;}throw new Exception();}
+private void AfterBatchCompiled(int count)=>throw new NotSupportedException();
+    public ValidationResult Validate()=>new(sum==unchecked(completed/1024*prefix[1024]+prefix[(int)(completed%1024)])&&Check());
+    public void Cleanup(){}
+}
