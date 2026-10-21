@@ -24,6 +24,9 @@ and 42,139,648 cells, including independent LOD partitions and old-reader
 rejection of new packed output. Eligibility and payload equal P18: UInt32
 encoding plus distinct lookup storage remains 71,567,508 versus 48,861,892
 released bytes, approximately 46.5% larger, excluding headers and GC overhead.
+Encoded UInt32 bytes alone increase from 13,693,396 to 68,784,288 (5.02x).
+The combined figure applies when distinct compiled lookup payload is also
+retained; it must not describe an encoded-only application's footprint.
 
 Eight canonical primary callers match. Dependency DLL closure, runtime settings
 and fixture match; complete source is bound to release/P24 independently.
@@ -41,10 +44,13 @@ external phases use the shared admission driver. Old P18/D1/L1 observations
 are excluded. The primary target is every adjusted time-speedup lower bound
 at least ten; the mandatory allocation guard remains unchanged.
 
-Confirmation is running at this checkpoint. No performance result, promotion,
-source adoption or new package is claimed. Construction, bulk, fallback,
-memory and broader public-API guards remain unresolved. The full goal remains
-active. The designated task workspace is retained for active inputs and runs;
+All eight confirmation cases completed, with 192 distinct fresh process/start
+identities and eight joined controllers. All measurements are correct,
+quiescent and observe zero measured-thread allocation. All eight plans were
+frozen before the first session. No retries, replacements or old-family data
+enter this family. Construction, bulk, fallback, memory and broader public-API
+guards remain unresolved; no source adoption or new package is claimed.
+The full goal remains active. The designated task workspace is retained for active inputs and runs;
 no alternate branch or worktree exists. Unrelated docs/articles is untouched.
 
 The original native summary truncated generic call targets at an internal
@@ -59,3 +65,33 @@ and two complete corpus checks precede the frozen 88-case exploratory screen.
 The original 5% guard remains. The driver is queued behind the full P24 lease;
 its used dependency hashes are checked before and after admission. No writer
 performance result is available at this checkpoint.
+
+| Complete public read | Speedup | Family-adjusted interval |
+|---|---:|---:|
+| UInt16 owned Get | 15.630 | 14.484..16.866 |
+| UInt16 owned LOD | 13.524 | 12.785..14.306 |
+| UInt16 borrowed Get | 16.975 | 15.118..19.060 |
+| UInt16 borrowed LOD | 14.331 | 13.502..15.211 |
+| UInt32 owned Get | 13.307 | 12.216..14.496 |
+| UInt32 owned LOD | 11.361 | 10.332..12.493 |
+| UInt32 borrowed Get | 14.852 | 13.029..16.929 |
+| UInt32 borrowed LOD | 13.200 | 11.957..14.572 |
+
+Every lower bound exceeds ten under the frozen paired-independence assumptions.
+Interval coverage is 0.996875 per frozen family adjustment. This applies to
+the selected dominant terrain sample and repeated 1,024-point set, not every
+chunk, an observed game trace, cold access, individual-call tails or all APIs.
+Uncontrolled environmental drift remains a limitation. Every allocation model
+is descriptive_only with degenerate_variance; zero observations are not
+converted to inferential equivalence. All eight promotion decisions are false.
+The time primary is supported; overall adoption remains inconclusive.
+
+The scoped phase-ten supplement preserves 826 logical paths as 684 content
+blobs, two closed catalog exports and sixteen objective rows (one per new
+objective, not duplicate comparison/vector projections). Size 2,846,937 bytes;
+SHA-256 be7609b4f377d21f6e7af8644f0c840364be050d825a855f4962206a4f165f8b.
+Every blob hash/length, CRC, mapping, catalog table and required record passed.
+This supplement retains new P24 sources, builds, tests, census, diagnostics and
+confirmation. Earlier source/controller/region provenance remains in phase
+nine; the smaller archive does not replace that reproduction chain. Catalogs
+in phase ten precede the separately retained post-confirmation disposition.

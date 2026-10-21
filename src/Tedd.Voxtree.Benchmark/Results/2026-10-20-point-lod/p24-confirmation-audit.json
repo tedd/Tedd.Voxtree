@@ -1,0 +1,1058 @@
+{
+  "epoch": "p24-confirmation",
+  "control": "f0772c8",
+  "candidate": "complete P24 packed-word source",
+  "planned_cases": 8,
+  "planned_sessions": 192,
+  "completed_cases": 8,
+  "distinct_process_start_identities": 192,
+  "joined_controllers": 8,
+  "all_plans_frozen_before_first_session": true,
+  "all_exported_sessions_joined_correct_quiescent_zero_thread_allocation": true,
+  "all_eight_tenfold_lower_bounds_reached": true,
+  "cases": [
+    {
+      "scenario": "point-ForceUInt16-L5-mixed-u16-air-owned-get",
+      "state": "completed",
+      "plan_id": "confirm-plan-53a019405f514cdb97f502c733ed175e",
+      "execution_id": "op-68115cf0061e49ca88d2622faa45f3d1-confirmation",
+      "sessions": 24,
+      "exported_sessions_joined_correct_quiescent": true,
+      "process_allocation_bytes_observed": [
+        0
+      ],
+      "median_ns_per_read": {
+        "baseline": 78.2838145,
+        "candidate": 5.0703165
+      },
+      "speedup": 15.630019221744888,
+      "speedup_interval": {
+        "lower": 14.484197228312224,
+        "upper": 16.866485385506,
+        "coverage": 0.996875
+      },
+      "tenfold_lower_bound_reached": true,
+      "time": {
+        "metric": "scenario.ns_per_operation",
+        "unit": "ns/operation",
+        "observation_kind": "batch_normalized_mean",
+        "scope": "registered_batch",
+        "policy": {
+          "metric": "scenario.ns_per_operation",
+          "unit": "ns/operation",
+          "observation_kind": "batch_normalized_mean",
+          "direction": "lower_is_better",
+          "scale": "positive_ratio",
+          "equivalence_lower": 0.95,
+          "equivalence_upper": 1.05,
+          "useful_improvement": 0.95,
+          "meaningful_regression": 1.05,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-log-ratio/v2",
+        "availability": "available",
+        "effect_class": "improved",
+        "quality": "usable",
+        "independent_blocks": 12,
+        "effect": 0.0639794478696977,
+        "effect_unit": "ratio",
+        "standard_error": 0.020219444261397105,
+        "standard_error_scale": "log_ratio",
+        "degrees_of_freedom": 11,
+        "difference_interval": {
+          "lower": 0.05928917478322646,
+          "upper": 0.0690407610609791,
+          "coverage": 0.996875
+        },
+        "equivalence_interval": {
+          "lower": 0.05976488645659892,
+          "upper": 0.06849121603676028,
+          "coverage": 0.99375
+        },
+        "difference_p": 4.2651890087291224e-19,
+        "tost_p": 1,
+        "equivalence_passed": false,
+        "non_inferiority_passed": true,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_log_costs",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "allocation": {
+        "metric": "scenario.thread_allocation_bytes_per_operation",
+        "unit": "bytes/operation",
+        "observation_kind": "batch_normalized_allocation_delta",
+        "scope": "current_thread",
+        "policy": {
+          "metric": "scenario.thread_allocation_bytes_per_operation",
+          "unit": "bytes/operation",
+          "observation_kind": "batch_normalized_allocation_delta",
+          "direction": "lower_is_better",
+          "scale": "absolute_difference",
+          "equivalence_lower": -0.01,
+          "equivalence_upper": 0.01,
+          "useful_improvement": -0.01,
+          "meaningful_regression": 0.01,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-additive/v1",
+        "availability": "available",
+        "effect_class": "inconclusive",
+        "quality": "descriptive_only",
+        "independent_blocks": 12,
+        "effect": 0,
+        "effect_unit": "bytes/operation",
+        "standard_error": 0,
+        "standard_error_scale": "absolute_difference",
+        "degrees_of_freedom": null,
+        "difference_interval": null,
+        "equivalence_interval": null,
+        "difference_p": null,
+        "tost_p": null,
+        "equivalence_passed": false,
+        "non_inferiority_passed": false,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [
+          "degenerate_variance"
+        ],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_absolute_differences",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "promotion_eligible": false,
+      "promotion_reason_codes": [
+        "guardrail_unknown_or_unresolved:scenario.thread_allocation_bytes_per_operation"
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt16-L5-mixed-u16-air-owned-lod",
+      "state": "completed",
+      "plan_id": "confirm-plan-5e02e66beccf446d95b0b39525dee1b8",
+      "execution_id": "op-b25b800a0ddf4c96b76b10a856cc5a79-confirmation",
+      "sessions": 24,
+      "exported_sessions_joined_correct_quiescent": true,
+      "process_allocation_bytes_observed": [
+        0
+      ],
+      "median_ns_per_read": {
+        "baseline": 78.12536,
+        "candidate": 5.798956
+      },
+      "speedup": 13.524254724511259,
+      "speedup_interval": {
+        "lower": 12.785145075126486,
+        "upper": 14.306092326578906,
+        "coverage": 0.996875
+      },
+      "tenfold_lower_bound_reached": true,
+      "time": {
+        "metric": "scenario.ns_per_operation",
+        "unit": "ns/operation",
+        "observation_kind": "batch_normalized_mean",
+        "scope": "registered_batch",
+        "policy": {
+          "metric": "scenario.ns_per_operation",
+          "unit": "ns/operation",
+          "observation_kind": "batch_normalized_mean",
+          "direction": "lower_is_better",
+          "scale": "positive_ratio",
+          "equivalence_lower": 0.95,
+          "equivalence_upper": 1.05,
+          "useful_improvement": 0.95,
+          "meaningful_regression": 1.05,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-log-ratio/v2",
+        "availability": "available",
+        "effect_class": "improved",
+        "quality": "usable",
+        "independent_blocks": 12,
+        "effect": 0.07394122784360216,
+        "effect_unit": "ratio",
+        "standard_error": 0.01492540539439165,
+        "standard_error_scale": "log_ratio",
+        "degrees_of_freedom": 11,
+        "difference_interval": {
+          "lower": 0.06990028983261395,
+          "upper": 0.07821577261141144,
+          "coverage": 0.996875
+        },
+        "equivalence_interval": {
+          "lower": 0.07031386019703213,
+          "upper": 0.0777557249694315,
+          "coverage": 0.99375
+        },
+        "difference_p": 2.744718488228127e-20,
+        "tost_p": 1,
+        "equivalence_passed": false,
+        "non_inferiority_passed": true,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_log_costs",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "allocation": {
+        "metric": "scenario.thread_allocation_bytes_per_operation",
+        "unit": "bytes/operation",
+        "observation_kind": "batch_normalized_allocation_delta",
+        "scope": "current_thread",
+        "policy": {
+          "metric": "scenario.thread_allocation_bytes_per_operation",
+          "unit": "bytes/operation",
+          "observation_kind": "batch_normalized_allocation_delta",
+          "direction": "lower_is_better",
+          "scale": "absolute_difference",
+          "equivalence_lower": -0.01,
+          "equivalence_upper": 0.01,
+          "useful_improvement": -0.01,
+          "meaningful_regression": 0.01,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-additive/v1",
+        "availability": "available",
+        "effect_class": "inconclusive",
+        "quality": "descriptive_only",
+        "independent_blocks": 12,
+        "effect": 0,
+        "effect_unit": "bytes/operation",
+        "standard_error": 0,
+        "standard_error_scale": "absolute_difference",
+        "degrees_of_freedom": null,
+        "difference_interval": null,
+        "equivalence_interval": null,
+        "difference_p": null,
+        "tost_p": null,
+        "equivalence_passed": false,
+        "non_inferiority_passed": false,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [
+          "degenerate_variance"
+        ],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_absolute_differences",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "promotion_eligible": false,
+      "promotion_reason_codes": [
+        "guardrail_unknown_or_unresolved:scenario.thread_allocation_bytes_per_operation"
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt16-L5-mixed-u16-air-span-get",
+      "state": "completed",
+      "plan_id": "confirm-plan-606f50d5da4a4633bd2a753c90cecdcd",
+      "execution_id": "op-c4b25d3cfccc4e759a02d59491b56614-confirmation",
+      "sessions": 24,
+      "exported_sessions_joined_correct_quiescent": true,
+      "process_allocation_bytes_observed": [
+        0
+      ],
+      "median_ns_per_read": {
+        "baseline": 77.39480850000001,
+        "candidate": 4.500054
+      },
+      "speedup": 16.975185052842967,
+      "speedup_interval": {
+        "lower": 15.118067195936678,
+        "upper": 19.06043304634285,
+        "coverage": 0.996875
+      },
+      "tenfold_lower_bound_reached": true,
+      "time": {
+        "metric": "scenario.ns_per_operation",
+        "unit": "ns/operation",
+        "observation_kind": "batch_normalized_mean",
+        "scope": "registered_batch",
+        "policy": {
+          "metric": "scenario.ns_per_operation",
+          "unit": "ns/operation",
+          "observation_kind": "batch_normalized_mean",
+          "direction": "lower_is_better",
+          "scale": "positive_ratio",
+          "equivalence_lower": 0.95,
+          "equivalence_upper": 1.05,
+          "useful_improvement": 0.95,
+          "meaningful_regression": 1.05,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-log-ratio/v2",
+        "availability": "available",
+        "effect_class": "improved",
+        "quality": "usable",
+        "independent_blocks": 12,
+        "effect": 0.05890951980123022,
+        "effect_unit": "ratio",
+        "standard_error": 0.03076983036682612,
+        "standard_error_scale": "log_ratio",
+        "degrees_of_freedom": 11,
+        "difference_interval": {
+          "lower": 0.052464705160089276,
+          "upper": 0.06614602164678647,
+          "coverage": 0.996875
+        },
+        "equivalence_interval": {
+          "lower": 0.05310665122509823,
+          "upper": 0.0653464574239894,
+          "coverage": 0.99375
+        },
+        "difference_p": 3.1113767801947286e-17,
+        "tost_p": 1,
+        "equivalence_passed": false,
+        "non_inferiority_passed": true,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_log_costs",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "allocation": {
+        "metric": "scenario.thread_allocation_bytes_per_operation",
+        "unit": "bytes/operation",
+        "observation_kind": "batch_normalized_allocation_delta",
+        "scope": "current_thread",
+        "policy": {
+          "metric": "scenario.thread_allocation_bytes_per_operation",
+          "unit": "bytes/operation",
+          "observation_kind": "batch_normalized_allocation_delta",
+          "direction": "lower_is_better",
+          "scale": "absolute_difference",
+          "equivalence_lower": -0.01,
+          "equivalence_upper": 0.01,
+          "useful_improvement": -0.01,
+          "meaningful_regression": 0.01,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-additive/v1",
+        "availability": "available",
+        "effect_class": "inconclusive",
+        "quality": "descriptive_only",
+        "independent_blocks": 12,
+        "effect": 0,
+        "effect_unit": "bytes/operation",
+        "standard_error": 0,
+        "standard_error_scale": "absolute_difference",
+        "degrees_of_freedom": null,
+        "difference_interval": null,
+        "equivalence_interval": null,
+        "difference_p": null,
+        "tost_p": null,
+        "equivalence_passed": false,
+        "non_inferiority_passed": false,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [
+          "degenerate_variance"
+        ],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_absolute_differences",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "promotion_eligible": false,
+      "promotion_reason_codes": [
+        "guardrail_unknown_or_unresolved:scenario.thread_allocation_bytes_per_operation"
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt16-L5-mixed-u16-air-span-lod",
+      "state": "completed",
+      "plan_id": "confirm-plan-d02beafabc7c487a8b03ee4461e4bfad",
+      "execution_id": "op-9a62b952e89942139d5030310cff4c06-confirmation",
+      "sessions": 24,
+      "exported_sessions_joined_correct_quiescent": true,
+      "process_allocation_bytes_observed": [
+        0
+      ],
+      "median_ns_per_read": {
+        "baseline": 76.8999925,
+        "candidate": 5.343056
+      },
+      "speedup": 14.330960852950271,
+      "speedup_interval": {
+        "lower": 13.502092158982348,
+        "upper": 15.210712277072203,
+        "coverage": 0.996875
+      },
+      "tenfold_lower_bound_reached": true,
+      "time": {
+        "metric": "scenario.ns_per_operation",
+        "unit": "ns/operation",
+        "observation_kind": "batch_normalized_mean",
+        "scope": "registered_batch",
+        "policy": {
+          "metric": "scenario.ns_per_operation",
+          "unit": "ns/operation",
+          "observation_kind": "batch_normalized_mean",
+          "direction": "lower_is_better",
+          "scale": "positive_ratio",
+          "equivalence_lower": 0.95,
+          "equivalence_upper": 1.05,
+          "useful_improvement": 0.95,
+          "meaningful_regression": 1.05,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-log-ratio/v2",
+        "availability": "available",
+        "effect_class": "improved",
+        "quality": "usable",
+        "independent_blocks": 12,
+        "effect": 0.06977899181087589,
+        "effect_unit": "ratio",
+        "standard_error": 0.01582221343002719,
+        "standard_error_scale": "log_ratio",
+        "degrees_of_freedom": 11,
+        "difference_interval": {
+          "lower": 0.06574314087232755,
+          "upper": 0.07406259624251964,
+          "coverage": 0.996875
+        },
+        "equivalence_interval": {
+          "lower": 0.0661555602212483,
+          "upper": 0.0736008837633332,
+          "coverage": 0.99375
+        },
+        "difference_p": 4.093393549634737e-20,
+        "tost_p": 1,
+        "equivalence_passed": false,
+        "non_inferiority_passed": true,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_log_costs",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "allocation": {
+        "metric": "scenario.thread_allocation_bytes_per_operation",
+        "unit": "bytes/operation",
+        "observation_kind": "batch_normalized_allocation_delta",
+        "scope": "current_thread",
+        "policy": {
+          "metric": "scenario.thread_allocation_bytes_per_operation",
+          "unit": "bytes/operation",
+          "observation_kind": "batch_normalized_allocation_delta",
+          "direction": "lower_is_better",
+          "scale": "absolute_difference",
+          "equivalence_lower": -0.01,
+          "equivalence_upper": 0.01,
+          "useful_improvement": -0.01,
+          "meaningful_regression": 0.01,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-additive/v1",
+        "availability": "available",
+        "effect_class": "inconclusive",
+        "quality": "descriptive_only",
+        "independent_blocks": 12,
+        "effect": 0,
+        "effect_unit": "bytes/operation",
+        "standard_error": 0,
+        "standard_error_scale": "absolute_difference",
+        "degrees_of_freedom": null,
+        "difference_interval": null,
+        "equivalence_interval": null,
+        "difference_p": null,
+        "tost_p": null,
+        "equivalence_passed": false,
+        "non_inferiority_passed": false,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [
+          "degenerate_variance"
+        ],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_absolute_differences",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "promotion_eligible": false,
+      "promotion_reason_codes": [
+        "guardrail_unknown_or_unresolved:scenario.thread_allocation_bytes_per_operation"
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt32-L5-mixed-u16-air-owned-get",
+      "state": "completed",
+      "plan_id": "confirm-plan-6ca4e7d6d7e24871b30134e67906c9fe",
+      "execution_id": "op-82c1432d578445e7a8b65c4a64704cae-confirmation",
+      "sessions": 24,
+      "exported_sessions_joined_correct_quiescent": true,
+      "process_allocation_bytes_observed": [
+        0
+      ],
+      "median_ns_per_read": {
+        "baseline": 65.960403,
+        "candidate": 4.858677500000001
+      },
+      "speedup": 13.306999560959255,
+      "speedup_interval": {
+        "lower": 12.215707363506894,
+        "upper": 14.49578252376657,
+        "coverage": 0.996875
+      },
+      "tenfold_lower_bound_reached": true,
+      "time": {
+        "metric": "scenario.ns_per_operation",
+        "unit": "ns/operation",
+        "observation_kind": "batch_normalized_mean",
+        "scope": "registered_batch",
+        "policy": {
+          "metric": "scenario.ns_per_operation",
+          "unit": "ns/operation",
+          "observation_kind": "batch_normalized_mean",
+          "direction": "lower_is_better",
+          "scale": "positive_ratio",
+          "equivalence_lower": 0.95,
+          "equivalence_upper": 1.05,
+          "useful_improvement": 0.95,
+          "meaningful_regression": 1.05,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-log-ratio/v2",
+        "availability": "available",
+        "effect_class": "improved",
+        "quality": "usable",
+        "independent_blocks": 12,
+        "effect": 0.07514842060518663,
+        "effect_unit": "ratio",
+        "standard_error": 0.0227244354685208,
+        "standard_error_scale": "log_ratio",
+        "degrees_of_freedom": 11,
+        "difference_interval": {
+          "lower": 0.0689855824175376,
+          "upper": 0.08186181694130885,
+          "coverage": 0.996875
+        },
+        "equivalence_interval": {
+          "lower": 0.06960797717103434,
+          "upper": 0.0811298553551994,
+          "coverage": 0.99375
+        },
+        "difference_p": 2.9885420887560276e-18,
+        "tost_p": 1,
+        "equivalence_passed": false,
+        "non_inferiority_passed": true,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_log_costs",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "allocation": {
+        "metric": "scenario.thread_allocation_bytes_per_operation",
+        "unit": "bytes/operation",
+        "observation_kind": "batch_normalized_allocation_delta",
+        "scope": "current_thread",
+        "policy": {
+          "metric": "scenario.thread_allocation_bytes_per_operation",
+          "unit": "bytes/operation",
+          "observation_kind": "batch_normalized_allocation_delta",
+          "direction": "lower_is_better",
+          "scale": "absolute_difference",
+          "equivalence_lower": -0.01,
+          "equivalence_upper": 0.01,
+          "useful_improvement": -0.01,
+          "meaningful_regression": 0.01,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-additive/v1",
+        "availability": "available",
+        "effect_class": "inconclusive",
+        "quality": "descriptive_only",
+        "independent_blocks": 12,
+        "effect": 0,
+        "effect_unit": "bytes/operation",
+        "standard_error": 0,
+        "standard_error_scale": "absolute_difference",
+        "degrees_of_freedom": null,
+        "difference_interval": null,
+        "equivalence_interval": null,
+        "difference_p": null,
+        "tost_p": null,
+        "equivalence_passed": false,
+        "non_inferiority_passed": false,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [
+          "degenerate_variance"
+        ],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_absolute_differences",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "promotion_eligible": false,
+      "promotion_reason_codes": [
+        "guardrail_unknown_or_unresolved:scenario.thread_allocation_bytes_per_operation"
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt32-L5-mixed-u16-air-owned-lod",
+      "state": "completed",
+      "plan_id": "confirm-plan-17eb1997647e4b0c83c03a9a26b9f091",
+      "execution_id": "op-74245e9cc4894b3e8221dfd0e6bcae28-confirmation",
+      "sessions": 24,
+      "exported_sessions_joined_correct_quiescent": true,
+      "process_allocation_bytes_observed": [
+        0
+      ],
+      "median_ns_per_read": {
+        "baseline": 63.559645,
+        "candidate": 5.7137744999999995
+      },
+      "speedup": 11.36109043285218,
+      "speedup_interval": {
+        "lower": 10.331566341837277,
+        "upper": 12.493204955841367,
+        "coverage": 0.996875
+      },
+      "tenfold_lower_bound_reached": true,
+      "time": {
+        "metric": "scenario.ns_per_operation",
+        "unit": "ns/operation",
+        "observation_kind": "batch_normalized_mean",
+        "scope": "registered_batch",
+        "policy": {
+          "metric": "scenario.ns_per_operation",
+          "unit": "ns/operation",
+          "observation_kind": "batch_normalized_mean",
+          "direction": "lower_is_better",
+          "scale": "positive_ratio",
+          "equivalence_lower": 0.95,
+          "equivalence_upper": 1.05,
+          "useful_improvement": 0.95,
+          "meaningful_regression": 1.05,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-log-ratio/v2",
+        "availability": "available",
+        "effect_class": "improved",
+        "quality": "usable",
+        "independent_blocks": 12,
+        "effect": 0.08801972010612294,
+        "effect_unit": "ratio",
+        "standard_error": 0.025226910816943997,
+        "standard_error_scale": "log_ratio",
+        "degrees_of_freedom": 11,
+        "difference_interval": {
+          "lower": 0.08004351193585729,
+          "upper": 0.09679074468607328,
+          "coverage": 0.996875
+        },
+        "equivalence_interval": {
+          "lower": 0.0808455958518198,
+          "upper": 0.09583046603751179,
+          "coverage": 0.99375
+        },
+        "difference_p": 1.8831645442028744e-17,
+        "tost_p": 1,
+        "equivalence_passed": false,
+        "non_inferiority_passed": true,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_log_costs",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "allocation": {
+        "metric": "scenario.thread_allocation_bytes_per_operation",
+        "unit": "bytes/operation",
+        "observation_kind": "batch_normalized_allocation_delta",
+        "scope": "current_thread",
+        "policy": {
+          "metric": "scenario.thread_allocation_bytes_per_operation",
+          "unit": "bytes/operation",
+          "observation_kind": "batch_normalized_allocation_delta",
+          "direction": "lower_is_better",
+          "scale": "absolute_difference",
+          "equivalence_lower": -0.01,
+          "equivalence_upper": 0.01,
+          "useful_improvement": -0.01,
+          "meaningful_regression": 0.01,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-additive/v1",
+        "availability": "available",
+        "effect_class": "inconclusive",
+        "quality": "descriptive_only",
+        "independent_blocks": 12,
+        "effect": 0,
+        "effect_unit": "bytes/operation",
+        "standard_error": 0,
+        "standard_error_scale": "absolute_difference",
+        "degrees_of_freedom": null,
+        "difference_interval": null,
+        "equivalence_interval": null,
+        "difference_p": null,
+        "tost_p": null,
+        "equivalence_passed": false,
+        "non_inferiority_passed": false,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [
+          "degenerate_variance"
+        ],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_absolute_differences",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "promotion_eligible": false,
+      "promotion_reason_codes": [
+        "guardrail_unknown_or_unresolved:scenario.thread_allocation_bytes_per_operation"
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt32-L5-mixed-u16-air-span-get",
+      "state": "completed",
+      "plan_id": "confirm-plan-4b8d1a8505ae465dace6e2fe6917974c",
+      "execution_id": "op-b4c18579361341dcb34ae3d9fc628c5d-confirmation",
+      "sessions": 24,
+      "exported_sessions_joined_correct_quiescent": true,
+      "process_allocation_bytes_observed": [
+        0
+      ],
+      "median_ns_per_read": {
+        "baseline": 65.5926295,
+        "candidate": 4.3164355
+      },
+      "speedup": 14.851622932822792,
+      "speedup_interval": {
+        "lower": 13.029237095108643,
+        "upper": 16.928903981765227,
+        "coverage": 0.996875
+      },
+      "tenfold_lower_bound_reached": true,
+      "time": {
+        "metric": "scenario.ns_per_operation",
+        "unit": "ns/operation",
+        "observation_kind": "batch_normalized_mean",
+        "scope": "registered_batch",
+        "policy": {
+          "metric": "scenario.ns_per_operation",
+          "unit": "ns/operation",
+          "observation_kind": "batch_normalized_mean",
+          "direction": "lower_is_better",
+          "scale": "positive_ratio",
+          "equivalence_lower": 0.95,
+          "equivalence_upper": 1.05,
+          "useful_improvement": 0.95,
+          "meaningful_regression": 1.05,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-log-ratio/v2",
+        "availability": "available",
+        "effect_class": "improved",
+        "quality": "usable",
+        "independent_blocks": 12,
+        "effect": 0.0673327086556953,
+        "effect_unit": "ratio",
+        "standard_error": 0.03476703992932758,
+        "standard_error_scale": "log_ratio",
+        "degrees_of_freedom": 11,
+        "difference_interval": {
+          "lower": 0.0590705695464478,
+          "upper": 0.07675046456675609,
+          "coverage": 0.996875
+        },
+        "equivalence_interval": {
+          "lower": 0.05988788343831959,
+          "upper": 0.07570302028760352,
+          "coverage": 0.99375
+        },
+        "difference_p": 2.024013313475574e-16,
+        "tost_p": 0.9999999999999999,
+        "equivalence_passed": false,
+        "non_inferiority_passed": true,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_log_costs",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "allocation": {
+        "metric": "scenario.thread_allocation_bytes_per_operation",
+        "unit": "bytes/operation",
+        "observation_kind": "batch_normalized_allocation_delta",
+        "scope": "current_thread",
+        "policy": {
+          "metric": "scenario.thread_allocation_bytes_per_operation",
+          "unit": "bytes/operation",
+          "observation_kind": "batch_normalized_allocation_delta",
+          "direction": "lower_is_better",
+          "scale": "absolute_difference",
+          "equivalence_lower": -0.01,
+          "equivalence_upper": 0.01,
+          "useful_improvement": -0.01,
+          "meaningful_regression": 0.01,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-additive/v1",
+        "availability": "available",
+        "effect_class": "inconclusive",
+        "quality": "descriptive_only",
+        "independent_blocks": 12,
+        "effect": 0,
+        "effect_unit": "bytes/operation",
+        "standard_error": 0,
+        "standard_error_scale": "absolute_difference",
+        "degrees_of_freedom": null,
+        "difference_interval": null,
+        "equivalence_interval": null,
+        "difference_p": null,
+        "tost_p": null,
+        "equivalence_passed": false,
+        "non_inferiority_passed": false,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [
+          "degenerate_variance"
+        ],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_absolute_differences",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "promotion_eligible": false,
+      "promotion_reason_codes": [
+        "guardrail_unknown_or_unresolved:scenario.thread_allocation_bytes_per_operation"
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt32-L5-mixed-u16-air-span-lod",
+      "state": "completed",
+      "plan_id": "confirm-plan-2902410b540748c480b82ca5114c74ee",
+      "execution_id": "op-4e7a241816b54e2bb2230e141c397c01-confirmation",
+      "sessions": 24,
+      "exported_sessions_joined_correct_quiescent": true,
+      "process_allocation_bytes_observed": [
+        0
+      ],
+      "median_ns_per_read": {
+        "baseline": 68.146203,
+        "candidate": 5.159584499999999
+      },
+      "speedup": 13.19990213356592,
+      "speedup_interval": {
+        "lower": 11.95677977111344,
+        "upper": 14.572269429655368,
+        "coverage": 0.996875
+      },
+      "tenfold_lower_bound_reached": true,
+      "time": {
+        "metric": "scenario.ns_per_operation",
+        "unit": "ns/operation",
+        "observation_kind": "batch_normalized_mean",
+        "scope": "registered_batch",
+        "policy": {
+          "metric": "scenario.ns_per_operation",
+          "unit": "ns/operation",
+          "observation_kind": "batch_normalized_mean",
+          "direction": "lower_is_better",
+          "scale": "positive_ratio",
+          "equivalence_lower": 0.95,
+          "equivalence_upper": 1.05,
+          "useful_improvement": 0.95,
+          "meaningful_regression": 1.05,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-log-ratio/v2",
+        "availability": "available",
+        "effect_class": "improved",
+        "quality": "usable",
+        "independent_blocks": 12,
+        "effect": 0.07575813743778512,
+        "effect_unit": "ratio",
+        "standard_error": 0.026268078502618055,
+        "standard_error_scale": "log_ratio",
+        "degrees_of_freedom": 11,
+        "difference_interval": {
+          "lower": 0.06862349099618932,
+          "upper": 0.08363455873093144,
+          "coverage": 0.996875
+        },
+        "equivalence_interval": {
+          "lower": 0.0693396677563027,
+          "upper": 0.08277073677672275,
+          "coverage": 0.99375
+        },
+        "difference_p": 1.5206915217705955e-17,
+        "tost_p": 1,
+        "equivalence_passed": false,
+        "non_inferiority_passed": true,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_log_costs",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "allocation": {
+        "metric": "scenario.thread_allocation_bytes_per_operation",
+        "unit": "bytes/operation",
+        "observation_kind": "batch_normalized_allocation_delta",
+        "scope": "current_thread",
+        "policy": {
+          "metric": "scenario.thread_allocation_bytes_per_operation",
+          "unit": "bytes/operation",
+          "observation_kind": "batch_normalized_allocation_delta",
+          "direction": "lower_is_better",
+          "scale": "absolute_difference",
+          "equivalence_lower": -0.01,
+          "equivalence_upper": 0.01,
+          "useful_improvement": -0.01,
+          "meaningful_regression": 0.01,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-additive/v1",
+        "availability": "available",
+        "effect_class": "inconclusive",
+        "quality": "descriptive_only",
+        "independent_blocks": 12,
+        "effect": 0,
+        "effect_unit": "bytes/operation",
+        "standard_error": 0,
+        "standard_error_scale": "absolute_difference",
+        "degrees_of_freedom": null,
+        "difference_interval": null,
+        "equivalence_interval": null,
+        "difference_p": null,
+        "tost_p": null,
+        "equivalence_passed": false,
+        "non_inferiority_passed": false,
+        "alpha_family": 0.05,
+        "alpha_local": 0.003125,
+        "family_size": 16,
+        "reason_codes": [
+          "degenerate_variance"
+        ],
+        "assumptions": [
+          "independent_blocks_declared_by_plan",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_absolute_differences",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "promotion_eligible": false,
+      "promotion_reason_codes": [
+        "guardrail_unknown_or_unresolved:scenario.thread_allocation_bytes_per_operation"
+      ]
+    }
+  ],
+  "unit": "one complete public read",
+  "old_P18_D1_L1_data_excluded": true,
+  "inference_limit": "Declared paired independence assumptions and uncontrolled environmental drift remain. Zero observations do not resolve degenerate allocation models. Construction/bulk/fallback/memory/API guards remain; no whole-library adoption."
+}

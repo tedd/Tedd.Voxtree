@@ -1,0 +1,24 @@
+{
+  "archive_bytes": 2846937,
+  "manifest_paths": 826,
+  "unique_blobs": 684,
+  "catalogs": 2,
+  "metric_rows": 16,
+  "sha256": "be7609b4f377d21f6e7af8644f0c840364be050d825a855f4962206a4f165f8b",
+  "required_paths": [
+    "p24-confirmation/catalog-export.json",
+    "p24-confirmation/plans.json",
+    "p24-confirmation/inputs.json",
+    "p24-confirmation/source.diff",
+    "p24-confirmation/driver-source/Confirm-P24.ps1",
+    "p24-confirmation-audit.json",
+    "p24-source-origin.json",
+    "p24-native-audit-v2.json",
+    "bundles/p24control/p24control.dll",
+    "bundles/p24census/p24census.dll",
+    "forcecraft-census-packed-p24census/packed-corpus.json",
+    "packed-word-format-source/PackedLeafEncoding.cs",
+    "p24-hypothesis/catalog-export.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

@@ -40,6 +40,11 @@ for path in sorted(root.glob("**/*comparison.json")) + sorted(root.glob("**/*obj
         continue
     if not selected(path.relative_to(root).as_posix()):
         continue
+    p24_normal = path.parent.name == 'p24-confirmation'
+    if p24_normal and not path.name.endswith('objective_vector.json'):
+        # Preserve raw comparison records in the archive; export each new
+        # inferential objective once rather than both retained projections.
+        continue
     value = unwrap(json.loads(path.read_text(encoding="utf-8-sig")))
     if not isinstance(value, dict) or "effects_without_run_ids" not in value:
         continue
@@ -49,9 +54,9 @@ for path in sorted(root.glob("**/*comparison.json")) + sorted(root.glob("**/*obj
         latency = effect["metric"] == "scenario.ns_per_operation"
         rows.append({
             "evidence": str(path.relative_to(root)).replace("\\", "/"),
-            "work_unit": "sixteen public reads" if path.parent.name == "control-c3" else "registered scenario operation",
-            "scope_validity": "unchanged_namespace_control" if path.parent.name == "p0-quiet" else "namespace_screening_only" if path.name.endswith("comparison.json") else "identical_caller_fresh_confirmation",
-            "regime": "cpu_diagnostic" if path.parent.name.endswith("-diagnostic") else "fresh_normal" if path.name.endswith("objective_vector.json") else "descriptive_paired",
+            "work_unit": "one complete public read" if p24_normal else "sixteen public reads" if path.parent.name == "control-c3" else "registered scenario operation",
+            "scope_validity": "identical_caller_fresh_confirmation" if p24_normal else "unchanged_namespace_control" if path.parent.name == "p0-quiet" else "namespace_screening_only" if path.name.endswith("comparison.json") else "identical_caller_fresh_confirmation",
+            "regime": "fresh_normal" if p24_normal else "cpu_diagnostic" if path.parent.name.endswith("-diagnostic") else "fresh_normal" if path.name.endswith("objective_vector.json") else "descriptive_paired",
             "execution_id": value.get("execution_id"), "plan_id": value.get("plan_id"),
             "metric": effect["metric"], "candidate_over_baseline": ratio,
             "speedup": 1 / ratio if latency and ratio else None,
