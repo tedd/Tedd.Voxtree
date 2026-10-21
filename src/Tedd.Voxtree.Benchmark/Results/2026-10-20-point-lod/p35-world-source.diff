@@ -1,0 +1,52 @@
+--- f0772c8/WorldEntity.cs
++++ P35/WorldEntity.cs
+@@ -378,6 +378,7 @@
+     private readonly int[] _lookup = new int[LookupSize];
+     private int _recentCount;
+     private ulong _access;
++    private ulong _seenLodLevels;
+     private long _estimatedBytes;
+ 
+     internal RecentChunkMap(int recentCapacity)
+@@ -397,6 +398,12 @@
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     internal bool TryGetValue(ChunkCoordinate coordinate, out TChunk? value)
+     {
++        if ((_seenLodLevels & 1UL) == 0)
++        {
++            value = null;
++            return false;
++        }
++
+         var hash = coordinate.GetHashCode() & int.MaxValue;
+         var slot = hash & LookupMask;
+         for (var probe = 0; probe < LookupSize; probe++)
+@@ -429,6 +436,12 @@
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     internal bool TryGetValue(ChunkAddress address, out TChunk? value)
+     {
++        if ((_seenLodLevels & (1UL << address.LodLevel)) == 0)
++        {
++            value = null;
++            return false;
++        }
++
+         var hash = address.GetHashCode() & int.MaxValue;
+         var slot = hash & LookupMask;
+         for (var probe = 0; probe < LookupSize; probe++)
+@@ -479,6 +492,7 @@
+         var exists = _residency.TryGetValue(address, out var state);
+         var nextEstimatedBytes = checked(_estimatedBytes - (state?.EstimatedBytes ?? 0) + estimatedBytes);
+         _items[address] = value;
++        _seenLodLevels |= 1UL << address.LodLevel;
+         if (address.LodLevel == 0) _baseItems[address.Coordinate] = value;
+         if (!exists)
+         {
+@@ -525,6 +539,7 @@
+         Array.Clear(_lookup, 0, _lookup.Length);
+         _recentCount = 0;
+         _access = 0;
++        _seenLodLevels = 0;
+         _estimatedBytes = 0;
+     }
+ 

@@ -1,0 +1,147 @@
+using System.Reflection;
+using Tedd.Voxtree;
+using Before = Snapshot.Voxtree;
+namespace Tedd.Voxtree.Tests;
+
+public sealed class WorldLayerTests
+{
+    private const string TaskRoot = @"D:\Workspaces\AI\voxtree-point-lod-20261020\";
+    private const BindingFlags Fields = BindingFlags.Instance | BindingFlags.NonPublic;
+
+    private static string NewDirectory()
+    {
+        var path = Path.GetFullPath(Path.Combine(Path.GetTempPath(), "world-layer-" + Guid.NewGuid()));
+        Assert.True(path.StartsWith(TaskRoot, StringComparison.OrdinalIgnoreCase));
+        Directory.CreateDirectory(path);
+        return path;
+    }
+
+    private static void DeleteDirectory(string path)
+    {
+        Assert.True(Path.GetFullPath(path).StartsWith(TaskRoot, StringComparison.OrdinalIgnoreCase));
+        Directory.Delete(path, true);
+    }
+
+    [Fact]
+    public void ClassicFirstLayerMissStillLoadsStorageAndMaterializesCleanEmpty()
+    {
+        var path = NewDirectory();
+        try
+        {
+            var options = new ChunkStorageOptions(path) { Compression = ChunkCompression.Direct };
+            var writer = new WorldEntity(1, 1, options);
+            writer.SetChunk(0, 0, 0, OctreeChunk.FromDense(0, 1, new uint[] { 1234 }));
+            writer.SetLodChunk(2, 0, 0, 0, OctreeChunk.FromDense(0, 1, new uint[] { 2468 }));
+            Assert.Equal(2, writer.SaveAllChunks());
+            var reader = new WorldEntity(1, 1, options);
+            Assert.Equal(2468u, reader.GetLod(2, 0, 0, 0, 0));
+            Assert.Equal(1234u, reader.Get(0, 0, 0, 0));
+            Assert.Equal(0u, reader.GetLod(5, 0, 0, 0, 0));
+            var empty = new ChunkAddress(5, 0, 0, 0);
+            Assert.True(reader.TryGetChunkResidencyInfo(empty, out var state));
+            Assert.True(state.IsImplicitEmpty);
+            Assert.False(state.IsDirty);
+            Assert.Equal(3UL, state.LastAccessSequence);
+            Assert.False(File.Exists(options.GetChunkPath(empty)));
+            reader.MaxResidentBytes = 0;
+            Assert.Equal(3, reader.TrimToMemoryTarget());
+            Assert.Equal(2468u, reader.GetLod(2, 0, 0, 0, 0));
+            reader.Clear();
+            Assert.Equal(1234u, reader.Get(0, 0, 0, 0));
+        }
+        finally { DeleteDirectory(path); }
+    }
+
+    [Fact]
+    public void GenericFirstLayerMissStillLoadsStorageAndMaterializesCleanEmpty()
+    {
+        var path = NewDirectory();
+        try
+        {
+            var options = new ChunkStorageOptions(path) { Compression = ChunkCompression.Direct };
+            var writer = new WorldEntity<ushort>(1, 1, options);
+            writer.SetChunk(0, 0, 0, OctreeChunk<ushort>.FromDense(0, 1, new ushort[] { 1234 }));
+            writer.SetLodChunk(2, 0, 0, 0, OctreeChunk<ushort>.FromDense(0, 1, new ushort[] { 2468 }));
+            Assert.Equal(2, writer.SaveAllChunks());
+            var reader = new WorldEntity<ushort>(1, 1, options);
+            Assert.Equal((ushort)2468, reader.GetLod(2, 0, 0, 0, 0));
+            Assert.Equal((ushort)1234, reader.Get(0, 0, 0, 0));
+            Assert.Equal((ushort)0, reader.GetLod(5, 0, 0, 0, 0));
+            var empty = new ChunkAddress(5, 0, 0, 0);
+            Assert.True(reader.TryGetChunkResidencyInfo(empty, out var state));
+            Assert.True(state.IsImplicitEmpty);
+            Assert.False(state.IsDirty);
+            Assert.Equal(3UL, state.LastAccessSequence);
+            Assert.False(File.Exists(options.GetChunkPath(empty)));
+            reader.MaxResidentBytes = 0;
+            Assert.Equal(3, reader.TrimToMemoryTarget());
+            Assert.Equal((ushort)2468, reader.GetLod(2, 0, 0, 0, 0));
+            reader.Clear();
+            Assert.Equal((ushort)1234, reader.Get(0, 0, 0, 0));
+        }
+        finally { DeleteDirectory(path); }
+    }
+
+    [Fact]
+    public void EveryPublicLayerSurvivesSetRemoveClearAndByteReads()
+    {
+        var a = new WorldEntity(1, 1);
+        var b = new WorldEntity<byte>(1, 1);
+        var first = OctreeChunk.FromDense(0, 1, new uint[] { 170 });
+        var second = OctreeChunk<byte>.FromDense(0, 1, new byte[] { 170 });
+        for (int level = 0; level <= a.MaxLodLevel; level++)
+        {
+            Assert.False(a.TryGetLod(level, 0, 0, 0, 0, out _));
+            Assert.False(b.TryGetLod(level, 0, 0, 0, 0, out _));
+            a.SetLodChunk(level, 0, 0, 0, first);
+            b.SetLodChunk(level, 0, 0, 0, second);
+        }
+        for (int level = a.MaxLodLevel; level >= 0; level--)
+        {
+            Assert.Equal(170u, a.GetLod(level, 0, 0, 0, 0));
+            Assert.Equal((byte)170, b.GetLod(level, 0, 0, 0, 0));
+            Assert.True(a.RemoveChunk(new ChunkAddress(level, 0, 0, 0)));
+            Assert.True(b.RemoveChunk(new ChunkAddress(level, 0, 0, 0)));
+            Assert.False(a.TryGetLod(level, 0, 0, 0, 0, out _));
+            Assert.False(b.TryGetLod(level, 0, 0, 0, 0, out _));
+        }
+        a.Clear(); b.Clear();
+        Assert.False(a.TryGet(0, 0, 0, 0, out _));
+        Assert.False(b.TryGet(0, 0, 0, 0, out _));
+        Assert.Equal("channel", Assert.Throws<ArgumentOutOfRangeException>(() => a.TryGetLod(a.MaxLodLevel + 1, 1, 0, 0, 0, out _)).ParamName);
+        Assert.Equal("lodLevel", Assert.Throws<ArgumentOutOfRangeException>(() => b.TryGetLod(b.MaxLodLevel + 1, 0, 0, 0, 0, out _)).ParamName);
+    }
+
+    [Fact]
+    public void InternalShiftAliasesPreserveFullAddressLookup()
+    {
+        object a = typeof(WorldEntity).GetField("_chunks", Fields)!.GetValue(new WorldEntity(1, 1))!;
+        object b = typeof(Before.WorldEntity).GetField("_chunks", Fields)!.GetValue(new Before.WorldEntity(1, 1))!;
+        int[] levels = { 0, 64, 128, 1, 65, 31, 63, 127, 255, 65536, int.MaxValue };
+        var first = OctreeChunk.FromDense(0, 1, new uint[] { 77 });
+        var second = Before.OctreeChunk.FromDense(0, 1, new uint[] { 77 });
+        var getA = a.GetType().GetMethods(Fields).Single(m => m.Name == "TryGetValue" && m.GetParameters()[0].ParameterType == typeof(ChunkAddress));
+        var getB = b.GetType().GetMethods(Fields).Single(m => m.Name == "TryGetValue" && m.GetParameters()[0].ParameterType == typeof(Before.ChunkAddress));
+        foreach (int level in levels)
+        {
+            a.GetType().GetMethod("Set", Fields)!.Invoke(a, new object[] { new ChunkAddress(level, -1, 2, 3), first, (long)first.SerializedLength, true, false });
+            b.GetType().GetMethod("Set", Fields)!.Invoke(b, new object[] { new Before.ChunkAddress(level, -1, 2, 3), second, (long)second.SerializedLength, true, false });
+            foreach (int query in levels)
+            {
+                object?[] aa = { new ChunkAddress(query, -1, 2, 3), null };
+                object?[] bb = { new Before.ChunkAddress(query, -1, 2, 3), null };
+                Assert.Equal(getB.Invoke(b, bb), getA.Invoke(a, aa));
+                if (aa[1] is not null) { Assert.Same(first, aa[1]); Assert.Same(second, bb[1]); }
+            }
+        }
+        a.GetType().GetMethod("Clear", Fields)!.Invoke(a, null);
+        b.GetType().GetMethod("Clear", Fields)!.Invoke(b, null);
+        foreach (int query in levels)
+        {
+            object?[] aa = { new ChunkAddress(query, -1, 2, 3), null };
+            object?[] bb = { new Before.ChunkAddress(query, -1, 2, 3), null };
+            Assert.Equal(false, getB.Invoke(b, bb)); Assert.Equal(false, getA.Invoke(a, aa));
+            Assert.Null(aa[1]); Assert.Null(bb[1]);
+        }
+    }
+}

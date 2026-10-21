@@ -1,0 +1,164 @@
+{
+  "passed": true,
+  "control": "complete published f0772c8, excluding P24-P34",
+  "sourceFiles": 53,
+  "changedFiles": [
+    "WorldEntity.cs"
+  ],
+  "sourceReversalExact": true,
+  "compiledSourcesMatch": true,
+  "allMapWritesCovered": true,
+  "sourceManifestSha256": "e77f2f5976a3419692a526ae9a173afc14b0d8ae9b531c07143ba615a0dcd009",
+  "nativeSha256": "fd7655f29fe81c3f0c555d6e7279915571a68a4daae680ff7582f2760b8024ff",
+  "tests": [
+    {
+      "file": "tedd_T-5950X2_2026-10-21_12_49_59_net10.0.trx",
+      "sha256": "b536116afd5e7d9ea86bc19268bc753210b9ade77aa1e8870e995acf3249286f",
+      "count": 403
+    },
+    {
+      "file": "tedd_T-5950X2_2026-10-21_12_49_59_net11.0.trx",
+      "sha256": "b0e35c637959ff854fb0a411d4743a1d9e7e8c7606ad896bde23599faccca298",
+      "count": 404
+    },
+    {
+      "file": "tedd_T-5950X2_2026-10-21_12_49_59_net8.0.trx",
+      "sha256": "57410dc207eaea4747aa81335d194ff904a06fd6d80d4816f24a25fd1accf686",
+      "count": 402
+    }
+  ],
+  "callerCases": 60,
+  "arms": 2,
+  "nativeWitnesses": [
+    {
+      "method": "WorldUInt32:BeforeBatch(int):this (Tier1)",
+      "nativeBytes": 8185,
+      "fixedRspSubtractions": [
+        1256
+      ],
+      "routes": []
+    },
+    {
+      "method": "WorldUInt32:AfterBatch(int):this (Tier1)",
+      "nativeBytes": 8206,
+      "fixedRspSubtractions": [
+        1224
+      ],
+      "routes": [
+        {
+          "kind": "address",
+          "guardGroup": "G_M000_IG34",
+          "zeroBitTarget": "G_M000_IG36",
+          "guardBlock": "                ;; offset=0x0422\n       mov      qword ptr [rbp-0xF8], rcx\n       sar      r13, 3\n       and      r13d, dword ptr [r15+0x18]\n       mov      r12, gword ptr [r15+0x08]\n       vmovdqu  ymm0, ymmword ptr [rbp-0x110]\n       vmovdqu  ymmword ptr [rbp-0x178], ymm0\n       mov      rcx, qword ptr [r12+0x48]\n       mov      eax, dword ptr [rbp-0x178]\n       bt       rcx, rax\n       jae      SHORT G_M000_IG36\n \n",
+          "zeroBitTargetBlock": "                ;; offset=0x0483\n       xor      r8, r8\n       mov      gword ptr [rbp-0x118], r8\n       cmp      gword ptr [r15+0x10], 0\n       je       SHORT G_M000_IG38\n \n",
+          "loadedBitFollowingBlock": "                ;; offset=0x0456\n       lea      rcx, [rbp-0x178]\n       call     [Tedd.Voxtree.ChunkAddress:GetHashCode():int:this]\n       and      eax, 0x7FFFFFFF\n       mov      dword ptr [rbp-0x17C], eax\n       mov      edx, eax\n       and      edx, 15\n       mov      rcx, gword ptr [r12+0x38]\n       mov      r8d, 16\n       jmp      G_M000_IG17\n \n",
+          "note": "Zero layer bit branches to map-miss/null state without hash or access stores; loaded bit retains original hash path. Public storage fallthrough is separately validated."
+        },
+        {
+          "kind": "address",
+          "guardGroup": "G_M000_IG53",
+          "zeroBitTarget": "G_M000_IG45",
+          "guardBlock": "                ;; offset=0x05B4\n       mov      qword ptr [rbp-0x1E0], rcx\n       mov      rcx, qword ptr [r14+0x48]\n       mov      eax, dword ptr [rbp-0x1F8]\n       bt       rcx, rax\n       jae      G_M000_IG45\n \n",
+          "zeroBitTargetBlock": "                ;; offset=0x050C\n       xor      r13, r13\n       xor      ecx, ecx\n \n",
+          "loadedBitFollowingBlock": "                ;; offset=0x05CF\n       lea      rcx, [rbp-0x1F8]\n       call     [Tedd.Voxtree.ChunkAddress:GetHashCode():int:this]\n       mov      r15d, eax\n       and      r15d, 0x7FFFFFFF\n       mov      r13d, r15d\n       and      r13d, 15\n       mov      r12, gword ptr [r14+0x38]\n       cmp      r13d, dword ptr [r12+0x08]\n       jae      G_M000_IG225\n       mov      edx, r13d\n       mov      eax, dword ptr [r12+4*rdx+0x10]\n       dec      eax\n       js       G_M000_IG63\n \n",
+          "note": "Zero layer bit branches to map-miss/null state without hash or access stores; loaded bit retains original hash path. Public storage fallthrough is separately validated."
+        },
+        {
+          "kind": "address",
+          "guardGroup": "G_M000_IG90",
+          "zeroBitTarget": "G_M000_IG77",
+          "guardBlock": "                ;; offset=0x0A97\n       mov      qword ptr [rbp-0x440], r8\n       lea      r8, [rbp-0x450]\n       lea      rcx, [rbp-0x370]\n       mov      edx, 2\n       call     [Tedd.Voxtree.ChunkAddress:.ctor(int,Tedd.Voxtree.ChunkCoordinate):this]\n       vmovdqu  ymm0, ymmword ptr [rbp-0x370]\n       vmovdqu  ymmword ptr [rbp-0x330], ymm0\n       sar      r13, 2\n       and      r13d, dword ptr [r15+0x18]\n       mov      r12, gword ptr [r15+0x08]\n       vmovdqu  ymm0, ymmword ptr [rbp-0x330]\n       vmovdqu  ymmword ptr [rbp-0x3B8], ymm0\n       xor      rcx, rcx\n       mov      gword ptr [rbp-0x3C8], rcx\n       mov      rcx, qword ptr [r12+0x48]\n       mov      eax, dword ptr [rbp-0x3B8]\n       bt       rcx, rax\n       jae      G_M000_IG77\n \n",
+          "zeroBitTargetBlock": "                ;; offset=0x08C9\n       xor      r8, r8\n       mov      gword ptr [rbp-0x338], r8\n \n",
+          "loadedBitFollowingBlock": "                ;; offset=0x0B01\n       lea      rcx, [rbp-0x3B8]\n       call     [Tedd.Voxtree.ChunkAddress:GetHashCode():int:this]\n       and      eax, 0x7FFFFFFF\n       mov      dword ptr [rbp-0x3BC], eax\n       mov      r8d, eax\n       and      r8d, 15\n       mov      r10, gword ptr [r12+0x38]\n       cmp      r8d, dword ptr [r10+0x08]\n       jae      G_M000_IG225\n       mov      dword ptr [rbp-0x3C0], r8d\n       mov      edx, r8d\n       mov      r9d, dword ptr [r10+4*rdx+0x10]\n       dec      r9d\n       js       G_M000_IG74\n \n",
+          "note": "Zero layer bit branches to map-miss/null state without hash or access stores; loaded bit retains original hash path. Public storage fallthrough is separately validated."
+        },
+        {
+          "kind": "address",
+          "guardGroup": "G_M000_IG119",
+          "zeroBitTarget": "G_M000_IG123",
+          "guardBlock": "                ;; offset=0x1010\n       mov      qword ptr [rbp-0x238], rdx\n       sarx     rdx, rcx, r12\n       and      edx, dword ptr [rax+0x18]\n       mov      dword ptr [rbp-0x254], edx\n       mov      r8, gword ptr [rax+0x08]\n       mov      gword ptr [rbp-0x4A8], r8\n       vmovdqu  ymm0, ymmword ptr [rbp-0x250]\n       vmovdqu  ymmword ptr [rbp-0x2C0], ymm0\n       mov      rcx, qword ptr [r8+0x48]\n       mov      r10d, dword ptr [rbp-0x2C0]\n       bt       rcx, r10\n       jae      SHORT G_M000_IG123\n \n",
+          "zeroBitTargetBlock": "                ;; offset=0x10AD\n       xor      r8, r8\n       mov      gword ptr [rbp-0x260], r8\n       mov      rax, gword ptr [rbp-0x4A0]\n       cmp      gword ptr [rax+0x10], 0\n       je       SHORT G_M000_IG125\n \n",
+          "loadedBitFollowingBlock": "                ;; offset=0x1051\n       lea      rcx, [rbp-0x2C0]\n       call     [Tedd.Voxtree.ChunkAddress:GetHashCode():int:this]\n       and      eax, 0x7FFFFFFF\n       mov      dword ptr [rbp-0x2C4], eax\n       mov      r8d, eax\n       and      r8d, 15\n       mov      r10, gword ptr [rbp-0x4A8]\n       mov      r9, gword ptr [r10+0x38]\n       cmp      r8d, dword ptr [r9+0x08]\n       jae      G_M000_IG225\n       mov      dword ptr [rbp-0x2C8], r8d\n       mov      edx, r8d\n       mov      r11d, dword ptr [r9+4*rdx+0x10]\n       dec      r11d\n       js       SHORT G_M000_IG122\n \n",
+          "note": "Zero layer bit branches to map-miss/null state without hash or access stores; loaded bit retains original hash path. Public storage fallthrough is separately validated."
+        },
+        {
+          "kind": "coordinate",
+          "guardGroup": "G_M000_IG154",
+          "zeroBitTarget": "G_M000_IG160",
+          "guardBlock": "                ;; offset=0x1372\n       mov      r14d, dword ptr [rbx+0x48]\n       lea      ecx, [r14+0x01]\n       mov      dword ptr [rbx+0x48], ecx\n       and      r14d, 0x3FF\n       mov      rcx, gword ptr [rbx+0x18]\n       cmp      r14d, dword ptr [rcx+0x08]\n       jae      G_M000_IG225\n       mov      edx, r14d\n       mov      ecx, dword ptr [rcx+4*rdx+0x10]\n       sar      r14d, 1\n       and      r14d, 1\n       mov      r15, gword ptr [rbx+0x28]\n       cmp      byte  ptr [r15], r15b\n       xor      rdx, rdx\n       mov      gword ptr [rbp-0x50], rdx\n       cmp      r14d, dword ptr [r15+0x24]\n       jae      G_M000_IG182\n       movsxd   r13, ecx\n       mov      ecx, dword ptr [r15+0x20]\n       sarx     rcx, r13, rcx\n       mov      r12, rcx\n       and      r13d, dword ptr [r15+0x18]\n       mov      dword ptr [rbp-0x48], r13d\n       mov      rax, gword ptr [r15+0x08]\n       mov      gword ptr [rbp-0x490], rax\n       xor      rdx, rdx\n       mov      gword ptr [rbp-0x80], rdx\n       vxorps   ymm0, ymm0, ymm0\n       vmovdqu  ymmword ptr [rbp-0xA0], ymm0\n       test     byte  ptr [rax+0x48], 1\n       je       G_M000_IG160\n       mov      rdx, r12\n       sar      rdx, 32\n       xor      ecx, edx\n       imul     ecx, ecx, 0xFFFFFFFFC2B2AE3D\n       add      ecx, 0xFFFFFFFFD34EC69C\n       rol      ecx, 17\n       imul     ecx, ecx, 0x27D4EB2F\n       rol      ecx, 17\n       imul     ecx, ecx, 0x27D4EB2F\n       rol      ecx, 17\n       imul     ecx, ecx, 0x27D4EB2F\n       mov      edx, ecx\n       shr      edx, 15\n       xor      edx, ecx\n       imul     ecx, edx, 0xFFFFFFFF85EBCA77\n       mov      edx, ecx\n       shr      edx, 13\n       xor      edx, ecx\n       imul     ecx, edx, 0xFFFFFFFFC2B2AE3D\n       mov      r10d, ecx\n       shr      r10d, 16\n       xor      r10d, ecx\n       and      r10d, 0x7FFFFFFF\n       mov      dword ptr [rbp-0x74], r10d\n       mov      ecx, r10d\n \n",
+          "zeroBitTargetBlock": "                ;; offset=0x1561\n       xor      r8, r8\n       mov      gword ptr [rbp-0x50], r8\n \n",
+          "loadedBitFollowingBlock": "                ;; offset=0x1457\n       and      ecx, 15\n       mov      rdx, gword ptr [rax+0x38]\n       mov      r8, rdx\n       cmp      ecx, dword ptr [r8+0x08]\n       jae      G_M000_IG225\n       mov      r9d, ecx\n       mov      r9d, dword ptr [r8+4*r9+0x10]\n       dec      r9d\n       js       SHORT G_M000_IG157\n \n",
+          "note": "Zero layer bit branches to map-miss/null state without hash or access stores; loaded bit retains original hash path. Public storage fallthrough is separately validated."
+        }
+      ]
+    },
+    {
+      "method": "WorldUInt16:BeforeBatch(int):this (Tier1)",
+      "nativeBytes": 8377,
+      "fixedRspSubtractions": [
+        1256
+      ],
+      "routes": []
+    },
+    {
+      "method": "WorldUInt16:AfterBatch(int):this (Tier1)",
+      "nativeBytes": 8396,
+      "fixedRspSubtractions": [
+        1224
+      ],
+      "routes": [
+        {
+          "kind": "address",
+          "guardGroup": "G_M000_IG32",
+          "zeroBitTarget": "G_M000_IG18",
+          "guardBlock": "                ;; offset=0x0369\n       mov      qword ptr [rbp-0x440], r8\n       lea      r8, [rbp-0x450]\n       lea      rcx, [rbp-0x378]\n       mov      edx, 2\n       call     [Tedd.Voxtree.ChunkAddress:.ctor(int,Tedd.Voxtree.ChunkCoordinate):this]\n       vmovdqu  ymm0, ymmword ptr [rbp-0x378]\n       vmovdqu  ymmword ptr [rbp-0x338], ymm0\n       sar      r13, 2\n       and      r13d, dword ptr [r15+0x18]\n       mov      r12, gword ptr [r15+0x08]\n       vmovdqu  ymm0, ymmword ptr [rbp-0x338]\n       vmovdqu  ymmword ptr [rbp-0x3C0], ymm0\n       xor      rcx, rcx\n       mov      gword ptr [rbp-0x3D0], rcx\n       mov      rcx, qword ptr [r12+0x48]\n       mov      eax, dword ptr [rbp-0x3C0]\n       bt       rcx, rax\n       jae      G_M000_IG18\n \n",
+          "zeroBitTargetBlock": "                ;; offset=0x01AE\n       xor      r8, r8\n       mov      gword ptr [rbp-0x340], r8\n \n",
+          "loadedBitFollowingBlock": "                ;; offset=0x03D3\n       lea      rcx, [rbp-0x3C0]\n       call     [Tedd.Voxtree.ChunkAddress:GetHashCode():int:this]\n       and      eax, 0x7FFFFFFF\n       mov      dword ptr [rbp-0x3C4], eax\n       mov      r8d, eax\n       and      r8d, 15\n       mov      r10, gword ptr [r12+0x38]\n       cmp      r8d, dword ptr [r10+0x08]\n       jae      G_M000_IG235\n       mov      dword ptr [rbp-0x3C8], r8d\n       mov      edx, r8d\n       mov      r9d, dword ptr [r10+4*rdx+0x10]\n       dec      r9d\n       js       G_M000_IG15\n \n",
+          "note": "Zero layer bit branches to map-miss/null state without hash or access stores; loaded bit retains original hash path. Public storage fallthrough is separately validated."
+        },
+        {
+          "kind": "address",
+          "guardGroup": "G_M000_IG66",
+          "zeroBitTarget": "G_M000_IG42",
+          "guardBlock": "                ;; offset=0x08C5\n       mov      qword ptr [rbp-0x110], rcx\n       sar      r13, 3\n       and      r13d, dword ptr [r15+0x18]\n       mov      r12, gword ptr [r15+0x08]\n       vmovdqu  ymm0, ymmword ptr [rbp-0x128]\n       vmovdqu  ymmword ptr [rbp-0x190], ymm0\n       mov      rcx, qword ptr [r12+0x48]\n       mov      eax, dword ptr [rbp-0x190]\n       bt       rcx, rax\n       jae      G_M000_IG42\n \n",
+          "zeroBitTargetBlock": "                ;; offset=0x0570\n       xor      r8, r8\n       mov      gword ptr [rbp-0x130], r8\n       cmp      gword ptr [r15+0x10], 0\n       je       SHORT G_M000_IG44\n \n",
+          "loadedBitFollowingBlock": "                ;; offset=0x08FD\n       lea      rcx, [rbp-0x190]\n       call     [Tedd.Voxtree.ChunkAddress:GetHashCode():int:this]\n       and      eax, 0x7FFFFFFF\n       mov      dword ptr [rbp-0x194], eax\n       mov      edx, eax\n       and      edx, 15\n       mov      rcx, gword ptr [r12+0x38]\n       mov      r8d, 16\n       jmp      G_M000_IG48\n \n",
+          "note": "Zero layer bit branches to map-miss/null state without hash or access stores; loaded bit retains original hash path. Public storage fallthrough is separately validated."
+        },
+        {
+          "kind": "address",
+          "guardGroup": "G_M000_IG104",
+          "zeroBitTarget": "G_M000_IG78",
+          "guardBlock": "                ;; offset=0x0D8B\n       mov      qword ptr [rbp-0x248], rdx\n       sarx     rdx, rcx, r12\n       and      edx, dword ptr [rax+0x18]\n       mov      dword ptr [rbp-0x264], edx\n       mov      r8, gword ptr [rax+0x08]\n       mov      gword ptr [rbp-0x4A8], r8\n       vmovdqu  ymm0, ymmword ptr [rbp-0x260]\n       vmovdqu  ymmword ptr [rbp-0x2D0], ymm0\n       mov      rcx, qword ptr [r8+0x48]\n       mov      r10d, dword ptr [rbp-0x2D0]\n       bt       rcx, r10\n       jae      G_M000_IG78\n \n",
+          "zeroBitTargetBlock": "                ;; offset=0x099A\n       xor      r8, r8\n       mov      gword ptr [rbp-0x270], r8\n       mov      rax, gword ptr [rbp-0x4A0]\n       cmp      gword ptr [rax+0x10], 0\n       je       SHORT G_M000_IG80\n \n",
+          "loadedBitFollowingBlock": "                ;; offset=0x0DD0\n       lea      rcx, [rbp-0x2D0]\n       call     [Tedd.Voxtree.ChunkAddress:GetHashCode():int:this]\n       and      eax, 0x7FFFFFFF\n       mov      dword ptr [rbp-0x2D4], eax\n       mov      r8d, eax\n       and      r8d, 15\n       mov      r10, gword ptr [rbp-0x4A8]\n       mov      r9, gword ptr [r10+0x38]\n       cmp      r8d, dword ptr [r9+0x08]\n       jae      G_M000_IG235\n       mov      dword ptr [rbp-0x2D8], r8d\n       mov      edx, r8d\n       mov      r11d, dword ptr [r9+4*rdx+0x10]\n       dec      r11d\n       js       G_M000_IG77\n \n",
+          "note": "Zero layer bit branches to map-miss/null state without hash or access stores; loaded bit retains original hash path. Public storage fallthrough is separately validated."
+        },
+        {
+          "kind": "address",
+          "guardGroup": "G_M000_IG115",
+          "zeroBitTarget": "G_M000_IG107",
+          "guardBlock": "                ;; offset=0x0ED8\n       mov      qword ptr [rbp-0x1F0], rcx\n       mov      rcx, qword ptr [r14+0x48]\n       mov      eax, dword ptr [rbp-0x208]\n       bt       rcx, rax\n       jae      G_M000_IG107\n \n",
+          "zeroBitTargetBlock": "                ;; offset=0x0E2B\n       xor      r13, r13\n       xor      ecx, ecx\n \n",
+          "loadedBitFollowingBlock": "                ;; offset=0x0EF3\n       lea      rcx, [rbp-0x208]\n       call     [Tedd.Voxtree.ChunkAddress:GetHashCode():int:this]\n       mov      r15d, eax\n       and      r15d, 0x7FFFFFFF\n       mov      r13d, r15d\n       and      r13d, 15\n       mov      r12, gword ptr [r14+0x38]\n       cmp      r13d, dword ptr [r12+0x08]\n       jae      G_M000_IG235\n       mov      edx, r13d\n       mov      eax, dword ptr [r12+4*rdx+0x10]\n       dec      eax\n       js       G_M000_IG124\n \n",
+          "note": "Zero layer bit branches to map-miss/null state without hash or access stores; loaded bit retains original hash path. Public storage fallthrough is separately validated."
+        },
+        {
+          "kind": "coordinate",
+          "guardGroup": "G_M000_IG161",
+          "zeroBitTarget": "G_M000_IG167",
+          "guardBlock": "                ;; offset=0x139D\n       mov      r14d, dword ptr [rbx+0x48]\n       lea      ecx, [r14+0x01]\n       mov      dword ptr [rbx+0x48], ecx\n       and      r14d, 0x3FF\n       mov      rcx, gword ptr [rbx+0x18]\n       cmp      r14d, dword ptr [rcx+0x08]\n       jae      G_M000_IG235\n       mov      edx, r14d\n       mov      ecx, dword ptr [rcx+4*rdx+0x10]\n       sar      r14d, 1\n       and      r14d, 1\n       mov      r15, gword ptr [rbx+0x28]\n       cmp      byte  ptr [r15], r15b\n       xor      rdx, rdx\n       mov      gword ptr [rbp-0x50], rdx\n       cmp      r14d, dword ptr [r15+0x24]\n       jae      G_M000_IG192\n       movsxd   r13, ecx\n       mov      ecx, dword ptr [r15+0x20]\n       sarx     rcx, r13, rcx\n       mov      r12, rcx\n       and      r13d, dword ptr [r15+0x18]\n       mov      dword ptr [rbp-0x48], r13d\n       mov      rax, gword ptr [r15+0x08]\n       mov      gword ptr [rbp-0x490], rax\n       xor      rdx, rdx\n       mov      gword ptr [rbp-0x80], rdx\n       vxorps   ymm0, ymm0, ymm0\n       vmovdqu  ymmword ptr [rbp-0xA0], ymm0\n       test     byte  ptr [rax+0x48], 1\n       je       G_M000_IG167\n       mov      rdx, r12\n       sar      rdx, 32\n       xor      ecx, edx\n       imul     ecx, ecx, 0xFFFFFFFFC2B2AE3D\n       add      ecx, 0xFFFFFFFFD34EC69C\n       rol      ecx, 17\n       imul     ecx, ecx, 0x27D4EB2F\n       rol      ecx, 17\n       imul     ecx, ecx, 0x27D4EB2F\n       rol      ecx, 17\n       imul     ecx, ecx, 0x27D4EB2F\n       mov      edx, ecx\n       shr      edx, 15\n       xor      edx, ecx\n       imul     ecx, edx, 0xFFFFFFFF85EBCA77\n       mov      edx, ecx\n       shr      edx, 13\n       xor      edx, ecx\n       imul     ecx, edx, 0xFFFFFFFFC2B2AE3D\n       mov      r10d, ecx\n       shr      r10d, 16\n       xor      r10d, ecx\n       and      r10d, 0x7FFFFFFF\n       mov      dword ptr [rbp-0x74], r10d\n       mov      ecx, r10d\n \n",
+          "zeroBitTargetBlock": "                ;; offset=0x158C\n       xor      r8, r8\n       mov      gword ptr [rbp-0x50], r8\n \n",
+          "loadedBitFollowingBlock": "                ;; offset=0x1482\n       and      ecx, 15\n       mov      rdx, gword ptr [rax+0x38]\n       mov      r8, rdx\n       cmp      ecx, dword ptr [r8+0x08]\n       jae      G_M000_IG235\n       mov      r9d, ecx\n       mov      r9d, dword ptr [r8+4*r9+0x10]\n       dec      r9d\n       js       SHORT G_M000_IG164\n \n",
+          "note": "Zero layer bit branches to map-miss/null state without hash or access stores; loaded bit retains original hash path. Public storage fallthrough is separately validated."
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Native Get-first repeated-case diagnostic is not quiet-family code identity.",
+    "Code size and fixed rsp subtraction establish neither latency nor total stack usage.",
+    "Four same-process timing pairs remain descriptive; no application frequency or PMU evidence."
+  ],
+  "testWarnings": "xUnit2009 suggests Assert.StartsWith for the two task-root path assertions; assertions remain effective and all tests pass."
+}

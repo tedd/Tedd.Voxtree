@@ -276,6 +276,21 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    Direct coordinate-component comparisons and hot/slow splitting are separate
    candidates, not implied combinations. The full public10x objective remains.
 
+17. P35 hyp-f22abb61904f4f32adfb6d12f5ba99d0 now implements only the conservative
+   seen-layer filter on published f0772c8, excluding P34/all format prototypes.
+   Exact source reversal, compiled-source equality,402/403/404 tests (including
+   first-ever-layer storage, implicit empties, all public LODs and internal
+   aliases),60 two-arm caller cases and ten native zero-bit routes pass.
+   Complete caller growth is19–21 bytes with32 fewer fixed rsp bytes; no
+   latency or total-stack inference. Phase24 preserves every prerequisite and
+   original test module with zero timing records; see REPORT-PHASE24.
+   WORLD-LAYER-PROTOCOL fixes a60-case/480-record four-pair rejection stage,
+   including saturated history. Ten absent-layer primaries require2x, four
+   topology primaries1.20x,46 guards1.05 cost. Execute the complete frozen stage
+   under shared admission/central mutex, audit original run IDs and joins.
+   Only an all-gates pass selects separately frozen normal confirmation and
+   constructor/mutation/storage/memory/caller guards. No source adoption yet.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining
