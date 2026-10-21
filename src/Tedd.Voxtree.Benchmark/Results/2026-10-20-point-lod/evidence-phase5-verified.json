@@ -1,0 +1,24 @@
+{
+  "archive_bytes": 59439618,
+  "manifest_paths": 33550,
+  "unique_blobs": 27530,
+  "catalogs": 34,
+  "metric_rows": 874,
+  "sha256": "eff69d284486a89b33757cfdf93dabc567ff181a9955d9dd1adf5af1c3a862b5",
+  "required_paths": [
+    "p21bulk-audit.json",
+    "p20bulk-audit.json",
+    "p19bulk-audit.json",
+    "p20census-audit.json",
+    "caller-audit-p21-boundary.json",
+    "p21-source-review.diff",
+    "p19-frozen-protocol.txt",
+    "p20-frozen-protocol.txt",
+    "p21-frozen-protocol.txt",
+    "all-workers-quiescent-phase5.json",
+    "count-body-p21builder-code-source/out/Probe.dll",
+    "p21-hypothesis/postcount-revision-response.json",
+    "p21bulk-screen/p21bulk-shutdown.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

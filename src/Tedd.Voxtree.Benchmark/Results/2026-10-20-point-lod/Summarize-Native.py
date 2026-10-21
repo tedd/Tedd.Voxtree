@@ -9,6 +9,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('task_root', type=Path)
 parser.add_argument('--label',default='phase3')
 parser.add_argument('--files',nargs='+')
+parser.add_argument('--include-fullopts',action='store_true')
 args = parser.parse_args()
 task = args.task_root.resolve()
 if task != Path('D:/Workspaces/AI/voxtree-point-lod-20261020').resolve():
@@ -27,7 +28,7 @@ for name in args.files or ['p7-mixed-code.asm', 'p7w-mixed-code.asm', 'p9-mixed-
     methods = []
     for part in re.split(r'(?m)^; Assembly listing for method ', text)[1:]:
         header = part.splitlines()[0]
-        if '(Tier1)' not in header and '(Tier1-OSR)' not in header:
+        if '(Tier1)' not in header and '(Tier1-OSR)' not in header and not (args.include_fullopts and 'FullOpts)' in header):
             continue
         sizes = re.findall(r'Total bytes of code (\d+)', part)
         starts = len(re.findall(r'(?m)^G_M\d+_IG01:',part))
@@ -45,4 +46,4 @@ output.write_text(json.dumps(dict(observer='External target JIT diagnostics; not
         'Fixed rsp subtraction is not total stack usage or a causal time fraction.',
         'Native bytes and call-site changes do not establish hardware bottlenecks or promotion.'],
     listings=records), indent=2) + '\n', encoding='utf-8')
-print(json.dumps(dict(listings=len(records), tier1_methods=sum(len(row['methods']) for row in records))))
+print(json.dumps(dict(listings=len(records), indexed_methods=sum(len(row['methods']) for row in records), include_fullopts=args.include_fullopts)))

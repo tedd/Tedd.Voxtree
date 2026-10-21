@@ -1,0 +1,2098 @@
+[
+  {
+    "entry": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p20bulk\\p20bulk.dll",
+    "sha256": "E2DF752BEF4D4ED867AB3057AC8D4CFD93C36E9FD8215E72D0E1E44529986737",
+    "methods": [
+      {
+        "method": "Tedd.Voxtree.GenericOctreeQueries\u00601.CountPackedVector",
+        "rawIlSha256": "715F52B6420EC33E1936EF76D1F7F1E6D55CD80704CD39ECE9AA4A2B1FC6069A",
+        "resolvedIlSha256": "3BADC2D839C1C480D0177055CE88556104497173AB6106856362691BADF349CF",
+        "canonical": {
+          "signature": "Tedd.Voxtree.GenericOctreeQueries\u00601\u003CT\u003E::CountPackedVector\u003CTStorage\u003E(System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E,System.Int32,Tedd.Voxtree.VoxelBox,Tedd.Voxtree.VoxelFilter\u00601\u003CT\u003E):System.Int32",
+          "InitLocals": true,
+          "MaxStackSize": 5,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.ReadOnlySpan\u00601\u003CTStorage\u003E",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "ldc.i4.s",
+              "operand": "1F"
+            },
+            {
+              "offset": 4,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "shl",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 7,
+              "opcode": "ldarga.s",
+              "operand": "00"
+            },
+            {
+              "offset": 9,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 10,
+              "opcode": "call",
+              "operand": "System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E::Slice\u003C\u003E(System.Int32):System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E"
+            },
+            {
+              "offset": 15,
+              "opcode": "call",
+              "operand": "System.Runtime.InteropServices.MemoryMarshal::Cast\u003CSystem.Byte,TStorage\u003E(System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E):System.ReadOnlySpan\u00601\u003CTStorage\u003E"
+            },
+            {
+              "offset": 20,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 21,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 23,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 28,
+              "opcode": "brtrue.s",
+              "operand": "4A"
+            },
+            {
+              "offset": 30,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 32,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "bne.un.s",
+              "operand": "40"
+            },
+            {
+              "offset": 40,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 42,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 47,
+              "opcode": "brtrue.s",
+              "operand": "37"
+            },
+            {
+              "offset": 49,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 51,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 56,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 57,
+              "opcode": "bne.un.s",
+              "operand": "2D"
+            },
+            {
+              "offset": 59,
+              "opcode": "ldloca.s",
+              "operand": "01"
+            },
+            {
+              "offset": 61,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 63,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 68,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 69,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 71,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 72,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 74,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 79,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 81,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 86,
+              "opcode": "sub",
+              "operand": ""
+            },
+            {
+              "offset": 87,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 88,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 89,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 90,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 91,
+              "opcode": "call",
+              "operand": "System.ReadOnlySpan\u00601\u003CTStorage\u003E::Slice\u003C\u003E(System.Int32,System.Int32):System.ReadOnlySpan\u00601\u003CTStorage\u003E"
+            },
+            {
+              "offset": 96,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 97,
+              "opcode": "ldarg.3",
+              "operand": ""
+            },
+            {
+              "offset": 98,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.GenericOctreeQueries\u00601\u003CT\u003E::CountPackedRange\u003CTStorage\u003E(System.ReadOnlySpan\u00601\u003CTStorage\u003E,System.Int32,Tedd.Voxtree.VoxelFilter\u00601\u003CT\u003E):System.Int32"
+            },
+            {
+              "offset": 103,
+              "opcode": "ret",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 105,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 106,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 108,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 113,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 114,
+              "opcode": "br.s",
+              "operand": "50"
+            },
+            {
+              "offset": 116,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 118,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 123,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 125,
+              "opcode": "br.s",
+              "operand": "36"
+            },
+            {
+              "offset": 127,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 128,
+              "opcode": "ldloca.s",
+              "operand": "01"
+            },
+            {
+              "offset": 130,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 131,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 132,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 133,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 135,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 136,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 137,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 138,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 140,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 145,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 146,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 148,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 153,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 155,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 160,
+              "opcode": "sub",
+              "operand": ""
+            },
+            {
+              "offset": 161,
+              "opcode": "call",
+              "operand": "System.ReadOnlySpan\u00601\u003CTStorage\u003E::Slice\u003C\u003E(System.Int32,System.Int32):System.ReadOnlySpan\u00601\u003CTStorage\u003E"
+            },
+            {
+              "offset": 166,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 167,
+              "opcode": "ldarg.3",
+              "operand": ""
+            },
+            {
+              "offset": 168,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.GenericOctreeQueries\u00601\u003CT\u003E::CountPackedRange\u003CTStorage\u003E(System.ReadOnlySpan\u00601\u003CTStorage\u003E,System.Int32,Tedd.Voxtree.VoxelFilter\u00601\u003CT\u003E):System.Int32"
+            },
+            {
+              "offset": 173,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 174,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 175,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 177,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 178,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 179,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 181,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 183,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 185,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 190,
+              "opcode": "blt.s",
+              "operand": "BF"
+            },
+            {
+              "offset": 192,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 193,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 194,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 195,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 196,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 197,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 199,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 204,
+              "opcode": "blt.s",
+              "operand": "A6"
+            },
+            {
+              "offset": 206,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 207,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "IL"
+      },
+      {
+        "method": "Tedd.Voxtree.OctreeQueries.CountPackedVector",
+        "rawIlSha256": "206BFFF1B7C934E13550AB355648A67AE37356D245B06E7738A6A431BE7DD98C",
+        "resolvedIlSha256": "CA74273720DFD330DA20CA343BC2A90073C458F26CE86F0937BDB4AA231D7FCB",
+        "canonical": {
+          "signature": "Tedd.Voxtree.OctreeQueries::CountPackedVector\u003C\u003E(System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E,System.Int32,Tedd.Voxtree.VoxelBox,Tedd.Voxtree.VoxelFilter):System.Int32",
+          "InitLocals": true,
+          "MaxStackSize": 5,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "ldc.i4.s",
+              "operand": "1F"
+            },
+            {
+              "offset": 4,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "shl",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 7,
+              "opcode": "ldarga.s",
+              "operand": "00"
+            },
+            {
+              "offset": 9,
+              "opcode": "ldc.i4.2",
+              "operand": ""
+            },
+            {
+              "offset": 10,
+              "opcode": "call",
+              "operand": "System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E::Slice\u003C\u003E(System.Int32):System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E"
+            },
+            {
+              "offset": 15,
+              "opcode": "call",
+              "operand": "System.Runtime.InteropServices.MemoryMarshal::Cast\u003CSystem.Byte,System.UInt32\u003E(System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E):System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E"
+            },
+            {
+              "offset": 20,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 21,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 23,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 28,
+              "opcode": "brtrue.s",
+              "operand": "4A"
+            },
+            {
+              "offset": 30,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 32,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "bne.un.s",
+              "operand": "40"
+            },
+            {
+              "offset": 40,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 42,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 47,
+              "opcode": "brtrue.s",
+              "operand": "37"
+            },
+            {
+              "offset": 49,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 51,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 56,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 57,
+              "opcode": "bne.un.s",
+              "operand": "2D"
+            },
+            {
+              "offset": 59,
+              "opcode": "ldloca.s",
+              "operand": "01"
+            },
+            {
+              "offset": 61,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 63,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 68,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 69,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 71,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 72,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 74,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 79,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 81,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 86,
+              "opcode": "sub",
+              "operand": ""
+            },
+            {
+              "offset": 87,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 88,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 89,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 90,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 91,
+              "opcode": "call",
+              "operand": "System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E::Slice\u003C\u003E(System.Int32,System.Int32):System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E"
+            },
+            {
+              "offset": 96,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 97,
+              "opcode": "ldarg.3",
+              "operand": ""
+            },
+            {
+              "offset": 98,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.OctreeQueries::CountPackedRange\u003C\u003E(System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E,System.Int32,Tedd.Voxtree.VoxelFilter):System.Int32"
+            },
+            {
+              "offset": 103,
+              "opcode": "ret",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 105,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 106,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 108,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 113,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 114,
+              "opcode": "br.s",
+              "operand": "50"
+            },
+            {
+              "offset": 116,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 118,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 123,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 125,
+              "opcode": "br.s",
+              "operand": "36"
+            },
+            {
+              "offset": 127,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 128,
+              "opcode": "ldloca.s",
+              "operand": "01"
+            },
+            {
+              "offset": 130,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 131,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 132,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 133,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 135,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 136,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 137,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 138,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 140,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 145,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 146,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 148,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 153,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 155,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 160,
+              "opcode": "sub",
+              "operand": ""
+            },
+            {
+              "offset": 161,
+              "opcode": "call",
+              "operand": "System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E::Slice\u003C\u003E(System.Int32,System.Int32):System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E"
+            },
+            {
+              "offset": 166,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 167,
+              "opcode": "ldarg.3",
+              "operand": ""
+            },
+            {
+              "offset": 168,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.OctreeQueries::CountPackedRange\u003C\u003E(System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E,System.Int32,Tedd.Voxtree.VoxelFilter):System.Int32"
+            },
+            {
+              "offset": 173,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 174,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 175,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 177,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 178,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 179,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 181,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 183,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 185,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 190,
+              "opcode": "blt.s",
+              "operand": "BF"
+            },
+            {
+              "offset": 192,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 193,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 194,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 195,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 196,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 197,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 199,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 204,
+              "opcode": "blt.s",
+              "operand": "A6"
+            },
+            {
+              "offset": 206,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 207,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "IL"
+      }
+    ]
+  },
+  {
+    "entry": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p21bulk\\p21bulk.dll",
+    "sha256": "BB3CC8063B32A89BEFB27AAE9C6F674353B51F7A6A01129BF3C20CC93A8299BD",
+    "methods": [
+      {
+        "method": "Tedd.Voxtree.GenericOctreeQueries\u00601.CountPackedVector",
+        "rawIlSha256": "4CA2EBED7484386EF19E4AA3579B2148A6E1D5DC07E93F8E5CFD0EB1CC221FB9",
+        "resolvedIlSha256": "3BADC2D839C1C480D0177055CE88556104497173AB6106856362691BADF349CF",
+        "canonical": {
+          "signature": "Tedd.Voxtree.GenericOctreeQueries\u00601\u003CT\u003E::CountPackedVector\u003CTStorage\u003E(System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E,System.Int32,Tedd.Voxtree.VoxelBox,Tedd.Voxtree.VoxelFilter\u00601\u003CT\u003E):System.Int32",
+          "InitLocals": true,
+          "MaxStackSize": 5,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.ReadOnlySpan\u00601\u003CTStorage\u003E",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "ldc.i4.s",
+              "operand": "1F"
+            },
+            {
+              "offset": 4,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "shl",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 7,
+              "opcode": "ldarga.s",
+              "operand": "00"
+            },
+            {
+              "offset": 9,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 10,
+              "opcode": "call",
+              "operand": "System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E::Slice\u003C\u003E(System.Int32):System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E"
+            },
+            {
+              "offset": 15,
+              "opcode": "call",
+              "operand": "System.Runtime.InteropServices.MemoryMarshal::Cast\u003CSystem.Byte,TStorage\u003E(System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E):System.ReadOnlySpan\u00601\u003CTStorage\u003E"
+            },
+            {
+              "offset": 20,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 21,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 23,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 28,
+              "opcode": "brtrue.s",
+              "operand": "4A"
+            },
+            {
+              "offset": 30,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 32,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "bne.un.s",
+              "operand": "40"
+            },
+            {
+              "offset": 40,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 42,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 47,
+              "opcode": "brtrue.s",
+              "operand": "37"
+            },
+            {
+              "offset": 49,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 51,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 56,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 57,
+              "opcode": "bne.un.s",
+              "operand": "2D"
+            },
+            {
+              "offset": 59,
+              "opcode": "ldloca.s",
+              "operand": "01"
+            },
+            {
+              "offset": 61,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 63,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 68,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 69,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 71,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 72,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 74,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 79,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 81,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 86,
+              "opcode": "sub",
+              "operand": ""
+            },
+            {
+              "offset": 87,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 88,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 89,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 90,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 91,
+              "opcode": "call",
+              "operand": "System.ReadOnlySpan\u00601\u003CTStorage\u003E::Slice\u003C\u003E(System.Int32,System.Int32):System.ReadOnlySpan\u00601\u003CTStorage\u003E"
+            },
+            {
+              "offset": 96,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 97,
+              "opcode": "ldarg.3",
+              "operand": ""
+            },
+            {
+              "offset": 98,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.GenericOctreeQueries\u00601\u003CT\u003E::CountPackedRange\u003CTStorage\u003E(System.ReadOnlySpan\u00601\u003CTStorage\u003E,System.Int32,Tedd.Voxtree.VoxelFilter\u00601\u003CT\u003E):System.Int32"
+            },
+            {
+              "offset": 103,
+              "opcode": "ret",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 105,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 106,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 108,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 113,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 114,
+              "opcode": "br.s",
+              "operand": "50"
+            },
+            {
+              "offset": 116,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 118,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 123,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 125,
+              "opcode": "br.s",
+              "operand": "36"
+            },
+            {
+              "offset": 127,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 128,
+              "opcode": "ldloca.s",
+              "operand": "01"
+            },
+            {
+              "offset": 130,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 131,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 132,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 133,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 135,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 136,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 137,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 138,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 140,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 145,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 146,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 148,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 153,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 155,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 160,
+              "opcode": "sub",
+              "operand": ""
+            },
+            {
+              "offset": 161,
+              "opcode": "call",
+              "operand": "System.ReadOnlySpan\u00601\u003CTStorage\u003E::Slice\u003C\u003E(System.Int32,System.Int32):System.ReadOnlySpan\u00601\u003CTStorage\u003E"
+            },
+            {
+              "offset": 166,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 167,
+              "opcode": "ldarg.3",
+              "operand": ""
+            },
+            {
+              "offset": 168,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.GenericOctreeQueries\u00601\u003CT\u003E::CountPackedRange\u003CTStorage\u003E(System.ReadOnlySpan\u00601\u003CTStorage\u003E,System.Int32,Tedd.Voxtree.VoxelFilter\u00601\u003CT\u003E):System.Int32"
+            },
+            {
+              "offset": 173,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 174,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 175,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 177,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 178,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 179,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 181,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 183,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 185,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 190,
+              "opcode": "blt.s",
+              "operand": "BF"
+            },
+            {
+              "offset": 192,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 193,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 194,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 195,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 196,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 197,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 199,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 204,
+              "opcode": "blt.s",
+              "operand": "A6"
+            },
+            {
+              "offset": 206,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 207,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "Tedd.Voxtree.OctreeQueries.CountPackedVector",
+        "rawIlSha256": "F0B8AD16047B637C0BAFCF4DCD776F3180ED04BA222887364749A91A604F07DD",
+        "resolvedIlSha256": "CA74273720DFD330DA20CA343BC2A90073C458F26CE86F0937BDB4AA231D7FCB",
+        "canonical": {
+          "signature": "Tedd.Voxtree.OctreeQueries::CountPackedVector\u003C\u003E(System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E,System.Int32,Tedd.Voxtree.VoxelBox,Tedd.Voxtree.VoxelFilter):System.Int32",
+          "InitLocals": true,
+          "MaxStackSize": 5,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "ldc.i4.s",
+              "operand": "1F"
+            },
+            {
+              "offset": 4,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "shl",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 7,
+              "opcode": "ldarga.s",
+              "operand": "00"
+            },
+            {
+              "offset": 9,
+              "opcode": "ldc.i4.2",
+              "operand": ""
+            },
+            {
+              "offset": 10,
+              "opcode": "call",
+              "operand": "System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E::Slice\u003C\u003E(System.Int32):System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E"
+            },
+            {
+              "offset": 15,
+              "opcode": "call",
+              "operand": "System.Runtime.InteropServices.MemoryMarshal::Cast\u003CSystem.Byte,System.UInt32\u003E(System.ReadOnlySpan\u00601\u003CSystem.Byte\u003E):System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E"
+            },
+            {
+              "offset": 20,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 21,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 23,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 28,
+              "opcode": "brtrue.s",
+              "operand": "4A"
+            },
+            {
+              "offset": 30,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 32,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "bne.un.s",
+              "operand": "40"
+            },
+            {
+              "offset": 40,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 42,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 47,
+              "opcode": "brtrue.s",
+              "operand": "37"
+            },
+            {
+              "offset": 49,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 51,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 56,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 57,
+              "opcode": "bne.un.s",
+              "operand": "2D"
+            },
+            {
+              "offset": 59,
+              "opcode": "ldloca.s",
+              "operand": "01"
+            },
+            {
+              "offset": 61,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 63,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 68,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 69,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 71,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 72,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 74,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 79,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 81,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 86,
+              "opcode": "sub",
+              "operand": ""
+            },
+            {
+              "offset": 87,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 88,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 89,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 90,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 91,
+              "opcode": "call",
+              "operand": "System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E::Slice\u003C\u003E(System.Int32,System.Int32):System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E"
+            },
+            {
+              "offset": 96,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 97,
+              "opcode": "ldarg.3",
+              "operand": ""
+            },
+            {
+              "offset": 98,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.OctreeQueries::CountPackedRange\u003C\u003E(System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E,System.Int32,Tedd.Voxtree.VoxelFilter):System.Int32"
+            },
+            {
+              "offset": 103,
+              "opcode": "ret",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 105,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 106,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 108,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 113,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 114,
+              "opcode": "br.s",
+              "operand": "50"
+            },
+            {
+              "offset": 116,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 118,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 123,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 125,
+              "opcode": "br.s",
+              "operand": "36"
+            },
+            {
+              "offset": 127,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 128,
+              "opcode": "ldloca.s",
+              "operand": "01"
+            },
+            {
+              "offset": 130,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 131,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 132,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 133,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 135,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 136,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 137,
+              "opcode": "mul",
+              "operand": ""
+            },
+            {
+              "offset": 138,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 140,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 145,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 146,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 148,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 153,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 155,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MinZ\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 160,
+              "opcode": "sub",
+              "operand": ""
+            },
+            {
+              "offset": 161,
+              "opcode": "call",
+              "operand": "System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E::Slice\u003C\u003E(System.Int32,System.Int32):System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E"
+            },
+            {
+              "offset": 166,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 167,
+              "opcode": "ldarg.3",
+              "operand": ""
+            },
+            {
+              "offset": 168,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.OctreeQueries::CountPackedRange\u003C\u003E(System.ReadOnlySpan\u00601\u003CSystem.UInt32\u003E,System.Int32,Tedd.Voxtree.VoxelFilter):System.Int32"
+            },
+            {
+              "offset": 173,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 174,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 175,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 177,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 178,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 179,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 181,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 183,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 185,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxY\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 190,
+              "opcode": "blt.s",
+              "operand": "BF"
+            },
+            {
+              "offset": 192,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 193,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 194,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 195,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 196,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 197,
+              "opcode": "ldarga.s",
+              "operand": "02"
+            },
+            {
+              "offset": 199,
+              "opcode": "call",
+              "operand": "Tedd.Voxtree.VoxelBox::get_MaxX\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 204,
+              "opcode": "blt.s",
+              "operand": "A6"
+            },
+            {
+              "offset": 206,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 207,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      }
+    ]
+  }
+]

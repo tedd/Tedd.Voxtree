@@ -1,0 +1,15 @@
+// Inspect unchanged sizing/speculative writer paths; no latency comparison exported.
+using System.Diagnostics;
+using Tedd.DotNetLab.Contracts;
+using Tedd.DotNetLab.Harness;
+if(OperatingSystem.IsWindows())Process.GetCurrentProcess().ProcessorAffinity=(nint)4;
+foreach(string type in new[]{"UInt32","UInt16"})
+foreach(string op in new[]{"required","callerbuild"}){
+    ISynchronousScenario scenario=type=="UInt32"?new BulkUInt32Scenario("mixed-u16-air",op):new BulkUInt16Scenario("mixed-u16-air",op);
+    foreach(string variant in new[]{"baseline","candidate"}){
+        scenario.Prepare(new ScenarioContext(variant,CancellationToken.None));
+        scenario.Reset(new ResetContext(ResetLevel.LogicalState));
+        if(scenario.ExecuteBatch(16)!=16||!scenario.Validate().Correct)throw new Exception("Builder native oracle failed");
+        scenario.Cleanup();Console.WriteLine(scenario.Describe().Id+" "+variant+" valid");
+    }
+}

@@ -1,0 +1,20 @@
+--- a/src/Tedd.Voxtree/GenericOctreeQueries.cs
++++ b/src/Tedd.Voxtree/GenericOctreeQueries.cs
+@@ -325,6 +325,7 @@
+     }
+ 
+ #if NET10_0_OR_GREATER
++    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+     private static int CountPackedVector<TStorage>(ReadOnlySpan<byte> data, int levels, VoxelBox box, VoxelFilter<T> filter)
+         where TStorage : unmanaged, IEquatable<TStorage>
+     {
+--- a/src/Tedd.Voxtree/OctreeQueries.cs
++++ b/src/Tedd.Voxtree/OctreeQueries.cs
+@@ -278,6 +278,7 @@
+     }
+ 
+ #if NET10_0_OR_GREATER
++    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+     private static int CountPackedVector(ReadOnlySpan<byte> data, int levels, VoxelBox box, VoxelFilter filter)
+     {
+         var side = 1 << levels;

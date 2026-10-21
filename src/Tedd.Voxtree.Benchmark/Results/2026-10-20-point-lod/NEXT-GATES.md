@@ -1,8 +1,9 @@
 # Current investigation gate
 
 Original integration branch: main. Full public-method objective remains active.
-No P15/P16/P17/P18 source is adopted into the production library. Current
-continuation evidence is REPORT-PHASE4.md; earlier failed gates remain retained.
+No prototype source is adopted into the production library. Current continuation
+evidence is REPORT-PHASE5.md; earlier failed gates remain retained. P19 is
+not_supported; P20/P21 remain inconclusive after complete 88/96/96-case screens.
 
 1. Localize the fresh confirmation failure before another normal-build family.
    Six original cases completed; the seventh failed after 22 completed sessions
@@ -13,22 +14,27 @@ continuation evidence is REPORT-PHASE4.md; earlier failed gates remain retained.
    replace sessions, silently complete the eighth case, or call the original
    family complete. Any failure reproduction is a separate diagnostic, not
    additional favorable decision samples.
-2. Register a changed-source CountMatches experiment from the exact p18bulk
-   CPU/JIT evidence. The complete Packed Tier1 bodies retain per-voxel box
-   construction, repeated span bounds/LOD checks and a call to general State.Accept.
-   Header revalidation was an incorrect initial hypothesis: TryGet does not
-   reparse the header. Test a dedicated count path that avoids general copy/hit
-   dispatch and hoists proven row invariants, preserving malformed-word/LOD
-   rejection. Consider masked vector predicates or traversal by stored leaf LOD
-   as separate interventions. Freeze clipping/filter/miss oracles and complete
-   changed-source guards before observations. No PMU or elapsed-share inference
-   from static instruction counts or sampled stacks.
+2. Preserve the count tradeoffs. P19 scalar specialization fails its UInt16
+   primary despite removing general dispatch. P20 validated masked-vector counts
+   improve dominant full callers 9.6..181.8x versus P19 but regress short rows.
+   P21's two NoInlining flags shrink dispatchers and improve short rows about
+   2x versus P20, with adverse full-miss guards. Do not multiply these epochs.
+   Before selecting a complete source, use direct matched comparisons, resolve
+   short/full tradeoffs and verify ordinary fresh callers. The two vector bodies
+   have identical resolved IL across P20/P21; raw hashes differ. Header
+   revalidation was a refuted hypothesis. No PMU or causal-time share is proved.
 3. Investigate caller-buffer Build/TryBuild separately: the prototype emits a
    speculative legacy tree before overwriting it with packed words. Avoiding
    redundant writes is a hypothesis, not a measured remedy. Preserve exact
    format selection, required sizes, insufficient-buffer behavior, fallback
    bytes and original dense-storage LOD zero semantics. An early sizing cutoff
    must not misclassify a tree that would ultimately choose legacy dense storage.
+   The unchanged builder native probe retains recursive linear-subtree and
+   writer calls, plus eight-summary stack scratch: Tier0-FullOpts frames subtract
+   152/136 bytes and another 96/64 at scratch allocation. WriteByte is inlined.
+   A separate leaf-level specialization can avoid eight level-zero summary
+   calls while preserving exact old/Morton bytes and uniform collapse. Measure
+   sizing-only changes separately; do not assume static calls establish cost.
 4. Preserve the full-corpus result: 1,286 chunks, 686 unique arrays, all 42,139,648
    cells checked; UInt32/UInt16 eligibility 517/574. Combined UInt32 encoded plus
    distinct lookup payload grows from 48,861,892 to 71,567,508 bytes. The selected

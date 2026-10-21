@@ -1,0 +1,331 @@
+{
+  "observer": "External target JIT diagnostics; not quiet timing",
+  "limitations": [
+    "Listings come from isolated diagnostic processes, while screens accumulate scenario/JIT/PGO history.",
+    "Concurrent/incomplete listings may have missing or multiple size markers; those entries do not establish method size or call ownership.",
+    "Fixed rsp subtraction is not total stack usage or a causal time fraction.",
+    "Native bytes and call-site changes do not establish hardware bottlenecks or promotion."
+  ],
+  "listings": [
+    {
+      "file": "p21builder-code-code.asm",
+      "sha256": "c3f55679ed3d7d9d4be5073100da8841a2e6e3373c15caea63ae58bdaa9d8de7",
+      "methods": [
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:BuildLinearSubtree(System.ReadOnlySpan`1[uint],int,int,int,int,byref,byref):bool (Tier0-FullOpts)",
+          "native_bytes": 895,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            895
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            152,
+            96
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeCodec:IsUniformRegion(System.ReadOnlySpan`1[uint],int,int,int,int):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:BuildLinearSubtree(System.ReadOnlySpan`1[uint],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec+OctreeWriter:WriteVarUInt(uint):bool:this]",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:BuildLinearSubtree(System.ReadOnlySpan`1[uint],int,int,int,int,byref,byref):bool (Tier0-FullOpts)",
+          "native_bytes": 895,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            895
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            152,
+            96
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeCodec:IsUniformRegion(System.ReadOnlySpan`1[uint],int,int,int,int):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:BuildLinearSubtree(System.ReadOnlySpan`1[uint],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec+OctreeWriter:WriteVarUInt(uint):bool:this]",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec+OctreeWriter:WriteVarUInt(uint):bool:this (Tier1)",
+          "native_bytes": 140,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            140
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:IsUniformRegion(System.ReadOnlySpan`1[uint],int,int,int,int):bool (Tier1)",
+          "native_bytes": 272,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            272
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [System.SpanHelpers:NonPackedIndexOfValueType[int,System.SpanHelpers+Negate`1[int]](byref,int,int):int]",
+            "call     [System.SpanHelpers:NonPackedIndexOfValueType[int,System.SpanHelpers+Negate`1[int]](byref,int,int):int]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:BuildRoot(System.ReadOnlySpan`1[uint],int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 96,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            96
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeCodec:BuildLinearSubtree(System.ReadOnlySpan`1[uint],int,int,int,int,byref,byref):bool]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec+OctreeWriter:WriteVarUInt(uint):bool:this (Tier1)",
+          "native_bytes": 140,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            140
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:IsUniformRegion(System.ReadOnlySpan`1[uint],int,int,int,int):bool (Tier1)",
+          "native_bytes": 272,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            272
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [System.SpanHelpers:NonPackedIndexOfValueType[int,System.SpanHelpers+Negate`1[int]](byref,int,int):int]",
+            "call     [System.SpanHelpers:NonPackedIndexOfValueType[int,System.SpanHelpers+Negate`1[int]](byref,int,int):int]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:BuildRoot(System.ReadOnlySpan`1[uint],int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 96,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            96
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeCodec:BuildLinearSubtree(System.ReadOnlySpan`1[uint],int,int,int,int,byref,byref):bool]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.GenericOctreeCodec`1[ushort]:BuildLinearSubtree(System.ReadOnlySpan`1[ushort],int,int,int,int,byref,byref):bool (Tier0-FullOpts)",
+          "native_bytes": 885,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            885
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136,
+            64
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.GenericOctreeCodec`1[ushort]:IsUniformRegion(System.ReadOnlySpan`1[ushort],int,int,int,int):bool]",
+            "call     [Snapshot.Voxtree.GenericOctreeCodec`1[ushort]:BuildLinearSubtree(System.ReadOnlySpan`1[ushort],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.GenericOctreeCodec`1+OctreeWriter[ushort]:WriteValue(ushort):bool:this]",
+            "call     [Snapshot.Voxtree.GenericOctreeCodec`1+OctreeWriter[ushort]:WriteVarUInt(uint):bool:this]",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.GenericOctreeCodec`1[ushort]:BuildLinearSubtree(System.ReadOnlySpan`1[ushort],int,int,int,int,byref,byref):bool (Tier0-FullOpts)",
+          "native_bytes": 885,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            885
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136,
+            64
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:IsUniformRegion(System.ReadOnlySpan`1[ushort],int,int,int,int):bool]",
+            "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:BuildLinearSubtree(System.ReadOnlySpan`1[ushort],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.GenericOctreeCodec`1+OctreeWriter[ushort]:WriteValue(ushort):bool:this]",
+            "call     [Tedd.Voxtree.GenericOctreeCodec`1+OctreeWriter[ushort]:WriteVarUInt(uint):bool:this]",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.GenericOctreeCodec`1+OctreeWriter[ushort]:WriteValue(ushort):bool:this (Tier1)",
+          "native_bytes": 205,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            205
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.GenericOctreeCodec`1+OctreeWriter[ushort]:WriteVarUInt(uint):bool:this (Tier1)",
+          "native_bytes": 142,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            142
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.GenericOctreeCodec`1[ushort]:IsUniformRegion(System.ReadOnlySpan`1[ushort],int,int,int,int):bool (Tier1)",
+          "native_bytes": 322,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            322
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56
+          ],
+          "call_sites": [
+            "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+            "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+            "call     [Snapshot.Voxtree.GenericOctreeCodec`1[ushort]:IsUniform(System.ReadOnlySpan`1[ushort]):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.GenericOctreeCodec`1[ushort]:BuildRoot(System.ReadOnlySpan`1[ushort],int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 96,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            96
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.GenericOctreeCodec`1[ushort]:BuildLinearSubtree(System.ReadOnlySpan`1[ushort],int,int,int,int,byref,byref):bool]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.GenericOctreeCodec`1+OctreeWriter[ushort]:WriteValue(ushort):bool:this (Tier1)",
+          "native_bytes": 205,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            205
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.GenericOctreeCodec`1+OctreeWriter[ushort]:WriteVarUInt(uint):bool:this (Tier1)",
+          "native_bytes": 142,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            142
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.GenericOctreeCodec`1[ushort]:IsUniformRegion(System.ReadOnlySpan`1[ushort],int,int,int,int):bool (Tier1)",
+          "native_bytes": 322,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            322
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56
+          ],
+          "call_sites": [
+            "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+            "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+            "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:IsUniform(System.ReadOnlySpan`1[ushort]):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.GenericOctreeCodec`1[ushort]:BuildRoot(System.ReadOnlySpan`1[ushort],int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 96,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            96
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:BuildLinearSubtree(System.ReadOnlySpan`1[ushort],int,int,int,int,byref,byref):bool]"
+          ]
+        }
+      ]
+    }
+  ]
+}

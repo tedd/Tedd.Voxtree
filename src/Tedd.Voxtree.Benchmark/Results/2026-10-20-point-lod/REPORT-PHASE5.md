@@ -77,10 +77,45 @@ bytes and 136/152. This supports testing a vector-helper boundary; it does not
 prove front-end stalls, total stack use, exact quiet JIT identity or a causal
 elapsed fraction. Different native-probe histories remain separate.
 
-P21 adds NoInlining only to the two CountPackedVector helpers, preserving
-executable bodies, branches and format. Its frozen 96-case family tests at
-least 20% lower short-row time while retaining full/17-row guards. Tests,
-selected-binary code and complete timing results are pending in this checkpoint.
+P21 adds NoInlining only to the two CountPackedVector helpers. A metadata audit
+matches both resolved executable bodies; raw metadata-token IL hashes differ.
+Implementation flags change IL to NoInlining. The complete source review
+matches selected snapshots and contains only the two attribute additions.
+
+Framework tests passed 412/413/414, plus 413 .NET 10 intrinsics-off tests and
+all 48 point/96 bulk oracles. The frozen 96-case family completed 2,304 correct,
+quiescent records with joined target/controller shutdown.
+
+| Dominant complete caller | P21 / P20 speedup, UInt32 | UInt16 |
+|---|---:|---:|
+| Full count | 1.027 | 1.088 |
+| Full miss | 0.867 | 0.952 |
+| Seven-element-row count | 1.975 | 2.217 |
+| Seven-element-row miss | 2.166 | 2.153 |
+| Seventeen-element-row count | 1.174 | 1.018 |
+| Seventeen-element-row miss | 1.018 | 1.121 |
+
+The short-row primary estimates pass, but full-miss estimates do not establish
+the required guard. The registry remains inconclusive; no source is adopted.
+Actual dispatcher bodies shrink to 405/402 bytes with fixed subtraction 40/56.
+Separate vector helpers are 1166/870 bytes, each reserving 72 bytes. This code
+boundary improves the screened short path without qualifying a universal win.
+
+## Next builder investigation
+
+A native-only required-size/caller-build probe uses unchanged builder code,
+with no timing comparison. Actual linear-subtree bodies are Tier0-FullOpts:
+895 UInt32 / 885 UInt16 bytes. Their listings subtract 152/136 for the frame
+and a further 96/64 at the summary stack allocation. They retain recursive
+subtree and varint/value writer calls. UInt32 WriteVarUInt is 140 Tier1 bytes;
+UInt16 WriteValue is 205. WriteByte is inlined, so an imagined per-byte call
+overhead is not a supported explanation. These are not dynamic cost shares or
+total recursive stack bounds.
+
+A separate future leaf-level specialization can test removal of eight level-zero
+summary calls and scratch work while preserving exact wire order and uniform
+collapse. Measurement-only sizing is another distinct intervention. Neither is
+implemented or claimed faster by this checkpoint.
 
 ## Retained limits
 
@@ -96,3 +131,11 @@ qualification. New format constants/discrimination, construction/query/fallback
 guards and the broader API catalogue remain incomplete. Task sources, immutable
 regions and closed catalogs remain under D:\Workspaces\AI\voxtree-point-lod-20261020
 while optimization continues; no worktree or alternate branch was created.
+
+The closed phase-five archive retains 33,550 logical paths as 27,530 unique
+blobs, 34 catalog exports and 874 cumulative metric rows. Every mapping, length,
+SHA-256, ZIP CRC and catalog table passed verification. Its SHA-256 is
+eff69d284486a89b33757cfdf93dabc567ff181a9955d9dd1adf5af1c3a862b5;
+the archive is 59,439,618 bytes. Verification and required-record checks are
+retained in evidence-phase5-verified.json. Cumulative rows are not independent
+experiments.

@@ -1,7 +1,8 @@
 param([Parameter(Mandatory)][string]$TaskRoot,
       [ValidatePattern('^[a-z][a-z0-9-]*$')][string]$Label='p18count-body2',
       [ValidatePattern('^[a-z][a-z0-9-]*$')][string]$BundleLabel='p18bulk',
-      [ValidateSet('CountBodyProbe.cs.txt','CountShapeProbe.cs.txt')][string]$ProbeSource='CountBodyProbe.cs.txt')
+      [ValidateSet('CountBodyProbe.cs.txt','CountShapeProbe.cs.txt','BuilderProbe.cs.txt')][string]$ProbeSource='CountBodyProbe.cs.txt',
+      [string]$Methods='*Packed* *Count* *RunCore* *Accept* *TryGet*')
 $ErrorActionPreference='Stop'
 if([IO.Path]::GetFullPath($TaskRoot).TrimEnd('\') -ne 'D:\Workspaces\AI\voxtree-point-lod-20261020'){throw 'Unexpected task root'}
 . (Join-Path $PSScriptRoot 'Host-Lock.ps1')
@@ -31,11 +32,11 @@ try {
         foreach($argument in @('exec','--fx-version','10.0.13',$entry)){$start.ArgumentList.Add($argument)}
         $start.UseShellExecute=$false;$start.CreateNoWindow=$true
         $start.RedirectStandardOutput=$true;$start.RedirectStandardError=$true
-        $start.Environment['DOTNET_JitDisasm']='*Packed* *Count* *RunCore* *Accept* *TryGet*'
+        $start.Environment['DOTNET_JitDisasm']=$Methods
         $start.Environment['DOTNET_JitDisasmAssemblies']=$BundleLabel
         $start.Environment['DOTNET_JitStdOutFile']=Join-Path $TaskRoot "$Label-code.asm"
         $p=[Diagnostics.Process]::Start($start);$stdout=$p.StandardOutput.ReadToEndAsync();$stderr=$p.StandardError.ReadToEndAsync()
-        $identity=@{pid=$p.Id;start=$p.StartTime.ToUniversalTime().ToString('o');probeSource=$ProbeSource;sourceSha256=(Get-FileHash -LiteralPath (Join-Path $root 'Program.cs')).Hash;entrySha256=(Get-FileHash -LiteralPath $entry).Hash;selectedBundle=$BundleLabel;selectedBundleSha256=(Get-FileHash -LiteralPath (Join-Path $bundle "$BundleLabel.dll")).Hash;regime='isolated native-only count traversal probe; not quiet timing';runtime='10.0.13';affinity=4}
+        $identity=@{pid=$p.Id;start=$p.StartTime.ToUniversalTime().ToString('o');probeSource=$ProbeSource;methods=$Methods;sourceSha256=(Get-FileHash -LiteralPath (Join-Path $root 'Program.cs')).Hash;entrySha256=(Get-FileHash -LiteralPath $entry).Hash;selectedBundle=$BundleLabel;selectedBundleSha256=(Get-FileHash -LiteralPath (Join-Path $bundle "$BundleLabel.dll")).Hash;regime='isolated native-only fixture probe; not quiet timing';runtime='10.0.13';affinity=4}
         while(-not $p.WaitForExit(1000)){}
         $stdout.GetAwaiter().GetResult()|Set-Content -LiteralPath (Join-Path $TaskRoot "$Label-output.log")
         $stderr.GetAwaiter().GetResult()|Set-Content -LiteralPath (Join-Path $TaskRoot "$Label-error.log")
