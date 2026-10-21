@@ -1,0 +1,23 @@
+{
+  "observedUtc": "2026-10-21T18:14:07.6829893Z",
+  "version": "2.0.31",
+  "releaseCommit": "a3bbea0c0d3e99966972fb16e03ad6af3ebd5a12",
+  "integrationBranch": "main",
+  "deploymentBranch": "deploy",
+  "mainRunId": 39649227011,
+  "mainConclusion": "success",
+  "deployRunId": 39649281912,
+  "deployConclusion": "success",
+  "deployRunUrl": "https://github.com/tedd/Tedd.Voxtree/actions/runs/39649281912",
+  "nugetUrl": "https://www.nuget.org/packages/Tedd.Voxtree/2.0.31",
+  "nugetUploadAccepted": true,
+  "symbolsUploadAccepted": true,
+  "remoteTagVerified": true,
+  "nugetIndexContainsVersion": true,
+  "publicPackageDownloadedAndVerified": true,
+  "finalUnitTestsPassed": 1191,
+  "finalDeterministicDiagnosticsPassed": 5,
+  "newRuntimeOptimization": false,
+  "fullPublicApiTenfoldQualified": false,
+  "pauseGoalAfterPublicationRequested": true
+}

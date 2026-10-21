@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "scope": "NuGet upload acceptance and completed CI; public download verification is separate",
+  "version": "2.0.31",
+  "releaseCommit": "a3bbea0c0d3e99966972fb16e03ad6af3ebd5a12",
+  "mainRun": 39649227011,
+  "publishRun": 39649281912,
+  "nugetUploadAccepted": true,
+  "symbolsUploadAccepted": true,
+  "originalWorkflowSucceeded": true,
+  "originalWorkflowRerun": false,
+  "serverResponseLines": [
+    "publish\tSet automatic package version\t2026-10-21T18:06:40.5325864Z Publishing Tedd.Voxtree 2.0.31",
+    "publish\tPublish on version change\t2026-10-21T18:07:06.3242277Z   Created https://www.nuget.org/api/v2/package/ 644ms",
+    "publish\tPublish on version change\t2026-10-21T18:07:06.3304386Z Your package was pushed.",
+    "publish\tPublish on version change\t2026-10-21T18:07:06.3784697Z   Created https://www.nuget.org/api/v2/symbolpackage/ 130ms",
+    "publish\tPublish on version change\t2026-10-21T18:07:06.3933012Z Your package was pushed."
+  ],
+  "archiveSha256": "8ba913784309870ea1707b1fd5a850c0a76849d897c1d71bb83ce69903840d15",
+  "archiveBytes": 40033,
+  "archivePaths": 3
+}

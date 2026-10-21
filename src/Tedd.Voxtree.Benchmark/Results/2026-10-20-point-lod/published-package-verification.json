@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "id": "Tedd.Voxtree",
+  "version": "2.0.31",
+  "packageUrl": "https://api.nuget.org/v3-flatcontainer/tedd.voxtree/2.0.31/tedd.voxtree.2.0.31.nupkg",
+  "packageSha256": "e1e8597dc9f9adc06906167cce585bbc69fcdaef5201916fec96afa31bebf596",
+  "packageBytes": 349391,
+  "assemblies": [
+    {
+      "path": "lib/netstandard2.1/Tedd.Voxtree.dll",
+      "bytes": 188416,
+      "sha256": "8db694187db2dc7a1324186cc10152b3f7f4dd73c7e64041523f115702bf971b"
+    },
+    {
+      "path": "lib/net10.0/Tedd.Voxtree.dll",
+      "bytes": 193536,
+      "sha256": "e9e28a77fa15b8fedf8de517e6b7b259dd700d3e25f36294865f9887f305b227"
+    },
+    {
+      "path": "lib/net11.0/Tedd.Voxtree.dll",
+      "bytes": 193536,
+      "sha256": "12db66aa5e34bbed8c93a20beb5b1e3ac5340edf952d954d48223e89d64f48dd"
+    }
+  ],
+  "releaseNotes": "Maintenance release revalidating the existing implementation across supported targets. Runtime behavior, public APIs, and serialized formats are unchanged.",
+  "crcAndUniqueEntriesPassed": true,
+  "packageExecuted": false
+}
