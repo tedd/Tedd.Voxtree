@@ -2,6 +2,13 @@
 
 All notable changes to Tedd.Voxtree are documented here.
 
+## 2026-10-21
+
+### Maintenance
+
+- Revalidated the existing implementation and package across the supported targets.
+- Runtime behavior, public APIs, and serialized formats are unchanged.
+
 ## 2026-10-20
 
 ### Performance
