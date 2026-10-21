@@ -65,6 +65,11 @@ static class PackedCorpus
         }
         int maximum = small.Max();
         bool packed = Packed(after.Data), packed16 = Packed(after16.Data), packed32 = Packed(after32.Data);
+#if P24_PACKED_MAGIC
+        if (packed) Require(after.Data.Span[0] == 0x50 && !Baseline.OctreeSpan.TryCreate(after.Data.Span, out _), "Released UInt32 reader rejects new magic");
+        if (packed16) Require(after16.Data.Span[0] == 0x50 && !Baseline.OctreeSpan<ushort>.TryCreate(after16.Data.Span, out _), "Released UInt16 reader rejects new magic");
+        if (packed32) Require(after32.Data.Span[0] == 0x50 && !Baseline.OctreeSpan<uint>.TryCreate(after32.Data.Span, out _), "Released generic UInt32 reader rejects new magic");
+#endif
 #if RELEASE_BUILDER_CENSUS
         Require(before.Data.Span.SequenceEqual(after.Data.Span), "UInt32 exact release bytes");
         Require(before16.Data.Span.SequenceEqual(after16.Data.Span), "UInt16 exact release bytes");

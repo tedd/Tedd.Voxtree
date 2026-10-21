@@ -1,0 +1,43 @@
+// Append to the existing packed-leaf semantic tests.
+public class PackedWordFormatCases
+{
+    static uint[] Values()=>Enumerable.Range(0,512).Select(i=>(uint)(i%31)).ToArray();
+    [Fact]
+    public void PackedMagicIsDistinctAndOldPrototypeIsRejected()
+    {
+        Assert.Equal(1,Octree.FormatVersion);Assert.Equal(2,Octree<ushort>.FormatVersion);
+        Assert.Equal(3,Octree.PackedLeafFormatVersion);Assert.Equal(3,Octree<ushort>.PackedLeafFormatVersion);
+        var values=Values();var a=new Octree(3,values);var b=new Octree<ushort>(3,values.Select(v=>(ushort)v).ToArray());
+        Assert.Equal((byte)0x50,a.Data.Span[0]);Assert.Equal((byte)0x50,b.Data.Span[0]);
+        Assert.Equal(3,a.Data.Span[1]>>6);Assert.Equal(3,b.Data.Span[1]>>6);
+        var old=a.Data.ToArray();old[0]=0x4f;
+        Assert.False(OctreeSpan.TryCreate(old,out _));Assert.Throws<FormatException>(()=>Octree.FromEncoded(old));
+        var old16=b.Data.ToArray();old16[0]=0x4f;
+        Assert.False(OctreeSpan<ushort>.TryCreate(old16,out _));Assert.Throws<FormatException>(()=>Octree<ushort>.FromEncoded(old16));
+        foreach(int version in new[]{0,1,2}){
+            var wrong=a.Data.ToArray();wrong[1]=(byte)((wrong[1]&63)|(version<<6));Assert.False(OctreeSpan.TryCreate(wrong,out _));
+            var wrong16=b.Data.ToArray();wrong16[1]=(byte)((wrong16[1]&63)|(version<<6));Assert.False(OctreeSpan<ushort>.TryCreate(wrong16,out _));
+        }
+        foreach(int kind in new[]{0,1,2}){var wrong=a.Data.ToArray();wrong[1]=(byte)((wrong[1]&252)|kind);Assert.False(OctreeSpan.TryCreate(wrong,out _));}
+        Assert.False(OctreeSpan.TryCreate(b.Data.Span,out _));Assert.False(OctreeSpan<ushort>.TryCreate(a.Data.Span,out _));
+        var shifted=new byte[a.EncodedLength+7];a.Data.Span.CopyTo(shifted.AsSpan(5));
+        Assert.Equal(a.Get(7,3,2,out int al),new OctreeSpan(shifted.AsSpan(5,a.EncodedLength)).Get(7,3,2,out int bl));Assert.Equal(al,bl);
+        var decoded=new uint[512];Octree.FromEncoded(a.Data.Span).CopyTo(decoded);Assert.Equal(values,decoded);
+    }
+    [Fact]
+    public void LiteralPublishedUniformAndTreeFormatsRemainReadable()
+    {
+        byte[] uniform={0x4f,0x4d,7};byte[] uniform16={0x4f,0x8d,1,7};
+        var a=Octree.FromEncoded(uniform);var b=Octree<ushort>.FromEncoded(uniform16);
+        Assert.Equal(7u,a.Get(7,7,7,out int al));Assert.Equal(3,al);
+        Assert.Equal((ushort)7,b.Get(7,7,7,out int bl));Assert.Equal(3,bl);
+        byte[] tree={0x4f,0x44,255,0,1,2,3,4,5,6,7,9};
+        byte[] tree16={0x4f,0x84,1,255,0,1,2,3,4,5,6,7,9};
+        var x=Octree.FromEncoded(tree);var y=Octree<ushort>.FromEncoded(tree16);
+        Assert.True(x.AsSpan().IsWellFormed());Assert.True(y.AsSpan().IsWellFormed());
+        for(int i=0;i<8;i++){
+            Assert.Equal((uint)i,x.Get(i/4,i/2%2,i%2,out al));Assert.Equal(0,al);
+            Assert.Equal((ushort)i,y.Get(i/4,i/2%2,i%2,out bl));Assert.Equal(0,bl);
+        }
+    }
+}

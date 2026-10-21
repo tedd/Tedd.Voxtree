@@ -1,0 +1,203 @@
+using System.Buffers.Binary;
+using System.Runtime.InteropServices;
+using Xunit;
+
+namespace Tedd.Voxtree.Tests;
+
+public class PackedLeafTests
+{
+    private static uint[] Values()
+    {
+        var result = Enumerable.Range(0, 512).Select(i => (uint)((i * 13 + i / 8 * 7) & 31)).ToArray();
+        for (int x = 0; x < 2; x++) for (int y = 0; y < 2; y++) for (int z = 0; z < 2; z++) result[(x * 8 + y) * 8 + z] = 7;
+        for (int x = 4; x < 8; x++) for (int y = 4; y < 8; y++) for (int z = 4; z < 8; z++) result[(x * 8 + y) * 8 + z] = 1877;
+        return result;
+    }
+
+    private static int Lod(uint[] values, int x, int y, int z)
+    {
+        var value = values[(x * 8 + y) * 8 + z];
+        for (int lod = 3; lod > 0; lod--)
+        {
+            int size = 1 << lod, a = x & -size, b = y & -size, c = z & -size;
+            bool same = true;
+            for (int xx = a; xx < a + size && same; xx++)
+            for (int yy = b; yy < b + size && same; yy++)
+            for (int zz = c; zz < c + size; zz++) if (values[(xx * 8 + yy) * 8 + zz] != value) { same = false; break; }
+            if (same) return lod;
+        }
+        return 0;
+    }
+
+    [Fact]
+    public void LegacyAndGenericWordsPreserveEveryValueAndExactLeafDepth()
+    {
+        var values = Values();
+        var tree = new Octree(3, values);
+        var narrow = new Octree<ushort>(3, values.Select(v => (ushort)v).ToArray());
+        var generic = new Octree<uint>(3, values);
+        Assert.Equal(3, tree.Data.Span[1] & 3);
+        Assert.Equal(3, narrow.Data.Span[1] & 3);
+        Assert.Equal(3, generic.Data.Span[1] & 3);
+        Assert.Equal(Octree.GetMaximumSize(3), tree.EncodedLength);
+        Assert.Equal(Octree<ushort>.GetMaximumSize(3), narrow.EncodedLength);
+        Assert.True(tree.AsSpan().IsWellFormed()); Assert.True(narrow.AsSpan().IsWellFormed());
+        var lookup = tree.CreateLookup();
+        var restored = Octree.FromEncoded(tree.Data.Span);
+        for (int i = 0; i < values.Length; i++)
+        {
+            int x = i / 64, y = i / 8 % 8, z = i % 8, expected = Lod(values, x, y, z);
+            Assert.Equal(values[i], tree.Get(x, y, z, out int a)); Assert.Equal(expected, a);
+            Assert.Equal((ushort)values[i], narrow.Get(x, y, z, out int b)); Assert.Equal(expected, b);
+            Assert.Equal(values[i], generic.Get(x, y, z, out int c)); Assert.Equal(expected, c);
+            Assert.Equal(values[i], lookup.Get(x, y, z, out int d)); Assert.Equal(expected, d);
+            Assert.Equal(values[i], restored.Get(x, y, z, out int e)); Assert.Equal(expected, e);
+        }
+        var output = new uint[512]; tree.CopyTo(output); Assert.Equal(values, output);
+        var small = new ushort[512]; narrow.CopyTo(small); Assert.Equal(values.Select(v => (ushort)v), small);
+        var morton = new uint[512];
+        for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) for (int z = 0; z < 8; z++)
+            morton[(int)global::Tedd.MortonEncoding.Encode((uint)x, (uint)y, (uint)z)] = values[(x * 8 + y) * 8 + z];
+        var reordered = new Octree(3); reordered.Build(morton, DenseVoxelLayout.Morton);
+        Assert.Equal(tree.Data.ToArray(), reordered.Data.ToArray());
+        var decoded = new uint[512]; tree.CopyTo(decoded, DenseVoxelLayout.Morton); Assert.Equal(morton, decoded);
+        var buffer = new byte[tree.EncodedLength];
+        Assert.True(Octree.TryBuild(values, 3, buffer, out int written)); Assert.Equal(buffer.Length, written);
+        Assert.Equal(tree.Data.ToArray(), buffer);
+        Assert.Equal(buffer.Length, Octree.GetRequiredSize(values, 3));
+    }
+
+    [Theory]
+    [InlineData(4095, true)]
+    [InlineData(4096, false)]
+    [InlineData(65535, false)]
+    public void UInt16ReservedBitBoundaryNeverTruncatesValues(int maximum, bool packed)
+    {
+        var values = Values().Select(v => (ushort)v).ToArray(); values[123] = (ushort)maximum;
+        var tree = new Octree<ushort>(3, values);
+        Assert.Equal(packed, (tree.Data.Span[1] & 3) == 3);
+        Assert.Equal((ushort)maximum, tree.Get(1, 7, 3));
+    }
+
+    [Theory]
+    [InlineData(268435455u, true)]
+    [InlineData(268435456u, false)]
+    [InlineData(uint.MaxValue, false)]
+    public void UInt32ReservedBitBoundaryNeverTruncatesValues(uint maximum, bool packed)
+    {
+        var values = Values(); values[123] = maximum;
+        var tree = new Octree(3, values);
+        Assert.Equal(packed, (tree.Data.Span[1] & 3) == 3);
+        Assert.Equal(maximum, tree.Get(1, 7, 3));
+    }
+
+    [Fact]
+    public void EveryQueryKindUsesUnpackedValueBits()
+    {
+        var values = Values(); var tree = new Octree(3, values);
+        var narrow = new Octree<ushort>(3, values.Select(v => (ushort)v).ToArray());
+        var box = new VoxelBox(0, 0, 0, 8, 8, 8);
+        foreach (uint wanted in new uint[] { 0, 7, 1877, 4095, 0x10000007 })
+        {
+            var filter = VoxelFilter.EqualTo(wanted);
+            int expected = values.Count(v => v == wanted);
+            Assert.Equal(expected, tree.CountMatches(box, filter)); Assert.Equal(expected != 0, tree.Any(box, filter));
+            var hits = new VoxelHit[expected]; Assert.True(tree.Query(box, filter, hits, out int written)); Assert.Equal(expected, written);
+            Assert.All(hits, hit => Assert.Equal(wanted, hit.Value));
+            if (wanted <= ushort.MaxValue)
+            {
+                var smallFilter = VoxelFilter<ushort>.EqualTo((ushort)wanted);
+                Assert.Equal(expected, narrow.CountMatches(box, smallFilter)); Assert.Equal(expected != 0, narrow.Any(box, smallFilter));
+            }
+            var nearest = Enumerable.Range(0, values.Length).Where(i => values[i] == wanted)
+                .Select(i => (X: i / 64, Y: i / 8 % 8, Z: i % 8))
+                .Where(p => p.X * p.X + p.Y * p.Y + p.Z * p.Z <= 9)
+                .OrderBy(p => p.X * p.X + p.Y * p.Y + p.Z * p.Z).ThenBy(p => p.X).ThenBy(p => p.Y).ThenBy(p => p.Z).ToArray();
+            Assert.Equal(nearest.Length != 0, tree.TryFindNearest(0, 0, 0, 3, filter, out var found));
+            if (nearest.Length != 0) Assert.Equal((nearest[0].X, nearest[0].Y, nearest[0].Z), (found.X, found.Y, found.Z));
+        }
+        var clipped = new VoxelBox(1, 2, 3, 7, 6, 5);
+        var expectedCopy = new List<uint>();
+        for (int x = 1; x < 7; x++) for (int y = 2; y < 6; y++) for (int z = 3; z < 5; z++) expectedCopy.Add(values[(x * 8 + y) * 8 + z]);
+        var copy = new uint[clipped.Count]; tree.CopyRegionTo(clipped, copy); Assert.Equal(expectedCopy, copy);
+        var narrowCopy = new ushort[clipped.Count]; narrow.CopyRegionTo(clipped, narrowCopy); Assert.Equal(expectedCopy.Select(v => (ushort)v), narrowCopy);
+    }
+
+    [Fact]
+    public void ValidationRejectsImpossibleLodsAndInconsistentCoarsePartitions()
+    {
+        var original = new Octree(3, Values()).Data.ToArray();
+        foreach (var bytes in new[] { original[..^1], original.Concat(new byte[] { 0 }).ToArray() })
+            Assert.False(OctreeSpan.TryCreate(bytes, out _));
+        var impossible = original.ToArray(); BinaryPrimitives.WriteUInt32LittleEndian(impossible.AsSpan(2, 4), 0xa0000007);
+        Assert.True(OctreeSpan.TryCreate(impossible, out var view)); Assert.False(view.IsWellFormed());
+        Assert.False(view.TryGet(0, 0, 0, out _, out _));
+        Assert.Throws<FormatException>(() => Octree.FromEncoded(impossible));
+        var partition = original.ToArray(); BinaryPrimitives.WriteUInt32LittleEndian(partition.AsSpan(6, 4), 0x10000008);
+        Assert.False(new OctreeSpan(partition).IsWellFormed());
+        Assert.Throws<FormatException>(() => Octree.FromEncoded(partition));
+        var wrongVersion = original.ToArray(); wrongVersion[1] &= 0x7f;
+        Assert.False(OctreeSpan.TryCreate(wrongVersion, out _));
+        var typed = new Octree<ushort>(3, Values().Select(v => (ushort)v).ToArray()).Data.ToArray(); typed[2] = 2;
+        Assert.False(OctreeSpan<ushort>.TryCreate(typed, out _));
+    }
+
+    [Fact]
+    public void BorrowedSlicesCopyAndRebuildsDoNotChangePublishedLookups()
+    {
+        var values = Values(); var tree = new Octree(3, values);
+        var backing = new byte[tree.EncodedLength + 17]; tree.Data.Span.CopyTo(backing.AsSpan(7));
+        var snapshot = new OctreeSpan(backing.AsSpan(7, tree.EncodedLength)).CreateLookup();
+        var owned = tree.CreateLookup(); Array.Clear(backing); tree.BuildUniform(0);
+        Parallel.For(0, values.Length, i =>
+        {
+            int x = i / 64, y = i / 8 % 8, z = i % 8;
+            Assert.Equal(values[i], snapshot.Get(x, y, z, out int a)); Assert.Equal(Lod(values, x, y, z), a);
+            Assert.Equal(values[i], owned.Get(x, y, z, out int b)); Assert.Equal(a, b);
+        });
+    }
+}
+
+// Append to the existing packed-leaf semantic tests.
+public class PackedWordFormatCases
+{
+    static uint[] Values()=>Enumerable.Range(0,512).Select(i=>(uint)(i%31)).ToArray();
+    [Fact]
+    public void PackedMagicIsDistinctAndOldPrototypeIsRejected()
+    {
+        Assert.Equal(1,Octree.FormatVersion);Assert.Equal(2,Octree<ushort>.FormatVersion);
+        Assert.Equal(3,Octree.PackedLeafFormatVersion);Assert.Equal(3,Octree<ushort>.PackedLeafFormatVersion);
+        var values=Values();var a=new Octree(3,values);var b=new Octree<ushort>(3,values.Select(v=>(ushort)v).ToArray());
+        Assert.Equal((byte)0x50,a.Data.Span[0]);Assert.Equal((byte)0x50,b.Data.Span[0]);
+        Assert.Equal(3,a.Data.Span[1]>>6);Assert.Equal(3,b.Data.Span[1]>>6);
+        var old=a.Data.ToArray();old[0]=0x4f;
+        Assert.False(OctreeSpan.TryCreate(old,out _));Assert.Throws<FormatException>(()=>Octree.FromEncoded(old));
+        var old16=b.Data.ToArray();old16[0]=0x4f;
+        Assert.False(OctreeSpan<ushort>.TryCreate(old16,out _));Assert.Throws<FormatException>(()=>Octree<ushort>.FromEncoded(old16));
+        foreach(int version in new[]{0,1,2}){
+            var wrong=a.Data.ToArray();wrong[1]=(byte)((wrong[1]&63)|(version<<6));Assert.False(OctreeSpan.TryCreate(wrong,out _));
+            var wrong16=b.Data.ToArray();wrong16[1]=(byte)((wrong16[1]&63)|(version<<6));Assert.False(OctreeSpan<ushort>.TryCreate(wrong16,out _));
+        }
+        foreach(int kind in new[]{0,1,2}){var wrong=a.Data.ToArray();wrong[1]=(byte)((wrong[1]&252)|kind);Assert.False(OctreeSpan.TryCreate(wrong,out _));}
+        Assert.False(OctreeSpan.TryCreate(b.Data.Span,out _));Assert.False(OctreeSpan<ushort>.TryCreate(a.Data.Span,out _));
+        var shifted=new byte[a.EncodedLength+7];a.Data.Span.CopyTo(shifted.AsSpan(5));
+        Assert.Equal(a.Get(7,3,2,out int al),new OctreeSpan(shifted.AsSpan(5,a.EncodedLength)).Get(7,3,2,out int bl));Assert.Equal(al,bl);
+        var decoded=new uint[512];Octree.FromEncoded(a.Data.Span).CopyTo(decoded);Assert.Equal(values,decoded);
+    }
+    [Fact]
+    public void LiteralPublishedUniformAndTreeFormatsRemainReadable()
+    {
+        byte[] uniform={0x4f,0x4d,7};byte[] uniform16={0x4f,0x8d,1,7};
+        var a=Octree.FromEncoded(uniform);var b=Octree<ushort>.FromEncoded(uniform16);
+        Assert.Equal(7u,a.Get(7,7,7,out int al));Assert.Equal(3,al);
+        Assert.Equal((ushort)7,b.Get(7,7,7,out int bl));Assert.Equal(3,bl);
+        byte[] tree={0x4f,0x44,255,0,1,2,3,4,5,6,7,9};
+        byte[] tree16={0x4f,0x84,1,255,0,1,2,3,4,5,6,7,9};
+        var x=Octree.FromEncoded(tree);var y=Octree<ushort>.FromEncoded(tree16);
+        Assert.True(x.AsSpan().IsWellFormed());Assert.True(y.AsSpan().IsWellFormed());
+        for(int i=0;i<8;i++){
+            Assert.Equal((uint)i,x.Get(i/4,i/2%2,i%2,out al));Assert.Equal(0,al);
+            Assert.Equal((ushort)i,y.Get(i/4,i/2%2,i%2,out bl));Assert.Equal(0,bl);
+        }
+    }
+}

@@ -1,0 +1,468 @@
+{
+  "selected_source": "packed-word-format-source",
+  "control_revision": "f0772c8",
+  "cases": 8,
+  "maximum_sessions": 192,
+  "source_review": [
+    {
+      "file": "ChunkCompressionCodec.cs",
+      "normalized_changed": false,
+      "control_sha256": "0ce602a3b8d85b8e46f231555834a1e7dc49e307324f392cf85d425d92aa52f3",
+      "candidate_sha256": "a9122c35ecbc2a62fef7bf34df14e2fc3c5517ff159d86ce63b0ebfddd99c16f"
+    },
+    {
+      "file": "ChunkStorage.cs",
+      "normalized_changed": false,
+      "control_sha256": "517a320dc768879a018c141120ecde7fcb8e8086f3d499706b31c1c3f2fedec1",
+      "candidate_sha256": "5396f0e3cbb8d9485bc2ae2d97b13ff123b7701bc129f58fa9b350af877c5204"
+    },
+    {
+      "file": "DeferredChunkStore.cs",
+      "normalized_changed": false,
+      "control_sha256": "0c4882db98d9fe72f819380e8c03852be819fe50e9bf910849202b76c27addca",
+      "candidate_sha256": "d08f7e33f7ed1a41d983dfe4afef8d7add301ddd71e3e635b67a3ecc43c3e4ef"
+    },
+    {
+      "file": "DeferredChunkStore.Generic.cs",
+      "normalized_changed": false,
+      "control_sha256": "f95a9a19e8d077b9ae3c73470b0b08a9af2fee6a982937dac92e45a97e63f6a6",
+      "candidate_sha256": "990ea32612953ff7c7bd98684c488ba68e4e0b1a8cff27d640e19d0344442aeb"
+    },
+    {
+      "file": "DeferredOctreeChunk.cs",
+      "normalized_changed": false,
+      "control_sha256": "8839fe309c912fef3a847fccad37e8de9226cbdfab9bc575f947076e72f99f0c",
+      "candidate_sha256": "8ee33041c5d53d1414ce643343701ccfdabb181116cfe19953a7094bc265de75"
+    },
+    {
+      "file": "DeferredOctreeChunk.Generic.cs",
+      "normalized_changed": false,
+      "control_sha256": "b9357cb23b31f1076396abfd4ac4fce93fe421ff76b4200d66e148171e1e5c13",
+      "candidate_sha256": "ee9cbd58da866342bc8542248d682b330fbca82ae05f3f079b3fe203e6123149"
+    },
+    {
+      "file": "DenseVoxel.Generic.Api.cs",
+      "normalized_changed": false,
+      "control_sha256": "7ffc925931df181a1357de79850f0149d7166f42e9ff09c406ffc823c413c20f",
+      "candidate_sha256": "e2b1abbd5d82fbe6e2c7c27479a6a38227e96b33eed74fc043613509b1e92152"
+    },
+    {
+      "file": "DenseVoxelLayout.cs",
+      "normalized_changed": false,
+      "control_sha256": "97e2641999b6392cba4347f9524f929386102bca802486ceedf7c51ee03ddd33",
+      "candidate_sha256": "7dee58e292ea652c04f2e71c078515186c00eac906c6a19693a2a19ee8c0211b"
+    },
+    {
+      "file": "DenseVoxelLayout.Generic.cs",
+      "normalized_changed": false,
+      "control_sha256": "72b42a5afc7e137f835855027f6d65d9789d3805222d716380b38c1f3f40323a",
+      "candidate_sha256": "8c735270cf5c7d53569b1571a0b42fd9488d3f3da9439a3a0a4e0a5163d3ca82"
+    },
+    {
+      "file": "GenericOctreeCodec.cs",
+      "normalized_changed": true,
+      "control_sha256": "f81924c62d8e106fbe4ffb0f030f7bfaf47114c0e9f3c385fe0ad1bd1a511155",
+      "candidate_sha256": "40db2856625192cce0598be5c1a30c247dba2dbc8d6cbed97428942a3968ad27"
+    },
+    {
+      "file": "GenericOctreeQueries.cs",
+      "normalized_changed": true,
+      "control_sha256": "bb1429c23b1d743110ac46e1f8839cbcd242f7a04c15ee34c79858e0ece535cf",
+      "candidate_sha256": "1b11146ab816188651be8b1d0bc3d3ade10dc6b2c9cdfc9fc786e7c35009f372"
+    },
+    {
+      "file": "HotOctreeChunk.cs",
+      "normalized_changed": false,
+      "control_sha256": "f1f51c2836c729f433fda2e1e87f2a0b432ddccb9e2ce50c9f1b6d92e0bb3aa7",
+      "candidate_sha256": "8b44c8b8cdbf958a747c2a3409a239c4649f2d18b680ebd01fed01b8343e8456"
+    },
+    {
+      "file": "HotOctreeChunk.Generic.cs",
+      "normalized_changed": false,
+      "control_sha256": "2bde3655202f63d24f7b8618b5c17317cc26c376cac513d79cb7316fbb7332f0",
+      "candidate_sha256": "ef88f4645b9e865c9474a34f3d38cdd9513b3a3fce39477f48cd367f76fcc7d6"
+    },
+    {
+      "file": "MaskedVoxelSearch.cs",
+      "normalized_changed": false,
+      "control_sha256": "ed88fc6a413473f2128a8adbc3ef2d9df53dce7376626f81b96f2634dabe6965",
+      "candidate_sha256": "b74d6e460ddac30288dd043aa9bffbfe45c414d270e4c6b716d875059385f80d"
+    },
+    {
+      "file": "Octree.Blocks.cs",
+      "normalized_changed": false,
+      "control_sha256": "97b2da4e88a15bee187408c2f64dbcff619b63a87964c0227b6c1b79de45906e",
+      "candidate_sha256": "20f78776596abe80ccbe6ad1b13e707e1112d3b5e99e8687b1bb344bfd9b8d4c"
+    },
+    {
+      "file": "Octree.cs",
+      "normalized_changed": true,
+      "control_sha256": "502090007396466ae61edd5ee1c6638cec12ccb118830133f778779a155ffef7",
+      "candidate_sha256": "1f1faa175cc932903f82dda977e1091bb8dff337c3992ff5371f35242d6e2fce"
+    },
+    {
+      "file": "Octree.Generic.cs",
+      "normalized_changed": true,
+      "control_sha256": "0c1de8baacde5e9a913dfe54d29296ec5a3c394bfc00c2271112b30495608c0e",
+      "candidate_sha256": "d15b56c202450ed17c42c3e9b1994df97972a3063d2c7ca7b106e59eb0bfdb87"
+    },
+    {
+      "file": "Octree.Generic.Queries.cs",
+      "normalized_changed": false,
+      "control_sha256": "ffd12862b2de4223921edfd04ae0f822b7213749d07badcff9c852ac05a362c1",
+      "candidate_sha256": "3084df2b1622f5e62e82822725e02e8106049298cbeea34a8c737de8d93efcd3"
+    },
+    {
+      "file": "Octree.Search.cs",
+      "normalized_changed": false,
+      "control_sha256": "67075c42be0331719520844cd78f184f4f2e41397912204a84dd22d01da85957",
+      "candidate_sha256": "c81e4c5d734c22fe5c6ae30495d244e7d6d45942e59296ca5e88ef208e0a1119"
+    },
+    {
+      "file": "OctreeChunk.cs",
+      "normalized_changed": false,
+      "control_sha256": "576a8971281c8f300349dcc8bacbc5197d6001932c3b91ff412fbedbeeff6fa4",
+      "candidate_sha256": "8c3eda8e74b37fcfd91a7b23e2c8aa6bf2a4bcb5e30a71b38cdc4b0944f8095b"
+    },
+    {
+      "file": "OctreeChunk.Generic.cs",
+      "normalized_changed": false,
+      "control_sha256": "0d773aab7b1160fbe385ece39e2a32909d43419d8a97019d115fb85ae1156268",
+      "candidate_sha256": "ebf75d271d0f88a3e06a45a8609760dbf7976405fdd900eb64ab23c394b56845"
+    },
+    {
+      "file": "OctreeChunkSpan.cs",
+      "normalized_changed": false,
+      "control_sha256": "aa40a10cdac8c4b1a50d9581207c2ab4768f44794e94c3fe1d724e787cd07248",
+      "candidate_sha256": "924d7f7256b681ab1326596e976c0ca7d0dce44d5d9961245598520d95c479ab"
+    },
+    {
+      "file": "OctreeCodec.cs",
+      "normalized_changed": true,
+      "control_sha256": "bfbd5224c7c92bc2ce3e1bdcb6411a3e91dd73a6f4bff5c10f35b3402c9dbce3",
+      "candidate_sha256": "5872713aa0496f5ae01cf3d2f475e0333f1c3588a6efa9b33594bf215e02b946"
+    },
+    {
+      "file": "OctreeLookup.cs",
+      "normalized_changed": true,
+      "control_sha256": "30889b90cfa7a1a07ab2e438dccee484b881d9497000ca05aceb66d0d23bef6b",
+      "candidate_sha256": "e0b4b29c59148bdfe39296b67dca55f3a249ff9b412e39410e0534677f7b61c6"
+    },
+    {
+      "file": "OctreeNeighborhood.Generic.cs",
+      "normalized_changed": false,
+      "control_sha256": "e60eefdd49b93a946fe231ec21a49758fb49af78beb1b5d0c494954c57661edf",
+      "candidate_sha256": "179c589cd757df8d61c8666a3bc0b115eca2d6008b7074fa35d0b8be44b2b1e8"
+    },
+    {
+      "file": "OctreeNeighborhoodCache.cs",
+      "normalized_changed": false,
+      "control_sha256": "9ebe1f6ec52f11cc5420ecff9628d7cf5e25b7fc38d6a6b06ed0bdcf3a28241c",
+      "candidate_sha256": "df8f3861a7cafe519740e32e3f82d045beb5952486957ebdc6b88db6b398bb47"
+    },
+    {
+      "file": "OctreeNeighborhoodSpan.cs",
+      "normalized_changed": false,
+      "control_sha256": "26f9f03e2cb556d872e6a2f4b48e7b6043d328e7a176ca15854310f5c2650003",
+      "candidate_sha256": "74bfa8790dc7928a3a00fb515562fc17eabb70471b55a4e75573e8ffd3ebcfa8"
+    },
+    {
+      "file": "OctreeQueries.cs",
+      "normalized_changed": true,
+      "control_sha256": "80af4af2d9d8e999056351dca8274ab5b0c2b4aff0824fed09bb315f17e60da5",
+      "candidate_sha256": "caeae0b27312266324d9f1dc4f8ab5a0ad02eb774aada6e06d2d638567e08286"
+    },
+    {
+      "file": "OctreeSpan.cs",
+      "normalized_changed": false,
+      "control_sha256": "45a427f4de401cb93bf76cb7b59c848c1a3c9399922e62b257dda17ae354d63d",
+      "candidate_sha256": "5adc93a01abd03de24949de147897cc62e009f2f869ef3da210980fcebf99f15"
+    },
+    {
+      "file": "OctreeSpan.Search.cs",
+      "normalized_changed": false,
+      "control_sha256": "d49862967771e92f96cf14056109fc9681fde839a72f20fd8bec6a438678e0ff",
+      "candidate_sha256": "26d2a6d772ebfe9a3b01c8633b7d1648b09044dcd3b0cc95de2ca3825de4396d"
+    },
+    {
+      "file": "OctreeThrowHelper.cs",
+      "normalized_changed": false,
+      "control_sha256": "ab2594334fd1cc4b48135f482f512acef14535b9e8d2e3fb2f921c336b112f51",
+      "candidate_sha256": "eee1e5c002a9ad632c09041c7f3daac7a218931f61ffc1536f159723bde6e1c1"
+    },
+    {
+      "file": "OctreeWorld.cs",
+      "normalized_changed": false,
+      "control_sha256": "e03fa36cf46b844920a98e97cbcc5e5e73fcefb0c7f29f327a124c0f4113cef0",
+      "candidate_sha256": "396d310e4a6bf4d907073d450fadee071bb36544c040177065e85e2fe0ebb580"
+    },
+    {
+      "file": "OctreeWorld.Generic.cs",
+      "normalized_changed": false,
+      "control_sha256": "fe7170e530d654b92e058d5fe5dfc62d51e971955b8797c706d0434ee4c07be3",
+      "candidate_sha256": "d4bd65e109a0d9b36856609897980c8a04cd0a5b807d6d74ecd05345203e157f"
+    },
+    {
+      "file": "OctreeWorld.Generic.Hot.cs",
+      "normalized_changed": false,
+      "control_sha256": "8b38f28403f6934ce4e3397675819b61b988b9e046bf10524c5a58f53b5cad65",
+      "candidate_sha256": "bf72d273385e3f707eaa08c4a854765047977780c9a0564301d878f473edd933"
+    },
+    {
+      "file": "OctreeWorld.Hot.cs",
+      "normalized_changed": false,
+      "control_sha256": "5c955076bedb5c2e031b753214cfb74fc46fedd4c4aee862a754c3a756d11a87",
+      "candidate_sha256": "7bfed96fe22b85ce91a6cac0c4327696ddf756b54f3a6d8a7ac7031487930fbf"
+    },
+    {
+      "file": "OctreeWorld.Queries.cs",
+      "normalized_changed": false,
+      "control_sha256": "f7539a59f325586cb9aa31159fdd1aec103df9eeae988574ccb088c08943defd",
+      "candidate_sha256": "f04a1d1212433fdf0a076783b3999afdaacfb1198f9f2833781babae3e9b3fd2"
+    },
+    {
+      "file": "OctreeWorld.Threading.cs",
+      "normalized_changed": false,
+      "control_sha256": "e33baed0fd75aca1aa09cb898c24bde5634f1317511b2154d81d7f386952984b",
+      "candidate_sha256": "91bb12f25ebb6e6e58377b1cd63729f0b445c56eb1518ccb9db34134af71ceea"
+    },
+    {
+      "file": "PackedLeafEncoding.cs",
+      "normalized_changed": true,
+      "control_sha256": null,
+      "candidate_sha256": "3661fefc1908347204fbd7bf801d55aa60ddbe2413e527572b30c6c5a5fa3b6e"
+    },
+    {
+      "file": "PackedVoxelSearch.cs",
+      "normalized_changed": false,
+      "control_sha256": "9d7608f37129e389f76787a15d7708ba7ced84a111b97ab516be55fa47dc1aa0",
+      "candidate_sha256": "048fc43ce38b4320aa30ae98db89c37a508246fc5bcf2483d07bb136b354bb50"
+    },
+    {
+      "file": "PartialVoxelEdits.cs",
+      "normalized_changed": false,
+      "control_sha256": "3ebdde16ce610f7c2f47ae194a67db8f858986d45691d2e045e237a2f7251942",
+      "candidate_sha256": "32615a53ee5bb1ea7a30a0b1e2bca586c52a35329965a04a9a3642b6ca118ef9"
+    },
+    {
+      "file": "SideChannelCollection.cs",
+      "normalized_changed": false,
+      "control_sha256": "c0c5fd2b3c506a89e1e865b62d783a5d6e96a4e68ca49fbe15074f73fb12e1d3",
+      "candidate_sha256": "ace1c1f3bef0e90173f782b6efab15fe394328c5fabeb125c087df1975517943"
+    },
+    {
+      "file": "SparseVoxelEdits.cs",
+      "normalized_changed": false,
+      "control_sha256": "f44069614d91c1cb17bdeb14c593fcc6669e5ca579c98aa7f79ebe6b218b4750",
+      "candidate_sha256": "7e9707f3cbf24c378c93e9508b03d6385101fd13ee52599b240ad0f4349f3571"
+    },
+    {
+      "file": "StorageInteger.cs",
+      "normalized_changed": false,
+      "control_sha256": "33f777fa0fe390ac881da6ba23044f248b9c565e3d9a5fc4fd8d51eef51abb8f",
+      "candidate_sha256": "eeb7d1f22cc8440b21161262d1e8ba754c9d9159afb248a015675677bc88cacb"
+    },
+    {
+      "file": "VoxelBox.cs",
+      "normalized_changed": false,
+      "control_sha256": "1c3b4e46398a44d2634307bb2d00917a1229a5dfe050cc1ea2a0790a93fde104",
+      "candidate_sha256": "c7868ef993a6cdf4020f72235a90c774f0a6164d1abb1761d7f1343dc17dee12"
+    },
+    {
+      "file": "VoxelFilter.cs",
+      "normalized_changed": false,
+      "control_sha256": "4af79fec7690a13f71db9f28269c154997e95a75315d0cf9f79d59325676a841",
+      "candidate_sha256": "860f4bcb2733a1d98c257353009c69c3b60f1259de6fdb56a2ee7ca79ea659c9"
+    },
+    {
+      "file": "VoxelFilter.Generic.cs",
+      "normalized_changed": false,
+      "control_sha256": "d9455041fe48199d107b526d0d6a1e49f16e2b63c44eb1d4193d64fa1e7c021d",
+      "candidate_sha256": "0eb57c08f06e4fc9b38c32ef3be48a183eb075ec2a03e8813104a51b81d14660"
+    },
+    {
+      "file": "VoxelHit.cs",
+      "normalized_changed": false,
+      "control_sha256": "b134beb29844de4d083b2334d48ce10ddea99467f5c4221ac6979bdfe2cb277c",
+      "candidate_sha256": "a32d35ac976050046f1decb9f129dc9d4745d999fc702683a7d1ca4bbd9a583a"
+    },
+    {
+      "file": "VoxelType.cs",
+      "normalized_changed": false,
+      "control_sha256": "9411370146c5185bc7e3498ce0f79df0c519805849c7705f44076cabaa3997ff",
+      "candidate_sha256": "d581e1937005ca2cb2215cf4615e5ee2abda69d9498300b05622b37d4c6ea31d"
+    },
+    {
+      "file": "WorldEntity.cs",
+      "normalized_changed": false,
+      "control_sha256": "7ebc2ce2417e607414e15310699822267b907d90f6b55bcb1296b665228c8faf",
+      "candidate_sha256": "6839eb7dc7de3961bf780e6e72d27e7ea6ec04cb3cb61171b155d9958288be1d"
+    },
+    {
+      "file": "WorldEntity.Generic.cs",
+      "normalized_changed": false,
+      "control_sha256": "ff38ad5a58c7cfdd54758df36c78df023090bdcbf804d620dd61e7aca29dfb0e",
+      "candidate_sha256": "61cbcaf4a5a6814140731ed436ddc0c08dc6a2da1232c0abf9909ce1c5bb7e42"
+    },
+    {
+      "file": "WorldEntity.Generic.Hot.cs",
+      "normalized_changed": false,
+      "control_sha256": "0e5a6334f08725c0571fd714dbb1d5111bb9eb4497fee98eadf51a266728390e",
+      "candidate_sha256": "1c197e18305e7deb132b11fba880354bb981ef28345cd43ece41f09d8a25a7e7"
+    },
+    {
+      "file": "WorldEntity.Generic.Storage.cs",
+      "normalized_changed": false,
+      "control_sha256": "881aaa027e9c7a4e63d522c73982609aefa70293859da49d66abdd9d7ef5e4ad",
+      "candidate_sha256": "241336d83b7bb614b4c305c564aa6a5a9b50f48578bb887425b1191e2e29d80d"
+    },
+    {
+      "file": "WorldEntity.Hot.cs",
+      "normalized_changed": false,
+      "control_sha256": "9301c6860dd19cda1c1cce1cd566f608ba43e6afdbd1ed96307fca5df96313a0",
+      "candidate_sha256": "839b6ea12cfef0479b2549df69d32111ebc90bda67ff2e50fc9de0fdbf2b630d"
+    },
+    {
+      "file": "WorldEntity.Storage.cs",
+      "normalized_changed": false,
+      "control_sha256": "dc53c84aa1f49dec2dc75a292ecb73f5a34d3d673df739c658c2d142732f44b2",
+      "candidate_sha256": "dc51c60f9c324357cbc041d58a686ff74ddbdcc4aacf9bbebd2a92278869a826"
+    }
+  ],
+  "source_patch_sha256": "89f9b4cad32bb4536016fa6689b412bb0daab963b74f689358495c55b5292abb",
+  "protocol_sha256": "b96d613615f5ea2189f7e6874e361aed4de5b0246f4f4ee4b4c9a22a5d5f03ad",
+  "canonical_primary_callers_matched": 8,
+  "complete_dependency_closure_matched": true,
+  "runtime_settings_matched": true,
+  "fixture_sha256": "22152bf5f822ea5ccb2500cb02e1ae18656c3b935b9eb6c8f7b1e4838fc35dde",
+  "bundles": [
+    {
+      "label": "p24control",
+      "entry": "p24control.dll",
+      "files": [
+        {
+          "name": "p24control.deps.json",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p24control\\p24control.deps.json",
+          "sha256": "322de2e4a0c68e0860bf59bd96cd884c8aeb4c3019176e22e583146a18b55303"
+        },
+        {
+          "name": "p24control.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p24control\\p24control.dll",
+          "sha256": "ceb640157e5faf33379de7ea2d54b70a4efc8ad3a1e802d33b1715e93809ef7d"
+        },
+        {
+          "name": "p24control.runtimeconfig.json",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p24control\\p24control.runtimeconfig.json",
+          "sha256": "321bfd7323a8c5b57c55531d3ac9c3a02ea9f58936b41f0e9b7149edb2a5486a"
+        },
+        {
+          "name": "Tedd.DotNetLab.Contracts.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p24control\\Tedd.DotNetLab.Contracts.dll",
+          "sha256": "9fcbd3519faa44edcf6d7e4d63aad75468418faa669f07f7d284511efe71cf1f"
+        },
+        {
+          "name": "Tedd.DotNetLab.Harness.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p24control\\Tedd.DotNetLab.Harness.dll",
+          "sha256": "03f207f376ef324dd3c4dafe6d0be49f3083111ea68bf27136b06a3e3681a613"
+        },
+        {
+          "name": "Tedd.DotNetLab.Transport.Local.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p24control\\Tedd.DotNetLab.Transport.Local.dll",
+          "sha256": "b8fd64c3de543f6642b1925128d1517caca92f56f29e2dbd489e395ef53ca87a"
+        },
+        {
+          "name": "Tedd.MortonEncoding.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p24control\\Tedd.MortonEncoding.dll",
+          "sha256": "978e446481eebe8b562e8d52f35f33c443886e726b106a5dec5c340c314fce83"
+        }
+      ]
+    },
+    {
+      "label": "p24census",
+      "entry": "p24census.dll",
+      "files": [
+        {
+          "name": "p24census.deps.json",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p24census\\p24census.deps.json",
+          "sha256": "0229582add20e161e3ec895473119a5df36753c86c9c2c533b72f3997889ef83"
+        },
+        {
+          "name": "p24census.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p24census\\p24census.dll",
+          "sha256": "9932fec2d2db1ca6fa7f534908b8083799cd9c93902883e69e3cc36ae7927ab4"
+        },
+        {
+          "name": "p24census.runtimeconfig.json",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p24census\\p24census.runtimeconfig.json",
+          "sha256": "321bfd7323a8c5b57c55531d3ac9c3a02ea9f58936b41f0e9b7149edb2a5486a"
+        },
+        {
+          "name": "Tedd.DotNetLab.Contracts.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p24census\\Tedd.DotNetLab.Contracts.dll",
+          "sha256": "9fcbd3519faa44edcf6d7e4d63aad75468418faa669f07f7d284511efe71cf1f"
+        },
+        {
+          "name": "Tedd.DotNetLab.Harness.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p24census\\Tedd.DotNetLab.Harness.dll",
+          "sha256": "03f207f376ef324dd3c4dafe6d0be49f3083111ea68bf27136b06a3e3681a613"
+        },
+        {
+          "name": "Tedd.DotNetLab.Transport.Local.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p24census\\Tedd.DotNetLab.Transport.Local.dll",
+          "sha256": "b8fd64c3de543f6642b1925128d1517caca92f56f29e2dbd489e395ef53ca87a"
+        },
+        {
+          "name": "Tedd.MortonEncoding.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p24census\\Tedd.MortonEncoding.dll",
+          "sha256": "978e446481eebe8b562e8d52f35f33c443886e726b106a5dec5c340c314fce83"
+        }
+      ]
+    }
+  ],
+  "corpus_audit": {
+    "chunks": 1286,
+    "unique_array_count": 686,
+    "cells": 42139648,
+    "runtime": ".NET 10.0.13",
+    "architecture": "X64",
+    "result_sha256": "49df200902eb1b273e73e57b64c413c5ea902a28b03012704281aa9c1b264665",
+    "all_chunks": {
+      "packed_u32": 517,
+      "packed_u16": 574,
+      "packed_generic_u32": 517,
+      "maximum_value": 4514,
+      "baselineUInt32Bytes": 13693396,
+      "candidateUInt32Bytes": 68784288,
+      "baselineUInt16Bytes": 13694682,
+      "candidateUInt16Bytes": 37977158,
+      "baselineGenericUInt32Bytes": 13694682,
+      "candidateGenericUInt32Bytes": 68785574,
+      "baselineLookupPayload": 35168496,
+      "candidate_distinct_lookup_payload": 2783220,
+      "baseline_encoded_plus_lookup_payload": 48861892,
+      "candidate_encoded_plus_lookup_payload": 71567508
+    },
+    "unique_arrays": {
+      "packed_u32": 517,
+      "packed_u16": 574,
+      "packed_generic_u32": 517,
+      "maximum_value": 4514,
+      "baselineUInt32Bytes": 13691549,
+      "candidateUInt32Bytes": 68782441,
+      "baselineUInt16Bytes": 13692235,
+      "candidateUInt16Bytes": 37974711,
+      "baselineGenericUInt32Bytes": 13692235,
+      "candidateGenericUInt32Bytes": 68783127,
+      "baselineLookupPayload": 35165920,
+      "candidate_distinct_lookup_payload": 2780644,
+      "baseline_encoded_plus_lookup_payload": 48857469,
+      "candidate_encoded_plus_lookup_payload": 71563085
+    },
+    "u16_width_excluded_chunks": 4,
+    "checks": "every chunk/cell; independent LOD partitions; owned/span/value/LOD/lookup/FromEncoded; copy, validation, count/any; eligibility; identical fallback bytes; original census row identity",
+    "limits": "Payload excludes object/array headers and GC overhead; no measured access frequency, allocation or latency inference",
+    "footprint_eligibility_equal_to_p18_census": true
+  },
+  "previous_observations_excluded": true,
+  "primary_target": "Every time speedup adjusted lower bound >=10; all original mandatory guards remain"
+}

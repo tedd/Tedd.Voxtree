@@ -1,6 +1,6 @@
 param([Parameter(Mandatory)][string]$TaskRoot,
       [Parameter(Mandatory)][ValidatePattern('^[a-z][a-z0-9-]*$')][string]$Label,
-      [switch]$ReleaseBuilder)
+      [switch]$ReleaseBuilder,[switch]$PackedWordMagic)
 $ErrorActionPreference='Stop'
 if([IO.Path]::GetFullPath($TaskRoot).TrimEnd('\') -ne 'D:\Workspaces\AI\voxtree-point-lod-20261020'){throw 'Unexpected task root'}
 . (Join-Path $PSScriptRoot 'Host-Lock.ps1')
@@ -30,7 +30,8 @@ try {
         Copy-Item -LiteralPath (Join-Path $TaskRoot "forcecraft-scanner-s2/$name") -Destination (Join-Path $root $name)
     }
     $bundle=(Join-Path $TaskRoot "bundles/$Label").Replace('\','/')
-    $censusDefine=if($ReleaseBuilder){'<DefineConstants>RELEASE_BUILDER_CENSUS</DefineConstants>'}else{''}
+    if($ReleaseBuilder -and $PackedWordMagic){throw 'Census formats are mutually exclusive'}
+    $censusDefine=if($ReleaseBuilder){'<DefineConstants>RELEASE_BUILDER_CENSUS</DefineConstants>'}elseif($PackedWordMagic){'<DefineConstants>P24_PACKED_MAGIC</DefineConstants>'}else{''}
     @"
 <Project Sdk="Microsoft.NET.Sdk">
  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><LangVersion>14.0</LangVersion><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><UseSharedCompilation>false</UseSharedCompilation><RollForward>Disable</RollForward><RuntimeFrameworkVersion>10.0.13</RuntimeFrameworkVersion>$censusDefine</PropertyGroup>

@@ -1,0 +1,617 @@
+--- a/src/Tedd.Voxtree/GenericOctreeCodec.cs
++++ b/src/Tedd.Voxtree/GenericOctreeCodec.cs
+@@ -76,6 +76,11 @@
+         var encoded = new byte[plan.EncodedLength];
+ #endif
+ 
++        if (plan.StorageKind == StorageKind.PackedLeaf)
++        {
++            PackedLeafEncoding<TStorage>.Write(source, levels, layout, encoded, HeaderSize);
++            return encoded;
++        }
+         if (plan.StorageKind == StorageKind.Uniform)
+         {
+             var writer = new OctreeWriter(encoded, measureOnly: false);
+@@ -122,7 +127,9 @@
+         if (!writer.WriteByte((byte)rootLength))
+             return BuildPlan.Dense(denseLength);
+ 
+-        return writer.Position < denseLength ? BuildPlan.Tree(writer.Position) : BuildPlan.Dense(denseLength);
++        if (writer.Position >= denseLength) return BuildPlan.Dense(denseLength);
++        return PackedLeafEncoding<TStorage>.Select(source, levels, writer.Position, denseLength)
++            ? BuildPlan.PackedLeaf(denseLength) : BuildPlan.Tree(writer.Position);
+     }
+ 
+     internal static int GetMaximumSize(int levels)
+@@ -161,6 +168,14 @@
+                 treeCompleted = false;
+         }
+ 
++        if (treeCompleted && !root.IsUniform && writer.Position < denseLength &&
++            PackedLeafEncoding<TStorage>.Select(source, levels, writer.Position, denseLength))
++        {
++            if (destination.Length < denseLength) return false;
++            PackedLeafEncoding<TStorage>.Write(source, levels, layout, destination, HeaderSize);
++            bytesWritten = denseLength;
++            return true;
++        }
+         if (!treeCompleted || writer.Position >= denseLength)
+         {
+             if (destination.Length < denseLength)
+@@ -180,12 +195,16 @@
+     {
+         levels = default;
+         storageKind = default;
+-        if (data.Length < HeaderSize + 1 || data[0] != Magic)
+-            return false;
++        if (data.Length < HeaderSize + 1) return false;
++        if (data[0] == PackedLeafEncoding<TStorage>.Magic)
++        {
++            storageKind = StorageKind.PackedLeaf;
++            return PackedLeafEncoding<TStorage>.TryReadHeader(data, HeaderSize, out levels);
++        }
++        if (data[0] != Magic) return false;
+ 
+         var metadata = data[1];
+-        if (((metadata & VersionMask) >> VersionShift) != Version || data[2] != GetSizeCode())
+-            return false;
++        if (((metadata & VersionMask) >> VersionShift) != Version || data[2] != GetSizeCode()) return false;
+ 
+         levels = (metadata & LevelMask) >> LevelShift;
+         if ((uint)levels > Octree.MaxLevels)
+@@ -216,6 +235,8 @@
+             return false;
+         if (storageKind is StorageKind.Uniform or StorageKind.Dense)
+             return true;
++        if (storageKind == StorageKind.PackedLeaf)
++            return PackedLeafEncoding<TStorage>.IsWellFormed(data, HeaderSize, levels);
+ 
+         var bodyEnd = data.Length - 1;
+         var rootLength = data[^1];
+@@ -237,6 +258,7 @@
+             return TryReadValue(data, ref cursor, out var value) && value.Equals(default);
+         }
+ 
++        if (storageKind == StorageKind.PackedLeaf) return PackedLeafEncoding<TStorage>.IsEmpty(data, HeaderSize);
+         var dense = data[HeaderSize..];
+ #if NET10_0_OR_GREATER
+         return dense.IndexOfAnyExcept((byte)0) < 0;
+@@ -261,14 +283,15 @@
+         int x, int y, int z, out TStorage value)
+         => TryGetUnchecked(data, levels, storageKind, x, y, z, out value, out _);
+ 
++    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+     internal static bool TryGetUnchecked(ReadOnlySpan<byte> data, int levels, StorageKind storageKind,
+         int x, int y, int z, out TStorage value, out int lodLevel)
+     {
+-        value = default;
+-        lodLevel = 0;
+         var sideLength = 1 << levels;
+         if (storageKind == StorageKind.Uniform)
+         {
++            value = default;
++            lodLevel = 0;
+             var cursor = HeaderSize;
+             if (!TryReadValue(data, ref cursor, out value) || cursor != data.Length)
+                 return false;
+@@ -278,10 +301,23 @@
+ 
+         if (storageKind == StorageKind.Dense)
+         {
++            value = default;
++            lodLevel = 0;
+             var flatIndex = (x * sideLength * sideLength) + (y * sideLength) + z;
+             return TryReadFixedValue(data, HeaderSize + (flatIndex * ValueSize), out value);
+         }
+-
++        if (storageKind == StorageKind.PackedLeaf)
++            return PackedLeafEncoding<TStorage>.TryGet(data, HeaderSize, levels, x, y, z, out value, out lodLevel);
++
++        return TryGetTreeUnchecked(data, levels, x, y, z, out value, out lodLevel);
++    }
++
++    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
++    private static bool TryGetTreeUnchecked(ReadOnlySpan<byte> data, int levels,
++        int x, int y, int z, out TStorage value, out int lodLevel)
++    {
++        value = default;
++        lodLevel = 0;
+         if (levels == 0 || data.Length < HeaderSize + MinimumNodeSize + 1)
+             return false;
+         var body = data[..^1];
+@@ -380,6 +416,11 @@
+             return false;
+ 
+         destination = destination[..count];
++        if (storageKind == StorageKind.PackedLeaf)
++        {
++            PackedLeafEncoding<TStorage>.CopyTo(data, HeaderSize, levels, destination, layout);
++            return true;
++        }
+         if (storageKind == StorageKind.Uniform)
+         {
+             var cursor = HeaderSize;
+@@ -840,6 +881,7 @@
+         internal TStorage UniformValue { get; }
+         internal static BuildPlan Uniform(int encodedLength, TStorage value) => new(encodedLength, StorageKind.Uniform, value);
+         internal static BuildPlan Tree(int encodedLength) => new(encodedLength, StorageKind.Tree, default);
++        internal static BuildPlan PackedLeaf(int encodedLength) => new(encodedLength, StorageKind.PackedLeaf, default);
+         internal static BuildPlan Dense(int encodedLength) => new(encodedLength, StorageKind.Dense, default);
+     }
+ 
+--- a/src/Tedd.Voxtree/GenericOctreeQueries.cs
++++ b/src/Tedd.Voxtree/GenericOctreeQueries.cs
+@@ -49,6 +49,11 @@
+         if (state.Box.IsEmpty) return;
+         var data = tree.Data;
+         var kind = VoxelCodec<T>.GetStorageKindUnchecked(data);
++        if (kind == StorageKind.PackedLeaf)
++        {
++            Packed<TStorage>(data, tree.Levels, ref state);
++            return;
++        }
+         if (kind == StorageKind.Dense)
+         {
+             Dense<TStorage>(data, tree.SideLength, ref state);
+@@ -277,6 +282,20 @@
+                     throw new FormatException("Malformed child offset.");
+                 Visit<TStorage>(data, offset - (int)distance, level - 1, cx, cy, cz, ref state);
+             }
++        }
++    }
++
++    private static void Packed<TStorage>(ReadOnlySpan<byte> data, int levels, ref State state)
++        where TStorage : unmanaged, IEquatable<TStorage>
++    {
++        var box = state.Box;
++        for (var x = box.MinX; x < box.MaxX && !state.Done; x++)
++        for (var y = box.MinY; y < box.MaxY && !state.Done; y++)
++        for (var z = box.MinZ; z < box.MaxZ && !state.Done; z++)
++        {
++            if (!PackedLeafEncoding<TStorage>.TryGet(data, GenericOctreeCodec<TStorage>.HeaderSize, levels, x, y, z, out var value, out _))
++                throw new FormatException("Malformed packed leaf.");
++            state.Accept(new VoxelBox(x, y, z, x + 1, y + 1, z + 1), ToValue(value));
+         }
+     }
+ 
+--- a/src/Tedd.Voxtree/Octree.cs
++++ b/src/Tedd.Voxtree/Octree.cs
+@@ -19,8 +19,10 @@
+     /// <summary>The largest supported depth.</summary>
+     public const int MaxLevels = 9;
+ 
+-    /// <summary>The current serialized format version.</summary>
++    /// <summary>The legacy serialized version used by tree, uniform and dense representations.</summary>
+     public const int FormatVersion = 1;
++    /// <summary>The serialized version used by packed leaf words with magic byte 0x50.</summary>
++    public const int PackedLeafFormatVersion = 3;
+ 
+     private readonly int _levels;
+     private byte[] _data = Array.Empty<byte>();
+--- a/src/Tedd.Voxtree/Octree.Generic.cs
++++ b/src/Tedd.Voxtree/Octree.Generic.cs
+@@ -14,8 +14,10 @@
+ {
+     /// <summary>The largest supported depth.</summary>
+     public const int MaxLevels = Octree.MaxLevels;
+-    /// <summary>The generic serialized format version.</summary>
++    /// <summary>The legacy serialized version used by tree, uniform and dense representations.</summary>
+     public const int FormatVersion = 2;
++    /// <summary>The serialized version used by packed leaf words with magic byte 0x50.</summary>
++    public const int PackedLeafFormatVersion = Octree.PackedLeafFormatVersion;
+ 
+     private readonly int _levels;
+     private byte[] _data = Array.Empty<byte>();
+--- a/src/Tedd.Voxtree/OctreeCodec.cs
++++ b/src/Tedd.Voxtree/OctreeCodec.cs
+@@ -86,6 +86,11 @@
+         var encoded = new byte[plan.EncodedLength];
+ #endif
+ 
++        if (plan.StorageKind == StorageKind.PackedLeaf)
++        {
++            PackedLeafEncoding<uint>.Write(source, levels, layout, encoded, HeaderSize);
++            return encoded;
++        }
+         if (plan.StorageKind == StorageKind.Uniform)
+         {
+             var writer = new OctreeWriter(encoded, measureOnly: false);
+@@ -137,9 +142,9 @@
+         if (!writer.WriteByte((byte)rootLength))
+             return BuildPlan.Dense(denseLength);
+ 
+-        return writer.Position < denseLength
+-            ? BuildPlan.Tree(writer.Position)
+-            : BuildPlan.Dense(denseLength);
++        if (writer.Position >= denseLength) return BuildPlan.Dense(denseLength);
++        return PackedLeafEncoding<uint>.Select(source, levels, writer.Position, denseLength)
++            ? BuildPlan.PackedLeaf(denseLength) : BuildPlan.Tree(writer.Position);
+     }
+ 
+     internal static int GetMaximumSize(int levels)
+@@ -183,6 +188,14 @@
+                 treeCompleted = false;
+         }
+ 
++        if (treeCompleted && !root.IsUniform && writer.Position < denseLength &&
++            PackedLeafEncoding<uint>.Select(source, levels, writer.Position, denseLength))
++        {
++            if (destination.Length < denseLength) return false;
++            PackedLeafEncoding<uint>.Write(source, levels, layout, destination, HeaderSize);
++            bytesWritten = denseLength;
++            return true;
++        }
+         if (!treeCompleted || writer.Position >= denseLength)
+         {
+             if (destination.Length < denseLength)
+@@ -207,13 +220,17 @@
+         levels = default;
+         storageKind = default;
+ 
+-        if (data.Length < HeaderSize + 1 || data[0] != Magic)
+-            return false;
++        if (data.Length < HeaderSize + 1) return false;
++        if (data[0] == PackedLeafEncoding<uint>.Magic)
++        {
++            storageKind = StorageKind.PackedLeaf;
++            return PackedLeafEncoding<uint>.TryReadHeader(data, HeaderSize, out levels);
++        }
++        if (data[0] != Magic) return false;
+ 
+         var metadata = data[1];
+         var version = (metadata & VersionMask) >> VersionShift;
+-        if (version != Octree.FormatVersion)
+-            return false;
++        if (version != Octree.FormatVersion) return false;
+ 
+         levels = (metadata & LevelMask) >> LevelShift;
+         if ((uint)levels > Octree.MaxLevels)
+@@ -254,6 +271,8 @@
+ 
+         if (storageKind is StorageKind.Uniform or StorageKind.Dense)
+             return true;
++        if (storageKind == StorageKind.PackedLeaf)
++            return PackedLeafEncoding<uint>.IsWellFormed(data, HeaderSize, levels);
+ 
+         var bodyEnd = data.Length - 1;
+         var rootLength = data[^1];
+@@ -283,6 +302,7 @@
+             return TryReadVarUInt(data, ref cursor, out var value) && value == 0;
+         }
+ 
++        if (storageKind == StorageKind.PackedLeaf) return PackedLeafEncoding<uint>.IsEmpty(data, HeaderSize);
+         var dense = data[HeaderSize..];
+ #if NET10_0_OR_GREATER
+         return dense.IndexOfAnyExcept((byte)0) < 0;
+@@ -324,6 +344,7 @@
+         out uint value)
+         => TryGetUnchecked(data, levels, storageKind, x, y, z, out value, out _);
+ 
++    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+     internal static bool TryGetUnchecked(
+         ReadOnlySpan<byte> data,
+         int levels,
+@@ -334,12 +355,12 @@
+         out uint value,
+         out int lodLevel)
+     {
+-        value = default;
+-        lodLevel = 0;
+         var sideLength = 1 << levels;
+ 
+         if (storageKind == StorageKind.Uniform)
+         {
++            value = default;
++            lodLevel = 0;
+             var cursor = HeaderSize;
+             if (!TryReadVarUInt(data, ref cursor, out value) || cursor != data.Length)
+                 return false;
+@@ -349,12 +370,25 @@
+ 
+         if (storageKind == StorageKind.Dense)
+         {
++            value = default;
++            lodLevel = 0;
+             var flatIndex = (x * sideLength * sideLength) + (y * sideLength) + z;
+             var byteOffset = HeaderSize + (flatIndex * sizeof(uint));
+             value = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(byteOffset, sizeof(uint)));
+             return true;
+         }
+-
++        if (storageKind == StorageKind.PackedLeaf)
++            return PackedLeafEncoding<uint>.TryGet(data, HeaderSize, levels, x, y, z, out value, out lodLevel);
++
++        return TryGetTreeUnchecked(data, levels, x, y, z, out value, out lodLevel);
++    }
++
++    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
++    private static bool TryGetTreeUnchecked(ReadOnlySpan<byte> data, int levels,
++        int x, int y, int z, out uint value, out int lodLevel)
++    {
++        value = default;
++        lodLevel = 0;
+         if (levels == 0 || data.Length < HeaderSize + MinimumNodeSize + 1)
+             return false;
+ 
+@@ -460,6 +494,11 @@
+             return false;
+ 
+         destination = destination[..count];
++        if (storageKind == StorageKind.PackedLeaf)
++        {
++            PackedLeafEncoding<uint>.CopyTo(data, HeaderSize, levels, destination, layout);
++            return true;
++        }
+         if (storageKind == StorageKind.Uniform)
+         {
+             var cursor = HeaderSize;
+@@ -972,6 +1011,7 @@
+         internal static BuildPlan Tree(int encodedLength) =>
+             new(encodedLength, StorageKind.Tree, default);
+ 
++        internal static BuildPlan PackedLeaf(int encodedLength) => new(encodedLength, StorageKind.PackedLeaf, default);
+         internal static BuildPlan Dense(int encodedLength) =>
+             new(encodedLength, StorageKind.Dense, default);
+     }
+@@ -1027,5 +1067,6 @@
+ {
+     Tree = 0,
+     Uniform = 1,
+-    Dense = 2
++    Dense = 2,
++    PackedLeaf = 3
+ }
+--- a/src/Tedd.Voxtree/OctreeLookup.cs
++++ b/src/Tedd.Voxtree/OctreeLookup.cs
+@@ -25,6 +25,12 @@
+         if (!view.IsWellFormed()) throw new FormatException("The octree data is malformed.");
+         Levels = view.Levels;
+         var kind = OctreeCodec.GetStorageKindUnchecked(encoded);
++        if (kind == StorageKind.PackedLeaf)
++        {
++            _dense = ownedEncoding.IsEmpty ? encoded.ToArray() : ownedEncoding;
++            _uniform = uint.MaxValue;
++            return;
++        }
+         if (kind == StorageKind.Dense)
+         {
+             _dense = ownedEncoding.IsEmpty ? encoded.ToArray() : ownedEncoding;
+@@ -142,6 +148,11 @@
+                 lodLevel = Levels;
+                 return _uniform;
+             }
++            if (_uniform != 0)
++            {
++                if (PackedLeafEncoding<uint>.TryGet(_dense.Span, OctreeCodec.HeaderSize, Levels, x, y, z, out var value, out lodLevel)) return value;
++                return OctreeThrowHelper.ThrowMalformed();
++            }
+             var index = ((x << Levels) + y) * SideLength + z;
+             return BinaryPrimitives.ReadUInt32LittleEndian(_dense.Span.Slice(
+                 OctreeCodec.HeaderSize + index * sizeof(uint), sizeof(uint)));
+--- a/src/Tedd.Voxtree/OctreeQueries.cs
++++ b/src/Tedd.Voxtree/OctreeQueries.cs
+@@ -38,6 +38,11 @@
+             return;
+         var data = tree.Data;
+         var kind = OctreeCodec.GetStorageKindUnchecked(data);
++        if (kind == StorageKind.PackedLeaf)
++        {
++            Packed(data, tree.Levels, ref state);
++            return;
++        }
+         if (kind == StorageKind.Dense)
+         {
+             Dense(data, tree.SideLength, ref state);
+@@ -232,6 +237,19 @@
+                     throw new FormatException("Malformed child offset.");
+                 Visit(data, offset - (int)distance, level - 1, cx, cy, cz, ref state);
+             }
++        }
++    }
++
++    private static void Packed(ReadOnlySpan<byte> data, int levels, ref State state)
++    {
++        var box = state.Box;
++        for (var x = box.MinX; x < box.MaxX && !state.Done; x++)
++        for (var y = box.MinY; y < box.MaxY && !state.Done; y++)
++        for (var z = box.MinZ; z < box.MaxZ && !state.Done; z++)
++        {
++            if (!PackedLeafEncoding<uint>.TryGet(data, OctreeCodec.HeaderSize, levels, x, y, z, out var value, out _))
++                throw new FormatException("Malformed packed leaf.");
++            state.Accept(new VoxelBox(x, y, z, x + 1, y + 1, z + 1), value);
+         }
+     }
+ 
+--- a/src/Tedd.Voxtree/PackedLeafEncoding.cs
++++ b/src/Tedd.Voxtree/PackedLeafEncoding.cs
+@@ -0,0 +1,190 @@
++using System;
++using System.Buffers.Binary;
++using System.Runtime.CompilerServices;
++using System.Runtime.InteropServices;
++
++namespace Tedd.Voxtree;
++
++// Packed value and exact leaf LOD words use their own representation magic.
++internal static class PackedLeafEncoding<T> where T : unmanaged, IEquatable<T>
++{
++    internal const byte Magic = 0x50; // 'P'; distinct from legacy/prototype 'O'.
++    private static readonly int Width = Unsafe.SizeOf<T>();
++    private static readonly int Bits = Width * 8 - 4;
++    private static readonly uint Mask = Width == 2 ? 0xfffu : 0xfffffffu;
++
++    internal static bool Select(ReadOnlySpan<T> source, int levels, int treeBytes, int denseBytes)
++    {
++        if (Width is not (2 or 4) || levels is < 3 or > 6 || treeBytes * 8L < denseBytes) return false;
++        if (Width == 2)
++        {
++            var values = MemoryMarshal.Cast<T, ushort>(source);
++#if NET10_0_OR_GREATER
++            return values.IndexOfAnyExceptInRange((ushort)0, (ushort)0xfff) < 0;
++#else
++            foreach (var value in values) if (value > 0xfff) return false;
++#endif
++        }
++        else
++        {
++            var values = MemoryMarshal.Cast<T, uint>(source);
++#if NET10_0_OR_GREATER
++            return values.IndexOfAnyExceptInRange(0u, 0xfffffffu) < 0;
++#else
++            foreach (var value in values) if (value > 0xfffffff) return false;
++#endif
++        }
++        return true;
++    }
++
++    internal static bool TryReadHeader(ReadOnlySpan<byte> data, int header, out int levels)
++    {
++        levels = 0;
++        if (Width is not (2 or 4) || data.Length < header || data[0] != Magic ||
++            data[1] >> 6 != Octree.PackedLeafFormatVersion || (data[1] & 3) != 3 ||
++            (header == 3 && data[2] != (Width == 2 ? 1 : 2))) return false;
++        levels = (data[1] >> 2) & 15;
++        return levels <= Octree.MaxLevels &&
++            data.Length == header + (long)OctreeCodec.GetVoxelCount(levels) * Width;
++    }
++
++    internal static void Write(ReadOnlySpan<T> source, int levels, DenseVoxelLayout layout,
++        Span<byte> destination, int header)
++    {
++        var count = OctreeCodec.GetVoxelCount(levels);
++        destination = destination[..checked(header + count * Width)];
++        destination[0] = Magic;
++        destination[1] = (byte)((Octree.PackedLeafFormatVersion << 6) | 3 | (levels << 2));
++        if (header == 3) destination[2] = (byte)(Width == 2 ? 1 : 2);
++        WriteCube(source, levels, layout, destination[header..], 0, 0, 0, levels);
++    }
++
++    private static void WriteCube(ReadOnlySpan<T> source, int levels, DenseVoxelLayout layout,
++        Span<byte> body, int x, int y, int z, int lod)
++    {
++        var side = 1 << levels;
++        var size = 1 << lod;
++        if (Uniform(source, side, layout, x, y, z, size))
++        {
++            var value = Raw(source[DenseVoxel.Index(x, y, z, side, layout)]);
++            var packed = value | ((uint)lod << Bits);
++            for (var xx = x; xx < x + size; xx++)
++            for (var yy = y; yy < y + size; yy++)
++            {
++                var row = body.Slice(((xx * side + yy) * side + z) * Width, size * Width);
++                if (BitConverter.IsLittleEndian)
++                {
++                    if (Width == 2) MemoryMarshal.Cast<byte, ushort>(row).Fill((ushort)packed);
++                    else MemoryMarshal.Cast<byte, uint>(row).Fill(packed);
++                }
++                else for (var zz = 0; zz < size; zz++) WriteWord(row.Slice(zz * Width, Width), packed);
++            }
++            return;
++        }
++        var half = size >> 1;
++        for (var child = 0; child < 8; child++)
++            WriteCube(source, levels, layout, body, x + ((child >> 2) & 1) * half,
++                y + ((child >> 1) & 1) * half, z + (child & 1) * half, lod - 1);
++    }
++
++    private static bool Uniform(ReadOnlySpan<T> source, int side, DenseVoxelLayout layout,
++        int x, int y, int z, int size)
++    {
++        var start = DenseVoxel.Index(x, y, z, side, layout);
++        var value = source[start];
++        if (layout == DenseVoxelLayout.Morton) return Equal(source.Slice(start, size * size * size), value);
++        for (var xx = x; xx < x + size; xx++)
++        for (var yy = y; yy < y + size; yy++)
++            if (!Equal(source.Slice((xx * side + yy) * side + z, size), value)) return false;
++        return true;
++    }
++
++    private static bool Equal(ReadOnlySpan<T> values, T value)
++    {
++#if NET10_0_OR_GREATER
++        return values.IndexOfAnyExcept(value) < 0;
++#else
++        foreach (var cell in values) if (!cell.Equals(value)) return false;
++        return true;
++#endif
++    }
++
++    private static uint Raw(T value) => Width == 2 ? Unsafe.As<T, ushort>(ref value) : Unsafe.As<T, uint>(ref value);
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    private static T Value(uint value)
++    {
++        T result = default;
++        if (Width == 2) Unsafe.As<T, ushort>(ref result) = (ushort)value;
++        else Unsafe.As<T, uint>(ref result) = value;
++        return result;
++    }
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    private static uint ReadWord(ReadOnlySpan<byte> value) => Width == 2
++        ? BinaryPrimitives.ReadUInt16LittleEndian(value) : BinaryPrimitives.ReadUInt32LittleEndian(value);
++    private static void WriteWord(Span<byte> destination, uint value)
++    {
++        if (Width == 2) BinaryPrimitives.WriteUInt16LittleEndian(destination, (ushort)value);
++        else BinaryPrimitives.WriteUInt32LittleEndian(destination, value);
++    }
++
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    internal static bool TryGet(ReadOnlySpan<byte> data, int header, int levels,
++        int x, int y, int z, out T value, out int lod)
++    {
++        value = default;
++        lod = 0;
++        if (Width is not (2 or 4)) return false;
++        var index = ((x << levels) + y) * (1 << levels) + z;
++        var offset = header + index * Width;
++        if ((uint)offset > (uint)data.Length || data.Length - offset < Width) return false;
++        var word = ReadWord(data.Slice(offset, Width));
++        var stored = (int)(word >> Bits);
++        if (stored > levels) return false;
++        value = Value(word & Mask);
++        lod = stored;
++        return true;
++    }
++
++    internal static bool IsWellFormed(ReadOnlySpan<byte> data, int header, int levels) =>
++        TryReadHeader(data, header, out var actual) && actual == levels &&
++        ValidateCube(data[header..], 1 << levels, 0, 0, 0, levels);
++
++    private static bool ValidateCube(ReadOnlySpan<byte> body, int side, int x, int y, int z, int level)
++    {
++        var word = ReadWord(body.Slice(((x * side + y) * side + z) * Width, Width));
++        var lod = (int)(word >> Bits);
++        if (lod > level) return false;
++        if (lod == level)
++        {
++            var size = 1 << level;
++            for (var xx = x; xx < x + size; xx++)
++            for (var yy = y; yy < y + size; yy++)
++            for (var zz = z; zz < z + size; zz++)
++                if (ReadWord(body.Slice(((xx * side + yy) * side + zz) * Width, Width)) != word) return false;
++            return true;
++        }
++        var half = 1 << (level - 1);
++        for (var child = 0; child < 8; child++)
++            if (!ValidateCube(body, side, x + ((child >> 2) & 1) * half,
++                y + ((child >> 1) & 1) * half, z + (child & 1) * half, level - 1)) return false;
++        return true;
++    }
++
++    internal static bool IsEmpty(ReadOnlySpan<byte> data, int header)
++    {
++        for (var cursor = header; cursor < data.Length; cursor += Width)
++            if ((ReadWord(data.Slice(cursor, Width)) & Mask) != 0) return false;
++        return true;
++    }
++
++    internal static void CopyTo(ReadOnlySpan<byte> data, int header, int levels,
++        Span<T> destination, DenseVoxelLayout layout)
++    {
++        var side = 1 << levels;
++        var cursor = header;
++        for (var x = 0; x < side; x++)
++        for (var y = 0; y < side; y++)
++        for (var z = 0; z < side; z++, cursor += Width)
++            destination[DenseVoxel.Index(x, y, z, side, layout)] = Value(ReadWord(data.Slice(cursor, Width)) & Mask);
++    }
++}

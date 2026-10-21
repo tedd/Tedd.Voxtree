@@ -1,0 +1,237 @@
+{
+  "regime": "Separate ordinary-tiered x64 diagnostic, owned LOD selector, not quiet-run code identity",
+  "results": [
+    {
+      "width": "UInt16",
+      "asm_sha256": "9728849c8a6ec1e8af6c0825e5ec4dcde1eb157310181af23db2a5699244addd",
+      "methods": [
+        {
+          "signature": "ForceUInt16Scenario:AfterBatchOwned(int):this (Tier1-OSR)",
+          "native_bytes": 495,
+          "rsp_subtractions": [
+            144
+          ],
+          "called_targets": [
+            "CORINFO_HELP_STRCNS",
+            "System.InvalidOperationException:.ctor(System.String):this",
+            "Tedd.Voxtree.GenericOctreeThrowHelper`1[ushort",
+            "Tedd.Voxtree.VoxelCodec`1[ushort"
+          ]
+        },
+        {
+          "signature": "Tedd.Voxtree.VoxelCodec`1[ushort]:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 473,
+          "rsp_subtractions": [
+            88
+          ],
+          "called_targets": [
+            "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+            "Tedd.Voxtree.GenericOctreeCodec`1[ushort"
+          ]
+        },
+        {
+          "signature": "Tedd.Voxtree.GenericOctreeCodec`1[ushort]:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 457,
+          "rsp_subtractions": [
+            80
+          ],
+          "called_targets": [
+            "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+            "Tedd.Voxtree.GenericOctreeCodec`1[ushort"
+          ]
+        },
+        {
+          "signature": "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:TryGet(System.ReadOnlySpan`1[byte],int,int,int,int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 152,
+          "rsp_subtractions": [
+            40
+          ],
+          "called_targets": [
+            "System.ThrowHelper:ThrowArgumentOutOfRangeException()"
+          ]
+        },
+        {
+          "signature": "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:ReadWord(System.ReadOnlySpan`1[byte]):uint (Tier1)",
+          "native_bytes": 35,
+          "rsp_subtractions": [
+            40
+          ],
+          "called_targets": [
+            "System.ThrowHelper:ThrowArgumentOutOfRangeException(int)"
+          ]
+        },
+        {
+          "signature": "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:Value(uint):ushort (Tier1)",
+          "native_bytes": 4,
+          "rsp_subtractions": [],
+          "called_targets": []
+        },
+        {
+          "signature": "ForceUInt16Scenario:AfterBatchOwned(int):this (Tier1-OSR)",
+          "native_bytes": 852,
+          "rsp_subtractions": [
+            152
+          ],
+          "called_targets": [
+            "CORINFO_HELP_STRCNS",
+            "System.InvalidOperationException:.ctor(System.String):this",
+            "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+            "Tedd.Voxtree.GenericOctreeCodec`1[ushort",
+            "Tedd.Voxtree.GenericOctreeThrowHelper`1[ushort"
+          ]
+        },
+        {
+          "signature": "ForceUInt16Scenario:AfterBatch(int):this (Tier1)",
+          "native_bytes": 135,
+          "rsp_subtractions": [
+            40
+          ],
+          "called_targets": [
+            "ForceUInt16Scenario:AfterBatchCompiled(int):this",
+            "ForceUInt16Scenario:AfterBatchOwned(int):this",
+            "ForceUInt16Scenario:AfterBatchSpan(int):this"
+          ]
+        },
+        {
+          "signature": "ForceUInt16Scenario:AfterBatchOwned(int):this (Tier1)",
+          "native_bytes": 2764,
+          "rsp_subtractions": [
+            200
+          ],
+          "called_targets": [
+            "CORINFO_HELP_STRCNS",
+            "System.Exception:.ctor():this",
+            "System.InvalidOperationException:.ctor(System.String):this",
+            "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+            "Tedd.Voxtree.GenericOctreeCodec`1[ushort",
+            "Tedd.Voxtree.GenericOctreeThrowHelper`1[ushort",
+            "Tedd.Voxtree.OctreeSpan`1[ushort",
+            "Tedd.Voxtree.Octree`1[ushort",
+            "Tedd.Voxtree.VoxelCodec`1[ushort"
+          ]
+        }
+      ],
+      "shutdown": {
+        "pid": 163900,
+        "checkedAt": "2026-10-21T02:32:49.6018199+00:00",
+        "exitCode": 0,
+        "exited": true
+      }
+    },
+    {
+      "width": "UInt32",
+      "asm_sha256": "1561798e6f6a74ca5d63e0010347dd7b2eaf1bf3e9400cb3f639a902a13eb5c0",
+      "methods": [
+        {
+          "signature": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1-OSR)",
+          "native_bytes": 908,
+          "rsp_subtractions": [
+            136
+          ],
+          "called_targets": [
+            "CORINFO_HELP_STRCNS",
+            "System.InvalidOperationException:.ctor(System.String):this",
+            "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+            "Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte",
+            "Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint",
+            "Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint"
+          ]
+        },
+        {
+          "signature": "Tedd.Voxtree.OctreeCodec:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 456,
+          "rsp_subtractions": [
+            80
+          ],
+          "called_targets": [
+            "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+            "Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte",
+            "Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte"
+          ]
+        },
+        {
+          "signature": "Tedd.Voxtree.PackedLeafEncoding`1[uint]:TryGet(System.ReadOnlySpan`1[byte],int,int,int,int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 149,
+          "rsp_subtractions": [
+            40
+          ],
+          "called_targets": [
+            "System.ThrowHelper:ThrowArgumentOutOfRangeException()"
+          ]
+        },
+        {
+          "signature": "Tedd.Voxtree.PackedLeafEncoding`1[uint]:ReadWord(System.ReadOnlySpan`1[byte]):uint (Tier1)",
+          "native_bytes": 34,
+          "rsp_subtractions": [
+            40
+          ],
+          "called_targets": [
+            "System.ThrowHelper:ThrowArgumentOutOfRangeException(int)"
+          ]
+        },
+        {
+          "signature": "Tedd.Voxtree.PackedLeafEncoding`1[uint]:Value(uint):uint (Tier1)",
+          "native_bytes": 3,
+          "rsp_subtractions": [],
+          "called_targets": []
+        },
+        {
+          "signature": "ForceUInt32Scenario:AfterBatch(int):this (Tier1)",
+          "native_bytes": 136,
+          "rsp_subtractions": [
+            40
+          ],
+          "called_targets": [
+            "ForceUInt32Scenario:AfterBatchCompiled(int):this",
+            "ForceUInt32Scenario:AfterBatchOwned(int):this",
+            "ForceUInt32Scenario:AfterBatchSpan(int):this"
+          ]
+        },
+        {
+          "signature": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1-OSR)",
+          "native_bytes": 855,
+          "rsp_subtractions": [
+            136
+          ],
+          "called_targets": [
+            "CORINFO_HELP_STRCNS",
+            "System.InvalidOperationException:.ctor(System.String):this",
+            "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+            "Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte",
+            "Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte",
+            "Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint",
+            "Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint"
+          ]
+        },
+        {
+          "signature": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1)",
+          "native_bytes": 3736,
+          "rsp_subtractions": [
+            216
+          ],
+          "called_targets": [
+            "CORINFO_HELP_STRCNS",
+            "System.Exception:.ctor():this",
+            "System.InvalidOperationException:.ctor(System.String):this",
+            "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+            "Tedd.Voxtree.Octree:AsSpan():Tedd.Voxtree.OctreeSpan:this",
+            "Tedd.Voxtree.Octree:TryGet(int,int,int,byref,byref):bool:this",
+            "Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte",
+            "Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte",
+            "Tedd.Voxtree.OctreeSpan:Get(int,int,int,byref):uint:this",
+            "Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint",
+            "Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint",
+            "Tedd.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint"
+          ]
+        }
+      ],
+      "shutdown": {
+        "pid": 97000,
+        "checkedAt": "2026-10-21T02:32:55.9339452+00:00",
+        "exitCode": 0,
+        "exited": true
+      }
+    }
+  ],
+  "limits": "rsp subtractions exclude register pushes, outgoing arguments, callees and recursive depth. Code size and static branches do not establish dynamic counts, PMU stalls or elapsed fractions. Different tier/OSR versions remain separate."
+}
