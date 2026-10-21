@@ -1,0 +1,26 @@
+using System.Text.Json;
+using Tedd.DotNetLab.Contracts;
+
+namespace Tedd.DotNetLab.Application;
+
+public sealed partial class LabService
+{
+    private static void LogNormalSessionPrimaryFailure(Exception error,string sessionId,string executionId,
+        string planId,string buildId,int block,int arm,string variant)
+    {
+        try
+        {
+            string detail=error.ToString();
+            Console.Error.WriteLine("DOTNETLAB_NORMAL_SESSION_PRIMARY_FAILURE "+JsonSerializer.Serialize(new
+            {
+                session_id=sessionId,execution_id=executionId,plan_id=planId,build_id=buildId,
+                block_ordinal=block,arm_ordinal=arm,variant,
+                failure_code=error is LabException lab?lab.Code:error is OperationCanceledException?"cancelled":"confirmation_failed",
+                exception_type=error.GetType().FullName,hresult=error.HResult,
+                detail=detail.Length<=32768?detail:detail[..32768],detail_truncated=detail.Length>32768,
+                recorded_utc=DateTimeOffset.UtcNow
+            }));
+        }
+        catch(Exception loggingError) when(loggingError is not OutOfMemoryException) { }
+    }
+}

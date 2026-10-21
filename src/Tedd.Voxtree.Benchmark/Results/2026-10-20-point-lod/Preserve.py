@@ -14,6 +14,7 @@ parser.add_argument("output", type=Path)
 parser.add_argument("--label", default="")
 parser.add_argument("--content-addressed", action="store_true", help="Store identical bytes once; manifest maps every original path")
 parser.add_argument("--include-prefix", action="append", default=[], help="Archive only task-relative path prefixes; omitted preserves the full historical behavior")
+parser.add_argument("--nested-catalog-root", action="append", default=[], help="Also export direct child catalogs of a task-relative container")
 args = parser.parse_args()
 prefixes = [v.replace('\\', '/').strip('/') for v in args.include_prefix]
 if any(not v or '..' in v.split('/') or ':' in v for v in prefixes):
@@ -74,9 +75,17 @@ if rows:
         writer.writeheader()
         writer.writerows(rows)
 
-catalogs = sorted(root.glob("*/catalog.sqlite"))
-catalogs = [p for p in catalogs if selected(p.parent.name + '/catalog-export.json')]
-catalog_directories = {p.parent.name for p in catalogs}
+catalogs = set(root.glob("*/catalog.sqlite"))
+for container in args.nested_catalog_root:
+    relative = Path(container)
+    if relative.is_absolute() or '..' in relative.parts or ':' in container or not container:
+        raise SystemExit('Nested catalog container must be a task-relative path without traversal')
+    nested = (root / relative).resolve()
+    if not nested.is_relative_to(root):
+        raise SystemExit('Nested catalog container escaped task root')
+    catalogs.update(nested.glob('*/catalog.sqlite'))
+catalogs = sorted(p for p in catalogs if selected(p.parent.relative_to(root).as_posix() + '/catalog-export.json'))
+catalog_directories = {p.relative_to(root).parts[0] for p in catalogs}
 source_directories = {"baseline", "rig", "g2", "g3", "q1", "q2", "q3", "q4", "normal-baseline", "normal-candidate", "steady-baseline", "steady-candidate"}
 source_directories.update(p.parent.name for p in root.glob("*/Rig.csproj"))
 source_directories.update(p.name for p in root.iterdir() if p.is_dir() and (p.name.endswith("-baseline") or p.name.endswith("-source")))
@@ -127,6 +136,10 @@ with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compre
                 include = True
         if parts[0] == "bundles":
             include = path.suffix in {".dll", ".json"}
+            if len(parts) > 1 and parts[1] in {'p39f0', 'p39f1'}:
+                # These are complete controller copies, including native assets
+                # and host files sealed by the diagnostic closure manifest.
+                include = True
         if len(parts)==1 and path.name=='coldlog-source-9c23369.zip':include=True
         if parts[0].endswith("-results"):
             include = path.suffix in {".trx", ".json", ".xml"}
@@ -149,7 +162,7 @@ with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compre
                 for row in cursor:
                     records.append([{"base64": base64.b64encode(v).decode()} if isinstance(v, bytes) else v for v in row])
                 exported.append({"name": name, "schema": schema, "columns": columns, "rows": records})
-        add(catalog.parent.name + "/catalog-export.json", json.dumps(exported, ensure_ascii=False).encode())
+        add(catalog.parent.relative_to(root).as_posix() + "/catalog-export.json", json.dumps(exported, ensure_ascii=False).encode())
     archive.writestr("manifest.json", json.dumps(manifest, indent=2).encode())
 
 digest = hashlib.sha256(archive_path.read_bytes()).hexdigest()

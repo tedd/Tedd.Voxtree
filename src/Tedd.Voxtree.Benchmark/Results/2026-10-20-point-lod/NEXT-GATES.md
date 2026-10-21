@@ -468,6 +468,20 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    Full original-release/actual-byte-consumer/API/memory/format/allocation/10x
    qualifications remain open; the complete goal remains active.
 
+28. P39F hyp-0cb42d0bc3c4410c9c7efc5992ddee88 freezes five deterministic
+   first-failure/cleanup/success controls before target grants. Task-local
+   Application copy changes one of47 original source files plus private logger;
+   measurement/finally-cleanup source remains. Full controller copies differ
+   only in Application.dll. Corrected worker retains original pre-execution
+   prefix compiler failure and passes two logger selftests. Five actual plans,
+   six private catalogs and full closures verify in phase35a (400paths/234blobs,
+   zero comparative rows). See REPORT-PHASE35A/FIRST-FAILURE-PROTOCOL.
+   Execute once with exact CLI grants and proper central-mutex ownership;
+   maximum28 targets/25 diagnostic measured sessions, no comparisons or source
+   benefit claim. Retain all accepted IDs, first/cleanup errors, residual files
+   and joins; stop on mismatch, no replacement or old-family resumption.
+   Original intermittent cause and complete10x qualification remain open.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining

@@ -1,0 +1,18 @@
+{
+  "maximumTargetLaunches": 28,
+  "unchangedOriginalSourceFiles": 46,
+  "addedPrivateLogger": true,
+  "controllerClosureFiles": 112,
+  "maximumDiagnosticMeasuredSessions": 25,
+  "passed": true,
+  "initialWorkerCompilerFailureRetained": true,
+  "originalSourceFiles": 47,
+  "changedOriginalSourceFiles": 1,
+  "loggerSelftests": 2,
+  "comparativeTimingRecords": 0,
+  "grantsIssued": 0,
+  "plans": 5,
+  "originalMeasurementCleanupLogicUnchanged": true,
+  "onlyControllerFileDelta": "Tedd.DotNetLab.Application.dll",
+  "targetLaunches": 0
+}
