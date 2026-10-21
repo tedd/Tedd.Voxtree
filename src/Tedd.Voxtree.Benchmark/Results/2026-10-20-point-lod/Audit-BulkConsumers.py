@@ -6,7 +6,7 @@ import statistics
 from pathlib import Path
 
 parser=argparse.ArgumentParser();parser.add_argument('task_root',type=Path)
-parser.add_argument('--label',choices=['p18bulk','p19bulk','p20bulk','p21bulk','p22bulk','p23bulk'],default='p18bulk');args=parser.parse_args()
+parser.add_argument('--label',choices=['p18bulk','p19bulk','p20bulk','p21bulk','p22bulk','p23bulk','p25bulk'],default='p18bulk');args=parser.parse_args()
 task=args.task_root.resolve()
 if task!=Path('D:/Workspaces/AI/voxtree-point-lod-20261020').resolve():raise SystemExit('Unexpected task root')
 label=args.label
@@ -15,7 +15,8 @@ version,family,control,treatment={'p18bulk':('13',88,'f0772c8','complete P18 sou
     'p20bulk':('14',96,'P19 count specialization','P20 validated vector counts'),
     'p21bulk':('14',96,'P20 validated vector counts','P21 vector helper boundary'),
     'p22bulk':('13',88,'f0772c8','P22 linear leaf specialization'),
-    'p23bulk':('13',88,'f0772c8','P23 measurement-only token lengths')}[label]
+    'p23bulk':('13',88,'f0772c8','P23 measurement-only token lengths'),
+    'p25bulk':('13',88,'complete P24 source','P25 bottom-up packed writer')}[label]
 root=task/(label+'-screen');output=task/(label+'-audit.json')
 if output.exists():raise SystemExit('Preserve original bulk audit')
 read=lambda p:json.loads(p.read_text(encoding='utf-8-sig'))
@@ -32,6 +33,7 @@ for item in plans:
     assert plan['scenario_version']==version and plan['operations_per_run']==count and plan['blocks']==12
     assert plan['analysis']['family_size']==family and plan['warmup_batches']==4 and not plan['independent_blocks']
     assert plan['maximum_duration_seconds']==120 and plan['profile']=='quiet-validation'
+    if label=='p25bulk':assert plan['seed']=='20261027'
     stem=root/(label+'-'+name);terminal=read(Path(str(stem)+'-terminal.json'));assert terminal['state']=='completed'
     runs=[unwrap(v) for v in read(Path(str(stem)+'-runs.json'))];assert len(runs)==24
     observations={a:[] for a in ['baseline','candidate']};allocations={a:[] for a in observations};blocks={}

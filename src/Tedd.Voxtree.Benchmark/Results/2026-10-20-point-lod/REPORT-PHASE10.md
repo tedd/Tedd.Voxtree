@@ -46,3 +46,16 @@ source adoption or new package is claimed. Construction, bulk, fallback,
 memory and broader public-API guards remain unresolved. The full goal remains
 active. The designated task workspace is retained for active inputs and runs;
 no alternate branch or worktree exists. Unrelated docs/articles is untouched.
+
+The original native summary truncated generic call targets at an internal
+bracket. p24-native-audit-v2.json corrects that extraction and preserves the
+original record. Code sizes and frame reservations are unchanged.
+
+P25 is a separate prospective writer-only experiment against complete P24.
+It marks uniform parent anchors bottom-up using the reserved destination,
+then fills canonical leaves, with no additional arrays or changed readers.
+Exact differential wire/capacity/LOD tests, all framework and bulk oracles,
+and two complete corpus checks precede the frozen 88-case exploratory screen.
+The original 5% guard remains. The driver is queued behind the full P24 lease;
+its used dependency hashes are checked before and after admission. No writer
+performance result is available at this checkpoint.

@@ -1,0 +1,87 @@
+// Offline differential oracle. No timings, services, databases or world writes.
+using System.Diagnostics;
+using Before = Snapshot.Voxtree;
+using After = Tedd.Voxtree;
+if(OperatingSystem.IsWindows())Process.GetCurrentProcess().ProcessorAffinity=(nint)4;
+int cases=0;long cells=0,capacities=0;
+for(int level=0;level<=6;level++)
+for(int pattern=0;pattern<9;pattern++)
+{
+    CheckLegacy(level,pattern);
+    Check<byte>(level,pattern,v=>(byte)v);
+    Check<ushort>(level,pattern,v=>(ushort)v);
+    Check<uint>(level,pattern,v=>v);
+    Check<ulong>(level,pattern,v=>(ulong)v<<32|v);
+    Check<UInt128>(level,pattern,v=>(UInt128)v<<96|v);
+}
+Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(new{cases,cells,capacities,correct=true,control="complete P24",wire="byte-for-byte including capacity-failure mutations"}));
+
+uint Value(int i,int count,int pattern)=>pattern switch{
+    0=>127,1=>i==0?128u:127u,2=>i==count-1?16384u:127u,
+    3=>(uint)(i/8%3),4=>(uint)(i%9),5=>unchecked((uint)i*2654435761u),
+    6=>i%2==0?uint.MaxValue:0,
+    7=>(uint)(i%2==0?4095:4094),
+    _=>i<count/2?0u:(uint)(i/8%5)};
+void Require(bool ok,string message){if(!ok)throw new Exception(message);}
+void Same(byte[] a,byte[] b,string message)=>Require(a.AsSpan().SequenceEqual(b),message);
+int[] Sizes(int required,int maximum)=>new[]{0,1,2,3,required-1,required,required+1,maximum}.Where(n=>n>=0).Distinct().ToArray();
+void Check<T>(int level,int pattern,Func<uint,T> map) where T:unmanaged
+{
+    int count=1<<(level*3),side=1<<level;
+    var values=Enumerable.Range(0,count).Select(i=>map(Value(i,count,pattern))).ToArray();
+    var b=new Before.Octree<T>(level,values);var a=new After.Octree<T>(level,values);
+    byte[] expected=b.Data.ToArray();Same(expected,a.Data.ToArray(),"generic owned bytes");
+    var morton=new T[count];After.DenseVoxel<T>.Convert(values,morton,level,After.DenseVoxelLayout.Linear,After.DenseVoxelLayout.Morton);
+    a.Build(morton,After.DenseVoxelLayout.Morton);Same(expected,a.Data.ToArray(),"generic Morton bytes");
+    a.Build(values);Same(expected,a.Data.ToArray(),"generic rebuild bytes");
+    int required=Before.Octree<T>.GetRequiredSize(values,level);
+    Require(required==expected.Length&&After.Octree<T>.GetRequiredSize(values,level)==required,"generic sizing");
+    foreach(int size in Sizes(required,After.Octree<T>.GetMaximumSize(level)))
+    {
+        var left=Enumerable.Repeat((byte)0xA5,size).ToArray();var right=(byte[])left.Clone();
+        bool lb=Before.Octree<T>.TryBuild(values,level,left,out int lw),rb=After.Octree<T>.TryBuild(values,level,right,out int rw);
+        Require(lb==rb&&lw==rw,"generic TryBuild outcome");Same(left,right,"generic TryBuild mutation");
+        if(lb){Same(expected,right.AsSpan(0,rw).ToArray(),"generic caller bytes");
+            Array.Fill(right,(byte)0xA5);Require(After.Octree<T>.Build(values,level,right)==required,"generic Build size");
+            Same(expected,right.AsSpan(0,required).ToArray(),"generic Build bytes");}
+        else {bool threw=false;try{After.Octree<T>.Build(values,level,right);}catch(ArgumentException){threw=true;}Require(threw,"generic short Build throws");}
+        capacities++;
+    }
+    var output=new T[count];a.CopyTo(output);Require(values.AsSpan().SequenceEqual(output),"generic dense copy");
+    for(int i=0;i<count;i++){
+        var bv=b.Get(i/(side*side),i/side%side,i%side,out int bl);
+        var av=a.Get(i/(side*side),i/side%side,i%side,out int al);
+        Require(EqualityComparer<T>.Default.Equals(bv,av)&&bl==al,"generic value/LOD");cells++;
+    }
+    cases++;
+}
+void CheckLegacy(int level,int pattern)
+{
+    int count=1<<(level*3),side=1<<level;
+    var values=Enumerable.Range(0,count).Select(i=>Value(i,count,pattern)).ToArray();
+    var b=new Before.Octree(level,values);var a=new After.Octree(level,values);
+    byte[] expected=b.Data.ToArray();Same(expected,a.Data.ToArray(),"legacy owned bytes");
+    var morton=new uint[count];After.DenseVoxel.Convert(values,morton,level,After.DenseVoxelLayout.Linear,After.DenseVoxelLayout.Morton);
+    a.Build(morton,After.DenseVoxelLayout.Morton);Same(expected,a.Data.ToArray(),"legacy Morton bytes");
+    a.Build(values);Same(expected,a.Data.ToArray(),"legacy rebuild bytes");
+    int required=Before.Octree.GetRequiredSize(values,level);
+    Require(required==expected.Length&&After.Octree.GetRequiredSize(values,level)==required,"legacy sizing");
+    foreach(int size in Sizes(required,After.Octree.GetMaximumSize(level)))
+    {
+        var left=Enumerable.Repeat((byte)0xA5,size).ToArray();var right=(byte[])left.Clone();
+        bool lb=Before.Octree.TryBuild(values,level,left,out int lw),rb=After.Octree.TryBuild(values,level,right,out int rw);
+        Require(lb==rb&&lw==rw,"legacy TryBuild outcome");Same(left,right,"legacy TryBuild mutation");
+        if(lb){Same(expected,right.AsSpan(0,rw).ToArray(),"legacy caller bytes");
+            Array.Fill(right,(byte)0xA5);Require(After.Octree.Build(values,level,right)==required,"legacy Build size");
+            Same(expected,right.AsSpan(0,required).ToArray(),"legacy Build bytes");}
+        else {bool threw=false;try{After.Octree.Build(values,level,right);}catch(ArgumentException){threw=true;}Require(threw,"legacy short Build throws");}
+        capacities++;
+    }
+    var output=new uint[count];a.CopyTo(output);Require(values.AsSpan().SequenceEqual(output),"legacy dense copy");
+    for(int i=0;i<count;i++){
+        uint bv=b.Get(i/(side*side),i/side%side,i%side,out int bl),av=a.Get(i/(side*side),i/side%side,i%side,out int al);
+        Require(bv==av&&bl==al,"legacy value/LOD");cells++;
+    }
+    cases++;
+}
+

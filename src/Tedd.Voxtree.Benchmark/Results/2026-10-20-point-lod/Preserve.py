@@ -13,7 +13,13 @@ parser.add_argument("task_root", type=Path)
 parser.add_argument("output", type=Path)
 parser.add_argument("--label", default="")
 parser.add_argument("--content-addressed", action="store_true", help="Store identical bytes once; manifest maps every original path")
+parser.add_argument("--include-prefix", action="append", default=[], help="Archive only task-relative path prefixes; omitted preserves the full historical behavior")
 args = parser.parse_args()
+prefixes = [v.replace('\\', '/').strip('/') for v in args.include_prefix]
+if any(not v or '..' in v.split('/') or ':' in v for v in prefixes):
+    raise SystemExit('Scope prefixes must be nonempty task-relative paths without traversal')
+def selected(name):
+    return not prefixes or any(name.startswith(prefix) for prefix in prefixes)
 if args.label and not args.label.replace('-', '').isalnum():
     raise SystemExit('Archive label must be alphanumeric with optional hyphens')
 suffix = '-' + args.label if args.label else ''
@@ -31,6 +37,8 @@ def unwrap(value):
 rows = []
 for path in sorted(root.glob("**/*comparison.json")) + sorted(root.glob("**/*objective_vector.json")):
     if "artifacts" in path.relative_to(root).parts or "driver-source" in path.parts:
+        continue
+    if not selected(path.relative_to(root).as_posix()):
         continue
     value = unwrap(json.loads(path.read_text(encoding="utf-8-sig")))
     if not isinstance(value, dict) or "effects_without_run_ids" not in value:
@@ -62,6 +70,7 @@ if rows:
         writer.writerows(rows)
 
 catalogs = sorted(root.glob("*/catalog.sqlite"))
+catalogs = [p for p in catalogs if selected(p.parent.name + '/catalog-export.json')]
 catalog_directories = {p.parent.name for p in catalogs}
 source_directories = {"baseline", "rig", "g2", "g3", "q1", "q2", "q3", "q4", "normal-baseline", "normal-candidate", "steady-baseline", "steady-candidate"}
 source_directories.update(p.parent.name for p in root.glob("*/Rig.csproj"))
@@ -88,6 +97,8 @@ with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compre
         if not path.is_file():
             continue
         relative = path.relative_to(root)
+        if not selected(relative.as_posix()):
+            continue
         parts = relative.parts
         if path.name.startswith("catalog.sqlite") or path.suffix == ".lock":
             continue
@@ -137,4 +148,4 @@ with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compre
 digest = hashlib.sha256(archive_path.read_bytes()).hexdigest()
 (args.output / f"evidence{suffix}.sha256").write_text(digest + "  " + archive_path.name + "\n", encoding="utf-8")
 print(json.dumps({"archive_bytes": archive_path.stat().st_size, "files": len(manifest), "catalogs": len(catalogs), "metric_rows": len(rows), "sha256": digest,
-                  "content_addressed": args.content_addressed, "unique_blobs": len(stored_blobs) if args.content_addressed else None}))
+                  "content_addressed": args.content_addressed, "include_prefixes": prefixes, "unique_blobs": len(stored_blobs) if args.content_addressed else None}))

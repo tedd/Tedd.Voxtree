@@ -5,6 +5,7 @@ param(
     [string]$Filter = '*',
     [string[]]$SelectedScenarios = @(),
     [string]$Label = 'exploration',
+    [ValidatePattern('^[0-9]+$')][string]$Seed = '20261022',
     [ValidateSet('fixed','scaled','precision','bounded-lifecycle','bounded-point','bounded-consumer','bounded-consumer-v14')][string]$Budget = 'fixed',
     [ValidateSet('quiet-validation','cpu-diagnostic')][string]$Profile = 'quiet-validation',
     [string]$JitDisasm = '',
@@ -119,7 +120,7 @@ try {
         }
         $plan = Invoke-Lab 'lab.experiment' @{
             action='create_plan';scenario_id=$scenario.id;scenario_version=$scenario.version;input_hash=$scenario.input_hash
-            variants=@('baseline','candidate');blocks=12;operations_per_run=$operations;warmup_batches=4;seed='20261022'
+            variants=@('baseline','candidate');blocks=12;operations_per_run=$operations;warmup_batches=4;seed=$Seed
             profile=$Profile;independent_blocks=$false;confirmatory=$false;maximum_duration_seconds=120
             target_runtime_version='10.0.13'
             analysis=@{alpha_family=0.05;family_size=$selected.Count;equivalence_lower_ratio=0.95;equivalence_upper_ratio=1.05;useful_improvement_ratio=0.95;meaningful_regression_ratio=1.05;minimum_blocks=10}

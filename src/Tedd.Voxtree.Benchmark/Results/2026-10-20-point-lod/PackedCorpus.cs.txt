@@ -70,7 +70,7 @@ static class PackedCorpus
         if (packed16) Require(after16.Data.Span[0] == 0x50 && !Baseline.OctreeSpan<ushort>.TryCreate(after16.Data.Span, out _), "Released UInt16 reader rejects new magic");
         if (packed32) Require(after32.Data.Span[0] == 0x50 && !Baseline.OctreeSpan<uint>.TryCreate(after32.Data.Span, out _), "Released generic UInt32 reader rejects new magic");
 #endif
-#if RELEASE_BUILDER_CENSUS
+#if RELEASE_BUILDER_CENSUS || EXACT_PACKED_BYTES
         Require(before.Data.Span.SequenceEqual(after.Data.Span), "UInt32 exact release bytes");
         Require(before16.Data.Span.SequenceEqual(after16.Data.Span), "UInt16 exact release bytes");
         Require(before32.Data.Span.SequenceEqual(after32.Data.Span), "Generic UInt32 exact release bytes");

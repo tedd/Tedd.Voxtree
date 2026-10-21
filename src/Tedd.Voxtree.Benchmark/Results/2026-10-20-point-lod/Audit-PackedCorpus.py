@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 parser=argparse.ArgumentParser();parser.add_argument('task_root',type=Path)
-parser.add_argument('--bundle-label',choices=['p18census','p20census','p22bulk','p23bulk','p24census'],default='p18census');args=parser.parse_args()
+parser.add_argument('--bundle-label',choices=['p18census','p20census','p22bulk','p23bulk','p24census','p25census'],default='p18census');args=parser.parse_args()
 root=args.task_root.resolve()
 if root!=Path('D:/Workspaces/AI/voxtree-point-lod-20261020').resolve():raise SystemExit('Unexpected task root')
 source=root/('forcecraft-census-packed-'+args.bundle_label+'/packed-corpus.json')
@@ -34,7 +34,7 @@ for name,records in [('all_chunks',rows),('unique_arrays',list(unique.values()))
 summary['u16_width_excluded_chunks']=sum(x['packedUInt32'] and not x['packedUInt16'] and x['maximum']>4095 for x in rows)
 summary['checks']='every chunk/cell; independent LOD partitions; owned/span/value/LOD/lookup/FromEncoded; copy, validation, count/any; eligibility; identical fallback bytes; original census row identity'
 summary['limits']='Payload excludes object/array headers and GC overhead; no measured access frequency, allocation or latency inference'
-if args.bundle_label in {'p20census','p24census'}:
+if args.bundle_label in {'p20census','p24census','p25census'}:
     previous=json.loads((root/'packed-corpus-audit.json').read_text())
     assert summary['all_chunks']==previous['all_chunks'] and summary['unique_arrays']==previous['unique_arrays']
     summary['footprint_eligibility_equal_to_p18_census']=True
