@@ -1,0 +1,29 @@
+{
+  "archive_bytes": 4348739,
+  "manifest_paths": 404,
+  "unique_blobs": 196,
+  "catalogs": 1,
+  "metric_rows": 0,
+  "sha256": "546d41a24d744f21cab1495f6868f3dd3782642497c7c3d6c6ece4bf8d8f73a9",
+  "required_paths": [
+    "bundles/p37-tests/net8.0/Tedd.Voxtree.dll",
+    "bundles/p37-tests/net8.0/Tests.dll",
+    "bundles/p37-tests/net10.0/Tedd.Voxtree.dll",
+    "bundles/p37-tests/net10.0/Tests.dll",
+    "bundles/p37-tests/net11.0/Tedd.Voxtree.dll",
+    "bundles/p37-tests/net11.0/Tests.dll",
+    "bundles/p37-tests/netstandard2.1/Tedd.Voxtree.dll",
+    "p37-hypothesis/catalog-export.json",
+    "p37-hypothesis/disposition-revision-response.json",
+    "p37-prerequisite-audit.json",
+    "p37-test-binary-bindings.json",
+    "bundles/p37n0/WorldNormal.dll",
+    "bundles/p37n1/WorldNormal.dll",
+    "caller-audit-p37library/out/Audit.dll",
+    "caller-audit-p37library.json",
+    "caller-audit-p37world.json",
+    "p37n0-native.asm",
+    "p37n1-native.asm"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

@@ -360,6 +360,22 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    caller growth also supports a separate AddRecent outlining investigation;
    no benefit, composition, source adoption or full10x result is established.
 
+22. P37 hyp-543d7b71d3e0442b903fdfc5b599d5df tests only NoInlining on AddRecent
+   against complete published f0772c8, excluding P36. All1203 raw/resolved library
+   IL bodies and47-type public surface match; only the selected flag changes.
+   Original408/409/410 regressions, netstandard2.1 build and48 prefixes/module
+   pass. Actual normal Tier1 callers shrink447–537 bytes but reserve16–48 more
+   fixed rsp bytes, failing the prospective all-callers no-growth stack gate.
+   P37 is not_supported; no timing/adoption is selected and no time regression
+   is inferred. Phase29 preserves all original producers/modules/tool/code and
+   revised hypothesis; see REPORT-PHASE29/WORLD-OUTLINE-PROTOCOL.
+   Next independent lead: outline only RebuildLookup, retaining published
+   AddRecent behavior. Its this-only boundary avoids passing AddRecent's32-byte
+   key plus fifth argument. Freeze new source/protocol before feasibility;
+   smaller frame/time is unproven. Do not relax P37's gate or combine its flag
+   with P36. Actual byte/one-channel consumer, all affected API/allocation and
+   complete public10x qualification remain open.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining

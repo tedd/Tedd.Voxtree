@@ -1,0 +1,12 @@
+{
+  "bundleLabels": [
+    "p37n0",
+    "p37n1"
+  ],
+  "toolSha256": "D7A2FC19B32120887A497E4EE3CAB9DD5EAFB9B954CB9153A4DF8635C55541D6",
+  "sourceSha256": "57E87F58617E383DB00EAEDE605F10CFA3036C0A7966A61E6562E37BB8FC1471",
+  "observer": "metadata-only caller identity audit; no fixture executed",
+  "runtime": "10.0.13",
+  "mode": "library",
+  "selftestPassed": true
+}

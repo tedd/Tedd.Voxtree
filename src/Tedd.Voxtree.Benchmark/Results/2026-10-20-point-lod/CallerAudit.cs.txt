@@ -13,6 +13,8 @@ bool countBoundary = args.Length > 0 && args[0] == "--count-boundary";
 if (countBoundary) args = args[1..];
 bool worldCallers = args.Length > 0 && args[0] == "--world-callers";
 if (worldCallers) args = args[1..];
+bool libraryMethods = args.Length > 0 && args[0] == "--library";
+if (libraryMethods) args = args[1..];
 if (args.Length == 1 && args[0] == "--selftest")
 {
     var a = Audit(Fixture(false, false, 17));
@@ -39,28 +41,50 @@ foreach (var path in args.Skip(1).Select(Path.GetFullPath))
     try
     {
         var assembly = context.LoadFromAssemblyPath(path);
-        var methods = assembly.GetTypes().Where(t => worldCallers
+        IEnumerable<MethodBase> selected = libraryMethods
+            ? assembly.GetTypes().Where(t => t.Namespace?.StartsWith("Tedd.Voxtree", StringComparison.Ordinal) == true)
+                .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly).Cast<MethodBase>()
+                    .Concat(t.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
+                    .Concat(t.TypeInitializer is null ? [] : new MethodBase[] { t.TypeInitializer }).Distinct())
+                .Where(m => m.GetMethodBody() is not null)
+            : assembly.GetTypes().Where(t => worldCallers
                 ? t.Namespace == null && (t.Name == "WorldUInt32" || t.Name == "WorldUInt16")
                 : countBoundary
                 ? t.Namespace == "Tedd.Voxtree" && (t.Name == "OctreeQueries" || t.Name == "GenericOctreeQueries`1")
                 : t.Namespace == null && t.Name.EndsWith("Scenario", StringComparison.Ordinal))
             .SelectMany(t => t.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
                 .Where(m => worldCallers ? m.Name is "AfterGet" or "AfterLod" or "AfterChunk" or "AfterTopology"
-                    : countBoundary ? m.Name == "CountPackedVector" : m.Name.StartsWith("AfterBatch", StringComparison.Ordinal)))
-            .OrderBy(m => m.DeclaringType!.FullName, StringComparer.Ordinal).ThenBy(m => m.Name, StringComparer.Ordinal).Select(Audit).ToArray();
-        inventories.Add(new { entry = path, sha256 = Hash(File.ReadAllBytes(path)), methods });
+                    : countBoundary ? m.Name == "CountPackedVector" : m.Name.StartsWith("AfterBatch", StringComparison.Ordinal)));
+        var methods = selected.OrderBy(m => m.DeclaringType!.FullName, StringComparer.Ordinal).ThenBy(m => m.Name, StringComparer.Ordinal)
+            .ThenBy(Member, StringComparer.Ordinal).Select(Audit).ToArray();
+        if (libraryMethods)
+        {
+            var publicSurface = assembly.GetExportedTypes().Where(t => t.Namespace?.StartsWith("Tedd.Voxtree", StringComparison.Ordinal) == true)
+                .OrderBy(t => t.FullName, StringComparer.Ordinal).Select(t => new {
+                    type = TypeName(t), attributes = t.Attributes.ToString(), baseType = t.BaseType is null ? null : TypeName(t.BaseType),
+                    interfaces = t.GetInterfaces().Select(TypeName).OrderBy(n => n, StringComparer.Ordinal),
+                    members = t.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly)
+                        .OrderBy(Member, StringComparer.Ordinal).Select(m => new { signature = Member(m), kind = m.MemberType.ToString(),
+                            attributes = m switch { MethodBase x => x.Attributes.ToString(), FieldInfo x => x.Attributes.ToString(), PropertyInfo x => x.Attributes.ToString(), EventInfo x => x.Attributes.ToString(), Type x => x.Attributes.ToString(), _ => "" },
+                            implementationFlags = m is MethodBase method ? method.GetMethodImplementationFlags().ToString() : null,
+                            literal = m is FieldInfo field && field.IsLiteral ? field.GetRawConstantValue() : null })
+                }).ToArray();
+            inventories.Add(new { entry = path, sha256 = Hash(File.ReadAllBytes(path)), methods, publicSurface });
+        }
+        else inventories.Add(new { entry = path, sha256 = Hash(File.ReadAllBytes(path)), methods });
     }
     finally { context.Unload(); }
 }
 File.WriteAllText(output, JsonSerializer.Serialize(inventories, new JsonSerializerOptions { WriteIndented = true }));
 Console.WriteLine($"Audited {inventories.Count} task-owned assemblies; no scenario methods executed.");
 
-CallerIdentity Audit(MethodInfo method)
+CallerIdentity Audit(MethodBase method)
 {
     var body = method.GetMethodBody() ?? throw new InvalidOperationException("Missing IL");
     var bytes = body.GetILAsByteArray()!;
     var instructions = new List<object>();
     var module = method.Module;
+    var methodArguments = method is MethodInfo methodInfo ? methodInfo.GetGenericArguments() : Type.EmptyTypes;
     int cursor = 0;
     while (cursor < bytes.Length)
     {
@@ -87,7 +111,7 @@ CallerIdentity Audit(MethodInfo method)
         }
         Require(width);
         if (code.OperandType is OperandType.InlineMethod or OperandType.InlineField or OperandType.InlineType or OperandType.InlineTok)
-            operand = Member(module.ResolveMember(BitConverter.ToInt32(bytes, cursor), method.DeclaringType!.GetGenericArguments(), method.GetGenericArguments())!);
+            operand = Member(module.ResolveMember(BitConverter.ToInt32(bytes, cursor), method.DeclaringType!.GetGenericArguments(), methodArguments)!);
         else if (code.OperandType == OperandType.InlineString)
             operand = module.ResolveString(BitConverter.ToInt32(bytes, cursor));
         else if (code.OperandType == OperandType.InlineSig)
@@ -111,6 +135,8 @@ static string Member(MemberInfo member) => member switch
     MethodBase m => TypeName(m.DeclaringType!) + "::" + m.Name + "<" + string.Join(',', (m is MethodInfo generic ? generic.GetGenericArguments() : Type.EmptyTypes).Select(TypeName)) + ">(" +
         string.Join(',', m.GetParameters().Select(p => TypeName(p.ParameterType))) + "):" + (m is MethodInfo info ? TypeName(info.ReturnType) : "void"),
     FieldInfo f => TypeName(f.DeclaringType!) + "::" + f.Name + ":" + TypeName(f.FieldType),
+    PropertyInfo p => TypeName(p.DeclaringType!) + "::" + p.Name + "(" + string.Join(',', p.GetIndexParameters().Select(i => TypeName(i.ParameterType))) + "):" + TypeName(p.PropertyType),
+    EventInfo e => TypeName(e.DeclaringType!) + "::" + e.Name + ":" + TypeName(e.EventHandlerType!),
     Type t => TypeName(t),
     _ => throw new NotSupportedException("Unsupported metadata operand " + member.MemberType)
 };
