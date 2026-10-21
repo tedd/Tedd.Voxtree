@@ -288,8 +288,25 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    including saturated history. Ten absent-layer primaries require2x, four
    topology primaries1.20x,46 guards1.05 cost. Execute the complete frozen stage
    under shared admission/central mutex, audit original run IDs and joins.
-   Only an all-gates pass selects separately frozen normal confirmation and
-   constructor/mutation/storage/memory/caller guards. No source adoption yet.
+   The complete stage now finishes60 cases/480 correct,quiescent,joined records,
+   observing zero read allocations. All14 primaries pass: absent-layer estimates
+   3.166–3.552, topology primaries1.863–2.233; saturated histories remain near1x.
+   Eight populated-layer guards fail1.05 cost. P35 is not_supported, so normal
+   confirmation and constructor/mutation/storage/memory/caller timing are not
+   selected. Phase25 preserves all runs/quality flags and revised hypothesis;
+   see REPORT-PHASE25. No source is adopted.
+18. Prefer an independent cache-maintenance work-elimination lead on f0772c8:
+   AddRecent currently clears/rebuilds16 lookup slots after replacing one entry.
+   Investigate incremental backshift removal/insertion, preserving victim
+   selection, full-address lookup and exact public residency/access sequences.
+   Prove collisions, wraparound, deletion, replacement and probe reachability.
+   Probe-slot arrangement is private and may change; private-array equality is
+   not a public contract. No implementation/measurement yet; exclude P35.
+   Consider separate-operation or actual byte/one-channel topology callers and
+   prospectively frozen fresh normal controls for the new epoch. Do not replace
+   P35 observations or reinterpret failed guards through new caller history or
+   raw medians. Hot/slow negative-filter ordering remains a separate candidate.
+   Complete original API/consumer/memory qualification and10x objective remain.
 
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.

@@ -1,0 +1,11 @@
+{
+  "stagePassed": false,
+  "failedPrimaryCount": 0,
+  "failedGuardCount": 8,
+  "promotionEligible": false,
+  "primaryPassed": true,
+  "scope": "P35 conservative seen-layer filter on complete published source. Only an all-gates pass selects separately frozen normal confirmation and constructor/mutation/storage/memory/caller guards. No adoption or full10x claim.",
+  "allObservedAllocationsZero": true,
+  "normalConfirmation": false,
+  "state": "not_supported"
+}
