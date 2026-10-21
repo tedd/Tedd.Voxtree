@@ -1,0 +1,22 @@
+{
+  "archive_bytes": 8329563,
+  "manifest_paths": 4869,
+  "unique_blobs": 4609,
+  "catalogs": 3,
+  "metric_rows": 136,
+  "sha256": "7422449b511b453305509c7dda8e006c069168610164e1bb1515cc1cbfff58b7",
+  "required_paths": [
+    "p27point-screen/catalog-export.json",
+    "p27bulk-screen/catalog-export.json",
+    "p27-hypothesis/disposition-revision-response.json",
+    "p27point-audit.json",
+    "p27bulk-audit.json",
+    "p27setup-audit.json",
+    "byte-palette-source/PaletteLeafEncoding.cs",
+    "bundles/p27setup/p27setup.dll",
+    "bundles/p27bulk/p27bulk.dll",
+    "forcecraft-census-packed-p27setup/packed-corpus.json",
+    "p27-source-review.diff"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

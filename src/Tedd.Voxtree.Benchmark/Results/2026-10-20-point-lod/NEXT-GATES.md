@@ -106,18 +106,29 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    .NET8/10/11 and hardware-off suites,48 point/88 complete-operation oracles,
    and the full1286-chunk census pass. Actual payload matches J1 exactly,
    including40,325,678 classic encoded-plus-distinct-lookup bytes. Its fixed
-   48-point and88-consumer screens are running; close every original case and
-   retain adverse guards before revising its hypothesis or selecting a source.
-   The first eight primary estimates include UInt32 owned Get9.954x and
-   owned LOD8.287x, below10x. Do not promote from the other six passing estimates.
+   48-point/1152-record and88-consumer/2112-record screens are complete, correct,
+   quiescent and joined. Two of eight primaries miss10x;14/40 point guards and
+   56/88 consumer guards are adverse. The hypothesis is not_supported. The
+   verified phase13 archive retains all136 new comparisons and complete source.
+   UInt32 owned Get9.954x and owned LOD8.287x remain below10x; six other passing
+   estimates and lower payload do not qualify adoption. See REPORT-PHASE13.
 8. P28 is not selected before implementation. Branch inspection establishes
    that P27's valid palette owned LOD path already inlines the proposed span
    boundary in both widths. The complete caller's remaining AsSpan/Get calls
    belong to other branches. Preserve its unexecuted protocol/generator and
    precise precheck; Prepare-P28 refuses execution. New contract tests remain
-   committed but unexecuted during P27 host occupancy. Select a distinct read
-   mechanism from actual executed code; direct-release10x confirmation remains
-   necessary and ratios from successive experiments are never multiplied.
+   validated after the original closure:404/405/406 .NET8/10/11 tests pass.
+   Preserve p27contracts*, packed-lookup-validation-p27contracts,
+   packed-lookup-p27contracts-results, packed-lookup-test-options-p27contracts,
+   and packed-lookup-tests-p27contracts in the next supplement. The current
+   P29 precheck completed missing UInt32 owned/span value-only caller diagnostics
+   from unchanged P27, not a treatment or new timing family. Preserve
+   p29-precheck* and native-summary-p29-read-precheck.json as well. The value-only
+   path is already inlined, but retains temporary value/LOD stores and success
+   propagation. P29-READ-PRECHECK records a possible value-returning state-reader
+   intervention; it requires its own protocol/hypothesis before implementation.
+   Select a distinct read mechanism from actual executed code; direct-release10x
+   confirmation remains necessary, without multiplying successive ratios.
 
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.

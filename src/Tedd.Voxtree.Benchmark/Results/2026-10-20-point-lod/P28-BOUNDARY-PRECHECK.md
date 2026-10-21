@@ -21,6 +21,7 @@ part of P27's fixed evidence. Diagnostics do not establish the exact quiet PGO
 body, time fraction, cache behavior or a performance result for an unbuilt fork.
 
 The additional OwnedLodSnapshotTests remain useful contract checks for later
-read changes. They are committed but unexecuted while P27 occupies the host.
+read changes. After P27 closes, the complete palette suite with these tests
+passes404/405/406 cases on .NET8/10/11 under shared host admission.
 The next read intervention requires a distinct mechanism and protocol. P27's
 original complete families continue unchanged; no observations are replaced.
