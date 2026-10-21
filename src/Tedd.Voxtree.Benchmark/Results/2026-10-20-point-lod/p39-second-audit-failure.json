@@ -1,0 +1,7 @@
+{
+  "sourceSha256": "6aedebf996412374b47502cf0aa8931838cc9d5bf101e5a6204e9d6c66edd179",
+  "preservedSource": "Audit-CompactTerminal-second.py.txt",
+  "exitCode": 1,
+  "failure": "Reject-path decoder required an explicit jump; actual rejection falls through to the next epilogue block",
+  "scope": "Offline evidence-index audit only; no candidate or observation producer replaced or rerun"
+}

@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "counts": {
+    "metadata": 2097152,
+    "rawEquality": 128,
+    "singleWord": 466944,
+    "random": 65536
+  },
+  "totalCases": 2629760,
+  "alignedCubes": 37440,
+  "maximumPayloadByteEnd": 524288,
+  "parent": "complete unpromoted P31, excluding P32-P38",
+  "parentValidatorSha256": "f1556ace03ec400f3edb01ec84543bd1b8a942f2f54166f19825720742a23613",
+  "sourceSha256": "5ab8d010f6a2cd89918e7fbaf49c2ffc88f505337d8209c3135748210048c96a",
+  "protocolSha256": "c88bc08f4cead02fe742c4ddde04b580f2d5d613b388058e2d60463ae2eb971f",
+  "python": "3.14.7",
+  "seed": 20261117,
+  "proof": "LOD fields cannot cancel under OR; with metadata zero, raw acceptance depends only on equality to the origin. Row pairs cover exactly the original eight leaves within exact-length payload bounds.",
+  "limits": "Independent integer model and source-domain proof only; not compiled correctness, generated code, time, allocation or source adoption."
+}

@@ -1,0 +1,15 @@
+{
+  "selftestPassed": true,
+  "sourceSha256": "57E87F58617E383DB00EAEDE605F10CFA3036C0A7966A61E6562E37BB8FC1471",
+  "coverageAddendumSha256": "E0F6DA0EE707B7DAECD15E5F4A77339AB711FAC79B2D7AFE36E96C27F9B080BE",
+  "observer": "complete metadata-only library inventory; no fixture or static constructor executed",
+  "coverageFrozenBeforeInventory": true,
+  "toolSha256": "13F1C6A8EB5F790079FE810B1939F890937F10E0F5275F0A0AF008A9F8626AC3",
+  "runtime": "10.0.13",
+  "mode": "library",
+  "bundleLabels": [
+    "p31census",
+    "p39census"
+  ],
+  "tool": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\caller-audit-p38library\\out\\Audit.dll"
+}

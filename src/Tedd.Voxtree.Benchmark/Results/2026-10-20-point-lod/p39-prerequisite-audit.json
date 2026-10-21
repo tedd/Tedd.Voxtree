@@ -1,0 +1,226 @@
+{
+  "passed": true,
+  "state": "supported_prerequisites_only",
+  "sourceFiles": 55,
+  "otherFilesByteIdentical": 54,
+  "sourceReversalExact": true,
+  "model": {
+    "passed": true,
+    "counts": {
+      "metadata": 2097152,
+      "rawEquality": 128,
+      "singleWord": 466944,
+      "random": 65536
+    },
+    "totalCases": 2629760,
+    "alignedCubes": 37440,
+    "maximumPayloadByteEnd": 524288,
+    "parent": "complete unpromoted P31, excluding P32-P38",
+    "parentValidatorSha256": "f1556ace03ec400f3edb01ec84543bd1b8a942f2f54166f19825720742a23613",
+    "sourceSha256": "5ab8d010f6a2cd89918e7fbaf49c2ffc88f505337d8209c3135748210048c96a",
+    "protocolSha256": "c88bc08f4cead02fe742c4ddde04b580f2d5d613b388058e2d60463ae2eb971f",
+    "python": "3.14.7",
+    "seed": 20261117,
+    "proof": "LOD fields cannot cancel under OR; with metadata zero, raw acceptance depends only on equality to the origin. Row pairs cover exactly the original eight leaves within exact-length payload bounds.",
+    "limits": "Independent integer model and source-domain proof only; not compiled correctness, generated code, time, allocation or source adoption."
+  },
+  "actualLibraryIlBodyCount": 1236,
+  "unchangedLibraryBodies": 1235,
+  "changedBodies": [
+    "Tedd.Voxtree.CompactLeafEncoding`1<T>::ValidateCube<>(System.ReadOnlySpan`1<System.Byte>,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32):System.Boolean"
+  ],
+  "publicTypes": 47,
+  "implementationFlagsMatched": true,
+  "coverageCorrectionRetained": true,
+  "tests": [
+    {
+      "file": "tedd_T-5950X2_2026-10-21_16_12_34_net11.0.trx",
+      "sha256": "d84b33d1b561d5ec2a986a34a2ca3f7363b6e2960caa5afeb2f1098ebe137b0c",
+      "count": 419
+    },
+    {
+      "file": "tedd_T-5950X2_2026-10-21_16_12_34_net8.0.trx",
+      "sha256": "3bf47dcbe1787ab7c5e1478c5d7705ddd74ec90baf7ebc0b43f9f78a9e92fd8e",
+      "count": 417
+    },
+    {
+      "file": "tedd_T-5950X2_2026-10-21_16_12_35_net10.0.trx",
+      "sha256": "087b77849f3c4e4a97a6ad53536dca201c2cc8df631e2f2f40fd4615eb8ef2b3",
+      "count": 418
+    }
+  ],
+  "bulkCases": 96,
+  "bulkArms": 2,
+  "chunks": 1286,
+  "uniqueArrays": 686,
+  "cells": 42139648,
+  "exactCorpusRowsMatchP31": true,
+  "corpusSha256": "1806b7c581c063eeeabf0d7e27204e52b77f2cb670bc28d9b52ccfa88f05df4a",
+  "libraryBodyAuditSha256": "71b73a1f6e0905be44a6d1f9ef125c24682dba7e2bb28b0e515422d869d82c36",
+  "nativeSha256": "eeb5c54ee69ef1466c1a0b13a78fdaecdcb8c78122309eb6148dea1680bd844b",
+  "native": [
+    {
+      "width": "uint",
+      "control": {
+        "method": "Snapshot.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool (Tier1)",
+        "native_bytes": 1307,
+        "listing_availability": "complete",
+        "declared_native_sizes": [
+          1307
+        ],
+        "prologue_markers": 1,
+        "rsp_subtractions": [
+          168
+        ],
+        "call_sites": [
+          "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+          "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+          "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+          "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+          "call     [Snapshot.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+          "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+        ]
+      },
+      "candidate": {
+        "method": "Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool (Tier1)",
+        "native_bytes": 1772,
+        "listing_availability": "complete",
+        "declared_native_sizes": [
+          1772
+        ],
+        "prologue_markers": 1,
+        "rsp_subtractions": [
+          184
+        ],
+        "call_sites": [
+          "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+          "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+          "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+          "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+          "call     [Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+          "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+        ]
+      },
+      "terminalRegions": [
+        {
+          "terminalBlock": "G_M000_IG15:                ;; offset=0x0156\n       cmp      ebp, 1\n       jne      G_M000_IG19\n \nG_M000_IG16:                ;; offset=0x015F\n       lea      ecx, [rbx+rbx]\n       imul     ebx, ebx\n       add      ebx, ebx\n       mov      edx, eax\n       add      rdx, 4\n       mov      r8d, r13d\n       cmp      rdx, r8\n       ja       G_M000_IG47\n       mov      edx, eax\n       add      rdx, r15\n       mov      edx, dword ptr [rdx]\n       lea      r8d, [rax+rcx]\n       lea      r10, [r8+0x04]\n       mov      r9d, r13d\n       cmp      r10, r9\n       ja       G_M000_IG47\n       add      r8, r15\n       mov      r8d, dword ptr [r8]\n       add      eax, ebx\n       mov      r10d, eax\n       lea      r9, [r10+0x04]\n       mov      r11d, r13d\n       cmp      r9, r11\n       ja       G_M000_IG47\n       add      r10, r15\n       mov      r10d, dword ptr [r10]\n       add      ecx, eax\n       lea      rax, [rcx+0x04]\n       mov      r9d, r13d\n       cmp      rax, r9\n       ja       G_M000_IG47\n       add      rcx, r15\n       mov      ecx, dword ptr [rcx]\n       mov      eax, r12d\n       shl      eax, 16\n       or       eax, r12d\n       mov      r9d, edx\n       or       r9d, r8d\n       or       r9d, r10d\n       or       r9d, ecx\n       test     r9d, 0xFFFFFFFFE000E000\n       jne      G_M000_IG45\n       xor      edx, eax\n       xor      r8d, eax\n       or       edx, r8d\n       xor      r10d, eax\n       or       edx, r10d\n       xor      ecx, eax\n       or       ecx, edx\n       setne    bl\n       movzx    rbx, bl\n \n",
+          "boundedRowLoads": [
+            "       mov      edx, dword ptr [rdx]",
+            "       mov      r8d, dword ptr [r8]",
+            "       mov      r10d, dword ptr [r10]",
+            "       mov      ecx, dword ptr [rcx]"
+          ],
+          "rangeCheckCount": 4,
+          "metadataRejectPath": "G_M000_IG45:                ;; offset=0x06CF\n       xor      eax, eax\n \nG_M000_IG46:                ;; offset=0x06D1\n       add      rsp, 184\n       pop      rbx\n       pop      rbp\n       pop      rsi\n       pop      rdi\n       pop      r12\n       pop      r13\n       pop      r14\n       pop      r15\n       ret      \n \n",
+          "terminalCalls": 0,
+          "continuation": "method return"
+        },
+        {
+          "terminalBlock": "G_M000_IG30:                ;; offset=0x035B\n       cmp      r10d, 1\n       jne      G_M000_IG39\n \nG_M000_IG31:                ;; offset=0x0365\n       mov      ecx, dword ptr [rsp+0x44]\n       mov      r10d, ecx\n       lea      r11d, [rbx+rbx]\n       mov      dword ptr [rsp+0x70], r11d\n       mov      r8d, ebx\n       imul     r8d, ebx\n       add      r8d, r8d\n       mov      dword ptr [rsp+0x6C], r8d\n       mov      edx, r10d\n       add      rdx, 4\n       mov      r8d, r13d\n       cmp      rdx, r8\n       ja       G_M000_IG47\n       mov      edx, r10d\n       add      rdx, r15\n       mov      edx, dword ptr [rdx]\n       mov      dword ptr [rsp+0x68], edx\n       lea      r8d, [r10+r11]\n       lea      rdx, [r8+0x04]\n       mov      r11d, r13d\n       cmp      rdx, r11\n       ja       G_M000_IG47\n       add      r8, r15\n       mov      edx, dword ptr [r8]\n       mov      dword ptr [rsp+0x64], edx\n       add      r10d, dword ptr [rsp+0x6C]\n       mov      r8d, r10d\n       lea      r11, [r8+0x04]\n       mov      edx, r13d\n       cmp      r11, rdx\n       ja       G_M000_IG47\n       add      r8, r15\n       mov      edx, dword ptr [r8]\n       mov      r11d, dword ptr [rsp+0x70]\n       add      r10d, r11d\n       mov      r8d, r10d\n       lea      r10, [r8+0x04]\n       mov      r11d, r13d\n       cmp      r10, r11\n       ja       G_M000_IG47\n       add      r8, r15\n       mov      r8d, dword ptr [r8]\n       mov      r10d, r12d\n       shl      r10d, 16\n       or       r10d, r12d\n       mov      r11d, dword ptr [rsp+0x68]\n       mov      r12d, r11d\n       or       r12d, dword ptr [rsp+0x64]\n       or       r12d, edx\n       or       r12d, r8d\n       test     r12d, 0xFFFFFFFFE000E000\n       jne      G_M000_IG45\n       xor      r11d, r10d\n       mov      r12d, r10d\n       xor      r12d, dword ptr [rsp+0x64]\n       or       r11d, r12d\n       xor      edx, r10d\n       or       edx, r11d\n       xor      r8d, r10d\n       or       edx, r8d\n       je       G_M000_IG45\n \n",
+          "boundedRowLoads": [
+            "       mov      edx, dword ptr [rdx]",
+            "       mov      edx, dword ptr [r8]",
+            "       mov      edx, dword ptr [r8]",
+            "       mov      r8d, dword ptr [r8]"
+          ],
+          "rangeCheckCount": 4,
+          "metadataRejectPath": "G_M000_IG45:                ;; offset=0x06CF\n       xor      eax, eax\n \nG_M000_IG46:                ;; offset=0x06D1\n       add      rsp, 184\n       pop      rbx\n       pop      rbp\n       pop      rsi\n       pop      rdi\n       pop      r12\n       pop      r13\n       pop      r14\n       pop      r15\n       ret      \n \n",
+          "terminalCalls": 0,
+          "continuation": "enclosing validation loop after inlined child"
+        }
+      ],
+      "parentPartialRecursiveInliningObserved": true,
+      "interpretation": "Both direct and inlined-child terminal paths replace repeated scalar leaf validation with four checked row pairs. Parent already inlines one recursive level: source eight-child invocations are not a universal count of native recursive calls. Higher recursion/uniform search remains. No time/PMU/total-stack inference."
+    },
+    {
+      "width": "ushort",
+      "control": {
+        "method": "Snapshot.Voxtree.CompactLeafEncoding`1[ushort]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool (Tier1)",
+        "native_bytes": 1307,
+        "listing_availability": "complete",
+        "declared_native_sizes": [
+          1307
+        ],
+        "prologue_markers": 1,
+        "rsp_subtractions": [
+          168
+        ],
+        "call_sites": [
+          "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+          "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+          "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+          "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+          "call     [Snapshot.Voxtree.CompactLeafEncoding`1[ushort]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+          "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+        ]
+      },
+      "candidate": {
+        "method": "Tedd.Voxtree.CompactLeafEncoding`1[ushort]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool (Tier1)",
+        "native_bytes": 1752,
+        "listing_availability": "complete",
+        "declared_native_sizes": [
+          1752
+        ],
+        "prologue_markers": 1,
+        "rsp_subtractions": [
+          184
+        ],
+        "call_sites": [
+          "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+          "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+          "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+          "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+          "call     [Tedd.Voxtree.CompactLeafEncoding`1[ushort]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+          "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+        ]
+      },
+      "terminalRegions": [
+        {
+          "terminalBlock": "G_M000_IG15:                ;; offset=0x0156\n       cmp      ebp, 1\n       jne      G_M000_IG19\n \nG_M000_IG16:                ;; offset=0x015F\n       lea      ecx, [rbx+rbx]\n       imul     ebx, ebx\n       add      ebx, ebx\n       mov      edx, eax\n       add      rdx, 4\n       mov      r8d, r13d\n       cmp      rdx, r8\n       ja       G_M000_IG48\n       mov      edx, eax\n       add      rdx, r15\n       mov      edx, dword ptr [rdx]\n       lea      r8d, [rax+rcx]\n       lea      r10, [r8+0x04]\n       mov      r9d, r13d\n       cmp      r10, r9\n       ja       G_M000_IG48\n       add      r8, r15\n       mov      r8d, dword ptr [r8]\n       add      eax, ebx\n       mov      r10d, eax\n       lea      r9, [r10+0x04]\n       mov      r11d, r13d\n       cmp      r9, r11\n       ja       G_M000_IG48\n       add      r10, r15\n       mov      r10d, dword ptr [r10]\n       add      ecx, eax\n       lea      rax, [rcx+0x04]\n       mov      r9d, r13d\n       cmp      rax, r9\n       ja       G_M000_IG48\n       add      rcx, r15\n       mov      ecx, dword ptr [rcx]\n       mov      eax, r12d\n       shl      eax, 16\n       or       eax, r12d\n       mov      r9d, edx\n       or       r9d, r8d\n       or       r9d, r10d\n       or       r9d, ecx\n       test     r9d, 0xFFFFFFFFE000E000\n       jne      G_M000_IG46\n       xor      edx, eax\n       xor      r8d, eax\n       or       edx, r8d\n       xor      r10d, eax\n       or       edx, r10d\n       xor      ecx, eax\n       or       ecx, edx\n       setne    bl\n       movzx    rbx, bl\n \n",
+          "boundedRowLoads": [
+            "       mov      edx, dword ptr [rdx]",
+            "       mov      r8d, dword ptr [r8]",
+            "       mov      r10d, dword ptr [r10]",
+            "       mov      ecx, dword ptr [rcx]"
+          ],
+          "rangeCheckCount": 4,
+          "metadataRejectPath": "G_M000_IG46:                ;; offset=0x06BB\n       xor      eax, eax\n \nG_M000_IG47:                ;; offset=0x06BD\n       add      rsp, 184\n       pop      rbx\n       pop      rbp\n       pop      rsi\n       pop      rdi\n       pop      r12\n       pop      r13\n       pop      r14\n       pop      r15\n       ret      \n \n",
+          "terminalCalls": 0,
+          "continuation": "method return"
+        },
+        {
+          "terminalBlock": "G_M000_IG31:                ;; offset=0x035D\n       cmp      r10d, 1\n       jne      G_M000_IG40\n \nG_M000_IG32:                ;; offset=0x0367\n       mov      r12d, dword ptr [rsp+0x4C]\n       mov      r10d, r12d\n       lea      r11d, [rbx+rbx]\n       mov      r8d, ebx\n       imul     r8d, ebx\n       add      r8d, r8d\n       mov      dword ptr [rsp+0x78], r8d\n       mov      edx, r10d\n       add      rdx, 4\n       mov      ecx, r13d\n       cmp      rdx, rcx\n       ja       G_M000_IG48\n       mov      ecx, r10d\n       add      rcx, r15\n       mov      ecx, dword ptr [rcx]\n       mov      dword ptr [rsp+0x74], ecx\n       lea      edx, [r10+r11]\n       lea      r8, [rdx+0x04]\n       mov      ecx, r13d\n       cmp      r8, rcx\n       ja       G_M000_IG48\n       add      rdx, r15\n       mov      ecx, dword ptr [rdx]\n       mov      dword ptr [rsp+0x70], ecx\n       add      r10d, dword ptr [rsp+0x78]\n       mov      edx, r10d\n       lea      r8, [rdx+0x04]\n       mov      ecx, r13d\n       cmp      r8, rcx\n       ja       G_M000_IG48\n       add      rdx, r15\n       mov      ecx, dword ptr [rdx]\n       add      r10d, r11d\n       mov      edx, r10d\n       lea      r8, [rdx+0x04]\n       mov      r10d, r13d\n       cmp      r8, r10\n       ja       G_M000_IG48\n       add      rdx, r15\n       mov      edx, dword ptr [rdx]\n       mov      r8d, r14d\n       shl      r8d, 16\n       or       r8d, r14d\n       mov      r10d, dword ptr [rsp+0x74]\n       mov      r11d, dword ptr [rsp+0x70]\n       mov      r14d, r10d\n       or       r14d, r11d\n       or       r14d, ecx\n       or       r14d, edx\n       test     r14d, 0xFFFFFFFFE000E000\n       jne      G_M000_IG46\n       xor      r10d, r8d\n       xor      r11d, r8d\n       or       r10d, r11d\n       xor      ecx, r8d\n       or       ecx, r10d\n       xor      edx, r8d\n       or       ecx, edx\n       je       G_M000_IG46\n \n",
+          "boundedRowLoads": [
+            "       mov      ecx, dword ptr [rcx]",
+            "       mov      ecx, dword ptr [rdx]",
+            "       mov      ecx, dword ptr [rdx]",
+            "       mov      edx, dword ptr [rdx]"
+          ],
+          "rangeCheckCount": 4,
+          "metadataRejectPath": "G_M000_IG46:                ;; offset=0x06BB\n       xor      eax, eax\n \nG_M000_IG47:                ;; offset=0x06BD\n       add      rsp, 184\n       pop      rbx\n       pop      rbp\n       pop      rsi\n       pop      rdi\n       pop      r12\n       pop      r13\n       pop      r14\n       pop      r15\n       ret      \n \n",
+          "terminalCalls": 0,
+          "continuation": "enclosing validation loop after inlined child"
+        }
+      ],
+      "parentPartialRecursiveInliningObserved": true,
+      "interpretation": "Both direct and inlined-child terminal paths replace repeated scalar leaf validation with four checked row pairs. Parent already inlines one recursive level: source eight-child invocations are not a universal count of native recursive calls. Higher recursion/uniform search remains. No time/PMU/total-stack inference."
+    }
+  ],
+  "comparativeTimingRecords": 0,
+  "sourceAdoption": false,
+  "initialAuditFailureRetained": {
+    "sourceSha256": "51d4ff7cc64eba8368131eb81cc5a48c3ea45b1bf57006fda707af5cd6a0bc76",
+    "preservedSource": "Audit-CompactTerminal-initial.py.txt",
+    "exitCode": 1,
+    "failure": "Assertion len(choices)==1: two actual terminal regions from partial recursive inlining",
+    "scope": "Offline evidence-index audit only; no candidate source, model, build, test, corpus or native producer was replaced or rerun"
+  },
+  "secondAuditFailureRetained": {
+    "sourceSha256": "6aedebf996412374b47502cf0aa8931838cc9d5bf101e5a6204e9d6c66edd179",
+    "preservedSource": "Audit-CompactTerminal-second.py.txt",
+    "exitCode": 1,
+    "failure": "Reject-path decoder required an explicit jump; actual rejection falls through to the next epilogue block",
+    "scope": "Offline evidence-index audit only; no candidate or observation producer replaced or rerun"
+  },
+  "limitations": "P31 parent remains unpromoted/not_supported under old timing. These gates establish mechanism/correctness only. No fresh original-release time, allocation, application or full10x qualification is claimed."
+}

@@ -1,0 +1,24 @@
+--- P31/CompactLeafEncoding.cs
++++ P39/CompactLeafEncoding.cs
+@@ -172,6 +172,21 @@
+             }
+             return true;
+         }
++        if (level == 1)
++        {
++            // The uniform and invalid-origin cases returned above. These eight
++            // leaves must have LOD0 and cannot all be the same canonical value.
++            var offset = ((x * side + y) * side + z) * 2;
++            var rowStride = side * 2;
++            var planeStride = side * side * 2;
++            var a = BinaryPrimitives.ReadUInt32LittleEndian(payload.Slice(offset, 4));
++            var b = BinaryPrimitives.ReadUInt32LittleEndian(payload.Slice(offset + rowStride, 4));
++            var c = BinaryPrimitives.ReadUInt32LittleEndian(payload.Slice(offset + planeStride, 4));
++            var d = BinaryPrimitives.ReadUInt32LittleEndian(payload.Slice(offset + planeStride + rowStride, 4));
++            var repeated = (uint)word | ((uint)word << 16);
++            return ((a | b | c | d) & 0xE000E000u) == 0 &&
++                ((a ^ repeated) | (b ^ repeated) | (c ^ repeated) | (d ^ repeated)) != 0;
++        }
+         var half = 1 << (level - 1);
+         var raw = word & ValueMask;
+         var allSame = true;

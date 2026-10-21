@@ -1,0 +1,7 @@
+{
+  "sourceSha256": "51d4ff7cc64eba8368131eb81cc5a48c3ea45b1bf57006fda707af5cd6a0bc76",
+  "preservedSource": "Audit-CompactTerminal-initial.py.txt",
+  "exitCode": 1,
+  "failure": "Assertion len(choices)==1: two actual terminal regions from partial recursive inlining",
+  "scope": "Offline evidence-index audit only; no candidate source, model, build, test, corpus or native producer was replaced or rerun"
+}

@@ -1,0 +1,11 @@
+{
+  "promotionEligible": false,
+  "partialRecursiveInliningObserved": true,
+  "sourceAdoption": false,
+  "comparativeTimingRecords": 0,
+  "actualLibraryBodies": 1236,
+  "qualification": "Model/source/compiled correctness/corpus/native prerequisites only",
+  "scope": "P39 terminal specialization on exact unpromoted P31. Four checked row pairs remove repeated leaf validation in direct/inlined paths; eight source child invocations do not imply eight native recursive calls. All performance/original-release/consumer/allocation/full10x qualifications remain open.",
+  "unchangedLibraryBodies": 1235,
+  "state": "supported"
+}

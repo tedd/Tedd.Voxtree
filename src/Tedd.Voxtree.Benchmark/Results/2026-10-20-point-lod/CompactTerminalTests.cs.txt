@@ -1,0 +1,76 @@
+using System.Buffers.Binary;
+using Xunit;
+using P = Parent.Voxtree;
+namespace Tedd.Voxtree.Tests;
+
+public sealed class CompactTerminalTests
+{
+    static byte[] Packet(int levels,int mode)
+    {
+        int header=mode==0?2:3,side=1<<levels;
+        var data=new byte[header+side*side*side*2];data[0]=0x52;data[1]=(byte)(0xc3|(levels<<2));
+        if(mode!=0)data[2]=(byte)(mode==1?1:2);
+        for(int i=0;i<side*side*side;i++)BinaryPrimitives.WriteUInt16LittleEndian(data.AsSpan(header+i*2,2),(ushort)(i&1));
+        return data;
+    }
+    static void Cube(byte[] data,int levels,int mode,int x,int y,int z,ushort[] words)
+    {
+        int side=1<<levels,header=mode==0?2:3;
+        for(int c=0;c<8;c++){
+            int xx=x+((c>>2)&1),yy=y+((c>>1)&1),zz=z+(c&1);
+            BinaryPrimitives.WriteUInt16LittleEndian(data.AsSpan(header+((xx*side+yy)*side+zz)*2,2),words[c]);
+        }
+    }
+    static void Check(ReadOnlyMemory<byte> memory,int mode,bool? expected=null)
+    {
+        bool a,b;
+        if(mode==0){a=P.OctreeSpan.TryCreate(memory.Span,out var p)&&p.IsWellFormed();b=OctreeSpan.TryCreate(memory.Span,out var q)&&q.IsWellFormed();}
+        else if(mode==1){a=P.OctreeSpan<ushort>.TryCreate(memory.Span,out var p)&&p.IsWellFormed();b=OctreeSpan<ushort>.TryCreate(memory.Span,out var q)&&q.IsWellFormed();}
+        else{a=P.OctreeSpan<uint>.TryCreate(memory.Span,out var p)&&p.IsWellFormed();b=OctreeSpan<uint>.TryCreate(memory.Span,out var q)&&q.IsWellFormed();}
+        Assert.Equal(a,b);if(expected.HasValue)Assert.Equal(expected.Value,b);
+        Exception? before,after;
+        if(mode==0){before=Record.Exception(()=>P.Octree.FromEncoded(memory.Span));after=Record.Exception(()=>Octree.FromEncoded(memory.Span));}
+        else if(mode==1){before=Record.Exception(()=>P.Octree<ushort>.FromEncoded(memory.Span));after=Record.Exception(()=>Octree<ushort>.FromEncoded(memory.Span));}
+        else{before=Record.Exception(()=>P.Octree<uint>.FromEncoded(memory.Span));after=Record.Exception(()=>Octree<uint>.FromEncoded(memory.Span));}
+        Assert.Equal(before?.GetType(),after?.GetType());Assert.Equal(b,after is null);
+    }
+    [Theory][InlineData(0)][InlineData(1)][InlineData(2)]
+    public void CompiledTerminalPredicatesMatchCanonicalTruthAndOriginalParent(int mode)
+    {
+        for(int bits=0;bits<128;bits++){
+            var data=Packet(3,mode);var words=new ushort[8];words[0]=3;
+            for(int c=1;c<8;c++)words[c]=(ushort)((bits&(1<<(c-1)))!=0?5:3);
+            Cube(data,3,mode,0,0,0,words);Check(data,mode,bits!=0);
+        }
+        foreach(int child in Enumerable.Range(0,8))foreach(int lod in Enumerable.Range(1,7)){
+            var data=Packet(3,mode);var words=Enumerable.Range(0,8).Select(i=>(ushort)(i&1)).ToArray();
+            words[child]=(ushort)(8191|(lod<<13));Cube(data,3,mode,6,6,6,words);Check(data,mode,false);
+        }
+        foreach(ushort raw in new ushort[]{0,1,8191})foreach(int child in Enumerable.Range(0,8)){
+            var data=Packet(3,mode);var words=Enumerable.Repeat(raw,8).ToArray();
+            words[child]=(ushort)((raw+1)&8191);Cube(data,3,mode,0,6,0,words);Check(data,mode,true);
+        }
+    }
+    [Theory][InlineData(3)][InlineData(4)][InlineData(5)][InlineData(6)]
+    public void TerminalRowsAtEveryBoundaryRetainUniformPathsAndSpanBounds(int levels)
+    {
+        int last=(1<<levels)-2;
+        foreach(int mode in new[]{0,1,2}){
+            var valid=Packet(levels,mode);Check(valid,mode,true);
+            foreach(var origin in new[]{(0,0,0),(last,last,last),(0,last,0),(last,0,last)}){
+                foreach(var item in new[]{
+                    (new ushort[]{0,8191,1,2,3,4,5,6},true),
+                    (Enumerable.Repeat((ushort)9,8).ToArray(),false),
+                    (Enumerable.Repeat((ushort)(9|(1<<13)),8).ToArray(),true),
+                    (new ushort[]{0,1,0,1,0,1,0,65535},false)}){
+                    var data=(byte[])valid.Clone();Cube(data,levels,mode,origin.Item1,origin.Item2,origin.Item3,item.Item1);Check(data,mode,item.Item2);
+                }
+            }
+            foreach(int length in new[]{0,1,2,valid.Length-2,valid.Length-1})Check(valid.AsMemory(0,length),mode,false);
+            foreach(int extra in new[]{1,2}){var data=new byte[valid.Length+extra];valid.CopyTo(data,0);Check(data,mode,false);}
+            var padded=Enumerable.Repeat((byte)0xa5,valid.Length+3).ToArray();valid.CopyTo(padded,1);
+            Check(padded.AsMemory(1,valid.Length),mode,true);
+            Assert.Equal((byte)0xa5,padded[0]);Assert.Equal((byte)0xa5,padded[^1]);Assert.Equal((byte)0xa5,padded[^2]);
+        }
+    }
+}

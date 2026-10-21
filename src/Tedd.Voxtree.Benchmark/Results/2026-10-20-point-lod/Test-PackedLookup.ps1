@@ -3,6 +3,7 @@ param([Parameter(Mandatory)][string]$TaskRoot,[ValidatePattern('^[a-z][a-z0-9-]*
       [string]$FixtureName='PackedLookupTests.cs.txt',
       [string]$ExtraFixtureName='',
       [string]$BaselineSourceDirectoryName='',
+      [string]$AdditionalSourceDirectoryName='',
       [switch]$JointStates,
       [switch]$DirectStates,
       [switch]$ByteEncoding,
@@ -67,6 +68,14 @@ if($BaselineSourceDirectoryName){
     $baselineCompile='<Compile Include="'+$baselinePath.Replace('\','/')+'/*.cs"/>'
     Get-ChildItem -LiteralPath $baselinePath -Filter '*.cs' | Get-FileHash | Select-Object Path,Hash | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $validation 'baseline-source-binding.json')
 }
+$additionalCompile=''
+if($AdditionalSourceDirectoryName){
+    if($AdditionalSourceDirectoryName -notmatch '^[a-z][a-z0-9-]*$'){throw 'Invalid additional source identity'}
+    $additionalPath=Join-Path $TaskRoot $AdditionalSourceDirectoryName
+    if(-not (Test-Path -LiteralPath $additionalPath)){throw 'Missing additional complete source'}
+    $additionalCompile='<Compile Include="'+$additionalPath.Replace('\','/')+'/*.cs"/>'
+    Get-ChildItem -LiteralPath $additionalPath -Filter '*.cs'|Get-FileHash|Select-Object Path,Hash|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $validation 'additional-source-binding.json')
+}
 @{source=$SourceDirectoryName;fixture=$FixtureName;baselineSource=$BaselineSourceDirectoryName;wordStorage=[bool]$WordStorage;jointStates=[bool]$JointStates;directStates=[bool]$DirectStates;byteEncoding=[bool]$ByteEncoding;packedLeaf=[bool]$PackedLeaf;paletteLeaf=[bool]$PaletteLeaf;compactLeaf=[bool]$CompactLeaf;testSha256=(Get-FileHash -LiteralPath (Join-Path $validation 'tests/PackedLookupTests.cs')).Hash;lookupTestsSha256=$(if($JointStates -or $DirectStates -or $ByteEncoding -or $PackedLeaf -or $PaletteLeaf -or $CompactLeaf){(Get-FileHash -LiteralPath (Join-Path $validation 'tests/OctreeLookupTests.cs')).Hash}else{$null})} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $TaskRoot "packed-lookup-test-options-$Label.json")
 @'
 <Project Sdk="Microsoft.NET.Sdk">
@@ -78,7 +87,7 @@ if($BaselineSourceDirectoryName){
 @"
 <Project Sdk="Microsoft.NET.Sdk">
  <PropertyGroup><TargetFrameworks>net11.0;net10.0;net8.0</TargetFrameworks><LangVersion>12.0</LangVersion><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><IsTestProject>true</IsTestProject><UseSharedCompilation>false</UseSharedCompilation></PropertyGroup>
- <ItemGroup>$baselineCompile<Compile Include="$repo/src/Tedd.Voxtree.Tests/*.cs" Exclude="$excludedTests"/><Compile Include="$repo/src/Shared/SimulationWorkload.cs"/><ProjectReference Include="../Library.csproj"/><PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1"/><PackageReference Include="xunit" Version="2.9.3"/><PackageReference Include="xunit.runner.visualstudio" Version="3.1.5"/></ItemGroup>
+ <ItemGroup>$baselineCompile$additionalCompile<Compile Include="$repo/src/Tedd.Voxtree.Tests/*.cs" Exclude="$excludedTests"/><Compile Include="$repo/src/Shared/SimulationWorkload.cs"/><ProjectReference Include="../Library.csproj"/><PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1"/><PackageReference Include="xunit" Version="2.9.3"/><PackageReference Include="xunit.runner.visualstudio" Version="3.1.5"/></ItemGroup>
 </Project>
 "@ | Set-Content -LiteralPath (Join-Path $validation 'tests/Tests.csproj')
 $env:TEMP=Join-Path $TaskRoot 'temp';$env:TMP=$env:TEMP

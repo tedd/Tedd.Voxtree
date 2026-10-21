@@ -394,6 +394,28 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    these annotations. Full corpus, regressions, actual native caller and fresh
    original-control/consumer/allocation qualification remain. Full10x is open.
 
+24. P39 hyp-fc98c25d5bb74f60a4380c3e70f2d013 implements only the level1/originLOD0
+   validator specialization on exact unpromoted P31. Original2,629,760-case model
+   and37,440 aligned-cube bounds proof pass before source. Exact source reversal,
+   54 byte-identical other files,1,235 unchanged IL bodies out of1,236, unchanged
+   flags/47-type API,417/418/419 tests, netstandard2.1,96 two-arm complete-operation
+   cases and all1,286 corpus chunks/42,139,648 cells pass. Entire corpus rows and
+   encoded bytes match P31, with independent released/dense byte/LOD oracles.
+   Actual uint/ushort Tier1 direct and partially inlined child terminal regions
+   use four checked dword rows, mask/XOR and no calls; higher recursion remains.
+   Parent already partially inlines recursion, so eight source leaf invocations
+   are not a universal native-call count. Bodies grow445–465 bytes/fixed rsp16.
+   Phase31 retains all original producers, full metadata, coverage correction,
+   two offline indexing failures and original binaries; see REPORT-PHASE31.
+   Supported means prerequisites only; zero timing records and no adoption.
+   Freeze a distinct complete public validation/fromencoded/lookup/lifecycle
+   timing family with uniform/malformed/early-exit and point/LOD/build/copy/count/
+   fallback/storage/allocation/real-consumer guards before data. Use exact source
+   selection, fresh controls, work units, caller regime, justified independent
+   budgets and interval rules. P31 remains rejected under old local criteria;
+   old ratios/families cannot be pooled, expanded or treated as original-release
+   qualification. Full original-baseline public10x scope remains open.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining
