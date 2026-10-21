@@ -1,0 +1,15 @@
+{
+  "label": "p26bulk",
+  "parent_label": "p25bulk",
+  "chunks": 1286,
+  "cells": 42139648,
+  "unique_arrays": 686,
+  "all_parent_rows_exact": true,
+  "all_encoders_byte_equal_checked_by_census": true,
+  "result_sha256": "5720231b46733db69557563c669c249dd1cbcb00df809a3e531a14f3ba9e3c8e",
+  "parent_result_sha256": "17f5115e2c61405e3c18d55aabcdf85283c2d40f556c8e3751f1a127ae2cd5a5",
+  "assembly_sha256": "d48a55d4a1b690ab84854c56a31f9b0e0b9e1a7c2112bb4bf7bcea77552b93dc",
+  "runtime": ".NET 10.0.13",
+  "architecture": "X64",
+  "limits": "Semantic and payload audit only; no latency, allocation or application-access-frequency inference. Parent release provenance remains separate."
+}

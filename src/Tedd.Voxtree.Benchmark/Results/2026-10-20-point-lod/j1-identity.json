@@ -1,0 +1,77 @@
+{
+  "entrySha256": "F735EAF353E6EA8FDF5AD6A13DD7861145DC8837EBF10D02D3BD674081B65ACD",
+  "parentArchiveSha256": "be7609b4f377d21f6e7af8644f0c840364be050d825a855f4962206a4f165f8b",
+  "parentBundle": [
+    {
+      "path": "bundles/p24census/p24census.deps.json",
+      "bytes": 2321,
+      "sha256": "0229582add20e161e3ec895473119a5df36753c86c9c2c533b72f3997889ef83",
+      "blob": "blobs/0229582add20e161e3ec895473119a5df36753c86c9c2c533b72f3997889ef83"
+    },
+    {
+      "path": "bundles/p24census/p24census.dll",
+      "bytes": 405504,
+      "sha256": "9932fec2d2db1ca6fa7f534908b8083799cd9c93902883e69e3cc36ae7927ab4",
+      "blob": "blobs/9932fec2d2db1ca6fa7f534908b8083799cd9c93902883e69e3cc36ae7927ab4"
+    },
+    {
+      "path": "bundles/p24census/p24census.runtimeconfig.json",
+      "bytes": 374,
+      "sha256": "321bfd7323a8c5b57c55531d3ac9c3a02ea9f58936b41f0e9b7149edb2a5486a",
+      "blob": "blobs/321bfd7323a8c5b57c55531d3ac9c3a02ea9f58936b41f0e9b7149edb2a5486a"
+    },
+    {
+      "path": "bundles/p24census/Tedd.DotNetLab.Contracts.dll",
+      "bytes": 194560,
+      "sha256": "9fcbd3519faa44edcf6d7e4d63aad75468418faa669f07f7d284511efe71cf1f",
+      "blob": "blobs/9fcbd3519faa44edcf6d7e4d63aad75468418faa669f07f7d284511efe71cf1f"
+    },
+    {
+      "path": "bundles/p24census/Tedd.DotNetLab.Harness.dll",
+      "bytes": 78848,
+      "sha256": "03f207f376ef324dd3c4dafe6d0be49f3083111ea68bf27136b06a3e3681a613",
+      "blob": "blobs/03f207f376ef324dd3c4dafe6d0be49f3083111ea68bf27136b06a3e3681a613"
+    },
+    {
+      "path": "bundles/p24census/Tedd.DotNetLab.Transport.Local.dll",
+      "bytes": 28160,
+      "sha256": "b8fd64c3de543f6642b1925128d1517caca92f56f29e2dbd489e395ef53ca87a",
+      "blob": "blobs/b8fd64c3de543f6642b1925128d1517caca92f56f29e2dbd489e395ef53ca87a"
+    },
+    {
+      "path": "bundles/p24census/Tedd.MortonEncoding.dll",
+      "bytes": 6144,
+      "sha256": "978e446481eebe8b562e8d52f35f33c443886e726b106a5dec5c340c314fce83",
+      "blob": "blobs/978e446481eebe8b562e8d52f35f33c443886e726b106a5dec5c340c314fce83"
+    }
+  ],
+  "joined": true,
+  "scope": "Offline semantic/cardinality census; no latency or allocation claim",
+  "sources": [
+    {
+      "Path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\palette-state-j1-source\\BlockTypeArrayCodec.cs",
+      "Hash": "842E747ACEE285D66EE532469CB63A815FFA852A8F56E04CFED1A6D1BADAA965"
+    },
+    {
+      "Path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\palette-state-j1-source\\Census.csproj",
+      "Hash": "663E861A7F819B9EA8BFBBB5BFB70E552A8847DD077E3E7500B73C35A9119CDD"
+    },
+    {
+      "Path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\palette-state-j1-source\\ChunkScratch.cs",
+      "Hash": "51E13CC71EBB469A6F37D450052DFC06D394255B97CC65E4FE1765B53DE0CF64"
+    },
+    {
+      "Path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\palette-state-j1-source\\Layout.cs",
+      "Hash": "9FD388A29487A91B6724C3458B626477C66104581BBDD074E3BB159991C226A2"
+    },
+    {
+      "Path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\palette-state-j1-source\\PaletteStateCensus.cs",
+      "Hash": "B7344A1E16D69B9D907008822948A841EBAD26788C8141408B15149587E6B4C2"
+    },
+    {
+      "Path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\palette-state-j1-source\\Program.cs",
+      "Hash": "8C60630C845DAD0AEAB68547A731E5F2FA93AB289FF34F8DA7E1E28AF8EA65FA"
+    }
+  ],
+  "exitCode": 0
+}

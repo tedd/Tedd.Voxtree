@@ -1,0 +1,69 @@
+// Semantic/cardinality census only. No new encoding and no timing samples.
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Before = Snapshot.Voxtree;
+using Current = Tedd.Voxtree;
+
+static class PaletteStateCensus
+{
+    static readonly List<object> Rows = new();
+    static string root = "";
+    static long cells;
+    public static void Begin(string output) => root = output;
+    public static void Check(ushort[] small, string region, int slot, string hash)
+    {
+        var values = Array.ConvertAll(small,v=>(uint)v);
+        var legacy = new Before.Octree(5,values);
+        var narrow = new Before.Octree<ushort>(5,small);
+        var wide = new Before.Octree<uint>(5,values);
+        var current = new Current.Octree(5,values);
+        var current16 = new Current.Octree<ushort>(5,small);
+        var current32 = new Current.Octree<uint>(5,values);
+        var states = new HashSet<ulong>();var states16 = new HashSet<ulong>();var states32 = new HashSet<ulong>();
+        for(int i=0;i<small.Length;i++)
+        {
+            int x=i/1024,y=i/32%32,z=i%32;
+            uint value=legacy.Get(x,y,z,out int lod);
+            ushort value16=narrow.Get(x,y,z,out int lod16);
+            uint value32=wide.Get(x,y,z,out int lod32);
+            Require(value==values[i]&&value16==small[i]&&value32==values[i],"Released value mismatch");
+            Require((uint)lod<=5&&(uint)lod16<=5&&(uint)lod32<=5,"Released LOD range");
+            states.Add(value|((ulong)lod<<32));states16.Add(value16|((ulong)lod16<<32));states32.Add(value32|((ulong)lod32<<32));
+        }
+        var oldLookup=legacy.CreateLookup();var currentLookup=current.CreateLookup();
+        var row=new{region,slot,hash,maximum=small.Max(),
+            classic=Project(legacy.Data.Span,states.Count,2,8,Before.Octree.GetMaximumSize(5),current.EncodedLength),
+            narrow=Project(narrow.Data.Span,states16.Count,3,4,Before.Octree<ushort>.GetMaximumSize(5),current16.EncodedLength),
+            wide=Project(wide.Data.Span,states32.Count,3,8,Before.Octree<uint>.GetMaximumSize(5),current32.EncodedLength),
+            releasedLookupPayload=oldLookup.StorageBytes,currentLookupPayload=currentLookup.StorageBytes,
+            releasedLookupSharesEncoding=Shares(oldLookup,legacy.Data),currentLookupSharesEncoding=Shares(currentLookup,current.Data)};
+        Rows.Add(row);cells+=small.Length;
+    }
+    static object Project(ReadOnlySpan<byte> encoded,int states,int header,int entryWidth,int maximum,int currentBytes)
+    {
+        int projected=checked(header+2+32768+states*entryWidth),kind=encoded[1]&3;
+        bool countFits=states is >=1 and <=256,capacityFits=projected<=maximum,growthFits=(long)projected*4<=encoded.Length*5L;
+        bool eligible=kind==0&&countFits&&capacityFits&&growthFits;
+        return new{jointStates=states,releasedKind=kind,releasedBytes=encoded.Length,currentBytes,
+            uncappedProjection=projected,countFits,capacityFits,growthFits,eligible,selectedProjection=eligible?projected:encoded.Length};
+    }
+    public static void Finish()
+    {
+        File.WriteAllText(Path.Combine(root,"palette-states.json"),JsonSerializer.Serialize(new{
+            runtime=RuntimeInformation.FrameworkDescription,architecture=RuntimeInformation.ProcessArchitecture.ToString(),
+            assemblySha256=Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(typeof(Current.Octree).Assembly.Location))),
+            chunks=Rows.Count,cells,allChecksPassed=true,rows=Rows,
+            processId=System.Diagnostics.Process.GetCurrentProcess().Id,
+            processStartTicks=System.Diagnostics.Process.GetCurrentProcess().StartTime.ToUniversalTime().Ticks.ToString(),
+            scope="Full immutable corpus cardinality/projection only; no emitted format or performance inference"
+        },new JsonSerializerOptions{WriteIndented=true}));
+    }
+    static bool Shares(object lookup,ReadOnlyMemory<byte> encoding)
+    {
+        Require(MemoryMarshal.TryGetArray(encoding,out var segment),"Owned encoding array");
+        return lookup.GetType().GetFields(System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance)
+            .Any(f=>f.GetValue(lookup) is ReadOnlyMemory<byte> memory&&MemoryMarshal.TryGetArray(memory,out var other)&&ReferenceEquals(segment.Array,other.Array));
+    }
+    static void Require(bool condition,string message){if(!condition)throw new Exception(message);}
+}

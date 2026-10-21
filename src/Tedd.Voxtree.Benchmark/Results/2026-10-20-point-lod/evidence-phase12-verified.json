@@ -1,0 +1,21 @@
+{
+  "archive_bytes": 6140711,
+  "manifest_paths": 3271,
+  "unique_blobs": 3111,
+  "catalogs": 3,
+  "metric_rows": 88,
+  "sha256": "1cf6617c5a815547ca61d68893f4230ac588f11b6094ee26abfd6afa0e7bc7db",
+  "required_paths": [
+    "p26bulk-screen/catalog-export.json",
+    "p26-hypothesis/disposition-revision-response.json",
+    "j1-hypothesis/disposition-revision-response.json",
+    "p26bulk-audit.json",
+    "p26bulk-census-audit.json",
+    "packed-leaf-stop-source/PackedLeafEncoding.cs",
+    "bundles/p26bulk/p26bulk.dll",
+    "forcecraft-census-palette-j1/palette-states.json",
+    "palette-state-j1-source/PaletteStateCensus.cs",
+    "j1-audit.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

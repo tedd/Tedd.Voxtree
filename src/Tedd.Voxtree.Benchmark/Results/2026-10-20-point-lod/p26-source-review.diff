@@ -1,0 +1,11 @@
+--- a/src/Tedd.Voxtree/PackedLeafEncoding.cs
++++ b/src/Tedd.Voxtree/PackedLeafEncoding.cs
+@@ -116,6 +116,8 @@
+             }
+             return;
+         }
++        // Split level-one nodes already contain eight final LOD-zero words.
++        if (level == 1) return;
+         var half = size >> 1;
+         for (var child = 0; child < 8; child++)
+             FillMarked(body, side, x + ((child >> 2) & 1) * half,

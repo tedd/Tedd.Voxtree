@@ -1,0 +1,333 @@
+{
+  "observer": "External target JIT diagnostics; not quiet timing",
+  "limitations": [
+    "Listings come from isolated diagnostic processes, while screens accumulate scenario/JIT/PGO history.",
+    "Concurrent/incomplete listings may have missing or multiple size markers; those entries do not establish method size or call ownership.",
+    "Fixed rsp subtraction is not total stack usage or a causal time fraction.",
+    "Native bytes and call-site changes do not establish hardware bottlenecks or promotion."
+  ],
+  "listings": [
+    {
+      "file": "p26builder-code-code.asm",
+      "sha256": "2e8697c4a46cce457e042af19c72719fa8f366b5d91c1388f0cfb71a3990190c",
+      "methods": [
+        {
+          "method": "Snapshot.Voxtree.PackedLeafEncoding`1[uint]:WriteBottomUp(System.ReadOnlySpan`1[uint],int,int,System.Span`1[byte]) (Tier1-OSR)",
+          "native_bytes": 1010,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            1010
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PackedLeafEncoding`1[uint]:WriteBottomUp(System.ReadOnlySpan`1[uint],int,int,System.Span`1[byte]) (Tier1-OSR)",
+          "native_bytes": 1033,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            1033
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:BuildRoot(System.ReadOnlySpan`1[uint],int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 96,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            96
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeCodec:BuildLinearSubtree(System.ReadOnlySpan`1[uint],int,int,int,int,byref,byref):bool]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:BuildRoot(System.ReadOnlySpan`1[uint],int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 96,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            96
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeCodec:BuildLinearSubtree(System.ReadOnlySpan`1[uint],int,int,int,int,byref,byref):bool]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int) (Tier1)",
+          "native_bytes": 1108,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            1108
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            152
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.PackedLeafEncoding`1[uint]:WriteBottomUp(System.ReadOnlySpan`1[uint],int,int,System.Span`1[byte]) (Tier1-OSR)",
+          "native_bytes": 1015,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            1015
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Snapshot.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.PackedLeafEncoding`1[uint]:WriteBottomUp(System.ReadOnlySpan`1[uint],int,int,System.Span`1[byte]) (Tier1)",
+          "native_bytes": 925,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            925
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            72
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int) (Tier1)",
+          "native_bytes": 1104,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            1104
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PackedLeafEncoding`1[uint]:WriteBottomUp(System.ReadOnlySpan`1[uint],int,int,System.Span`1[byte]) (Tier1-OSR)",
+          "native_bytes": 1020,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            1020
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Tedd.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PackedLeafEncoding`1[uint]:WriteBottomUp(System.ReadOnlySpan`1[uint],int,int,System.Span`1[byte]) (Tier1)",
+          "native_bytes": 930,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            930
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            72
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.PackedLeafEncoding`1[ushort]:WriteBottomUp(System.ReadOnlySpan`1[ushort],int,int,System.Span`1[byte]) (Tier1-OSR)",
+          "native_bytes": 1126,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            1126
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.PackedLeafEncoding`1[ushort]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:WriteBottomUp(System.ReadOnlySpan`1[ushort],int,int,System.Span`1[byte]) (Tier1-OSR)",
+          "native_bytes": 1120,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            1120
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.PackedLeafEncoding`1[ushort]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.GenericOctreeCodec`1[ushort]:BuildRoot(System.ReadOnlySpan`1[ushort],int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 96,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            96
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.GenericOctreeCodec`1[ushort]:BuildLinearSubtree(System.ReadOnlySpan`1[ushort],int,int,int,int,byref,byref):bool]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.GenericOctreeCodec`1[ushort]:BuildRoot(System.ReadOnlySpan`1[ushort],int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 96,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            96
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:BuildLinearSubtree(System.ReadOnlySpan`1[ushort],int,int,int,int,byref,byref):bool]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.PackedLeafEncoding`1[ushort]:WriteBottomUp(System.ReadOnlySpan`1[ushort],int,int,System.Span`1[byte]) (Tier1-OSR)",
+          "native_bytes": null,
+          "listing_availability": "ambiguous_or_incomplete",
+          "declared_native_sizes": [
+            1331,
+            1095
+          ],
+          "prologue_markers": 2,
+          "rsp_subtractions": [
+            136,
+            168
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.PackedLeafEncoding`1[ushort]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Snapshot.Voxtree.PackedLeafEncoding`1[ushort]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.PackedLeafEncoding`1[ushort]:WriteBottomUp(System.ReadOnlySpan`1[ushort],int,int,System.Span`1[byte]) (Tier1)",
+          "native_bytes": 1019,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            1019
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            72
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.PackedLeafEncoding`1[ushort]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:FillMarked(System.Span`1[byte],int,int,int,int,int) (Tier1)",
+          "native_bytes": 1195,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            1195
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            120
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.PackedLeafEncoding`1[ushort]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:WriteBottomUp(System.ReadOnlySpan`1[ushort],int,int,System.Span`1[byte]) (Tier1-OSR)",
+          "native_bytes": 1100,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            1100
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Tedd.Voxtree.PackedLeafEncoding`1[ushort]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:WriteBottomUp(System.ReadOnlySpan`1[ushort],int,int,System.Span`1[byte]) (Tier1)",
+          "native_bytes": 1024,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            1024
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            72
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.PackedLeafEncoding`1[ushort]:FillMarked(System.Span`1[byte],int,int,int,int,int)]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        }
+      ]
+    }
+  ]
+}

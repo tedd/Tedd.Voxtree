@@ -119,7 +119,7 @@ with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compre
                 if any(p in {'base-out','base2-out','logged2-out'} for p in parts[1:-1]):include=True
             if parts[0].startswith('caller-audit') and path.suffix == '.dll':
                 include = True
-            if parts[0].startswith(('packed-corpus-', 'footprint-', 'count-body-')) and 'out' in parts[1:-1] and path.suffix == '.dll':
+            if parts[0].startswith(('packed-corpus-', 'footprint-', 'count-body-', 'palette-state-')) and 'out' in parts[1:-1] and path.suffix == '.dll':
                 include = True
             if parts[0].startswith(('exception-capture-', 'exception-recorder-', 'exception-summary-')) and path.suffix in {'.dll', '.nettrace'}:
                 include = True
