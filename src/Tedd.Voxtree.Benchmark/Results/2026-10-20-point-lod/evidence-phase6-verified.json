@@ -1,0 +1,26 @@
+{
+  "archive_bytes": 64696118,
+  "manifest_paths": 36796,
+  "unique_blobs": 30442,
+  "catalogs": 36,
+  "metric_rows": 962,
+  "sha256": "f63492bb100f55beff49fa9fa614e544dd247270283122bf35590bff032b5dac",
+  "required_paths": [
+    "p22bulk-audit.json",
+    "p22bulk-audit-corpus.json",
+    "p22-source-review.json",
+    "p22-source-review.diff",
+    "p22-source-origin.json",
+    "p22-frozen-protocol.txt",
+    "p22-census-protocol.txt",
+    "p22oracle-output.log",
+    "native-summary-phase6-builders.json",
+    "all-workers-quiescent-phase6.json",
+    "p22-hypothesis/postbuilder-revision-response.json",
+    "p22bulk-screen/p22bulk-shutdown.json",
+    "packed-corpus-p22bulk-source/Census.csproj",
+    "forcecraft-census-packed-p22bulk/packed-corpus.json",
+    "count-body-p22oracle-source/out/Probe.dll"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

@@ -2,7 +2,7 @@
 
 Original integration branch: main. Full public-method objective remains active.
 No prototype source is adopted into the production library. Current continuation
-evidence is REPORT-PHASE5.md; earlier failed gates remain retained. P19 is
+evidence is REPORT-PHASE6.md; earlier failed gates remain retained. P19 is
 not_supported; P20/P21 remain inconclusive after complete 88/96/96-case screens.
 
 1. Localize the fresh confirmation failure before another normal-build family.
@@ -14,6 +14,9 @@ not_supported; P20/P21 remain inconclusive after complete 88/96/96-case screens.
    replace sessions, silently complete the eighth case, or call the original
    family complete. Any failure reproduction is a separate diagnostic, not
    additional favorable decision samples.
+   The installed source records a launch only after staging returns; cleanup
+   can replace an earlier exception. Remaining launch files alone cannot
+   localize the fault to staging, startup or cleanup.
 2. Preserve the count tradeoffs. P19 scalar specialization fails its UInt16
    primary despite removing general dispatch. P20 validated masked-vector counts
    improve dominant full callers 9.6..181.8x versus P19 but regress short rows.
@@ -35,6 +38,14 @@ not_supported; P20/P21 remain inconclusive after complete 88/96/96-case screens.
    A separate leaf-level specialization can avoid eight level-zero summary
    calls while preserving exact old/Morton bytes and uniform collapse. Measure
    sizing-only changes separately; do not assume static calls establish cost.
+   P22 now isolates direct linear-leaf emission on f0772c8. All 88 cases/2,112
+   records complete; dominant construction/size estimates improve 2.46..3.17x,
+   but eight of 38 mandatory guards are adverse. Retain its byte-preserving
+   fork, do not adopt it or combine epochs. Parent native frames remain large,
+   and the new UInt16 leaf is 2304 bytes with a 160-byte fixed subtraction.
+   A sizing-only writer shortcut is still a separate, unimplemented hypothesis.
+   P22's complete 1,286-chunk/42,139,648-cell census passes with exact release
+   bytes and unchanged encoded/lookup payload for all three encoder APIs.
 4. Preserve the full-corpus result: 1,286 chunks, 686 unique arrays, all 42,139,648
    cells checked; UInt32/UInt16 eligibility 517/574. Combined UInt32 encoded plus
    distinct lookup payload grows from 48,861,892 to 71,567,508 bytes. The selected

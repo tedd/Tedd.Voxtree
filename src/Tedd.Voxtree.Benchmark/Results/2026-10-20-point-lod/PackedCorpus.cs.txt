@@ -65,12 +65,18 @@ static class PackedCorpus
         }
         int maximum = small.Max();
         bool packed = Packed(after.Data), packed16 = Packed(after16.Data), packed32 = Packed(after32.Data);
+#if RELEASE_BUILDER_CENSUS
+        Require(before.Data.Span.SequenceEqual(after.Data.Span), "UInt32 exact release bytes");
+        Require(before16.Data.Span.SequenceEqual(after16.Data.Span), "UInt16 exact release bytes");
+        Require(before32.Data.Span.SequenceEqual(after32.Data.Span), "Generic UInt32 exact release bytes");
+#else
         Require(packed == Eligible(before.Data, maximum, 4, 2), "UInt32 eligibility");
         Require(packed16 == Eligible(before16.Data, maximum, 2, 3), "UInt16 eligibility");
         Require(packed32 == Eligible(before32.Data, maximum, 4, 3), "Generic UInt32 eligibility");
         if (!packed) Require(before.Data.Span.SequenceEqual(after.Data.Span), "UInt32 fallback bytes");
         if (!packed16) Require(before16.Data.Span.SequenceEqual(after16.Data.Span), "UInt16 fallback bytes");
         if (!packed32) Require(before32.Data.Span.SequenceEqual(after32.Data.Span), "Generic UInt32 fallback bytes");
+#endif
         var box = new Candidate.VoxelBox(0,0,0,32,32,32);
         foreach (uint wanted in new uint[] {0, (uint)maximum, 65535}.Distinct())
         {

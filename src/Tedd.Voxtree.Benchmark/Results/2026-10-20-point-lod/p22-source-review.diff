@@ -1,0 +1,92 @@
+--- a/src/Tedd.Voxtree/GenericOctreeCodec.cs
++++ b/src/Tedd.Voxtree/GenericOctreeCodec.cs
+@@ -554,6 +554,9 @@
+             return true;
+         }
+ 
++        if (level == 1)
++            return BuildLinearLeaf(source, baseIndex, rowStride, planeStride, ref writer, out result);
++
+         var subtreeStart = writer.Position;
+         Span<SubtreeResult> children = stackalloc SubtreeResult[8];
+         var half = 1 << (level - 1);
+@@ -582,6 +585,33 @@
+         }
+ 
+         return WriteNode(children, ref writer, out result);
++    }
++
++    // Wire children are Z-first. A bottom node contains only value tokens.
++    private static bool BuildLinearLeaf(ReadOnlySpan<TStorage> source, int start,
++        int rowStride, int planeStride, ref OctreeWriter writer, out SubtreeResult result)
++    {
++        var v0 = source[start];
++        var v1 = source[start + 1];
++        var v2 = source[start + rowStride];
++        var v3 = source[start + rowStride + 1];
++        var v4 = source[start + planeStride];
++        var v5 = source[start + planeStride + 1];
++        var v6 = source[start + planeStride + rowStride];
++        var v7 = source[start + planeStride + rowStride + 1];
++        if (v1.Equals(v0) && v2.Equals(v0) && v3.Equals(v0) && v4.Equals(v0) && v5.Equals(v0) && v6.Equals(v0) && v7.Equals(v0))
++        {
++            result = SubtreeResult.Uniform(v0);
++            return true;
++        }
++        var nodeOffset = writer.Position;
++        if (!writer.WriteByte(255) || !writer.WriteValue(v0) || !writer.WriteValue(v1) || !writer.WriteValue(v2) || !writer.WriteValue(v3) || !writer.WriteValue(v4) || !writer.WriteValue(v5) || !writer.WriteValue(v6) || !writer.WriteValue(v7))
++        {
++            result = default;
++            return false;
++        }
++        result = SubtreeResult.Node(nodeOffset);
++        return true;
+     }
+ 
+     private static bool BuildMortonSubtree(ReadOnlySpan<TStorage> source, int level, int uniformPrefix,
+--- a/src/Tedd.Voxtree/OctreeCodec.cs
++++ b/src/Tedd.Voxtree/OctreeCodec.cs
+@@ -594,6 +594,9 @@
+         }
+ #endif
+ 
++        if (level == 1)
++            return BuildLinearLeaf(source, baseIndex, rowStride, planeStride, ref writer, out result);
++
+         var subtreeStart = writer.Position;
+         Span<SubtreeResult> children = stackalloc SubtreeResult[8];
+         var half = 1 << (level - 1);
+@@ -640,6 +643,33 @@
+     // The wire format numbers children Z-first; the Morton package numbers them X-first.
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     internal static int MortonChild(int child) => (child >> 2) | (child & 2) | ((child & 1) << 2);
++
++    // Wire children are Z-first. A bottom node contains only value tokens.
++    private static bool BuildLinearLeaf(ReadOnlySpan<uint> source, int start,
++        int rowStride, int planeStride, ref OctreeWriter writer, out SubtreeResult result)
++    {
++        var v0 = source[start];
++        var v1 = source[start + 1];
++        var v2 = source[start + rowStride];
++        var v3 = source[start + rowStride + 1];
++        var v4 = source[start + planeStride];
++        var v5 = source[start + planeStride + 1];
++        var v6 = source[start + planeStride + rowStride];
++        var v7 = source[start + planeStride + rowStride + 1];
++        if (v1 == v0 && v2 == v0 && v3 == v0 && v4 == v0 && v5 == v0 && v6 == v0 && v7 == v0)
++        {
++            result = SubtreeResult.Uniform(v0);
++            return true;
++        }
++        var nodeOffset = writer.Position;
++        if (!writer.WriteByte(255) || !writer.WriteVarUInt(v0) || !writer.WriteVarUInt(v1) || !writer.WriteVarUInt(v2) || !writer.WriteVarUInt(v3) || !writer.WriteVarUInt(v4) || !writer.WriteVarUInt(v5) || !writer.WriteVarUInt(v6) || !writer.WriteVarUInt(v7))
++        {
++            result = default;
++            return false;
++        }
++        result = SubtreeResult.Node(nodeOffset);
++        return true;
++    }
+ 
+     private static bool BuildMortonSubtree(ReadOnlySpan<uint> source, int level, int uniformPrefix,
+         ref OctreeWriter writer, out SubtreeResult result)

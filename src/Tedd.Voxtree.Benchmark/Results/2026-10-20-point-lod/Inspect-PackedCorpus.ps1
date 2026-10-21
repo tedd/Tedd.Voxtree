@@ -1,5 +1,6 @@
 param([Parameter(Mandatory)][string]$TaskRoot,
-      [Parameter(Mandatory)][ValidatePattern('^[a-z][a-z0-9-]*$')][string]$Label)
+      [Parameter(Mandatory)][ValidatePattern('^[a-z][a-z0-9-]*$')][string]$Label,
+      [switch]$ReleaseBuilder)
 $ErrorActionPreference='Stop'
 if([IO.Path]::GetFullPath($TaskRoot).TrimEnd('\') -ne 'D:\Workspaces\AI\voxtree-point-lod-20261020'){throw 'Unexpected task root'}
 . (Join-Path $PSScriptRoot 'Host-Lock.ps1')
@@ -29,9 +30,10 @@ try {
         Copy-Item -LiteralPath (Join-Path $TaskRoot "forcecraft-scanner-s2/$name") -Destination (Join-Path $root $name)
     }
     $bundle=(Join-Path $TaskRoot "bundles/$Label").Replace('\','/')
+    $censusDefine=if($ReleaseBuilder){'<DefineConstants>RELEASE_BUILDER_CENSUS</DefineConstants>'}else{''}
     @"
 <Project Sdk="Microsoft.NET.Sdk">
- <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><LangVersion>14.0</LangVersion><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><UseSharedCompilation>false</UseSharedCompilation><RollForward>Disable</RollForward><RuntimeFrameworkVersion>10.0.13</RuntimeFrameworkVersion></PropertyGroup>
+ <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><LangVersion>14.0</LangVersion><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><UseSharedCompilation>false</UseSharedCompilation><RollForward>Disable</RollForward><RuntimeFrameworkVersion>10.0.13</RuntimeFrameworkVersion>$censusDefine</PropertyGroup>
  <ItemGroup><Reference Include="$Label"><HintPath>$bundle/$Label.dll</HintPath></Reference><Reference Include="Tedd.MortonEncoding"><HintPath>$bundle/Tedd.MortonEncoding.dll</HintPath></Reference><PackageReference Include="K4os.Compression.LZ4" Version="1.3.8"/></ItemGroup>
 </Project>
 "@ | Set-Content -LiteralPath (Join-Path $root 'Census.csproj')
