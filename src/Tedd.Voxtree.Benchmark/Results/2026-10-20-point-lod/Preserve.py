@@ -136,7 +136,7 @@ with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compre
                 include = True
         if parts[0] == "bundles":
             include = path.suffix in {".dll", ".json"}
-            if len(parts) > 1 and parts[1] in {'p39f0', 'p39f1'}:
+            if len(parts) > 1 and parts[1] in {'p39f0', 'p39f1', 'p39g0', 'p39g1'}:
                 # These are complete controller copies, including native assets
                 # and host files sealed by the diagnostic closure manifest.
                 include = True

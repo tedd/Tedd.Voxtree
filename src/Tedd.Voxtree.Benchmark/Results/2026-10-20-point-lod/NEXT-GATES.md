@@ -482,6 +482,23 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    and joins; stop on mismatch, no replacement or old-family resumption.
    Original intermittent cause and complete10x qualification remain open.
 
+29. P39F first worker stops before LabService construction because the manual
+   helper dependency manifest cannot resolve the copied native SQLite asset.
+   All five catalogs prove zero accepted operations/grant uses/target launches.
+   Original logs, PID/exit and unused grant remain. A new helper binds only the
+   hash-fixed copied Windows-x64 native asset; source/controller/normal targets
+   remain unchanged except common helper files. Native resolution passes both
+   arms and new-logger truncation/writer checks pass. Initial erroneous logger
+   invocation on original Application remains a failed preflight; original code
+   has no added logger. No process is rerun; four preflights total,three pass.
+   Before any target, unchanged original five plans bind distinct new worker/
+   driver outputs via FIRST-FAILURE-NATIVE-ADDENDUM. Phase35b verifies441paths,
+   264blobs/sixcatalogs/zero metrics. See REPORT-PHASE35B. Execute only the five
+   original tests once with exact new CLI grants, proper mutex ownership and
+   maximum28 targets/25 diagnostic measured sessions; stop on mismatch. No old
+   operation/test result or performance observation is resumed or replaced.
+   Full performance/consumer/API/memory/format/allocation/10x remains active.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining

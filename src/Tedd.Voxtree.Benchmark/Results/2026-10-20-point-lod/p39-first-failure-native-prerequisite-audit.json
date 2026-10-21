@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "requiredNativeResolutions": 2,
+  "newLoggerChecks": 2,
+  "successfulPreflightProcesses": 3,
+  "retainedFailedPreflightProcesses": 1,
+  "targetOperationsAccepted": 0,
+  "targetLaunches": 0,
+  "originalFivePlansUnchanged": true,
+  "onlyControllerArmDelta": "Application.dll",
+  "nativeAssetSha256": "b7385d722c83fb52142a00477a726723745916d22a555711ee89834c1111fb2e",
+  "originalStartupFailureRetained": true,
+  "comparativeTimingRecords": 0
+}

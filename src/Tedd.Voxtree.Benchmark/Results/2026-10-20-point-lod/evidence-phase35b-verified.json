@@ -1,0 +1,31 @@
+{
+  "archive_bytes": 26126618,
+  "manifest_paths": 441,
+  "unique_blobs": 264,
+  "catalogs": 6,
+  "metric_rows": 0,
+  "sha256": "a232639958339e9114ae61d0019e7cb1c9d37f848fd90a2e5c938514a067f80e",
+  "required_paths": [
+    "p39-first-failure/native-inputs.json",
+    "p39-first-failure/frozen-dependencies-native.json",
+    "p39-first-failure/native-binding-revision-response.json",
+    "p39-first-failure/native-binding-revision-request.json",
+    "p39-first-failure-startup-stop.json",
+    "p39-first-failure-native-prerequisite-audit.json",
+    "p39-first-failure/original-masked/worker-error.log",
+    "p39-first-failure/original-masked/worker-shutdown.json",
+    "p39-first-failure-native-initial-driver-source/FIRST-FAILURE-NATIVE-ADDENDUM.md",
+    "p39-first-failure-native-binding-driver-source/Run-FirstFailureNative.ps1",
+    "first-failure-native-worker-source/Program.cs",
+    "bundles/p39g0/FirstFailureWorker.dll",
+    "bundles/p39g1/FirstFailureWorker.dll",
+    "bundles/p39g0/runtimes/win-x64/native/e_sqlite3.dll",
+    "bundles/p39g1/runtimes/win-x64/native/e_sqlite3.dll",
+    "p39-first-failure/original-masked/catalog-export.json",
+    "p39-first-failure/logged-masked/catalog-export.json",
+    "p39-first-failure/logged-cleanup/catalog-export.json",
+    "p39-first-failure/logged-primary/catalog-export.json",
+    "p39-first-failure/logged-success/catalog-export.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

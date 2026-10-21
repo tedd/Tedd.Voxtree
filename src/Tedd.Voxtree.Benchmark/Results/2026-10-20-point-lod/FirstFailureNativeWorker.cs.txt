@@ -1,0 +1,88 @@
+using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Tedd.DotNetLab.Application;
+using Tedd.DotNetLab.Contracts;
+using Tedd.DotNetLab.Domain;
+
+if(args.Length==1&&args[0]=="--logger-selftest")
+{
+    var method=typeof(LabService).GetMethod("LogNormalSessionPrimaryFailure",BindingFlags.Static|BindingFlags.NonPublic)??throw new Exception("New logger absent");
+    var previous=Console.Error;var capture=new StringWriter();
+    try
+    {
+        Console.SetError(capture);
+        method.Invoke(null,new object[]{new InvalidOperationException(new string('x',40000)),"session-test","execution-test","plan-test","build-test",2,1,"candidate"});
+        string text=capture.ToString().Trim();const string logPrefix="DOTNETLAB_NORMAL_SESSION_PRIMARY_FAILURE ";
+        if(!text.StartsWith(logPrefix))throw new Exception("Logger prefix");
+        using var json=JsonDocument.Parse(text[logPrefix.Length..]);
+        if(json.RootElement.GetProperty("detail").GetString()!.Length!=32768||!json.RootElement.GetProperty("detail_truncated").GetBoolean())throw new Exception("Bounded diagnostic");
+        Console.SetError(new ThrowingWriter());
+        method.Invoke(null,new object[]{new InvalidOperationException("sentinel"),"s","e","p","b",0,0,"baseline"});
+    }
+    finally{Console.SetError(previous);}
+    Console.WriteLine(JsonSerializer.Serialize(new{passed=true,tests=2,detailLimit=32768,throwingWriterContained=true}));return;
+}
+if(args.Length==1&&args[0]=="--native-selftest")
+{
+    string selftestNative=BindNativeSqlite();
+    SQLitePCL.Batteries_V2.Init();
+    Console.WriteLine(JsonSerializer.Serialize(new{passed=true,nativePath=selftestNative,nativeSha256=Hash(selftestNative),sqliteVersionNumber=SQLitePCL.raw.sqlite3_libversion_number(),databaseOpened=false}));return;
+}
+if(args.Length!=5)throw new ArgumentException("Root,plan,grant,key,hold|free required");
+string root=Path.GetFullPath(args[0]);
+string task=Path.GetFullPath(@"D:\Workspaces\AI\voxtree-point-lod-20261020\p39-first-failure")+Path.DirectorySeparatorChar;
+if(!root.StartsWith(task,StringComparison.OrdinalIgnoreCase)||args[4] is not("hold" or "free"))throw new Exception("Unexpected private test target");
+if(File.Exists(Path.Combine(root,"worker-accepted.json")))throw new Exception("Original operation exists");
+string resolvedNative=BindNativeSqlite();
+var locks=new List<FileStream>();var lockedPaths=new List<string>();
+string prefix=Path.Combine(root,"launches")+Path.DirectorySeparatorChar;
+Action<string> staged=path=>
+{
+    if(args[4]!="hold"||Path.GetFileName(path)!="CompactNormal.dll")return;
+    string full=Path.GetFullPath(path);
+    if(!full.StartsWith(prefix,StringComparison.OrdinalIgnoreCase))throw new Exception("Lock escaped private launch root");
+    locks.Add(new FileStream(full,FileMode.Open,FileAccess.Read,FileShare.ReadWrite));lockedPaths.Add(full);
+};
+Operation terminal;
+await using(var service=new LabService(root,collectControllerResources:false,normalBuildFileStaged:staged))
+{
+    try
+    {
+        File.WriteAllText(Path.Combine(root,"worker-request.json"),Wire.Serialize(new{action="start_confirmation",plan_id=args[1],grant_id=args[2],idempotency_key=args[3],test_hook=args[4]}));
+        var operation=service.StartConfirmation(args[1],args[2],args[3]);
+        File.WriteAllText(Path.Combine(root,"worker-accepted.json"),Wire.Serialize(operation));
+        var deadline=Stopwatch.StartNew();
+        do
+        {
+            await Task.Delay(100);terminal=service.Status(operation.Id);
+            if(deadline.Elapsed.TotalSeconds>160)throw new Exception("Original diagnostic operation did not settle");
+        }while(terminal.State is OperationState.Accepted or OperationState.Running or OperationState.CancellationRequested||service.HasActiveOperations);
+        File.WriteAllText(Path.Combine(root,"worker-terminal.json"),Wire.Serialize(terminal));
+        if(terminal.ResultId is not null)File.WriteAllText(Path.Combine(root,"worker-execution.json"),Wire.Serialize(service.Catalog.Get<ConfirmationExecution>(terminal.ResultId)));
+    }
+    finally{foreach(var handle in locks)handle.Dispose();}
+}
+string Hash(string path)=>Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)));
+Console.WriteLine(JsonSerializer.Serialize(new{root,operationId=terminal.Id,state=terminal.State.ToString(),resultId=terminal.ResultId,
+ errorCode=terminal.ErrorCode,locksHeld=lockedPaths.Count,lockedPaths,locksReleased=true,
+ workerSha256=Hash(typeof(Program).Assembly.Location),applicationSha256=Hash(typeof(LabService).Assembly.Location),
+ runtime=RuntimeSupport.Current,nativePath=resolvedNative,nativeSha256=Hash(resolvedNative),diagnosticOnly=true,comparativeTimingRecords=0}));
+
+static string BindNativeSqlite()
+{
+    if(!OperatingSystem.IsWindows()||RuntimeInformation.ProcessArchitecture!=Architecture.X64)throw new PlatformNotSupportedException("Fixed Windows x64 diagnostic");
+    string libraryPath=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"runtimes","win-x64","native","e_sqlite3.dll"));
+    if(!File.Exists(libraryPath))throw new FileNotFoundException("Frozen native asset absent",libraryPath);
+    nint library=NativeLibrary.Load(libraryPath);
+    NativeLibrary.SetDllImportResolver(typeof(SQLitePCL.SQLite3Provider_e_sqlite3).Assembly,(name,assembly,search)=>name is "e_sqlite3" or "e_sqlite3.dll"?library:nint.Zero);
+    return libraryPath;
+}
+
+sealed class ThrowingWriter:TextWriter
+{
+    public override System.Text.Encoding Encoding=>System.Text.Encoding.UTF8;
+    public override void WriteLine(string? value)=>throw new IOException("controlled error-writer failure");
+}

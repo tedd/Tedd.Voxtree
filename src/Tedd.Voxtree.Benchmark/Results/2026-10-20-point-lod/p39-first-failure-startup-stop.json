@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "observedFailure": "Native SQLite could not load before LabService construction completed",
+  "catalogs": [
+    {
+      "test": "logged-cleanup",
+      "acceptedOperations": 0,
+      "grantUses": 0,
+      "targetLaunches": 0
+    },
+    {
+      "test": "logged-masked",
+      "acceptedOperations": 0,
+      "grantUses": 0,
+      "targetLaunches": 0
+    },
+    {
+      "test": "logged-primary",
+      "acceptedOperations": 0,
+      "grantUses": 0,
+      "targetLaunches": 0
+    },
+    {
+      "test": "logged-success",
+      "acceptedOperations": 0,
+      "grantUses": 0,
+      "targetLaunches": 0
+    },
+    {
+      "test": "original-masked",
+      "acceptedOperations": 0,
+      "grantUses": 0,
+      "targetLaunches": 0
+    }
+  ],
+  "noTargetOperationAccepted": true,
+  "noTargetLaunched": true
+}
