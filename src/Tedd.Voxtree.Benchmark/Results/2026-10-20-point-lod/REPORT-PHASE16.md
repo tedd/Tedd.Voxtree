@@ -71,5 +71,9 @@ plans all cases before data. Fresh direct-release normal confirmation remains
 mandatory for the eight 10x endpoints, followed by all API/memory/consumer
 guards. Prerequisite results do not qualify source promotion or release.
 
+Subsequent phase17 completes both original families and rejects P31's joint
+performance prediction. See REPORT-PHASE17; the prerequisite findings above
+remain semantic/payload evidence only.
+
 The task workspace D:\Workspaces\AI\voxtree-point-lod-20261020 remains needed
 for the active investigation. No temporary worktree or branch was created.

@@ -186,9 +186,23 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    oracles,410/411/412 framework tests,411 HW-off,48/96 scenario checks, complete
    corpus and native inspection. Actual combined sharing/payload matches K2;
    encoded growth is reported separately. Phase16 retains the source, failures,
-   controls and evidence. See REPORT-PHASE16. Frozen point48/bulk96 timing and
-   fresh direct-release normal confirmation remain; no measured speed claim or
-   source/package promotion follows from these prerequisites.
+   controls and evidence. See REPORT-PHASE16. The original frozen point48/bulk96
+   families now complete:144 cases/3456 correct,quiescent,joined records. Only
+   one of eight >=1.20 point primaries passes;12/40 point and25/96 bulk guards
+   are adverse. P31 is not_supported. All40 steady reads observe zero candidate
+   allocation; release construction allocation is not independently qualified.
+   Counts gain strongly versus unpromoted P30, but validation/fromencoded and
+   lifecycle regressions prevent adoption. Phase17 retains all comparisons,
+   allocations, adverse evidence and the revised hypothesis. See REPORT-PHASE17.
+12. Next prechecks should isolate compact checked-read bounds and terminal-leaf
+   canonical validation, using the retained P31 source/native evidence. The
+   emitted point path retains count/range/slice checks; the validator's general
+   one-cell row path merits inspection. Establish actual visited branches and
+   complete private-call invariants before removing checks; retain safe borrowed
+   reads, error ordering and all fallback semantics. Register each intervention
+   separately; no P31 promotion, combined patch, hardware-cause inference or
+   timing claim is implied. Fresh direct-release normal confirmation remains
+   necessary for the eight10x read endpoints and all mandatory API guards.
 
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
