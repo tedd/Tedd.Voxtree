@@ -1,0 +1,459 @@
+{
+  "passed": true,
+  "qualification": "Optimized caller/validator coverage after fixed additional priming on exact original modules only",
+  "processCount": 6,
+  "distinctIdentities": 6,
+  "allJoinedCorrect": true,
+  "callerPairs": 3,
+  "originalNormalBinariesByteIdentical": true,
+  "helperAndDependenciesMatched": true,
+  "onlyStagedModuleDelta": "Original CompactNormal.dll",
+  "coveragePredictionSupported": true,
+  "comparativeTimingRecords": 0,
+  "sourceAdoption": false,
+  "cases": [
+    {
+      "mode": "Classic32",
+      "scenario": "compact-normal-Classic32-D-from",
+      "fingerprint": {
+        "id": "compact-normal-Classic32-D-from",
+        "inputHash": "1c6bf090458d845d6a410752abca4c6a18916689d59596b0ac3e38c6d654c32d",
+        "rawSha256": "48A799A3EEBA729CB9DCE28F1EA54E9B19A9D46E7AA7CA8F0696E90E0F6F10FB",
+        "validEncodedSha256": "C4FA8BF585DE247D6A5374CFF10B06BE3906DAE66E883CAB74F67AFAA779167D",
+        "inputEncodedSha256": "C4FA8BF585DE247D6A5374CFF10B06BE3906DAE66E883CAB74F67AFAA779167D",
+        "packetSha256": "9847D8E25220A3579FF1677E67B0CB7B6126F53EF381795FC5B2FC5956B3C45F",
+        "sum": 346112,
+        "completed": 512,
+        "primary": true,
+        "operations": 256
+      },
+      "native": [
+        {
+          "arm": "P31",
+          "librarySha256": "C02E2E42D1692C8DDADC5B95F26BF14ED013DFC99E509F5ED058C00639E9E30B",
+          "additionalWarmupCalls": 11648,
+          "caller": {
+            "method": "ClassicCase:RunFrom(int):this (Tier1)",
+            "native_bytes": 2829,
+            "listing_availability": "complete",
+            "declared_native_sizes": [
+              2829
+            ],
+            "prologue_markers": 1,
+            "rsp_subtractions": [
+              232
+            ],
+            "call_sites": [
+              "call     CORINFO_HELP_NEWARR_1_VC",
+              "call     [System.SpanHelpers:Memmove(byref,byref,nuint)]",
+              "call     CORINFO_HELP_NEWSFAST",
+              "call     [Tedd.Voxtree.OctreeCodec:ValidateLevels(int)]",
+              "call     CORINFO_HELP_ASSIGN_REF",
+              "call     CORINFO_HELP_ASSIGN_REF",
+              "call     [Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+              "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+              "call     [Tedd.Voxtree.OctreeCodec:TryValidateNode(System.ReadOnlySpan`1[byte],int,int,byref,byref):bool]",
+              "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+              "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+              "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+              "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+              "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+              "call     CORINFO_HELP_NEWSFAST",
+              "call     [CORINFO_HELP_STRCNS]",
+              "call     [System.FormatException:.ctor(System.String):this]",
+              "call     CORINFO_HELP_THROW",
+              "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+              "call     CORINFO_HELP_RNGCHKFAIL",
+              "call     CORINFO_HELP_OVERFLOW"
+            ]
+          },
+          "validator": {
+            "method": "Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool (Tier1)",
+            "native_bytes": 1307,
+            "listing_availability": "complete",
+            "declared_native_sizes": [
+              1307
+            ],
+            "prologue_markers": 1,
+            "rsp_subtractions": [
+              168
+            ],
+            "call_sites": [
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+              "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+            ]
+          },
+          "listingSha256": "bbf6477ece5ced6f1697f7a108f0885ed1eb0b6d3a632f32cb378c4b82741a57"
+        },
+        {
+          "arm": "P39",
+          "librarySha256": "16DDDBF41259144E1828ADA9ACA1B8F18E23FCACBB4C0A1AE8AF9AB071C7BA30",
+          "additionalWarmupCalls": 34784,
+          "caller": {
+            "method": "ClassicCase:RunFrom(int):this (Tier1)",
+            "native_bytes": 3014,
+            "listing_availability": "complete",
+            "declared_native_sizes": [
+              3014
+            ],
+            "prologue_markers": 1,
+            "rsp_subtractions": [
+              232
+            ],
+            "call_sites": [
+              "call     CORINFO_HELP_NEWARR_1_VC",
+              "call     [System.SpanHelpers:Memmove(byref,byref,nuint)]",
+              "call     CORINFO_HELP_NEWSFAST",
+              "call     [Tedd.Voxtree.OctreeCodec:ValidateLevels(int)]",
+              "call     CORINFO_HELP_ASSIGN_REF",
+              "call     CORINFO_HELP_ASSIGN_REF",
+              "call     [Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+              "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+              "call     [Tedd.Voxtree.OctreeCodec:TryValidateNode(System.ReadOnlySpan`1[byte],int,int,byref,byref):bool]",
+              "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+              "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+              "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+              "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+              "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+              "call     CORINFO_HELP_NEWSFAST",
+              "call     [CORINFO_HELP_STRCNS]",
+              "call     [System.FormatException:.ctor(System.String):this]",
+              "call     CORINFO_HELP_THROW",
+              "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+              "call     CORINFO_HELP_RNGCHKFAIL",
+              "call     CORINFO_HELP_OVERFLOW"
+            ]
+          },
+          "validator": {
+            "method": "Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool (Tier1)",
+            "native_bytes": 1771,
+            "listing_availability": "complete",
+            "declared_native_sizes": [
+              1771
+            ],
+            "prologue_markers": 1,
+            "rsp_subtractions": [
+              184
+            ],
+            "call_sites": [
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+              "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+            ]
+          },
+          "listingSha256": "31125a95f78994a0337ff0f29a2a01ff5988cfbc1ca5e2a092dac5b99306a55e"
+        }
+      ]
+    },
+    {
+      "mode": "Generic16",
+      "scenario": "compact-normal-Generic16-D-from",
+      "fingerprint": {
+        "id": "compact-normal-Generic16-D-from",
+        "inputHash": "c077dc29fcfbb0bc530ea4d8f51fd89874137d638cea5a701598b41965451bd2",
+        "rawSha256": "48A799A3EEBA729CB9DCE28F1EA54E9B19A9D46E7AA7CA8F0696E90E0F6F10FB",
+        "validEncodedSha256": "14794AEE19C312B691C7FE28A3F9BA194A5EB98FA4D1A438261A7B1396C92BA6",
+        "inputEncodedSha256": "14794AEE19C312B691C7FE28A3F9BA194A5EB98FA4D1A438261A7B1396C92BA6",
+        "packetSha256": "1259FCAD6C4819EC11DA27C30C954C9FE3B52D14A434032F79E2F4E0085A7356",
+        "sum": 346112,
+        "completed": 512,
+        "primary": true,
+        "operations": 256
+      },
+      "native": [
+        {
+          "arm": "P31",
+          "librarySha256": "C02E2E42D1692C8DDADC5B95F26BF14ED013DFC99E509F5ED058C00639E9E30B",
+          "additionalWarmupCalls": 13280,
+          "caller": {
+            "method": "GenericCase`1[ushort]:RunFrom(int):this (Tier1)",
+            "native_bytes": 2846,
+            "listing_availability": "complete",
+            "declared_native_sizes": [
+              2846
+            ],
+            "prologue_markers": 1,
+            "rsp_subtractions": [
+              248
+            ],
+            "call_sites": [
+              "call     CORINFO_HELP_NEWARR_1_VC",
+              "call     [System.SpanHelpers:Memmove(byref,byref,nuint)]",
+              "call     CORINFO_HELP_NEWSFAST",
+              "call     [Tedd.Voxtree.OctreeCodec:ValidateLevels(int)]",
+              "call     CORINFO_HELP_ASSIGN_REF",
+              "call     CORINFO_HELP_ASSIGN_REF",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref):bool]",
+              "call     [Tedd.Voxtree.CompactLeafEncoding`1[ushort]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:GetSizeCode():byte]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:TryReadValue(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:GetSizeCode():byte]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:TryReadValue(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:TryValidateNode(System.ReadOnlySpan`1[byte],int,int,byref,byref):bool]",
+              "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[ushort]:ThrowUnbuilt():ushort]",
+              "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[ushort]:ThrowCoordinate(System.String,int):ushort]",
+              "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[ushort]:ThrowMalformed():ushort]",
+              "call     CORINFO_HELP_NEWSFAST",
+              "call     [CORINFO_HELP_STRCNS]",
+              "call     [System.FormatException:.ctor(System.String):this]",
+              "call     CORINFO_HELP_THROW",
+              "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+              "call     CORINFO_HELP_RNGCHKFAIL",
+              "call     CORINFO_HELP_OVERFLOW"
+            ]
+          },
+          "validator": {
+            "method": "Tedd.Voxtree.CompactLeafEncoding`1[ushort]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool (Tier1)",
+            "native_bytes": 1300,
+            "listing_availability": "complete",
+            "declared_native_sizes": [
+              1300
+            ],
+            "prologue_markers": 1,
+            "rsp_subtractions": [
+              168
+            ],
+            "call_sites": [
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [Tedd.Voxtree.CompactLeafEncoding`1[ushort]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+              "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+            ]
+          },
+          "listingSha256": "0a9fa1f3c015c9c16d0a6bf167276e83c041029d58fe359efcea3e57da575663"
+        },
+        {
+          "arm": "P39",
+          "librarySha256": "16DDDBF41259144E1828ADA9ACA1B8F18E23FCACBB4C0A1AE8AF9AB071C7BA30",
+          "additionalWarmupCalls": 37792,
+          "caller": {
+            "method": "GenericCase`1[ushort]:RunFrom(int):this (Tier1)",
+            "native_bytes": 2993,
+            "listing_availability": "complete",
+            "declared_native_sizes": [
+              2993
+            ],
+            "prologue_markers": 1,
+            "rsp_subtractions": [
+              248
+            ],
+            "call_sites": [
+              "call     CORINFO_HELP_NEWARR_1_VC",
+              "call     [System.SpanHelpers:Memmove(byref,byref,nuint)]",
+              "call     [Tedd.Voxtree.CompactLeafEncoding`1[ushort]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+              "call     CORINFO_HELP_NEWSFAST",
+              "call     [Tedd.Voxtree.OctreeCodec:ValidateLevels(int)]",
+              "call     CORINFO_HELP_ASSIGN_REF",
+              "call     CORINFO_HELP_ASSIGN_REF",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref):bool]",
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:GetSizeCode():byte]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:TryReadValue(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:GetSizeCode():byte]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:TryReadValue(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[ushort]:TryValidateNode(System.ReadOnlySpan`1[byte],int,int,byref,byref):bool]",
+              "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[ushort]:ThrowUnbuilt():ushort]",
+              "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[ushort]:ThrowCoordinate(System.String,int):ushort]",
+              "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[ushort]:ThrowMalformed():ushort]",
+              "call     CORINFO_HELP_NEWSFAST",
+              "call     [CORINFO_HELP_STRCNS]",
+              "call     [System.FormatException:.ctor(System.String):this]",
+              "call     CORINFO_HELP_THROW",
+              "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+              "call     CORINFO_HELP_RNGCHKFAIL",
+              "call     CORINFO_HELP_OVERFLOW"
+            ]
+          },
+          "validator": {
+            "method": "Tedd.Voxtree.CompactLeafEncoding`1[ushort]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool (Tier1)",
+            "native_bytes": 1835,
+            "listing_availability": "complete",
+            "declared_native_sizes": [
+              1835
+            ],
+            "prologue_markers": 1,
+            "rsp_subtractions": [
+              200
+            ],
+            "call_sites": [
+              "call     [Tedd.Voxtree.CompactLeafEncoding`1[ushort]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+            ]
+          },
+          "listingSha256": "369f3a74e5353c3b7ef0037de56b1d63b571f85200660f380bb27f7601927afd"
+        }
+      ]
+    },
+    {
+      "mode": "Generic32",
+      "scenario": "compact-normal-Generic32-D-from",
+      "fingerprint": {
+        "id": "compact-normal-Generic32-D-from",
+        "inputHash": "6db5628ebac5d62bc1cd7716ebc355e91821d32646ea93684750039d74389125",
+        "rawSha256": "48A799A3EEBA729CB9DCE28F1EA54E9B19A9D46E7AA7CA8F0696E90E0F6F10FB",
+        "validEncodedSha256": "11B22F82A971441132ADF3181F1C79BC0EDC21614BD261435A48059325A1D9A9",
+        "inputEncodedSha256": "11B22F82A971441132ADF3181F1C79BC0EDC21614BD261435A48059325A1D9A9",
+        "packetSha256": "8E637920B6EA1119D679A4CB5003735FC2BE5FA302E32B939ECE170C16874BFA",
+        "sum": 346112,
+        "completed": 512,
+        "primary": true,
+        "operations": 256
+      },
+      "native": [
+        {
+          "arm": "P31",
+          "librarySha256": "C02E2E42D1692C8DDADC5B95F26BF14ED013DFC99E509F5ED058C00639E9E30B",
+          "additionalWarmupCalls": 13024,
+          "caller": {
+            "method": "GenericCase`1[uint]:RunFrom(int):this (Tier1)",
+            "native_bytes": 2842,
+            "listing_availability": "complete",
+            "declared_native_sizes": [
+              2842
+            ],
+            "prologue_markers": 1,
+            "rsp_subtractions": [
+              248
+            ],
+            "call_sites": [
+              "call     CORINFO_HELP_NEWARR_1_VC",
+              "call     [System.SpanHelpers:Memmove(byref,byref,nuint)]",
+              "call     CORINFO_HELP_NEWSFAST",
+              "call     [Tedd.Voxtree.OctreeCodec:ValidateLevels(int)]",
+              "call     CORINFO_HELP_ASSIGN_REF",
+              "call     CORINFO_HELP_ASSIGN_REF",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[uint]:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref):bool]",
+              "call     [Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[uint]:GetSizeCode():byte]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[uint]:TryReadValue(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[uint]:GetSizeCode():byte]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[uint]:TryReadValue(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[uint]:TryValidateNode(System.ReadOnlySpan`1[byte],int,int,byref,byref):bool]",
+              "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowUnbuilt():uint]",
+              "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowCoordinate(System.String,int):uint]",
+              "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+              "call     CORINFO_HELP_NEWSFAST",
+              "call     [CORINFO_HELP_STRCNS]",
+              "call     [System.FormatException:.ctor(System.String):this]",
+              "call     CORINFO_HELP_THROW",
+              "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+              "call     CORINFO_HELP_RNGCHKFAIL",
+              "call     CORINFO_HELP_OVERFLOW"
+            ]
+          },
+          "validator": {
+            "method": "Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool (Tier1)",
+            "native_bytes": 1307,
+            "listing_availability": "complete",
+            "declared_native_sizes": [
+              1307
+            ],
+            "prologue_markers": 1,
+            "rsp_subtractions": [
+              168
+            ],
+            "call_sites": [
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+              "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+            ]
+          },
+          "listingSha256": "78bb8a2f2a1274871603d2e86746297354cf739828bdf4a6028b82336a09ea97"
+        },
+        {
+          "arm": "P39",
+          "librarySha256": "16DDDBF41259144E1828ADA9ACA1B8F18E23FCACBB4C0A1AE8AF9AB071C7BA30",
+          "additionalWarmupCalls": 38464,
+          "caller": {
+            "method": "GenericCase`1[uint]:RunFrom(int):this (Tier1)",
+            "native_bytes": 2979,
+            "listing_availability": "complete",
+            "declared_native_sizes": [
+              2979
+            ],
+            "prologue_markers": 1,
+            "rsp_subtractions": [
+              264
+            ],
+            "call_sites": [
+              "call     CORINFO_HELP_NEWARR_1_VC",
+              "call     [System.SpanHelpers:Memmove(byref,byref,nuint)]",
+              "call     CORINFO_HELP_NEWSFAST",
+              "call     [Tedd.Voxtree.OctreeCodec:ValidateLevels(int)]",
+              "call     CORINFO_HELP_ASSIGN_REF",
+              "call     CORINFO_HELP_ASSIGN_REF",
+              "call     [Tedd.Voxtree.VoxelCodec`1[uint]:TryGetCore(System.ReadOnlySpan`1[byte],int,byte,int,int,int,bool,byref):bool]",
+              "call     [Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[uint]:GetSizeCode():byte]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[uint]:TryReadValue(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[uint]:GetSizeCode():byte]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[uint]:TryReadValue(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+              "call     [Tedd.Voxtree.GenericOctreeCodec`1[uint]:TryValidateNode(System.ReadOnlySpan`1[byte],int,int,byref,byref):bool]",
+              "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowUnbuilt():uint]",
+              "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowCoordinate(System.String,int):uint]",
+              "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+              "call     CORINFO_HELP_NEWSFAST",
+              "call     [CORINFO_HELP_STRCNS]",
+              "call     [System.FormatException:.ctor(System.String):this]",
+              "call     CORINFO_HELP_THROW",
+              "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+              "call     CORINFO_HELP_RNGCHKFAIL",
+              "call     CORINFO_HELP_OVERFLOW"
+            ]
+          },
+          "validator": {
+            "method": "Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool (Tier1)",
+            "native_bytes": 1752,
+            "listing_availability": "complete",
+            "declared_native_sizes": [
+              1752
+            ],
+            "prologue_markers": 1,
+            "rsp_subtractions": [
+              184
+            ],
+            "call_sites": [
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [System.SpanHelpers:NonPackedIndexOfValueType[short,System.SpanHelpers+Negate`1[short]](byref,short,int):int]",
+              "call     [System.PackedSpanHelpers:IndexOf[System.SpanHelpers+Negate`1[short],System.PackedSpanHelpers+NopTransform](byref,short,int):int]",
+              "call     [Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool]",
+              "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+            ]
+          },
+          "listingSha256": "383c22ae97b834fec3db738b45af21fa91bf6fb08acb374730c9477a623b2aa6"
+        }
+      ]
+    }
+  ],
+  "limits": "New diagnostic regime cannot establish old timed-process tiers, latency cause, stack high-water mark, steady-state benefit or adoption. P39N remains stopped/inconclusive and no observations are pooled/replaced."
+}

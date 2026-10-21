@@ -451,6 +451,23 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    Original release/real byte consumer/full API/memory/format/allocation/10x
    qualifications remain open. Goal stays active; required workspace retained.
 
+27. P39W hyp-234625b37aff4f479b0d124081f63132 supports optimized-code
+   coverage after fixed additional priming only. Six exact-original-module
+   processes (three dominant-data FromEncoded modes/two modules),4096 minimum
+   additional calls plus3000ms, full independent oracles and512-operation final
+   fingerprints all pass/join. Common helper/dependencies/runtime/deps match;
+   only original CompactNormal.dll differs. No normal module is rebuilt.
+   Complete Tier1 RunFrom/ValidateCube coverage exists in all six; actual callers
+   grow137-185 bytes, genericUInt32 fixed rsp grows16. This new diagnostic epoch
+   establishes neither old timed-process tiers nor latency cause or benefit.
+   Phase34 verifies74paths/58blobs/onecatalog/zero time rows; see REPORT-PHASE34.
+   P39N stays stopped/inconclusive. Next preserve first controller failures
+   before finally-cleanup masks them and test that path deterministically.
+   Resolve rig prerequisites before a separately frozen full timing family
+   with justified priming; no resumption, pooling, retry replacement or adoption.
+   Full original-release/actual-byte-consumer/API/memory/format/allocation/10x
+   qualifications remain open; the complete goal remains active.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining

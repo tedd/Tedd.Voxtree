@@ -1,0 +1,32 @@
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Tedd.DotNetLab.Contracts;
+using Tedd.DotNetLab.Harness;
+
+if(args.Length!=2)throw new ArgumentException("Exact scenario and input hash required");
+Process.GetCurrentProcess().ProcessorAffinity=(nint)4;
+var scenario=CaseCatalog.Create().Single(c=>c.Spec.Id==args[0]);
+var descriptor=scenario.Describe();
+if(descriptor.Version!="25"||descriptor.InputHash!=args[1]||scenario.Spec.Op!="from"||scenario.Spec.Dataset!="D")throw new Exception("Original input binding");
+NormalMode.Validation=false;
+scenario.Prepare(new ScenarioContext("candidate",CancellationToken.None));
+scenario.Reset(new ResetContext(ResetLevel.LogicalState));
+var warm=Stopwatch.StartNew();long calls=0;
+do{for(int i=0;i<32;i++)scenario.ExecuteBatch(1);calls+=32;}while(calls<4096||warm.ElapsedMilliseconds<3000);
+if(!scenario.Validate().Correct)throw new Exception("Full warmup oracle");
+Thread.Sleep(250);
+scenario.Reset(new ResetContext(ResetLevel.LogicalState));
+scenario.ExecuteBatch(256);
+if(!scenario.Validate().Correct)throw new Exception("First fixed-batch oracle");
+Thread.Sleep(250);
+scenario.ExecuteBatch(256);
+if(!scenario.Validate().Correct)throw new Exception("Second fixed-batch oracle");
+var fingerprint=scenario.Fingerprint();scenario.Cleanup();
+string Hash(string path)=>Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)));
+Console.WriteLine(JsonSerializer.Serialize(new{scenario=descriptor.Id,version=descriptor.Version,inputHash=descriptor.InputHash,
+ runtime=RuntimeInformation.FrameworkDescription,architecture=RuntimeInformation.ProcessArchitecture.ToString(),
+ helperSha256=Hash(typeof(Program).Assembly.Location),librarySha256=Hash(typeof(CaseCatalog).Assembly.Location),
+ additionalWarmupCalls=calls,minimumWarmupCalls=4096,minimumWarmupMilliseconds=3000,finalOperations=512,
+ fingerprint,comparativeTimingRecords=0}));

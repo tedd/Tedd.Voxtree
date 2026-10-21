@@ -1,0 +1,24 @@
+{
+  "archive_bytes": 461145,
+  "manifest_paths": 74,
+  "unique_blobs": 58,
+  "catalogs": 1,
+  "metric_rows": 0,
+  "sha256": "aafc4d5fe270ab46473d78f84f63e3a18c412715a88150de24fd1795cb92ebc5",
+  "required_paths": [
+    "p39-warmup/catalog-export.json",
+    "p39-warmup/inputs.json",
+    "p39-warmup/frozen-bundles.json",
+    "p39-warmup/disposition-revision-response.json",
+    "p39-warmup-audit.json",
+    "native-summary-phase34-warmup.json",
+    "p39-warmup-probe-source/Program.cs",
+    "p39-warmup-driver-source/Run-CompactWarmupDiagnostic.ps1",
+    "p39-warmup-audit-driver-source/Audit-CompactWarmup.py",
+    "bundles/p39w0/CompactNormal.dll",
+    "bundles/p39w1/CompactNormal.dll",
+    "bundles/p39w0/CompactWarmup.dll",
+    "bundles/p39w1/CompactWarmup.dll"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}
