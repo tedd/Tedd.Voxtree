@@ -1,0 +1,28 @@
+{
+  "archive_bytes": 10001988,
+  "manifest_paths": 3953,
+  "unique_blobs": 3839,
+  "catalogs": 1,
+  "metric_rows": 182,
+  "sha256": "d372069d313d2d8808d76799e74d0201fcb56310261de9093c128215cae87c19",
+  "required_paths": [
+    "p39-normal/catalog-export.json",
+    "p39-normal/disposition-revision-response.json",
+    "p39-normal/run-driver-start.json",
+    "p39-normal/driver-failure.log",
+    "p39-normal-family-audit.json",
+    "p39-normal-family-disposition.json",
+    "p39-normal-cleanup-failure.json",
+    "p39-normal/failed-cleanup-orphan-launch.json",
+    "p39-normal-failure-inspection-initial.json",
+    "p39-normal-failure-inspection-driver-source/Inspect-CompactNormalFailure.ps1",
+    "p39-normal-family-driver-source/Audit-CompactNormalFamily.py",
+    "p39-normal-family-driver-source/Audit-CompactNormalFamily-initial.py.txt",
+    "p39-normal-family-driver-source/OriginalConfirmationService.cs.txt",
+    "p39-normal/launches/normal-session-c9c46c4bc80b4371a55ff1c993cac45c/CompactNormal.dll",
+    "bundles/p39n2/CompactNormal.dll",
+    "bundles/p39n3/CompactNormal.dll",
+    "native-summary-phase32-normal-storage.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

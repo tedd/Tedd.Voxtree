@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "completed_cases": 91,
+  "failed_cases": 1,
+  "unstarted_cases": 15,
+  "required_original_record_paths": 1009,
+  "retained_launches": 2194,
+  "retained_measured_sessions": 2193,
+  "unmeasured_launch": "normal-session-c9c46c4bc80b4371a55ff1c993cac45c",
+  "all_published_sessions_correct_quiescent_exited": true,
+  "cleaned_timing_storage_roots": 72,
+  "complete_family": false,
+  "source_adoption": false,
+  "archive_sha256": "d372069d313d2d8808d76799e74d0201fcb56310261de9093c128215cae87c19"
+}

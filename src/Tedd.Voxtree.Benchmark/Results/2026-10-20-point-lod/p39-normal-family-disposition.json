@@ -1,0 +1,17 @@
+{
+  "additionalUnmeasuredLaunches": 1,
+  "failedCases": 1,
+  "scope": "Original P39/P31-local family stopped under its prospective execution-failure rule. UnauthorizedAccessException in launch-directory cleanup may mask an earlier unmeasured-launch failure. All original records retained; no retry/replacement/partial-case comparison. Original margins/allocation policies unchanged. P31 remains unpromoted; original-release/consumer/full API/memory/format/allocation/original10x qualification remain open.",
+  "state": "inconclusive",
+  "promotionEligible": false,
+  "completedCases": 91,
+  "familyClassificationWithheld": true,
+  "plannedCases": 107,
+  "unstartedCases": 15,
+  "complete": false,
+  "primaryFutilityCount": 0,
+  "guardedHarmCount": 0,
+  "plannedSessions": 2568,
+  "sourceAdoption": false,
+  "retainedMeasuredSessions": 2193
+}

@@ -133,8 +133,8 @@ for item in plans:
         assert time['independent_blocks'] == allocation['independent_blocks'] == 12
         interval = time.get('difference_interval')
         usable = time['availability'] == 'available' and time['quality'] == 'usable' and interval is not None
-        futile = bool(primary and usable and interval['lower'] > 0.8)
-        harmful = bool(not primary and usable and interval['lower'] > 1.05)
+        futile = bool(complete and primary and usable and interval['lower'] > 0.8)
+        harmful = bool(complete and not primary and usable and interval['lower'] > 1.05)
         row.update(time=time, allocation=allocation,
                    median_ns={k: statistics.median(v) for k, v in obs.items()},
                    descriptive_speedup=1 / time['effect'] if time.get('effect') else None,
@@ -166,6 +166,16 @@ for path in sorted((task/'p39-normal-storage/traces').glob('*.json')):
     assert Path(r['root']).parent==task/'p39-normal-storage'
     storage_records.append(dict(file=path.name,sha256=hashlib.sha256(path.read_bytes()).hexdigest(),record=r))
 if complete:assert len(storage_records)==72 and {(r['record']['pid'],r['record']['startTicks']) for r in storage_records}==load_identities
+failure_evidence=None
+if not complete:
+    failure_evidence=read(task/'p39-normal-cleanup-failure.json')
+    assert failure_evidence['orphanProcessNotLive'] and failure_evidence['completedOrphanSessionRecordAbsent']
+    assert not failure_evidence['restartedOrReplaced']
+    assert failure_evidence['orphanLaunch']['session_id'] not in ids
+    failed=[r for r in rows if r['state']=='failed'];assert len(failed)==1
+    assert failed[0]['operation_id']==failure_evidence['failedOperation']
+    assert sum(r['state']=='unexecuted_or_unresolved_after_failure' for r in rows)==15
+    assert len(storage_records)==72 and len(ids)==2193 and len(controllers)==92
 
 audit = dict(epoch='p39-normal-first-family-v25', control='Unpromoted P31 compact-leaf13-source', candidate='P39 terminal validator only',
              complete=complete, planned_cases=107, planned_sessions=2568,
@@ -176,7 +186,9 @@ audit = dict(epoch='p39-normal-first-family-v25', control='Unpromoted P31 compac
              disposition='not_supported' if counterevidence else 'inconclusive', source_adoption=False,
              cases=rows, separate_exact_module_native_preflight_sha256=hashlib.sha256((task/'p39-normal-preflight.json').read_bytes()).hexdigest(),
              storage_records=storage_records, cleaned_timing_storage_roots=len(storage_records),
-             rule='Only prospective usable/available difference intervals classify futility or guarded harm; no point-estimate rejection, allocation waiver, pooling or expansion.',
+             additional_unmeasured_launch=failure_evidence,
+             family_classification_withheld=not complete,
+             rule='Only after the complete family may prospective usable/available intervals classify futility or guarded harm; incomplete-family intervals are retained without disposition. No point-estimate rejection, allocation waiver, pooling or expansion.',
              limits='P31-local first family cannot authorize adoption; P31 remains unpromoted. Residual paired independence, heap/code placement, thermal/SMT/unrelated load, GC and OS cache remain limitations. Full affected API/memory/format/allocation, original-release and actual consumer confirmation plus original10x remain open. Optimized FromEncoded callers were unavailable in bounded native diagnostics.')
 output.write_text(json.dumps(audit, indent=2) + '\n')
 print(json.dumps({k: v for k, v in audit.items() if k not in ['cases', 'limits', 'rule', 'storage_records']}))

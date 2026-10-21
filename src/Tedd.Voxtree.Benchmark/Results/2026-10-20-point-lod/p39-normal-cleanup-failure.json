@@ -1,0 +1,62 @@
+{
+  "completedOrphanSessionRecordAbsent": true,
+  "orphanLaunch": {
+    "session_id": "normal-session-c9c46c4bc80b4371a55ff1c993cac45c",
+    "execution_id": "op-246012b2c7e14844ae19ba390dc707e4-confirmation",
+    "process_id": 2320,
+    "start_time_utc_ticks": "639281981937047670",
+    "build_id": "build-07a0787475c54298a1541dc6ec2f4539",
+    "started_at": "2026-10-21T18:49:53.703287+02:00"
+  },
+  "error": {
+    "operation_id": "op-246012b2c7e14844ae19ba390dc707e4",
+    "plan_id": "confirm-plan-39f535655c03499a849f8e8218e0d392",
+    "execution_id": "op-246012b2c7e14844ae19ba390dc707e4-confirmation",
+    "failure_code": "confirmation_failed",
+    "exception_type": "System.UnauthorizedAccessException",
+    "hresult": -2147024891,
+    "detail": "System.UnauthorizedAccessException: Access to the path 'CompactNormal.dll' is denied.\r\n   at System.IO.FileSystem.RemoveDirectoryRecursive(String fullPath, WIN32_FIND_DATA& findData, Boolean topLevel)\r\n   at System.IO.Directory.Delete(String path, Boolean recursive)\r\n   at Tedd.DotNetLab.Artifacts.OwnedDirectoryCleanup.DeleteAsync(String ownerRoot, String directory, CancellationToken cancellation) in D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\coldlog-controller-source\\src\\Tedd.DotNetLab.Artifacts\\OwnedDirectoryCleanup.cs:line 22\r\n   at Tedd.DotNetLab.Application.LabService.RemoveOwnedLaunchDirectoryAsync(String directory) in D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\coldlog-controller-source\\src\\Tedd.DotNetLab.Application\\NormalBuildService.cs:line 177\r\n   at Tedd.DotNetLab.Application.LabService.RunNormalSessionAsync(ConfirmationPlan plan, NormalBuild build, String executionId, Int32 block, Int32 arm, String variant, Grant parent, CancellationToken cancellation) in D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\coldlog-controller-source\\src\\Tedd.DotNetLab.Application\\ConfirmationService.cs:line 255\r\n   at Tedd.DotNetLab.Application.LabService.<>c__DisplayClass35_0.<<StartConfirmation>b__0>d.MoveNext() in D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\coldlog-controller-source\\src\\Tedd.DotNetLab.Application\\ConfirmationService.cs:line 106",
+    "detail_truncated": false,
+    "recorded_utc": "2026-10-21T18:50:05.0108348+02:00"
+  },
+  "failedScenario": "compact-normal-Generic16-F-get",
+  "failedExecution": "op-246012b2c7e14844ae19ba390dc707e4-confirmation",
+  "residualFiles": [
+    {
+      "bytes": 260608,
+      "sha256": "C02E2E42D1692C8DDADC5B95F26BF14ED013DFC99E509F5ED058C00639E9E30B",
+      "name": "CompactNormal.dll",
+      "attributes": "Archive"
+    },
+    {
+      "bytes": 194560,
+      "sha256": "9FCBD3519FAA44EDCF6D7E4D63AAD75468418FAA669F07F7D284511EFE71CF1F",
+      "name": "Tedd.DotNetLab.Contracts.dll",
+      "attributes": "Archive"
+    },
+    {
+      "bytes": 78848,
+      "sha256": "03F207F376EF324DD3C4DAFE6D0BE49F3083111EA68BF27136B06A3E3681A613",
+      "name": "Tedd.DotNetLab.Harness.dll",
+      "attributes": "Archive"
+    },
+    {
+      "bytes": 28160,
+      "sha256": "B8FD64C3DE543F6642B1925128D1517CACA92F56F29E2DBD489E395EF53CA87A",
+      "name": "Tedd.DotNetLab.Transport.Local.dll",
+      "attributes": "Archive"
+    }
+  ],
+  "remainingCasesNotStarted": 15,
+  "failedOperation": "op-246012b2c7e14844ae19ba390dc707e4",
+  "qualification": "Cleanup threw UnauthorizedAccessException in finally after the original process was stopped; no retained measurement/session exists for this tenth launch. Nine listed sessions are retained separately. Cleanup may mask an earlier startup/execution failure; no cause, correctness or exit-code conclusion is established for the tenth launch. Residual directory retained; no lock-owner attribution or deletion attempted.",
+  "orphanProcessNotLive": true,
+  "residualDirectory": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\p39-normal\\launches\\normal-session-c9c46c4bc80b4371a55ff1c993cac45c",
+  "controllerJoined": {
+    "startTicks": "639281981809375236",
+    "joined": true,
+    "pid": 55136,
+    "exitCode": 0
+  },
+  "restartedOrReplaced": false
+}

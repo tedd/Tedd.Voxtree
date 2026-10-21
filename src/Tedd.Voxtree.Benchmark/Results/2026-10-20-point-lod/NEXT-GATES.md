@@ -432,6 +432,25 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    Independent original-release/real-consumer/full API/memory/format/allocation
    and original10x qualifications remain open; goal stays active.
 
+26. P39N original first normal family stops under its frozen failure rule:
+   91 completed cases,2193 correct/quiescent/exited measured sessions,92 joined
+   controllers,72 cleaned timing storage roots. All23 targets and68 guards
+   complete; Generic16-F-get retains nine sessions then its tenth launch fails;
+   15 later cases never start. UnauthorizedAccessException in finally cleanup
+   may mask an earlier error; unmeasured launch PID2320/start639281981937047670
+   and four residual DLLs are preserved. No restart/replacement/partial compare.
+   Family classification is withheld; hypothesis becomes inconclusive. Phase33
+   verifies3953paths/3839blobs/182rows and1009per-case paths plus2194launches.
+   See REPORT-PHASE33. Individual estimates suggest faster validation but slower
+   FromEncoded under frozen500ms warmup; missing FromEncoded Tier1 coverage is
+   an unresolved competing explanation. No cause, adoption or10x inference.
+   Next preserve first startup/execution exceptions before cleanup can mask
+   them, validate failure-only logging deterministically, and freeze a separate
+   exact-binary extended-warmup/tier diagnostic. Resolve prerequisites before
+   freezing a new full family. Do not resume, expand or pool the stopped one.
+   Original release/real byte consumer/full API/memory/format/allocation/10x
+   qualifications remain open. Goal stays active; required workspace retained.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining
