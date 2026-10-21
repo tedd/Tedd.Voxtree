@@ -110,13 +110,14 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    retain adverse guards before revising its hypothesis or selecting a source.
    The first eight primary estimates include UInt32 owned Get9.954x and
    owned LOD8.287x, below10x. Do not promote from the other six passing estimates.
-8. P28 is prepared, unexecuted, conditional on verified P27 closure. It changes
-   only the two owned LOD getter boundaries, retaining a single volatile array
-   snapshot, exception/output order and exact P27 format/codecs. Its prospective
-   two-case10% primary and full48-case screen remain separate from a future
-   direct-release10x confirmation. No inherited-ratio multiplication. New tests
-   check unbuilt/built out-state, coordinate precedence and generic publication;
-   execute both parent and candidate under host admission before timing.
+8. P28 is not selected before implementation. Branch inspection establishes
+   that P27's valid palette owned LOD path already inlines the proposed span
+   boundary in both widths. The complete caller's remaining AsSpan/Get calls
+   belong to other branches. Preserve its unexecuted protocol/generator and
+   precise precheck; Prepare-P28 refuses execution. New contract tests remain
+   committed but unexecuted during P27 host occupancy. Select a distinct read
+   mechanism from actual executed code; direct-release10x confirmation remains
+   necessary and ratios from successive experiments are never multiplied.
 
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.

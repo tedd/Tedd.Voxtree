@@ -1,5 +1,6 @@
 param([Parameter(Mandatory)][string]$TaskRoot,[Parameter(Mandatory)][string]$LabDirectory)
 $ErrorActionPreference='Stop'
+throw 'P28 not selected: actual P27 owned LOD palette branches already inline the proposed span boundary. See P28-BOUNDARY-PRECHECK.md.'
 if([IO.Path]::GetFullPath($TaskRoot).TrimEnd('\') -ne 'D:\Workspaces\AI\voxtree-point-lod-20261020'){throw 'Unexpected task root'}
 . (Join-Path $PSScriptRoot 'Host-Lock.ps1')
 $names=@('Register-Hypothesis.ps1','Prepare-OwnedLod.py','Review-OwnedLod.py','Scenarios-byte-palette.cs.txt','PaletteLeafTests.cs.txt','Test-PackedLookup.ps1','Build-Rig.ps1','OWNED-LOD-DIRECT-PROTOCOL.md')

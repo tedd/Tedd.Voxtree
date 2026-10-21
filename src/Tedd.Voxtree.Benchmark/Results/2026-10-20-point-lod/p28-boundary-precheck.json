@@ -1,0 +1,45 @@
+{
+  "candidate": "P28 proposed owned LOD boundary removal",
+  "gate": "preimplementation generated-code check",
+  "disposition": "not_selected_compiler_already_removes_proposed_boundary",
+  "timed_candidate_runs": 0,
+  "evidence": [
+    {
+      "file": "p27-UInt16-owned-code.asm",
+      "sha256": "cb3f50e7683e8062be338f9ccf6dbf8cf909a82e1a5869c581f28cd4b6ed575c",
+      "method": "ForceUInt16Scenario:AfterBatchOwned(int):this (Tier1)",
+      "palette_lod_fallthrough_block_range": "IG10..IG16",
+      "fallthrough_calls": [],
+      "inlined_index_and_state_loads": true,
+      "other_branch_get_span_calls": [
+        {
+          "block": "G_M000_IG62",
+          "call": "call     [Tedd.Voxtree.Octree`1[ushort]:AsSpan():Tedd.Voxtree.OctreeSpan`1[ushort]:this]"
+        },
+        {
+          "block": "G_M000_IG62",
+          "call": "call     [Tedd.Voxtree.OctreeSpan`1[ushort]:Get(int,int,int,byref):ushort:this]"
+        }
+      ]
+    },
+    {
+      "file": "p27-UInt32-owned-code.asm",
+      "sha256": "1402238575c57e845b8a6e40c6c545793b6ce1a10185781b5974d2d8d8c946d7",
+      "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1)",
+      "palette_lod_fallthrough_block_range": "IG10..IG17",
+      "fallthrough_calls": [],
+      "inlined_index_and_state_loads": true,
+      "other_branch_get_span_calls": [
+        {
+          "block": "G_M000_IG75",
+          "call": "call     [Tedd.Voxtree.Octree:AsSpan():Tedd.Voxtree.OctreeSpan:this]"
+        },
+        {
+          "block": "G_M000_IG75",
+          "call": "call     [Tedd.Voxtree.OctreeSpan:Get(int,int,int,byref):uint:this]"
+        }
+      ]
+    }
+  ],
+  "limits": "Normal valid palette fallthrough, separate diagnostic process; fallback/error paths and quiet-run code identity are not inferred. No measured speedup or hardware bottleneck claim."
+}
