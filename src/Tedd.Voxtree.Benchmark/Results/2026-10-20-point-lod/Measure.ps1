@@ -6,7 +6,7 @@ param(
     [string[]]$SelectedScenarios = @(),
     [string]$Label = 'exploration',
     [ValidatePattern('^[0-9]+$')][string]$Seed = '20261022',
-    [ValidateSet('fixed','scaled','precision','bounded-lifecycle','bounded-point','bounded-consumer','bounded-consumer-v14')][string]$Budget = 'fixed',
+    [ValidateSet('fixed','scaled','precision','bounded-lifecycle','bounded-point','bounded-consumer','bounded-consumer-v14','bounded-consumer-v16')][string]$Budget = 'fixed',
     [ValidateSet('quiet-validation','cpu-diagnostic')][string]$Profile = 'quiet-validation',
     [string]$JitDisasm = '',
     [string]$JitAssembly = '',
@@ -116,6 +116,10 @@ try {
         }
         if ($Budget -eq 'bounded-consumer-v14') {
             if($scenario.version -ne '14' -or $scenario.id -notlike 'bulk-*'){throw 'Version-14 consumer budget requires its frozen fixture'}
+            $operations=if($scenario.id -like '*-buildread'){2}elseif($scenario.id -match '-(copy|validate|count|miss|count7|miss7|count17|miss17)$'){64}else{16}
+        }
+        if ($Budget -eq 'bounded-consumer-v16') {
+            if($scenario.version -ne '16' -or $scenario.id -notlike 'bulk-*'){throw 'Version-16 consumer budget requires its frozen compact fixture'}
             $operations=if($scenario.id -like '*-buildread'){2}elseif($scenario.id -match '-(copy|validate|count|miss|count7|miss7|count17|miss17)$'){64}else{16}
         }
         $plan = Invoke-Lab 'lab.experiment' @{

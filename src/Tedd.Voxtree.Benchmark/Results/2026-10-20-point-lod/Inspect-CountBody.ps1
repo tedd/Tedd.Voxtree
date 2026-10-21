@@ -1,7 +1,7 @@
 param([Parameter(Mandatory)][string]$TaskRoot,
       [ValidatePattern('^[a-z][a-z0-9-]*$')][string]$Label='p18count-body2',
       [ValidatePattern('^[a-z][a-z0-9-]*$')][string]$BundleLabel='p18bulk',
-      [ValidateSet('CountBodyProbe.cs.txt','CountShapeProbe.cs.txt','BuilderProbe.cs.txt','BuildPlanReuseProbe.cs.txt','BuilderOracle.cs.txt','PackedWriterOracle.cs.txt')][string]$ProbeSource='CountBodyProbe.cs.txt',
+      [ValidateSet('CountBodyProbe.cs.txt','CountShapeProbe.cs.txt','BuilderProbe.cs.txt','BuildPlanReuseProbe.cs.txt','BuilderOracle.cs.txt','PackedWriterOracle.cs.txt','CompactWriterOracle.cs.txt','CompactFormatProbe.cs.txt')][string]$ProbeSource='CountBodyProbe.cs.txt',
       [string]$Methods='*Packed* *Count* *RunCore* *Accept* *TryGet*')
 $ErrorActionPreference='Stop'
 if([IO.Path]::GetFullPath($TaskRoot).TrimEnd('\') -ne 'D:\Workspaces\AI\voxtree-point-lod-20261020'){throw 'Unexpected task root'}

@@ -10,6 +10,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('directory', type=Path)
 parser.add_argument('--label', required=True)
 parser.add_argument('--require', action='append', default=[])
+parser.add_argument('--prerequisites-only', action='store_true', help='Require zero comparison/objective files; permit absent measurement CSV')
 args = parser.parse_args()
 archive = args.directory / f'evidence-{args.label}.zip'
 output = args.directory / f'evidence-{args.label}-verified.json'
@@ -42,8 +43,14 @@ with zipfile.ZipFile(archive) as stream:
         for table in tables:
             assert table['schema'] and table['columns']
             assert all(len(row) == len(table['columns']) for row in table['rows'])
-with (args.directory / f'measurements-{args.label}.csv').open(newline='', encoding='utf-8-sig') as source:
-    metric_rows = sum(1 for _ in csv.DictReader(source))
+csv_path = args.directory / f'measurements-{args.label}.csv'
+if args.prerequisites_only:
+    assert not any(p.endswith('comparison.json') or p.endswith('objective_vector.json') for p in paths)
+    assert not csv_path.exists(), 'Prerequisite archive must have no measurement export'
+    metric_rows = 0
+else:
+    with csv_path.open(newline='', encoding='utf-8-sig') as source:
+        metric_rows = sum(1 for _ in csv.DictReader(source))
 result = dict(archive_bytes=archive.stat().st_size, manifest_paths=len(manifest),
               unique_blobs=len(blobs), catalogs=len(catalogs), metric_rows=metric_rows,
               sha256=digest, required_paths=args.require,

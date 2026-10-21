@@ -2,11 +2,13 @@ param([Parameter(Mandatory)][string]$TaskRoot,[ValidatePattern('^[a-z][a-z0-9-]*
       [ValidatePattern('^[a-z][a-z0-9-]*$')][string]$SourceDirectoryName='packed-lookup-source',
       [string]$FixtureName='PackedLookupTests.cs.txt',
       [string]$ExtraFixtureName='',
+      [string]$BaselineSourceDirectoryName='',
       [switch]$JointStates,
       [switch]$DirectStates,
       [switch]$ByteEncoding,
       [switch]$PackedLeaf,
       [switch]$PaletteLeaf,
+      [switch]$CompactLeaf,
       [switch]$WordStorage)
 $ErrorActionPreference='Stop'
 if([IO.Path]::GetFullPath($TaskRoot).TrimEnd('\') -ne 'D:\Workspaces\AI\voxtree-point-lod-20261020'){throw 'Unexpected task root'}
@@ -26,11 +28,18 @@ if($WordStorage){
     if(-not $text.Contains($anchor)){throw 'Packed-word test expectation anchor changed'}
     $text.Replace($anchor,'values.Length / 2 + values.Length / 16 + 64, lookup.StorageBytes') | Set-Content -LiteralPath $testPath
 }
-if($JointStates -or $DirectStates -or $ByteEncoding -or $PackedLeaf -or $PaletteLeaf){
+if($JointStates -or $DirectStates -or $ByteEncoding -or $PackedLeaf -or $PaletteLeaf -or $CompactLeaf){
     $text=Get-Content -LiteralPath (Join-Path $repo 'src/Tedd.Voxtree.Tests/OctreeLookupTests.cs') -Raw
     $anchor='Assert.Equal(((source.Length - 1) / 7 - 1) * 36, lookup.StorageBytes);'
     if(-not $text.Contains($anchor)){throw 'Original node-payload assertion changed'}
-    if($PaletteLeaf){
+    if($CompactLeaf){
+        $kind='Assert.Equal(0, encoded[1] & 3);'
+        $payload='if (BitConverter.IsLittleEndian) Assert.Equal(2 + source.Length * sizeof(uint), lookup.StorageBytes);'
+        if(-not $text.Contains($kind) -or -not $text.Contains($payload)){throw 'Original compact lookup assertions changed'}
+        $text=$text.Replace($kind,'Assert.True((encoded[0] == 0x4f && (encoded[1] & 3) == 0) || (encoded[0] == 0x52 && (encoded[1] & 3) == 3));')
+        $text=$text.Replace($payload,'if (encoded[0] == 0x52) Assert.Equal(2 + source.Length * 2, lookup.StorageBytes); else if (BitConverter.IsLittleEndian) Assert.Equal(2 + source.Length * sizeof(uint), lookup.StorageBytes);')
+        $text=$text.Replace($anchor,'if (tree.Data.Span[0] == 0x52) Assert.Equal(2 + source.Length * 2, lookup.StorageBytes); else '+$anchor)
+    }elseif($PaletteLeaf){
         $kind='Assert.Equal(0, encoded[1] & 3);'
         $payload='if (BitConverter.IsLittleEndian) Assert.Equal(2 + source.Length * sizeof(uint), lookup.StorageBytes);'
         if(-not $text.Contains($kind) -or -not $text.Contains($payload)){throw 'Original palette lookup assertions changed'}
@@ -49,7 +58,15 @@ if($JointStates -or $DirectStates -or $ByteEncoding -or $PackedLeaf -or $Palette
     $text | Set-Content -LiteralPath (Join-Path $validation 'tests/OctreeLookupTests.cs')
     $excludedTests+=";$repo/src/Tedd.Voxtree.Tests/OctreeLookupTests.cs"
 }
-@{source=$SourceDirectoryName;fixture=$FixtureName;wordStorage=[bool]$WordStorage;jointStates=[bool]$JointStates;directStates=[bool]$DirectStates;byteEncoding=[bool]$ByteEncoding;packedLeaf=[bool]$PackedLeaf;paletteLeaf=[bool]$PaletteLeaf;testSha256=(Get-FileHash -LiteralPath (Join-Path $validation 'tests/PackedLookupTests.cs')).Hash;lookupTestsSha256=$(if($JointStates -or $DirectStates -or $ByteEncoding -or $PackedLeaf -or $PaletteLeaf){(Get-FileHash -LiteralPath (Join-Path $validation 'tests/OctreeLookupTests.cs')).Hash}else{$null})} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $TaskRoot "packed-lookup-test-options-$Label.json")
+$baselineCompile=''
+if($BaselineSourceDirectoryName){
+    if($BaselineSourceDirectoryName -notmatch '^[a-z][a-z0-9-]*$'){throw 'Invalid baseline source identity'}
+    $baselinePath=Join-Path $TaskRoot $BaselineSourceDirectoryName
+    if(-not (Test-Path -LiteralPath $baselinePath)){throw 'Missing complete baseline sources'}
+    $baselineCompile='<Compile Include="'+$baselinePath.Replace('\','/')+'/*.cs"/>'
+    Get-ChildItem -LiteralPath $baselinePath -Filter '*.cs' | Get-FileHash | Select-Object Path,Hash | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $validation 'baseline-source-binding.json')
+}
+@{source=$SourceDirectoryName;fixture=$FixtureName;baselineSource=$BaselineSourceDirectoryName;wordStorage=[bool]$WordStorage;jointStates=[bool]$JointStates;directStates=[bool]$DirectStates;byteEncoding=[bool]$ByteEncoding;packedLeaf=[bool]$PackedLeaf;paletteLeaf=[bool]$PaletteLeaf;compactLeaf=[bool]$CompactLeaf;testSha256=(Get-FileHash -LiteralPath (Join-Path $validation 'tests/PackedLookupTests.cs')).Hash;lookupTestsSha256=$(if($JointStates -or $DirectStates -or $ByteEncoding -or $PackedLeaf -or $PaletteLeaf -or $CompactLeaf){(Get-FileHash -LiteralPath (Join-Path $validation 'tests/OctreeLookupTests.cs')).Hash}else{$null})} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $TaskRoot "packed-lookup-test-options-$Label.json")
 @'
 <Project Sdk="Microsoft.NET.Sdk">
  <PropertyGroup><TargetFrameworks>net11.0;net10.0;netstandard2.1</TargetFrameworks><LangVersion>14.0</LangVersion><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><EnableDefaultCompileItems>false</EnableDefaultCompileItems><UseSharedCompilation>false</UseSharedCompilation><AssemblyName>Tedd.Voxtree</AssemblyName></PropertyGroup>
@@ -60,7 +77,7 @@ if($JointStates -or $DirectStates -or $ByteEncoding -or $PackedLeaf -or $Palette
 @"
 <Project Sdk="Microsoft.NET.Sdk">
  <PropertyGroup><TargetFrameworks>net11.0;net10.0;net8.0</TargetFrameworks><LangVersion>12.0</LangVersion><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><IsTestProject>true</IsTestProject><UseSharedCompilation>false</UseSharedCompilation></PropertyGroup>
- <ItemGroup><Compile Include="$repo/src/Tedd.Voxtree.Tests/*.cs" Exclude="$excludedTests"/><Compile Include="$repo/src/Shared/SimulationWorkload.cs"/><ProjectReference Include="../Library.csproj"/><PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1"/><PackageReference Include="xunit" Version="2.9.3"/><PackageReference Include="xunit.runner.visualstudio" Version="3.1.5"/></ItemGroup>
+ <ItemGroup>$baselineCompile<Compile Include="$repo/src/Tedd.Voxtree.Tests/*.cs" Exclude="$excludedTests"/><Compile Include="$repo/src/Shared/SimulationWorkload.cs"/><ProjectReference Include="../Library.csproj"/><PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1"/><PackageReference Include="xunit" Version="2.9.3"/><PackageReference Include="xunit.runner.visualstudio" Version="3.1.5"/></ItemGroup>
 </Project>
 "@ | Set-Content -LiteralPath (Join-Path $validation 'tests/Tests.csproj')
 $env:TEMP=Join-Path $TaskRoot 'temp';$env:TMP=$env:TEMP

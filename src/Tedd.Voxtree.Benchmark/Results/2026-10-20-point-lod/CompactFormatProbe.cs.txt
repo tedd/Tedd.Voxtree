@@ -1,0 +1,15 @@
+// Native prerequisite only. Both arms use the selected paired bulk fixture.
+using System.Diagnostics;
+using Tedd.DotNetLab.Contracts;
+using Tedd.DotNetLab.Harness;
+if(OperatingSystem.IsWindows())Process.GetCurrentProcess().ProcessorAffinity=(nint)4;
+foreach(string type in new[]{"UInt32","UInt16"})
+foreach(string op in new[]{"construct","callerbuild","count","count7","count17","validate"}){
+    ISynchronousScenario scenario=type=="UInt32"?new BulkUInt32Scenario("mixed-u16-air",op):new BulkUInt16Scenario("mixed-u16-air",op);
+    foreach(string variant in new[]{"baseline","candidate"}){
+        scenario.Prepare(new ScenarioContext(variant,CancellationToken.None));
+        scenario.Reset(new ResetContext(ResetLevel.LogicalState));
+        if(scenario.ExecuteBatch(64)!=64||!scenario.Validate().Correct)throw new Exception("Compact format native oracle failed");
+        scenario.Cleanup();Console.WriteLine(scenario.Describe().Id+" "+variant+" valid");
+    }
+}

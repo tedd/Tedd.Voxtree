@@ -27,17 +27,20 @@ try {
     $baselineFiles = @(& git -C $repoRoot ls-tree -r --name-only $BaselineRevision -- src/Tedd.Voxtree)
     $candidateFiles = if ($CandidateRevision) { @(& git -C $repoRoot ls-tree -r --name-only $CandidateRevision -- src/Tedd.Voxtree) } else { @() }
     $sourceDirectory = if ($CandidateSource) { $CandidateSource } else { Join-Path $repoRoot 'src/Tedd.Voxtree' }
+    # Snapshot the entire control independently: candidate files may be removed
+    # or renamed, and their absence must never prune the baseline implementation.
+    $baselineNames=if($BaselineSource){@(Get-ChildItem -LiteralPath $BaselineSource -Filter '*.cs'|Select-Object -ExpandProperty Name)}else{@($baselineFiles|Where-Object{$_.EndsWith('.cs')}|ForEach-Object{[IO.Path]::GetFileName($_)})}
+    foreach($name in $baselineNames){
+        $relative='src/Tedd.Voxtree/'+$name
+        if($BaselineSource){$original=Get-Content -LiteralPath (Join-Path $BaselineSource $name) -Raw}
+        else{
+            $original=(& git -C $repoRoot show "${BaselineRevision}:$relative") -join "`n"
+            if($LASTEXITCODE -ne 0){throw "Cannot snapshot $relative"}
+        }
+        $original.Replace('Tedd.Voxtree','Snapshot.Voxtree')|Set-Content -LiteralPath (Join-Path $baselineDirectory $name)
+    }
     foreach ($file in Get-ChildItem $sourceDirectory -Filter '*.cs') {
         $relative = 'src/Tedd.Voxtree/' + $file.Name
-        if (($BaselineSource -and (Test-Path -LiteralPath (Join-Path $BaselineSource $file.Name))) -or $baselineFiles -contains $relative) {
-            if ($BaselineSource) {
-                $original = Get-Content -LiteralPath (Join-Path $BaselineSource $file.Name) -Raw
-            } else {
-                $original = (& git -C $repoRoot show "${BaselineRevision}:$relative") -join "`n"
-                if ($LASTEXITCODE -ne 0) { throw "Cannot snapshot $relative" }
-            }
-            $original.Replace('Tedd.Voxtree','Snapshot.Voxtree') | Set-Content -LiteralPath (Join-Path $baselineDirectory $file.Name)
-        }
         if ($CandidateSource) {
             $current = Get-Content -LiteralPath (Join-Path $CandidateSource $file.Name) -Raw
         } elseif ($CandidateRevision) {

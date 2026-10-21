@@ -1,0 +1,155 @@
+using System.Buffers.Binary;
+using System.Runtime.InteropServices;
+using Xunit;
+using Release = Snapshot.Voxtree;
+
+namespace Tedd.Voxtree.Tests;
+
+public class CompactLeafTests
+{
+    static uint[] Values(int levels=3,uint maximum=8191)
+    {
+        int side=1<<levels;
+        var a=Enumerable.Range(0,side*side*side).Select(i=>(uint)(i&1)).ToArray();
+        for(int x=0;x<2;x++)for(int y=0;y<2;y++)for(int z=0;z<2;z++)a[(x*side+y)*side+z]=7;
+        a[Math.Min(123,a.Length-1)]=maximum;return a;
+    }
+    // Independent maximal-cube oracle: derive LOD directly from dense values.
+    static byte[] Lods(uint[] a,int levels)
+    {
+        int side=1<<levels;var lods=new byte[a.Length];
+        void Visit(int x,int y,int z,int level){
+            int n=1<<level;uint v=a[(x*side+y)*side+z];bool same=true;
+            for(int xx=x;xx<x+n&&same;xx++)for(int yy=y;yy<y+n&&same;yy++)for(int zz=z;zz<z+n;zz++)if(a[(xx*side+yy)*side+zz]!=v){same=false;break;}
+            if(same){for(int xx=x;xx<x+n;xx++)for(int yy=y;yy<y+n;yy++)for(int zz=z;zz<z+n;zz++)lods[(xx*side+yy)*side+zz]=(byte)level;return;}
+            int h=n/2;for(int c=0;c<8;c++)Visit(x+((c>>2)&1)*h,y+((c>>1)&1)*h,z+(c&1)*h,level-1);
+        }
+        Visit(0,0,0,levels);return lods;
+    }
+    static byte[] Reference(uint[] a,int levels,int width,bool generic)
+    {
+        byte[] old=generic?(width==2?new Release.Octree<ushort>(levels,a.Select(v=>(ushort)v).ToArray()).Data.ToArray():new Release.Octree<uint>(levels,a).Data.ToArray()):new Release.Octree(levels,a).Data.ToArray();
+        int h=generic?3:2,max=generic?(width==2?Release.Octree<ushort>.GetMaximumSize(levels):Release.Octree<uint>.GetMaximumSize(levels)):Release.Octree.GetMaximumSize(levels);
+        if(levels<3||levels>6||(old[1]&3)!=0||a.Max()>8191)return old;
+        var lods=Lods(a,levels);int states=a.Select((v,i)=>(v,lods[i])).Distinct().Count();
+        long model=h+2L+a.Length+states*width*2L,required=h+2L*a.Length;
+        if(states>256||model>max||4*model>5L*old.Length||required>max||2*required>5L*old.Length)return old;
+        var bytes=new byte[(int)required];bytes[0]=0x52;bytes[1]=(byte)(0xc3|(levels<<2));if(generic)bytes[2]=(byte)(width==2?1:2);
+        for(int i=0;i<a.Length;i++)BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(h+2*i),checked((ushort)(a[i]|((uint)lods[i]<<13))));
+        return bytes;
+    }
+    [Theory]
+    [InlineData(2,8191u)] [InlineData(3,8191u)] [InlineData(4,8191u)] [InlineData(6,8191u)]
+    [InlineData(3,8192u)] [InlineData(3,65535u)] [InlineData(3,uint.MaxValue)]
+    public void IndependentBytesAndEveryCellMatchPublishedSemantics(int levels,uint maximum)
+    {
+        var a=Values(levels,maximum);var small=a.Select(v=>(ushort)v).ToArray();var b=small.Select(v=>(uint)v).ToArray();
+        var classic=new Octree(levels,a);var narrow=new Octree<ushort>(levels,small);var wide=new Octree<uint>(levels,a);
+        Assert.Equal(Reference(a,levels,4,false),classic.Data.ToArray());Assert.Equal(Reference(b,levels,2,true),narrow.Data.ToArray());Assert.Equal(Reference(a,levels,4,true),wide.Data.ToArray());
+        Assert.True(classic.AsSpan().IsWellFormed());Assert.True(narrow.AsSpan().IsWellFormed());Assert.True(wide.AsSpan().IsWellFormed());
+        var old=new Release.Octree(levels,a);var oldN=new Release.Octree<ushort>(levels,small);var lookup=classic.CreateLookup();var restored=Octree.FromEncoded(classic.Data.Span);int side=1<<levels;
+        for(int i=0;i<a.Length;i++){
+            int x=i/(side*side),y=i/side%side,z=i%side;uint expected=old.Get(x,y,z,out int lod);
+            Assert.Equal(expected,classic.Get(x,y,z,out int actual));Assert.Equal(lod,actual);Assert.Equal(expected,wide.Get(x,y,z,out actual));Assert.Equal(lod,actual);
+            Assert.Equal(expected,lookup.Get(x,y,z,out actual));Assert.Equal(lod,actual);Assert.Equal(expected,restored.Get(x,y,z,out actual));Assert.Equal(lod,actual);
+            Assert.Equal(oldN.Get(x,y,z,out lod),narrow.Get(x,y,z,out actual));Assert.Equal(lod,actual);
+        }
+        var output=new uint[a.Length];classic.CopyTo(output);Assert.Equal(a,output);wide.CopyTo(output);Assert.Equal(a,output);
+        var noutput=new ushort[a.Length];narrow.CopyTo(noutput);Assert.Equal(small,noutput);
+    }
+    [Fact]
+    public void StateLimitAndUniformFallbackMatchIndependentSelection()
+    {
+        foreach(int states in new[]{256,257}){
+            var a=Enumerable.Range(0,32768).Select(i=>(uint)(i%states)).ToArray();
+            Assert.Equal(Reference(a,5,4,false),new Octree(5,a).Data.ToArray());Assert.Equal(Reference(a,5,2,true),new Octree<ushort>(5,a.Select(v=>(ushort)v).ToArray()).Data.ToArray());
+            Assert.Equal(states==256?(byte)0x52:(byte)0x4f,new Octree(5,a).Data.Span[0]);
+        }
+        foreach(uint value in new[]{0u,8191u,8192u,uint.MaxValue}){
+            var a=Enumerable.Repeat(value,512).ToArray();Assert.Equal(new Release.Octree(3,a).Data.ToArray(),new Octree(3,a).Data.ToArray());
+        }
+    }
+    [Fact]
+    public void CapacityOutcomesPrefixesTailsAndMortonRemainDefined()
+    {
+        foreach(uint maximum in new[]{8191u,8192u,uint.MaxValue}){
+            var a=Values(3,maximum);var expected=Reference(a,3,4,false);var old=new Release.Octree(3,a).Data.ToArray();bool compact=expected[0]==0x52;
+            Assert.Equal(expected.Length,Octree.GetRequiredSize(a,3));
+            foreach(int length in new[]{0,1,2,3,old.Length-1,old.Length,old.Length+1,expected.Length-1,expected.Length,expected.Length+1,Octree.GetMaximumSize(3)}.Distinct()){
+                var actual=Enumerable.Repeat((byte)0xa5,length).ToArray();var control=(byte[])actual.Clone();bool ok=Octree.TryBuild(a,3,actual,out int written);
+                if(compact&&length>=expected.Length){Assert.True(ok);Assert.Equal(expected.Length,written);Assert.Equal(expected,actual[..written]);Assert.All(actual[written..],v=>Assert.Equal((byte)0xa5,v));}
+                else{
+                    bool oldOk=Release.Octree.TryBuild(a,3,control,out int oldWritten);
+                    if(compact&&oldOk){Array.Fill(control,(byte)0xa5,0,2);oldOk=false;oldWritten=0;}
+                    Assert.Equal(oldOk,ok);Assert.Equal(oldWritten,written);Assert.Equal(control,actual);
+                }
+            }
+            var morton=new uint[512];Release.DenseVoxel.Convert(a,morton,3,Release.DenseVoxelLayout.Linear,Release.DenseVoxelLayout.Morton);
+            var tree=new Octree(3);tree.Build(morton,DenseVoxelLayout.Morton);Assert.Equal(expected,tree.Data.ToArray());var decoded=new uint[512];tree.CopyTo(decoded,DenseVoxelLayout.Morton);Assert.Equal(morton,decoded);
+            var typed=new Octree<uint>(3);typed.Build(morton,DenseVoxelLayout.Morton);Assert.Equal(Reference(a,3,4,true),typed.Data.ToArray());
+            var target=Enumerable.Repeat((byte)0xa5,typed.EncodedLength+9).ToArray();Assert.True(Octree<uint>.TryBuild(morton,3,target,out int n,DenseVoxelLayout.Morton));Assert.Equal(typed.Data.ToArray(),target[..n]);Assert.All(target[n..],v=>Assert.Equal((byte)0xa5,v));
+        }
+    }
+    static byte[] UniformWords(int levels,ushort word,bool generic=false)
+    {
+        int h=generic?3:2;var bytes=new byte[h+2*(1<<(3*levels))];bytes[0]=0x52;bytes[1]=(byte)(0xc3|(levels<<2));if(generic)bytes[2]=2;
+        for(int i=h;i<bytes.Length;i+=2)BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(i),word);return bytes;
+    }
+    [Fact]
+    public void StrictHeadersCanonicalPartitionsAndInvalidLodAreRejected()
+    {
+        var original=new Octree(3,Values()).Data.ToArray();Assert.Equal((byte)0x52,original[0]);
+        foreach(byte magic in new byte[]{0x4f,0x50,0x51}){var data=(byte[])original.Clone();data[0]=magic;Assert.False(OctreeSpan.TryCreate(data,out _));}
+        foreach(int version in new[]{0,1,2}){var data=(byte[])original.Clone();data[1]=(byte)((data[1]&63)|(version<<6));Assert.False(OctreeSpan.TryCreate(data,out _));}
+        foreach(int kind in new[]{0,1,2}){var data=(byte[])original.Clone();data[1]=(byte)((data[1]&252)|kind);Assert.False(OctreeSpan.TryCreate(data,out _));}
+        Assert.False(OctreeSpan.TryCreate(original[..^1],out _));Assert.False(OctreeSpan.TryCreate(original.Concat(new byte[]{0}).ToArray(),out _));
+        var typed=new Octree<ushort>(3,Values().Select(v=>(ushort)v).ToArray()).Data.ToArray();Assert.False(OctreeSpan.TryCreate(typed,out _));Assert.False(OctreeSpan<ushort>.TryCreate(original,out _));typed[2]=2;Assert.False(OctreeSpan<ushort>.TryCreate(typed,out _));
+        foreach(int lod in new[]{0,1,2,4,7}){var data=UniformWords(3,(ushort)(7|(lod<<13)));Assert.True(OctreeSpan.TryCreate(data,out var view));Assert.False(view.IsWellFormed());Assert.Throws<FormatException>(()=>Octree.FromEncoded(data));}
+        var valid=UniformWords(3,(ushort)(8191|(3<<13)));Assert.True(new OctreeSpan(valid).IsWellFormed());Assert.Equal(8191u,Octree.FromEncoded(valid).Get(7,7,7,out int l));Assert.Equal(3,l);
+        var misaligned=(byte[])original.Clone();BinaryPrimitives.WriteUInt16LittleEndian(misaligned.AsSpan(2+2*123),(ushort)(1|(1<<13)));Assert.False(new OctreeSpan(misaligned).IsWellFormed());
+    }
+    [Fact]
+    public void BorrowedMutationFailsWithoutCopySideEffects()
+    {
+        var data=new Octree(3,Values()).Data.ToArray();var view=new OctreeSpan(data);BinaryPrimitives.WriteUInt16LittleEndian(data.AsSpan(2),ushort.MaxValue);
+        Assert.False(view.TryGet(0,0,0,out uint value,out int lod));Assert.Equal(0u,value);Assert.Equal(0,lod);Assert.False(view.IsWellFormed());
+        var untouched=Enumerable.Repeat(99u,512).ToArray();Assert.False(view.TryCopyTo(untouched));Assert.All(untouched,v=>Assert.Equal(99u,v));
+        Assert.Throws<FormatException>(()=>new OctreeSpan(data).Get(0,0,0));Assert.Throws<ArgumentOutOfRangeException>(()=>new OctreeSpan(data).Get(-1,0,0));
+    }
+    [Fact]
+    public void CroppedCountsExerciseVectorWidthsMasksAndScalarTails()
+    {
+        var a=Values(6);var tree=new Octree(6,a);var narrow=new Octree<ushort>(6,a.Select(v=>(ushort)v).ToArray());var wide=new Octree<uint>(6,a);Assert.Equal((byte)0x52,tree.Data.Span[0]);
+        var filters=new[]{VoxelFilter.Any,VoxelFilter.NonZero,VoxelFilter.EqualTo(7),VoxelFilter.NotEqualTo(8191),VoxelFilter.Masked(5,1),VoxelFilter.EqualTo(8192),VoxelFilter.Masked(0xffffe000,8192)};
+        var fs=new[]{VoxelFilter<ushort>.Any,VoxelFilter<ushort>.NonZero,VoxelFilter<ushort>.EqualTo(7),VoxelFilter<ushort>.NotEqualTo(8191),VoxelFilter<ushort>.Masked(5,1),VoxelFilter<ushort>.EqualTo(8192),VoxelFilter<ushort>.Masked(0xe000,8192)};
+        var fw=new[]{VoxelFilter<uint>.Any,VoxelFilter<uint>.NonZero,VoxelFilter<uint>.EqualTo(7),VoxelFilter<uint>.NotEqualTo(8191),VoxelFilter<uint>.Masked(5,1),VoxelFilter<uint>.EqualTo(8192),VoxelFilter<uint>.Masked(0xffffe000,8192)};
+        foreach(int length in new[]{1,7,8,9,15,16,17,31,32,33,64})foreach(int f in Enumerable.Range(0,filters.Length)){
+            int start=length==64?0:1;var box=new VoxelBox(0,0,start,3,4,start+length);int count=0;
+            for(int x=0;x<3;x++)for(int y=0;y<4;y++)for(int z=start;z<start+length;z++)if(filters[f].Matches(a[(x*64+y)*64+z]))count++;
+            Assert.Equal(count,tree.CountMatches(box,filters[f]));Assert.Equal(count,narrow.CountMatches(box,fs[f]));Assert.Equal(count,wide.CountMatches(box,fw[f]));Assert.Equal(count!=0,tree.Any(box,filters[f]));
+        }
+        foreach(int bad in new[]{0,7,8,15,16,17,31,32,63}){
+            var data=tree.Data.ToArray();BinaryPrimitives.WriteUInt16LittleEndian(data.AsSpan(2+2*bad),ushort.MaxValue);
+            var box=new VoxelBox(0,0,0,1,1,64);Assert.Throws<FormatException>(()=>new OctreeSpan(data).CountMatches(box,VoxelFilter.EqualTo(9000)));
+            var outside=new VoxelBox(1,0,0,2,1,64);Assert.Equal(0,new OctreeSpan(data).CountMatches(outside,VoxelFilter.EqualTo(9000)));
+        }
+        var early=tree.Data.ToArray();BinaryPrimitives.WriteUInt16LittleEndian(early.AsSpan(2+2*63),ushort.MaxValue);Assert.True(new OctreeSpan(early).Any(new VoxelBox(0,0,0,1,1,64),VoxelFilter.Any));
+    }
+    [Fact]
+    public void GenericRawBitsRetainPublishedFallbackAndCompactBits()
+    {
+        foreach(uint raw in new[]{8191u,8192u,0x80000000u,0x7fc01234u,uint.MaxValue}){
+            var words=Values(3,raw);var floats=MemoryMarshal.Cast<uint,float>(words).ToArray();
+            Assert.Equal(Reference(words,3,4,true),new Octree<float>(3,floats).Data.ToArray());
+            if(raw>8191)Assert.Equal(new Release.Octree<float>(3,floats).Data.ToArray(),new Octree<float>(3,floats).Data.ToArray());
+        }
+        // A manually supplied valid R payload must reinterpret logical float bits.
+        var data=UniformWords(3,(ushort)(8191|(3<<13)),true);float f=Octree<float>.FromEncoded(data).Get(1,2,3);Assert.Equal(8191,BitConverter.SingleToInt32Bits(f));
+    }
+    [Fact]
+    public void LiteralPublishedFormatsRemainReadable()
+    {
+        byte[] uniform={0x4f,0x4d,7},uniform16={0x4f,0x8d,1,7};Assert.Equal(7u,Octree.FromEncoded(uniform).Get(7,7,7,out int lod));Assert.Equal(3,lod);Assert.Equal((ushort)7,Octree<ushort>.FromEncoded(uniform16).Get(7,7,7,out lod));Assert.Equal(3,lod);
+        byte[] tree={0x4f,0x44,255,0,1,2,3,4,5,6,7,9};var released=Octree.FromEncoded(tree);for(int i=0;i<8;i++){Assert.Equal((uint)i,released.Get(i/4,i/2%2,i%2,out lod));Assert.Equal(0,lod);}
+    }
+}

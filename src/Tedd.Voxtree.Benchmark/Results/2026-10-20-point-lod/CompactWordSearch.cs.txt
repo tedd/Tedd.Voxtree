@@ -1,0 +1,48 @@
+#if NET10_0_OR_GREATER
+using System;
+using System.Numerics;
+using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
+
+namespace Tedd.Voxtree;
+
+internal static class CompactWordSearch
+{
+    internal static int Count(ReadOnlySpan<ushort> words, int levels, uint rawMask, uint rawExpected, bool negate)
+    {
+        var mask = (ushort)(rawMask & 8191);
+        var expected = (ushort)rawExpected;
+        if ((rawExpected & ~8191u) != 0) { mask = 0; expected = 1; }
+        var maximum = (ushort)(((levels + 1) << 13) - 1);
+        var count = 0; var i = 0;
+        ref var start = ref MemoryMarshal.GetReference(words);
+        if (Vector256.IsHardwareAccelerated && words.Length >= Vector256<ushort>.Count)
+        {
+            var masks = Vector256.Create(mask); var targets = Vector256.Create(expected); var limits = Vector256.Create(maximum);
+            for (; i <= words.Length - Vector256<ushort>.Count; i += Vector256<ushort>.Count)
+            {
+                var actual = Vector256.LoadUnsafe(ref start, (nuint)i);
+                if (Vector256.GreaterThan(actual, limits).ExtractMostSignificantBits() != 0) throw new FormatException("Malformed packed leaf.");
+                count += BitOperations.PopCount(Vector256.Equals(actual & masks, targets).ExtractMostSignificantBits());
+            }
+        }
+        else if (Vector128.IsHardwareAccelerated && words.Length >= Vector128<ushort>.Count)
+        {
+            var masks = Vector128.Create(mask); var targets = Vector128.Create(expected); var limits = Vector128.Create(maximum);
+            for (; i <= words.Length - Vector128<ushort>.Count; i += Vector128<ushort>.Count)
+            {
+                var actual = Vector128.LoadUnsafe(ref start, (nuint)i);
+                if (Vector128.GreaterThan(actual, limits).ExtractMostSignificantBits() != 0) throw new FormatException("Malformed packed leaf.");
+                count += BitOperations.PopCount(Vector128.Equals(actual & masks, targets).ExtractMostSignificantBits());
+            }
+        }
+        for (; i < words.Length; i++)
+        {
+            var word = words[i];
+            if (word > maximum) throw new FormatException("Malformed packed leaf.");
+            count += (word & mask) == expected ? 1 : 0;
+        }
+        return negate ? words.Length - count : count;
+    }
+}
+#endif

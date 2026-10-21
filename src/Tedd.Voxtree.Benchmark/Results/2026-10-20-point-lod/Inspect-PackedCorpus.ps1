@@ -1,14 +1,17 @@
 param([Parameter(Mandatory)][string]$TaskRoot,
       [Parameter(Mandatory)][ValidatePattern('^[a-z][a-z0-9-]*$')][string]$Label,
-      [switch]$ReleaseBuilder,[switch]$PackedWordMagic,[switch]$ExactBytes,[switch]$PaletteLeaf,
-      [ValidatePattern('^[a-z][a-z0-9-]*$')][string]$ExactParentBundle='')
+      [ValidatePattern('^[a-z][a-z0-9-]*$')][string]$EvidenceLabel='',
+      [switch]$ReleaseBuilder,[switch]$PackedWordMagic,[switch]$ExactBytes,[switch]$PaletteLeaf,[switch]$CompactLeaf,
+      [ValidatePattern('^[a-z][a-z0-9-]*$')][string]$ExactParentBundle='',
+      [ValidatePattern('^[a-z][a-z0-9-]*$')][string]$ParentEligibilityBundle='')
 $ErrorActionPreference='Stop'
+if(-not $EvidenceLabel){$EvidenceLabel=$Label}
 if([IO.Path]::GetFullPath($TaskRoot).TrimEnd('\') -ne 'D:\Workspaces\AI\voxtree-point-lod-20261020'){throw 'Unexpected task root'}
 . (Join-Path $PSScriptRoot 'Host-Lock.ps1')
 $leases=Enter-VoxtreePerformanceHost
 try {
-    $root=Join-Path $TaskRoot "packed-corpus-$Label-source"
-    $output=Join-Path $TaskRoot "forcecraft-census-packed-$Label"
+    $root=Join-Path $TaskRoot "packed-corpus-$EvidenceLabel-source"
+    $output=Join-Path $TaskRoot "forcecraft-census-packed-$EvidenceLabel"
     if((Test-Path -LiteralPath $root) -or (Test-Path -LiteralPath $output)){throw 'Census label exists; preserve previous observations'}
     $snapshot=Join-Path $TaskRoot 'forcecraft-snapshot-s1'
     $manifest=@(Get-Content -LiteralPath (Join-Path $TaskRoot 'forcecraft-snapshot-s1.json') -Raw | ConvertFrom-Json)
@@ -26,15 +29,18 @@ try {
     $program=$program.Replace('if (!cache.TryGetValue(hash, out var stats))','PackedCorpus.Check(voxels, relative, slot, hash);' + [Environment]::NewLine + '        if (!cache.TryGetValue(hash, out var stats))')
     $program=$program.Replace('csv.Flush();','csv.Flush();' + [Environment]::NewLine + 'PackedCorpus.Finish();')
     $program | Set-Content -LiteralPath (Join-Path $root 'Program.cs')
-    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PackedCorpus.cs.txt') -Destination (Join-Path $root 'PackedCorpus.cs')
+    $corpusName=if($CompactLeaf){'CompactCorpus.cs.txt'}else{'PackedCorpus.cs.txt'}
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot $corpusName) -Destination (Join-Path $root 'PackedCorpus.cs')
     $parentReference='';$parentHash=$null
-    if($ExactParentBundle){
-        $parentBundle=Join-Path $TaskRoot "bundles/$ExactParentBundle"
-        foreach($file in (Get-Content -LiteralPath (Join-Path $TaskRoot "$ExactParentBundle-hashes.json") -Raw|ConvertFrom-Json)){
+    if($ExactParentBundle -and $ParentEligibilityBundle){throw 'Parent witness modes are mutually exclusive'}
+    $parentName=if($ParentEligibilityBundle){$ParentEligibilityBundle}else{$ExactParentBundle}
+    if($parentName){
+        $parentBundle=Join-Path $TaskRoot "bundles/$parentName"
+        foreach($file in (Get-Content -LiteralPath (Join-Path $TaskRoot "$parentName-hashes.json") -Raw|ConvertFrom-Json)){
             if((Get-FileHash -LiteralPath $file.Path).Hash -ne $file.Hash){throw 'Exact parent bundle changed'}
         }
-        $parentEntry=Join-Path $parentBundle "$ExactParentBundle.dll";$parentHash=(Get-FileHash -LiteralPath $parentEntry).Hash
-        $parentReference='<Reference Include="'+$ExactParentBundle+'"><HintPath>'+[Security.SecurityElement]::Escape($parentEntry.Replace('\','/'))+'</HintPath><Aliases>ParentPalette</Aliases></Reference>'
+        $parentEntry=Join-Path $parentBundle "$parentName.dll";$parentHash=(Get-FileHash -LiteralPath $parentEntry).Hash
+        $parentReference='<Reference Include="'+$parentName+'"><HintPath>'+[Security.SecurityElement]::Escape($parentEntry.Replace('\','/'))+'</HintPath><Aliases>ParentPalette</Aliases></Reference>'
         $corpus=Get-Content -LiteralPath (Join-Path $root 'PackedCorpus.cs') -Raw
         $parentAnchor='        var view = after.AsSpan(); var view16 = after16.AsSpan(); var view32 = after32.AsSpan();'
         if(([regex]::Matches($corpus,[regex]::Escape($parentAnchor))).Count -ne 1){throw 'Exact parent corpus anchor changed'}
@@ -43,18 +49,35 @@ try {
         Require(new ParentPalette::Tedd.Voxtree.Octree<ushort>(5,small).Data.Span.SequenceEqual(after16.Data.Span),"Exact parent UInt16 encoding");
         Require(new ParentPalette::Tedd.Voxtree.Octree<uint>(5,values).Data.Span.SequenceEqual(after32.Data.Span),"Exact parent generic UInt32 encoding");
 '@
+        if($ParentEligibilityBundle){
+            if(-not $CompactLeaf){throw 'Compact mode required for parent eligibility witness'}
+            $extra=@'
+        bool rangeFits=values.Max()<=8191;
+        Require((new ParentPalette::Tedd.Voxtree.Octree(5,values).Data.Span[0]==0x51 && rangeFits)==(after.Data.Span[0]==0x52),"Parent classic eligibility witness");
+        Require((new ParentPalette::Tedd.Voxtree.Octree<ushort>(5,small).Data.Span[0]==0x51 && rangeFits)==(after16.Data.Span[0]==0x52),"Parent narrow eligibility witness");
+        Require((new ParentPalette::Tedd.Voxtree.Octree<uint>(5,values).Data.Span[0]==0x51 && rangeFits)==(after32.Data.Span[0]==0x52),"Parent wide eligibility witness");
+'@
+        }
         ('extern alias ParentPalette;'+[Environment]::NewLine+$corpus.Replace($parentAnchor,$extra+[Environment]::NewLine+$parentAnchor))|Set-Content -LiteralPath (Join-Path $root 'PackedCorpus.cs')
     }
     foreach($name in @('BlockTypeArrayCodec.cs','ChunkScratch.cs','Layout.cs')){
         Copy-Item -LiteralPath (Join-Path $TaskRoot "forcecraft-scanner-s2/$name") -Destination (Join-Path $root $name)
     }
     $bundle=(Join-Path $TaskRoot "bundles/$Label").Replace('\','/')
-    if(([int][bool]$ReleaseBuilder+[int][bool]$PackedWordMagic+[int][bool]$ExactBytes+[int][bool]$PaletteLeaf) -gt 1){throw 'Census modes are mutually exclusive'}
+    if(([int][bool]$ReleaseBuilder+[int][bool]$PackedWordMagic+[int][bool]$ExactBytes+[int][bool]$PaletteLeaf+[int][bool]$CompactLeaf) -gt 1){throw 'Census modes are mutually exclusive'}
+    $projectionHash=$null
+    if($CompactLeaf){
+        $projectionPath=Join-Path $TaskRoot 'k2-audit.json'
+        $audit=Get-Content -LiteralPath $projectionPath -Raw|ConvertFrom-Json
+        if($audit.state -ne 'supported'){throw 'K2 projection unsupported'}
+        if((Get-FileHash -LiteralPath (Join-Path $TaskRoot 'forcecraft-census-packed-p27setup/packed-corpus.json')).Hash.ToLowerInvariant() -ne $audit.source_sha256){throw 'K2 source projection changed'}
+        $projectionHash=(Get-FileHash -LiteralPath $projectionPath).Hash
+    }
     if($PaletteLeaf){
         $audit=Get-Content -LiteralPath (Join-Path $TaskRoot 'j1-audit.json') -Raw|ConvertFrom-Json
         if((Get-FileHash -LiteralPath (Join-Path $TaskRoot 'forcecraft-census-palette-j1/palette-states.json')).Hash.ToLowerInvariant() -ne $audit.source_sha256){throw 'J1 projection changed'}
     }
-    $censusDefine=if($ReleaseBuilder){'<DefineConstants>RELEASE_BUILDER_CENSUS</DefineConstants>'}elseif($PackedWordMagic){'<DefineConstants>P24_PACKED_MAGIC</DefineConstants>'}elseif($ExactBytes){'<DefineConstants>EXACT_PACKED_BYTES</DefineConstants>'}elseif($PaletteLeaf){'<DefineConstants>PALETTE_LEAF_CENSUS</DefineConstants>'}else{''}
+    $censusDefine=if($ReleaseBuilder){'<DefineConstants>RELEASE_BUILDER_CENSUS</DefineConstants>'}elseif($PackedWordMagic){'<DefineConstants>P24_PACKED_MAGIC</DefineConstants>'}elseif($ExactBytes){'<DefineConstants>EXACT_PACKED_BYTES</DefineConstants>'}elseif($PaletteLeaf){'<DefineConstants>PALETTE_LEAF_CENSUS</DefineConstants>'}elseif($CompactLeaf){'<DefineConstants>COMPACT_LEAF_CENSUS</DefineConstants>'}else{''}
     @"
 <Project Sdk="Microsoft.NET.Sdk">
  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><LangVersion>14.0</LangVersion><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><UseSharedCompilation>false</UseSharedCompilation><RollForward>Disable</RollForward><RuntimeFrameworkVersion>10.0.13</RuntimeFrameworkVersion>$censusDefine</PropertyGroup>
@@ -66,15 +89,15 @@ try {
     $env:DOTNET_CLI_USE_MSBUILD_SERVER='0';$env:MSBUILDDISABLENODEREUSE='1'
     Push-Location $TaskRoot
     try {
-        & dotnet build (Join-Path $root 'Census.csproj') -c Release --artifacts-path (Join-Path $TaskRoot "packed-corpus-artifacts-$Label") -v minimal *> (Join-Path $TaskRoot "$Label-packed-corpus-build.log")
+        & dotnet build (Join-Path $root 'Census.csproj') -c Release --artifacts-path (Join-Path $TaskRoot "packed-corpus-artifacts-$EvidenceLabel") -v minimal *> (Join-Path $TaskRoot "$EvidenceLabel-packed-corpus-build.log")
         if($LASTEXITCODE -ne 0){throw 'Census build failed'}
-        $entry=Join-Path $TaskRoot "packed-corpus-artifacts-$Label/bin/Census/release/Census.dll"
+        $entry=Join-Path $TaskRoot "packed-corpus-artifacts-$EvidenceLabel/bin/Census/release/Census.dll"
         $retained=Join-Path $root 'out'
         New-Item -ItemType Directory -Path $retained | Out-Null
         Get-ChildItem -LiteralPath (Split-Path $entry) -File | Where-Object{$_.Extension -in '.dll','.json'} | Copy-Item -Destination $retained
-        & dotnet exec --fx-version 10.0.13 $entry $snapshot $output *> (Join-Path $TaskRoot "$Label-packed-corpus.log")
+        & dotnet exec --fx-version 10.0.13 $entry $snapshot $output *> (Join-Path $TaskRoot "$EvidenceLabel-packed-corpus.log")
         if($LASTEXITCODE -ne 0){throw 'Census oracle failed; retain partial records'}
-        $identity=@{label=$Label;bundleEntrySha256=(Get-FileHash -LiteralPath (Join-Path $bundle "$Label.dll")).Hash;diagnosticEntrySha256=(Get-FileHash -LiteralPath $entry).Hash;exactParentBundle=$ExactParentBundle;exactParentBundleSha256=$parentHash;observer='offline semantic and payload census; no latency or allocation claim';joined=$true;exitCode=0;sources=@(Get-ChildItem -LiteralPath $root -File|Get-FileHash|Select-Object Path,Hash)}
-        $identity | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $TaskRoot "$Label-packed-corpus-identity.json")
+        $identity=@{label=$EvidenceLabel;bundle=$Label;bundleEntrySha256=(Get-FileHash -LiteralPath (Join-Path $bundle "$Label.dll")).Hash;diagnosticEntrySha256=(Get-FileHash -LiteralPath $entry).Hash;exactParentBundle=$ExactParentBundle;parentEligibilityBundle=$ParentEligibilityBundle;parentBundleSha256=$parentHash;projectionSha256=$projectionHash;corpusFixture=$corpusName;observer='offline semantic and payload census; no latency or allocation claim';joined=$true;exitCode=0;sources=@(Get-ChildItem -LiteralPath $root -File|Get-FileHash|Select-Object Path,Hash)}
+        $identity | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $TaskRoot "$EvidenceLabel-packed-corpus-identity.json")
     } finally {Pop-Location}
 } finally {Exit-VoxtreePerformanceHost $leases}

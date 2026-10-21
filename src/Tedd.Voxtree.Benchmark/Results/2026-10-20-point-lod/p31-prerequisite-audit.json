@@ -1,0 +1,106 @@
+{
+  "state": "supported_prerequisites_only",
+  "timingClaim": false,
+  "allocationClaim": false,
+  "promotionEligible": false,
+  "chunks": 1286,
+  "uniqueArrays": 686,
+  "cells": 42139648,
+  "corpusSha256": "d45f02fe198c655ed0b3b19b90e5804456ac2a60db993ba90a405097edefb2b8",
+  "projectionSha256": "f8cc893c0af9d960ee81c6d3ab4ca2d76ffab4e0aad2e523e283e84bd81f04ee",
+  "allModes": {
+    "classic": {
+      "selected": 132,
+      "releasedEncodedBytes": 13693396,
+      "candidateEncodedBytes": 18659626
+    },
+    "narrow": {
+      "selected": 142,
+      "releasedEncodedBytes": 13694682,
+      "candidateEncodedBytes": 19052144
+    },
+    "wide": {
+      "selected": 132,
+      "releasedEncodedBytes": 13694682,
+      "candidateEncodedBytes": 18660912
+    }
+  },
+  "classicCombined": {
+    "release": 48861892,
+    "candidate": 44613886,
+    "ratio": 0.9130609596533839
+  },
+  "writer": {
+    "cases": 378,
+    "cells": 16178022,
+    "capacities": 2920,
+    "correct": true,
+    "control": "published release Snapshot.Voxtree source plus independent dense-to-R oracle",
+    "wire": "canonical R bytes or exact release fallback, including capacity-failure mutations"
+  },
+  "sourceOriginSha256": "9519b94c61d55c21e0130e512634ff362185d7380535b4e04127a0c3a55c078b",
+  "sourceReviewSha256": "2aa25876adec124ee883afe5273a17b9a411c1579fc0f63ee5d3747f80ba3764",
+  "changedFiles": [
+    {
+      "file": "CompactLeafEncoding.cs",
+      "parentSha256": null,
+      "candidateSha256": "f1556ace03ec400f3edb01ec84543bd1b8a942f2f54166f19825720742a23613"
+    },
+    {
+      "file": "CompactWordSearch.cs",
+      "parentSha256": null,
+      "candidateSha256": "53c6849d38a5dbb607ea78c399bd76106c6764ab526f68859ddfae705a229606"
+    },
+    {
+      "file": "GenericOctreeCodec.cs",
+      "parentSha256": "854ac31d969eb7faa5615a96eaada4c0889bd45f4980b781757cecf3f3ebe6cf",
+      "candidateSha256": "94309d34eb7733dcfcee242481c5e07248c51e1934201a0b42ec60feb453ab10"
+    },
+    {
+      "file": "GenericOctreeQueries.cs",
+      "parentSha256": "a3def0a3540202c58875d32f0de805168951438e483294458dd9c81d189cf421",
+      "candidateSha256": "ac5ea8629068567322f281cb226e8ac6ba1336a40abdc3c4c8be92a63f9c1541"
+    },
+    {
+      "file": "Octree.Generic.cs",
+      "parentSha256": "1b872bcbcb5bd922499dc88a738927ad15c57778cad87ccdd4160363064f8a7e",
+      "candidateSha256": "78c94c98eb5b54440e03da96c764ac614f59e9d363d129daf069cf870a128aed"
+    },
+    {
+      "file": "Octree.cs",
+      "parentSha256": "85341f9d56f7fdec232c9323e462c1489ecd730aff351a1aba52358394394e51",
+      "candidateSha256": "7b0ce6d0d54acec8172f4331eadf98331130d63992aca183e43fa4c9101d9c70"
+    },
+    {
+      "file": "OctreeCodec.cs",
+      "parentSha256": "89819239ba3b1377196dfea9a337651bd9a6cd452d358e97a1919c1915ad503f",
+      "candidateSha256": "03edc91a61a7df37fd446bd41beb2a1750a735961d51a2659b397bef5504e33c"
+    },
+    {
+      "file": "OctreeLookup.cs",
+      "parentSha256": "3480967d8ed440de287b258151b887d4d5748f5de761c858c70f9c168a50c6b0",
+      "candidateSha256": "5d8c5c3eaa495c991b61da0a844c038771dc8e6e73763a6ea5b832bd09ebb811"
+    },
+    {
+      "file": "OctreeQueries.cs",
+      "parentSha256": "60e392d7f872676d91887073c0601fdc2908d25679a1d0c41844a666c00b37e0",
+      "candidateSha256": "3c21bc0b42cf2ed892626ade7f2f133ca9a1505c6243b9d4cd7fd984bcdabb15"
+    },
+    {
+      "file": "PaletteLeafEncoding.cs",
+      "parentSha256": "50225aa6a6f64006c2922a13cf602539a88f0c09eccf73d7b2d55f3d03c89b02",
+      "candidateSha256": null
+    },
+    {
+      "file": "VoxelFilter.Generic.cs",
+      "parentSha256": "be494364a52eaba4b592a4e33ac1efd00601ff8bcf3880cd2d4ad9299fdb44b6",
+      "candidateSha256": "491f0848973612f9ccd0de800224c2a254cf49058cc704ea7ca7293f6dbd62fd"
+    },
+    {
+      "file": "VoxelFilter.cs",
+      "parentSha256": "e90c68b172ef7849e08ba20fd2a76b666a997ebf5e05736bd6e4bf7f5b07d092",
+      "candidateSha256": "93534e3c1fe602f78095544160afdd993ad8cbf1de03c0a62a02aee65447c97f"
+    }
+  ],
+  "limitations": "Payload excludes CLR headers, GC retention and compressed bytes; chunks are not access-frequency weights. Independent bytes, published fallbacks and P30 eligibility checked offline. No source adopted."
+}

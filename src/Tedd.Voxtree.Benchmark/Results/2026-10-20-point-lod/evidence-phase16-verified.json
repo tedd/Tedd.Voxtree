@@ -1,0 +1,14 @@
+{
+  "archive_bytes": 2706107,
+  "manifest_paths": 664,
+  "unique_blobs": 343,
+  "catalogs": 1,
+  "metric_rows": 0,
+  "sha256": "a31722614537fed9bf649e91aead773ec35b9b56fa512bf018806f7d8d6287d1",
+  "required_paths": [
+    "p31-prerequisite-audit.json",
+    "p31-native-audit.json",
+    "p31-screen-frozen-dependencies.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

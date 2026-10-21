@@ -1,0 +1,213 @@
+{
+  "native_source_gate_passed": true,
+  "summarySha256": "357ff8bab19e0e65482568d156b463ef5228327af070940b3658ba8521857e01",
+  "selected": [
+    {
+      "file": "p31-native-format-code.asm",
+      "sha256": "cbb051eadae3dfd63f75d02e622c864d145bd5f772270bafc8a08d30192e8765",
+      "method": "Tedd.Voxtree.OctreeCodec:BuildOwned(System.ReadOnlySpan`1[uint],int,int):byte[] (Tier1)",
+      "nativeBytes": 3462,
+      "rspSubtractions": [
+        408
+      ],
+      "observations": {}
+    },
+    {
+      "file": "p31-native-format-code.asm",
+      "sha256": "cbb051eadae3dfd63f75d02e622c864d145bd5f772270bafc8a08d30192e8765",
+      "method": "Tedd.Voxtree.CompactLeafEncoding`1[uint]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool (Tier1)",
+      "nativeBytes": 1300,
+      "rspSubtractions": [
+        168
+      ],
+      "observations": {}
+    },
+    {
+      "file": "p31-native-format-code.asm",
+      "sha256": "cbb051eadae3dfd63f75d02e622c864d145bd5f772270bafc8a08d30192e8765",
+      "method": "Tedd.Voxtree.OctreeCodec:TryBuildPlanned(System.ReadOnlySpan`1[uint],int,System.Span`1[byte],byref,int,Tedd.Voxtree.OctreeCodec+BuildPlan):bool (Tier1)",
+      "nativeBytes": 1732,
+      "rspSubtractions": [
+        216
+      ],
+      "observations": {}
+    },
+    {
+      "file": "p31-native-format-code.asm",
+      "sha256": "cbb051eadae3dfd63f75d02e622c864d145bd5f772270bafc8a08d30192e8765",
+      "method": "Tedd.Voxtree.OctreeQueries:CountCompact(System.ReadOnlySpan`1[ushort],int,Tedd.Voxtree.VoxelBox,Tedd.Voxtree.VoxelFilter,int):int (Tier1)",
+      "nativeBytes": 1191,
+      "rspSubtractions": [
+        72
+      ],
+      "observations": {}
+    },
+    {
+      "file": "p31-native-format-code.asm",
+      "sha256": "cbb051eadae3dfd63f75d02e622c864d145bd5f772270bafc8a08d30192e8765",
+      "method": "Tedd.Voxtree.CompactWordSearch:Count(System.ReadOnlySpan`1[ushort],int,uint,uint,bool):int (Tier1)",
+      "nativeBytes": 658,
+      "rspSubtractions": [
+        32
+      ],
+      "observations": {
+        "vectorPath": "256-bit word load, unsigned LOD comparison, masked equality, extracted mask/popcount; bounded scalar tail retained"
+      }
+    },
+    {
+      "file": "p31-native-format-code.asm",
+      "sha256": "cbb051eadae3dfd63f75d02e622c864d145bd5f772270bafc8a08d30192e8765",
+      "method": "Tedd.Voxtree.VoxelCodec`1[ushort]:BuildOwned(System.ReadOnlySpan`1[ushort],int,int):byte[] (Tier1)",
+      "nativeBytes": 3169,
+      "rspSubtractions": [
+        280
+      ],
+      "observations": {}
+    },
+    {
+      "file": "p31-native-format-code.asm",
+      "sha256": "cbb051eadae3dfd63f75d02e622c864d145bd5f772270bafc8a08d30192e8765",
+      "method": "Tedd.Voxtree.GenericOctreeCodec`1[ushort]:BuildOwned(System.ReadOnlySpan`1[ushort],int,int):byte[] (Tier1)",
+      "nativeBytes": 3155,
+      "rspSubtractions": [
+        280
+      ],
+      "observations": {}
+    },
+    {
+      "file": "p31-native-format-code.asm",
+      "sha256": "cbb051eadae3dfd63f75d02e622c864d145bd5f772270bafc8a08d30192e8765",
+      "method": "Tedd.Voxtree.CompactLeafEncoding`1[ushort]:ValidateCube(System.ReadOnlySpan`1[byte],int,int,int,int,int):bool (Tier1)",
+      "nativeBytes": 1303,
+      "rspSubtractions": [
+        168
+      ],
+      "observations": {}
+    },
+    {
+      "file": "p31-native-format-code.asm",
+      "sha256": "cbb051eadae3dfd63f75d02e622c864d145bd5f772270bafc8a08d30192e8765",
+      "method": "Tedd.Voxtree.GenericOctreeCodec`1[ushort]:TryBuildPlanned(System.ReadOnlySpan`1[ushort],int,System.Span`1[byte],byref,int,Tedd.Voxtree.GenericOctreeCodec`1+BuildPlan[ushort]):bool (Tier1)",
+      "nativeBytes": 1749,
+      "rspSubtractions": [
+        200
+      ],
+      "observations": {}
+    },
+    {
+      "file": "p31-native-format-code.asm",
+      "sha256": "cbb051eadae3dfd63f75d02e622c864d145bd5f772270bafc8a08d30192e8765",
+      "method": "Tedd.Voxtree.GenericOctreeQueries`1[ushort]:CountCompact(System.ReadOnlySpan`1[ushort],int,Tedd.Voxtree.VoxelBox,Tedd.Voxtree.VoxelFilter`1[ushort],int):int (Tier1)",
+      "nativeBytes": 539,
+      "rspSubtractions": [
+        72
+      ],
+      "observations": {}
+    },
+    {
+      "file": "p31-native-uint16-owned-get.asm",
+      "sha256": "d5cf6855b5052b6a501dacbee12d3fd3121e0e82ba293d55b09b5b437ea92728",
+      "method": "ForceUInt16Scenario:AfterBatchOwned(int):this (Tier1)",
+      "nativeBytes": 2492,
+      "rspSubtractions": [
+        216
+      ],
+      "observations": {
+        "compactWordLoadShiftMaskSites": 1,
+        "example": "movzx    rcx, word  ptr [rax]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r15d\n       jg       G_M000_IG63\n       and      ecx, 0x1FFF"
+      }
+    },
+    {
+      "file": "p31-native-uint16-owned-lod.asm",
+      "sha256": "57719a668d5cea0b9bfe053c7f9289a06000aa6c3f5e984e0f49b205cfea2869",
+      "method": "ForceUInt16Scenario:AfterBatchOwned(int):this (Tier1)",
+      "nativeBytes": 2811,
+      "rspSubtractions": [
+        200
+      ],
+      "observations": {
+        "compactWordLoadShiftMaskSites": 2,
+        "example": "movzx    rcx, word  ptr [rax]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r15d\n       jg       G_M000_IG81\n       and      ecx, 0x1FFF"
+      }
+    },
+    {
+      "file": "p31-native-uint16-span-get.asm",
+      "sha256": "976744bdd474be65c2083c48d594d54022e20f08006cc92bf0e7ab4630978c97",
+      "method": "ForceUInt16Scenario:AfterBatchSpan(int):this (Tier1)",
+      "nativeBytes": 2592,
+      "rspSubtractions": [
+        184
+      ],
+      "observations": {
+        "compactWordLoadShiftMaskSites": 1,
+        "example": "movzx    rcx, word  ptr [rcx]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r15d\n       jg       G_M000_IG73\n       and      ecx, 0x1FFF"
+      }
+    },
+    {
+      "file": "p31-native-uint16-span-lod.asm",
+      "sha256": "e65458f82e7f15e1de018cbc7b3c983c89928b0fd5cc447f2e242e4ace524d45",
+      "method": "ForceUInt16Scenario:AfterBatchSpan(int):this (Tier1)",
+      "nativeBytes": 2910,
+      "rspSubtractions": [
+        200
+      ],
+      "observations": {
+        "compactWordLoadShiftMaskSites": 2,
+        "example": "movzx    rcx, word  ptr [rcx]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r15d\n       jg       G_M000_IG91\n       and      ecx, 0x1FFF"
+      }
+    },
+    {
+      "file": "p31-native-uint32-owned-get.asm",
+      "sha256": "b559ccc1686748192bc3301cf39eaaa376c38dacb1562b5597655646166fcbd7",
+      "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1)",
+      "nativeBytes": 3323,
+      "rspSubtractions": [
+        232
+      ],
+      "observations": {
+        "compactWordLoadShiftMaskSites": 3,
+        "example": "movzx    rcx, word  ptr [rax]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r14d\n       jg       G_M000_IG66\n       and      ecx, 0x1FFF"
+      }
+    },
+    {
+      "file": "p31-native-uint32-owned-lod.asm",
+      "sha256": "5859a66b85cc9161d8faa83537f01c9d6f92855a0da7577e4a98b74bd7a36a93",
+      "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1)",
+      "nativeBytes": 3833,
+      "rspSubtractions": [
+        216
+      ],
+      "observations": {
+        "compactWordLoadShiftMaskSites": 4,
+        "example": "movzx    rcx, word  ptr [rax]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r14d\n       jg       G_M000_IG89\n       and      ecx, 0x1FFF"
+      }
+    },
+    {
+      "file": "p31-native-uint32-span-get.asm",
+      "sha256": "a739c9d52aa289c60b603bf9c8c2ce2fa041bd9ddf77401488cb9058cff1412d",
+      "method": "ForceUInt32Scenario:AfterBatchSpan(int):this (Tier1)",
+      "nativeBytes": 3913,
+      "rspSubtractions": [
+        216
+      ],
+      "observations": {
+        "compactWordLoadShiftMaskSites": 4,
+        "example": "movzx    rcx, word  ptr [rcx]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r14d\n       jg       G_M000_IG76\n       and      ecx, 0x1FFF"
+      }
+    },
+    {
+      "file": "p31-native-uint32-span-lod.asm",
+      "sha256": "5c3422bc73da1c46cbe5f94bb0ec4b357fecf530905be55c250b2032f9375622",
+      "method": "ForceUInt32Scenario:AfterBatchSpan(int):this (Tier1)",
+      "nativeBytes": 4345,
+      "rspSubtractions": [
+        232
+      ],
+      "observations": {
+        "compactWordLoadShiftMaskSites": 5,
+        "example": "movzx    rcx, word  ptr [rcx]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r14d\n       jg       G_M000_IG102\n       and      ecx, 0x1FFF"
+      }
+    }
+  ],
+  "limits": "Diagnostic Tier1 listings include multiple caller operation branches and OSR versions. Examples establish emitted compact decoding, not dynamic branch frequency or quiet-code identity. Rsp subtraction is fixed frame reservation, excluding pushes, recursion and callees; no total stack or hardware causal claim."
+}

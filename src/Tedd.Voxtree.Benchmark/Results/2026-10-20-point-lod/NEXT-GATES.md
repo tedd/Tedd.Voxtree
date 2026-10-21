@@ -181,11 +181,14 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    projects18659626 bytes versus13693396 release (+36.3%), while conditional
    encoded-plus-distinct lookup projects44613886 versus48861892 (-8.69%).
    No encoder/timing/allocation result is claimed. Length parity is validated.
-   COMPACT-LEAF13-FORMAT-PROTOCOL is prepared and unexecuted: register P31 before
-   implementing the distinct R format on complete P30, excluding P29. Published
-   O/v1/v2 fallback stays; unpublished Q/P prototypes may be rejected explicitly.
-   Full capacities/byte/corpus/consumer tests and fresh direct-release normal
-   point confirmation remain. Do not treat projected sharing as implemented.
+   P31 is registered as hyp-d50b2aa2043b4f68b5cb8d0b8a649761 and implements R on
+   complete P30, excluding P29. Prerequisites now pass: full byte/cell/capacity
+   oracles,410/411/412 framework tests,411 HW-off,48/96 scenario checks, complete
+   corpus and native inspection. Actual combined sharing/payload matches K2;
+   encoded growth is reported separately. Phase16 retains the source, failures,
+   controls and evidence. See REPORT-PHASE16. Frozen point48/bulk96 timing and
+   fresh direct-release normal confirmation remain; no measured speed claim or
+   source/package promotion follows from these prerequisites.
 
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
