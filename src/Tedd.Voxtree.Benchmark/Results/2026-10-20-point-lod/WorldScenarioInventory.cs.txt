@@ -1,0 +1,22 @@
+using System.Reflection;
+using System.Runtime.Loader;
+using System.Text.Json;
+var root=@"D:\Workspaces\AI\voxtree-point-lod-20261020\";
+var output=Path.GetFullPath(args[0]);if(!output.StartsWith(root,StringComparison.OrdinalIgnoreCase)||File.Exists(output))throw new ArgumentException("Fresh task-local output required");
+var rows=new List<object>();
+foreach(var file in args.Skip(1)){
+ var path=Path.GetFullPath(file);if(!path.StartsWith(root+"bundles\\",StringComparison.OrdinalIgnoreCase))throw new ArgumentException("Only owned bundles");
+ var context=new AssemblyLoadContext("inventory-"+Guid.NewGuid(),true);
+ context.Resolving+=(_,name)=>{var p=Path.Combine(Path.GetDirectoryName(path)!,name.Name+".dll");return File.Exists(p)?context.LoadFromAssemblyPath(p):null;};
+ try{
+  var assembly=context.LoadFromAssemblyPath(path);var descriptors=new List<object>();
+  foreach(var width in new[]{"UInt32","UInt16"})foreach(var op in new[]{"get","lod","chunk","topology"})foreach(var pattern in new[]{"repeated","blocks32","alternating","cycle10","cycle12","miss"}){
+   var t=assembly.GetType("World"+width,true)!;var instance=Activator.CreateInstance(t,op,pattern)!;
+   var d=t.GetMethod("Describe")!.Invoke(instance,null)!;var dt=d.GetType();
+   object Value(string name)=>dt.GetProperty(name)!.GetValue(d)!;
+   descriptors.Add(new{id=Value("Id"),version=Value("Version"),input_hash=Value("InputHash")});
+  }rows.Add(new{entry=path,descriptors});
+ }finally{context.Unload();}
+}
+File.WriteAllText(output,JsonSerializer.Serialize(rows,new JsonSerializerOptions{WriteIndented=true}));
+Console.WriteLine("Constructed synthetic scenario descriptors only; no Prepare, ExecuteBatch or entry Main invoked.");

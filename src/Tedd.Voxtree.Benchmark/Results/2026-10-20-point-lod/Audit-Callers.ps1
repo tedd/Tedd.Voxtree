@@ -1,7 +1,8 @@
 param([Parameter(Mandatory)][string]$TaskRoot,
       [ValidatePattern('^caller-audit[a-z0-9-]*$')][string]$Label='caller-audit',
       [string[]]$BundleLabels=@('p7w','p9','p10a','p10b'),
-      [ValidateSet('callers','count-boundary')][string]$Mode='callers')
+      [ValidateSet('callers','count-boundary','world-callers')][string]$Mode='callers',
+      [ValidatePattern('^$|^[A-Za-z][A-Za-z0-9]*\.dll$')][string]$EntryAssembly='')
 $ErrorActionPreference='Stop'
 if([IO.Path]::GetFullPath($TaskRoot).TrimEnd('\') -ne 'D:\Workspaces\AI\voxtree-point-lod-20261020'){throw 'Unexpected task root'}
 . (Join-Path $PSScriptRoot 'Host-Lock.ps1')
@@ -24,12 +25,14 @@ try {
         if($LASTEXITCODE -ne 0){Get-Content -LiteralPath (Join-Path $TaskRoot "$Label-selftest.log");throw 'Caller audit falsification failed'}
         $bundles=@($BundleLabels | ForEach-Object {
             if($_ -notmatch '^[a-z][a-z0-9-]*$'){throw 'Invalid bundle label'}
-            $path=Join-Path $TaskRoot "bundles/$_/$_.dll"
+            $entry=if($EntryAssembly){$EntryAssembly}else{"$_.dll"}
+            $path=Join-Path $TaskRoot "bundles/$_/$entry"
             if(-not(Test-Path -LiteralPath $path)){throw "Missing caller bundle: $_"}
             $path
         })
         $auditArguments=@()
         if($Mode -eq 'count-boundary'){$auditArguments+='--count-boundary'}
+        if($Mode -eq 'world-callers'){$auditArguments+='--world-callers'}
         $auditArguments+=(Join-Path $TaskRoot "$Label.json")
         $auditArguments+=$bundles
         & dotnet exec --fx-version 10.0.13 (Join-Path $directory 'out/Audit.dll') @auditArguments

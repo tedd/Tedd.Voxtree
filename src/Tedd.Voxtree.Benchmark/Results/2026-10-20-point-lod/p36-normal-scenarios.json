@@ -1,0 +1,492 @@
+[
+  {
+    "entry": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n0\\WorldNormal.dll",
+    "descriptors": [
+      {
+        "id": "normal-world-UInt32-get-repeated",
+        "version": "22",
+        "input_hash": "771ebf7ba753fd09c3eb12c991bf53e8634e5bc6f41ec2d11d638781cf465777"
+      },
+      {
+        "id": "normal-world-UInt32-get-blocks32",
+        "version": "22",
+        "input_hash": "e2ce55e388b9456ca985b2f4286c10d5916c11a0c715cecbae1be1e3f93b16da"
+      },
+      {
+        "id": "normal-world-UInt32-get-alternating",
+        "version": "22",
+        "input_hash": "5fde1e44566379e96c2031a28a5e368387039d240b5c54b3743bd3262170d5c8"
+      },
+      {
+        "id": "normal-world-UInt32-get-cycle10",
+        "version": "22",
+        "input_hash": "d78aa9d6a8e062acba6b5ade0dfea31e66069d4ec5a12c7393a226ef70e8aaf9"
+      },
+      {
+        "id": "normal-world-UInt32-get-cycle12",
+        "version": "22",
+        "input_hash": "851e5c2e015924ddb0c7aea27a8577b0ef9280482c1ec57bd36517faf51c934a"
+      },
+      {
+        "id": "normal-world-UInt32-get-miss",
+        "version": "22",
+        "input_hash": "6a42875e63566877f6d0df2c74ea1411e129d46f896b1dc0050cf16d667ad131"
+      },
+      {
+        "id": "normal-world-UInt32-lod-repeated",
+        "version": "22",
+        "input_hash": "cc7c510b9a5c1b1d21019075db976fa14c0ed18507040c6d45758bc7ab9c5009"
+      },
+      {
+        "id": "normal-world-UInt32-lod-blocks32",
+        "version": "22",
+        "input_hash": "df688de5458a25b511c2c7be9214d16f280c2dc2f190d1f6fec5cffa70f186e8"
+      },
+      {
+        "id": "normal-world-UInt32-lod-alternating",
+        "version": "22",
+        "input_hash": "d9231f2cfc4f36f8ebe8088bb253db8337c12397b7f15d476fa708322c36dec3"
+      },
+      {
+        "id": "normal-world-UInt32-lod-cycle10",
+        "version": "22",
+        "input_hash": "01d6232a1d7ce8831d26bf6f9dfb5fa7684599a27014fde9fe34c210f1e4fc8c"
+      },
+      {
+        "id": "normal-world-UInt32-lod-cycle12",
+        "version": "22",
+        "input_hash": "aea50b8ed2c4ba9782f5475b24442a5d6514d25ea4d38ccc470f4acb3e349ad1"
+      },
+      {
+        "id": "normal-world-UInt32-lod-miss",
+        "version": "22",
+        "input_hash": "7d5346a1b1dd85c9c1fa126feaf3b5341d65264a24c2719c1cf4a8948038aba8"
+      },
+      {
+        "id": "normal-world-UInt32-chunk-repeated",
+        "version": "22",
+        "input_hash": "3f3e58ad00810db530531d2ad9e2e2a4a7330995eefc0fa314a12d15c8e12123"
+      },
+      {
+        "id": "normal-world-UInt32-chunk-blocks32",
+        "version": "22",
+        "input_hash": "88f38f7f93427d3972bd96442c28fdcf5349d1b883c370e30c30575ff5b7a95e"
+      },
+      {
+        "id": "normal-world-UInt32-chunk-alternating",
+        "version": "22",
+        "input_hash": "a2856896a4378b294e7e8427fe549febc5325f523bd0455530410508ae4f2eb3"
+      },
+      {
+        "id": "normal-world-UInt32-chunk-cycle10",
+        "version": "22",
+        "input_hash": "34697abf918f17bd88f28c31e4ef215cc91b97b95ce70c99dc17e31504229ef7"
+      },
+      {
+        "id": "normal-world-UInt32-chunk-cycle12",
+        "version": "22",
+        "input_hash": "10b952b3b19d459c24fb1671cf76c56f1910510ab00e94ad474b944844ca7ebf"
+      },
+      {
+        "id": "normal-world-UInt32-chunk-miss",
+        "version": "22",
+        "input_hash": "6718ace5bec8cc9f0c54d12452afd42aa1ed5a1f02ebb9daf03645cc3cbbb7b4"
+      },
+      {
+        "id": "normal-world-UInt32-topology-repeated",
+        "version": "22",
+        "input_hash": "f6e0322580f85ec017e2fd9c5e98d7dc6e05bb7b2730a3a90c4e365acc0e5eeb"
+      },
+      {
+        "id": "normal-world-UInt32-topology-blocks32",
+        "version": "22",
+        "input_hash": "06d6042ac46d1c0875a4b45415027b5c8680b5a7d18cad3d62f443f3ea3cc26a"
+      },
+      {
+        "id": "normal-world-UInt32-topology-alternating",
+        "version": "22",
+        "input_hash": "929fc625d54cb5854a0c189066497c1a25f834826fa41fc76e246ac92651887c"
+      },
+      {
+        "id": "normal-world-UInt32-topology-cycle10",
+        "version": "22",
+        "input_hash": "2e5e026863367e4dc1555b31985625ee31da7a3c24475d8731d6856d61ca7bf4"
+      },
+      {
+        "id": "normal-world-UInt32-topology-cycle12",
+        "version": "22",
+        "input_hash": "a5673cdd8bb9f42db849cc12732f050b7663f82f5bfeca78b3e9c31df9e1055c"
+      },
+      {
+        "id": "normal-world-UInt32-topology-miss",
+        "version": "22",
+        "input_hash": "3fd55e17d899ab9206141d46fbd537202be2e44a6d58173bcbf9dce509c99987"
+      },
+      {
+        "id": "normal-world-UInt16-get-repeated",
+        "version": "22",
+        "input_hash": "c7c36e0e0f717825492b9a0f074c9e39a10e0b155c856662764b64b4098007fb"
+      },
+      {
+        "id": "normal-world-UInt16-get-blocks32",
+        "version": "22",
+        "input_hash": "b9bec3cdf5984dda27e42c2473bae6bbaa998b3944ed6a40ed784624c9aa8395"
+      },
+      {
+        "id": "normal-world-UInt16-get-alternating",
+        "version": "22",
+        "input_hash": "9314b4bab0ac5c6ee43dc837e4562fef1739a2c73a9337f1db4b26653b280d1d"
+      },
+      {
+        "id": "normal-world-UInt16-get-cycle10",
+        "version": "22",
+        "input_hash": "78656e251a4413891a2796420b324f865d3b64cb68ad539da61a4dd88e4902b3"
+      },
+      {
+        "id": "normal-world-UInt16-get-cycle12",
+        "version": "22",
+        "input_hash": "30052a3356d7b465d2a92da3867f400122952a2c451a14706d34092537f9df7b"
+      },
+      {
+        "id": "normal-world-UInt16-get-miss",
+        "version": "22",
+        "input_hash": "e2d51b4bdca4d40f626d23c44a3fc64e3e009aaa0eac932ffd81e0f5c5718597"
+      },
+      {
+        "id": "normal-world-UInt16-lod-repeated",
+        "version": "22",
+        "input_hash": "0cdac3203619bbf00dee609f31718ebd3260efb6a1f433f81a8c1b2b5b2f2f95"
+      },
+      {
+        "id": "normal-world-UInt16-lod-blocks32",
+        "version": "22",
+        "input_hash": "7eedd48b6ce5c963b0a28712dc6c9964176680b6a2d5b9e6843ea56c0ae24f62"
+      },
+      {
+        "id": "normal-world-UInt16-lod-alternating",
+        "version": "22",
+        "input_hash": "1a5aa21041c498016600424f79ceff503e5ae71f18bf66d735d5bb798909788e"
+      },
+      {
+        "id": "normal-world-UInt16-lod-cycle10",
+        "version": "22",
+        "input_hash": "d5e4e0b7951424ea269c8306724edb10d6ca6a345adda18b32ca53ad68896b3f"
+      },
+      {
+        "id": "normal-world-UInt16-lod-cycle12",
+        "version": "22",
+        "input_hash": "657daa142de089988fb9148a95740df874503e5fa91e222089d578b829d59703"
+      },
+      {
+        "id": "normal-world-UInt16-lod-miss",
+        "version": "22",
+        "input_hash": "7fd4558731b3d9b09fed7db20cb4a4a11836879c749454346d7939dafe811e94"
+      },
+      {
+        "id": "normal-world-UInt16-chunk-repeated",
+        "version": "22",
+        "input_hash": "e96ef1b763851fb18c4318fc10abfd98f2f31e1eabb851204bc8bce5b1c689af"
+      },
+      {
+        "id": "normal-world-UInt16-chunk-blocks32",
+        "version": "22",
+        "input_hash": "ab6918bb7ab7a552c14b76a7024125529ae70c50764605ca40a93ac1eab299dd"
+      },
+      {
+        "id": "normal-world-UInt16-chunk-alternating",
+        "version": "22",
+        "input_hash": "18051aef598f634908c1f990be1df66fdebb0e6afc984695690af2701fe2e58d"
+      },
+      {
+        "id": "normal-world-UInt16-chunk-cycle10",
+        "version": "22",
+        "input_hash": "3cf3c09af759b767579e7af687c694b2099af2c2c8009f1575a568da60323df6"
+      },
+      {
+        "id": "normal-world-UInt16-chunk-cycle12",
+        "version": "22",
+        "input_hash": "367ea90fadefbafc14b5e21018a7ca30612ea87bd3bc2afbfa8f47c506e0851b"
+      },
+      {
+        "id": "normal-world-UInt16-chunk-miss",
+        "version": "22",
+        "input_hash": "e00eeba14b0feedcadd5d82e95b7eb9f22da721772879fca05d028e87cbdd587"
+      },
+      {
+        "id": "normal-world-UInt16-topology-repeated",
+        "version": "22",
+        "input_hash": "19bae065ab207ba67b3cded5b70ffbadaac2360712a387c219542d476e52f3d2"
+      },
+      {
+        "id": "normal-world-UInt16-topology-blocks32",
+        "version": "22",
+        "input_hash": "2bbb24df27595d920e940eb3fea1fac67b0c510ce5501640cc5eba9999cb3da1"
+      },
+      {
+        "id": "normal-world-UInt16-topology-alternating",
+        "version": "22",
+        "input_hash": "89e8760b8ed5b4ef364084fcb0ffeeedae7f78e4c68f1852e1ea9dff53c7c862"
+      },
+      {
+        "id": "normal-world-UInt16-topology-cycle10",
+        "version": "22",
+        "input_hash": "79f2d3de67de14bea93d6ef4757dcf886d6eddaea299b50bcb8ddf25d82bcf6b"
+      },
+      {
+        "id": "normal-world-UInt16-topology-cycle12",
+        "version": "22",
+        "input_hash": "00005fda9e70dc97325d797dacf40d89a96de65cb70f40c0c64fbed05348c8f2"
+      },
+      {
+        "id": "normal-world-UInt16-topology-miss",
+        "version": "22",
+        "input_hash": "65ac8aeb19d3441a4a3590716321c31e2618f203f09236c135595585fc24845e"
+      }
+    ]
+  },
+  {
+    "entry": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n1\\WorldNormal.dll",
+    "descriptors": [
+      {
+        "id": "normal-world-UInt32-get-repeated",
+        "version": "22",
+        "input_hash": "771ebf7ba753fd09c3eb12c991bf53e8634e5bc6f41ec2d11d638781cf465777"
+      },
+      {
+        "id": "normal-world-UInt32-get-blocks32",
+        "version": "22",
+        "input_hash": "e2ce55e388b9456ca985b2f4286c10d5916c11a0c715cecbae1be1e3f93b16da"
+      },
+      {
+        "id": "normal-world-UInt32-get-alternating",
+        "version": "22",
+        "input_hash": "5fde1e44566379e96c2031a28a5e368387039d240b5c54b3743bd3262170d5c8"
+      },
+      {
+        "id": "normal-world-UInt32-get-cycle10",
+        "version": "22",
+        "input_hash": "d78aa9d6a8e062acba6b5ade0dfea31e66069d4ec5a12c7393a226ef70e8aaf9"
+      },
+      {
+        "id": "normal-world-UInt32-get-cycle12",
+        "version": "22",
+        "input_hash": "851e5c2e015924ddb0c7aea27a8577b0ef9280482c1ec57bd36517faf51c934a"
+      },
+      {
+        "id": "normal-world-UInt32-get-miss",
+        "version": "22",
+        "input_hash": "6a42875e63566877f6d0df2c74ea1411e129d46f896b1dc0050cf16d667ad131"
+      },
+      {
+        "id": "normal-world-UInt32-lod-repeated",
+        "version": "22",
+        "input_hash": "cc7c510b9a5c1b1d21019075db976fa14c0ed18507040c6d45758bc7ab9c5009"
+      },
+      {
+        "id": "normal-world-UInt32-lod-blocks32",
+        "version": "22",
+        "input_hash": "df688de5458a25b511c2c7be9214d16f280c2dc2f190d1f6fec5cffa70f186e8"
+      },
+      {
+        "id": "normal-world-UInt32-lod-alternating",
+        "version": "22",
+        "input_hash": "d9231f2cfc4f36f8ebe8088bb253db8337c12397b7f15d476fa708322c36dec3"
+      },
+      {
+        "id": "normal-world-UInt32-lod-cycle10",
+        "version": "22",
+        "input_hash": "01d6232a1d7ce8831d26bf6f9dfb5fa7684599a27014fde9fe34c210f1e4fc8c"
+      },
+      {
+        "id": "normal-world-UInt32-lod-cycle12",
+        "version": "22",
+        "input_hash": "aea50b8ed2c4ba9782f5475b24442a5d6514d25ea4d38ccc470f4acb3e349ad1"
+      },
+      {
+        "id": "normal-world-UInt32-lod-miss",
+        "version": "22",
+        "input_hash": "7d5346a1b1dd85c9c1fa126feaf3b5341d65264a24c2719c1cf4a8948038aba8"
+      },
+      {
+        "id": "normal-world-UInt32-chunk-repeated",
+        "version": "22",
+        "input_hash": "3f3e58ad00810db530531d2ad9e2e2a4a7330995eefc0fa314a12d15c8e12123"
+      },
+      {
+        "id": "normal-world-UInt32-chunk-blocks32",
+        "version": "22",
+        "input_hash": "88f38f7f93427d3972bd96442c28fdcf5349d1b883c370e30c30575ff5b7a95e"
+      },
+      {
+        "id": "normal-world-UInt32-chunk-alternating",
+        "version": "22",
+        "input_hash": "a2856896a4378b294e7e8427fe549febc5325f523bd0455530410508ae4f2eb3"
+      },
+      {
+        "id": "normal-world-UInt32-chunk-cycle10",
+        "version": "22",
+        "input_hash": "34697abf918f17bd88f28c31e4ef215cc91b97b95ce70c99dc17e31504229ef7"
+      },
+      {
+        "id": "normal-world-UInt32-chunk-cycle12",
+        "version": "22",
+        "input_hash": "10b952b3b19d459c24fb1671cf76c56f1910510ab00e94ad474b944844ca7ebf"
+      },
+      {
+        "id": "normal-world-UInt32-chunk-miss",
+        "version": "22",
+        "input_hash": "6718ace5bec8cc9f0c54d12452afd42aa1ed5a1f02ebb9daf03645cc3cbbb7b4"
+      },
+      {
+        "id": "normal-world-UInt32-topology-repeated",
+        "version": "22",
+        "input_hash": "f6e0322580f85ec017e2fd9c5e98d7dc6e05bb7b2730a3a90c4e365acc0e5eeb"
+      },
+      {
+        "id": "normal-world-UInt32-topology-blocks32",
+        "version": "22",
+        "input_hash": "06d6042ac46d1c0875a4b45415027b5c8680b5a7d18cad3d62f443f3ea3cc26a"
+      },
+      {
+        "id": "normal-world-UInt32-topology-alternating",
+        "version": "22",
+        "input_hash": "929fc625d54cb5854a0c189066497c1a25f834826fa41fc76e246ac92651887c"
+      },
+      {
+        "id": "normal-world-UInt32-topology-cycle10",
+        "version": "22",
+        "input_hash": "2e5e026863367e4dc1555b31985625ee31da7a3c24475d8731d6856d61ca7bf4"
+      },
+      {
+        "id": "normal-world-UInt32-topology-cycle12",
+        "version": "22",
+        "input_hash": "a5673cdd8bb9f42db849cc12732f050b7663f82f5bfeca78b3e9c31df9e1055c"
+      },
+      {
+        "id": "normal-world-UInt32-topology-miss",
+        "version": "22",
+        "input_hash": "3fd55e17d899ab9206141d46fbd537202be2e44a6d58173bcbf9dce509c99987"
+      },
+      {
+        "id": "normal-world-UInt16-get-repeated",
+        "version": "22",
+        "input_hash": "c7c36e0e0f717825492b9a0f074c9e39a10e0b155c856662764b64b4098007fb"
+      },
+      {
+        "id": "normal-world-UInt16-get-blocks32",
+        "version": "22",
+        "input_hash": "b9bec3cdf5984dda27e42c2473bae6bbaa998b3944ed6a40ed784624c9aa8395"
+      },
+      {
+        "id": "normal-world-UInt16-get-alternating",
+        "version": "22",
+        "input_hash": "9314b4bab0ac5c6ee43dc837e4562fef1739a2c73a9337f1db4b26653b280d1d"
+      },
+      {
+        "id": "normal-world-UInt16-get-cycle10",
+        "version": "22",
+        "input_hash": "78656e251a4413891a2796420b324f865d3b64cb68ad539da61a4dd88e4902b3"
+      },
+      {
+        "id": "normal-world-UInt16-get-cycle12",
+        "version": "22",
+        "input_hash": "30052a3356d7b465d2a92da3867f400122952a2c451a14706d34092537f9df7b"
+      },
+      {
+        "id": "normal-world-UInt16-get-miss",
+        "version": "22",
+        "input_hash": "e2d51b4bdca4d40f626d23c44a3fc64e3e009aaa0eac932ffd81e0f5c5718597"
+      },
+      {
+        "id": "normal-world-UInt16-lod-repeated",
+        "version": "22",
+        "input_hash": "0cdac3203619bbf00dee609f31718ebd3260efb6a1f433f81a8c1b2b5b2f2f95"
+      },
+      {
+        "id": "normal-world-UInt16-lod-blocks32",
+        "version": "22",
+        "input_hash": "7eedd48b6ce5c963b0a28712dc6c9964176680b6a2d5b9e6843ea56c0ae24f62"
+      },
+      {
+        "id": "normal-world-UInt16-lod-alternating",
+        "version": "22",
+        "input_hash": "1a5aa21041c498016600424f79ceff503e5ae71f18bf66d735d5bb798909788e"
+      },
+      {
+        "id": "normal-world-UInt16-lod-cycle10",
+        "version": "22",
+        "input_hash": "d5e4e0b7951424ea269c8306724edb10d6ca6a345adda18b32ca53ad68896b3f"
+      },
+      {
+        "id": "normal-world-UInt16-lod-cycle12",
+        "version": "22",
+        "input_hash": "657daa142de089988fb9148a95740df874503e5fa91e222089d578b829d59703"
+      },
+      {
+        "id": "normal-world-UInt16-lod-miss",
+        "version": "22",
+        "input_hash": "7fd4558731b3d9b09fed7db20cb4a4a11836879c749454346d7939dafe811e94"
+      },
+      {
+        "id": "normal-world-UInt16-chunk-repeated",
+        "version": "22",
+        "input_hash": "e96ef1b763851fb18c4318fc10abfd98f2f31e1eabb851204bc8bce5b1c689af"
+      },
+      {
+        "id": "normal-world-UInt16-chunk-blocks32",
+        "version": "22",
+        "input_hash": "ab6918bb7ab7a552c14b76a7024125529ae70c50764605ca40a93ac1eab299dd"
+      },
+      {
+        "id": "normal-world-UInt16-chunk-alternating",
+        "version": "22",
+        "input_hash": "18051aef598f634908c1f990be1df66fdebb0e6afc984695690af2701fe2e58d"
+      },
+      {
+        "id": "normal-world-UInt16-chunk-cycle10",
+        "version": "22",
+        "input_hash": "3cf3c09af759b767579e7af687c694b2099af2c2c8009f1575a568da60323df6"
+      },
+      {
+        "id": "normal-world-UInt16-chunk-cycle12",
+        "version": "22",
+        "input_hash": "367ea90fadefbafc14b5e21018a7ca30612ea87bd3bc2afbfa8f47c506e0851b"
+      },
+      {
+        "id": "normal-world-UInt16-chunk-miss",
+        "version": "22",
+        "input_hash": "e00eeba14b0feedcadd5d82e95b7eb9f22da721772879fca05d028e87cbdd587"
+      },
+      {
+        "id": "normal-world-UInt16-topology-repeated",
+        "version": "22",
+        "input_hash": "19bae065ab207ba67b3cded5b70ffbadaac2360712a387c219542d476e52f3d2"
+      },
+      {
+        "id": "normal-world-UInt16-topology-blocks32",
+        "version": "22",
+        "input_hash": "2bbb24df27595d920e940eb3fea1fac67b0c510ce5501640cc5eba9999cb3da1"
+      },
+      {
+        "id": "normal-world-UInt16-topology-alternating",
+        "version": "22",
+        "input_hash": "89e8760b8ed5b4ef364084fcb0ffeeedae7f78e4c68f1852e1ea9dff53c7c862"
+      },
+      {
+        "id": "normal-world-UInt16-topology-cycle10",
+        "version": "22",
+        "input_hash": "79f2d3de67de14bea93d6ef4757dcf886d6eddaea299b50bcb8ddf25d82bcf6b"
+      },
+      {
+        "id": "normal-world-UInt16-topology-cycle12",
+        "version": "22",
+        "input_hash": "00005fda9e70dc97325d797dacf40d89a96de65cb70f40c0c64fbed05348c8f2"
+      },
+      {
+        "id": "normal-world-UInt16-topology-miss",
+        "version": "22",
+        "input_hash": "65ac8aeb19d3441a4a3590716321c31e2618f203f09236c135595585fc24845e"
+      }
+    ]
+  }
+]

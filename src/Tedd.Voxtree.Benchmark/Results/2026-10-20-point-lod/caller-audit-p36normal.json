@@ -1,0 +1,6044 @@
+[
+  {
+    "entry": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n0\\WorldNormal.dll",
+    "sha256": "C8BDF9142BECAA8D77A649B1F0E4B280F77C18F39CF9434DBB580659199CD716",
+    "methods": [
+      {
+        "method": "WorldUInt16.AfterChunk",
+        "rawIlSha256": "8B4102104A6F1D5AF792109E9D9071E26D48D9FA77419176C2C65DDB82200E5E",
+        "resolvedIlSha256": "8C811592674B86BF9D80210A91FABAA36387D8C3ABA75558241F26D8F250CDAB",
+        "canonical": {
+          "signature": "WorldUInt16::AfterChunk\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 5,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt16",
+              "IsPinned": false
+            },
+            {
+              "type": "Tedd.Voxtree.OctreeChunk\u00601\u003CSystem.UInt16\u003E",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br.s",
+              "operand": "6F"
+            },
+            {
+              "offset": 4,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 11,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 13,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 15,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 16,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 17,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 22,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 24,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 29,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 30,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 31,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 32,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::points:System.Int32[]"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 39,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 40,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::world:Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E"
+            },
+            {
+              "offset": 46,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 48,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 49,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 50,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 51,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 52,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "newobj",
+              "operand": "Tedd.Voxtree.ChunkAddress::.ctor\u003C\u003E(System.Int32,System.Int64,System.Int64,System.Int64):void"
+            },
+            {
+              "offset": 58,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 60,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E::TryGetChunk\u003C\u003E(Tedd.Voxtree.ChunkAddress,Tedd.Voxtree.OctreeChunk\u00601\u003CSystem.UInt16\u003E\u0026):System.Boolean"
+            },
+            {
+              "offset": 65,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 66,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 67,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 69,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "br.s",
+              "operand": "07"
+            },
+            {
+              "offset": 72,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 74,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.OctreeChunk\u00601\u003CSystem.UInt16\u003E::get_ChannelCount\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 79,
+              "opcode": "conv.u2",
+              "operand": ""
+            },
+            {
+              "offset": 80,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 82,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 83,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 84,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 89,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 91,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 92,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 93,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 94,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 96,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 97,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 99,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 104,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 105,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 106,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 111,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 112,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 113,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 114,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 115,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 116,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 117,
+              "opcode": "blt.s",
+              "operand": "8D"
+            },
+            {
+              "offset": 119,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "WorldUInt16.AfterGet",
+        "rawIlSha256": "195EE75E359908100DD0698EE054BF3A0924809D9FD8435BEBCFFB61D1E48C98",
+        "resolvedIlSha256": "DEB2E5F05B39BAA7D1407987F16E584672B629CB4C8483A75B712890C972895C",
+        "canonical": {
+          "signature": "WorldUInt16::AfterGet\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 6,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt16",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br.s",
+              "operand": "62"
+            },
+            {
+              "offset": 4,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 11,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 13,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 15,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 16,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 17,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 22,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 24,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 29,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 30,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 31,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 32,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::points:System.Int32[]"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 39,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 40,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 42,
+              "opcode": "shr",
+              "operand": ""
+            },
+            {
+              "offset": 43,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 44,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 45,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 46,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::world:Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E"
+            },
+            {
+              "offset": 52,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 54,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 55,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 56,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 57,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 58,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 59,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 61,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E::TryGet\u003C\u003E(System.Int32,System.Int64,System.Int64,System.Int64,System.UInt16\u0026):System.Boolean"
+            },
+            {
+              "offset": 66,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 68,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 69,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 75,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 77,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 78,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 79,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 81,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 83,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 84,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 86,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 91,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 92,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 93,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 98,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 99,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 100,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 101,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 102,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 103,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "blt.s",
+              "operand": "9A"
+            },
+            {
+              "offset": 106,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "WorldUInt16.AfterLod",
+        "rawIlSha256": "133C2B49DA2B57DD7412028FA642B73C2444A9D6A049A7EEF590D6C1FF7E9718",
+        "resolvedIlSha256": "707A94AD387A0DEE57D4FC9EFE24A91DEC17649F35AC886310F5AF23A1BAED46",
+        "canonical": {
+          "signature": "WorldUInt16::AfterLod\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 7,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt16",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br.s",
+              "operand": "65"
+            },
+            {
+              "offset": 4,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 11,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 13,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 15,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 16,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 17,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 22,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 24,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 29,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 30,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 31,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 32,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::points:System.Int32[]"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 39,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 40,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 42,
+              "opcode": "shr",
+              "operand": ""
+            },
+            {
+              "offset": 43,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 44,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 45,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 46,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::world:Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E"
+            },
+            {
+              "offset": 52,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 54,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 55,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 56,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 57,
+              "opcode": "shl",
+              "operand": ""
+            },
+            {
+              "offset": 58,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 59,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 60,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 61,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 62,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 64,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E::TryGetLod\u003C\u003E(System.Int32,System.Int32,System.Int64,System.Int64,System.Int64,System.UInt16\u0026):System.Boolean"
+            },
+            {
+              "offset": 69,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 71,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 72,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 73,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 78,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 80,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 81,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 82,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 84,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 86,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 87,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 89,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 94,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 95,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 96,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 101,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 102,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 103,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 105,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 106,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 107,
+              "opcode": "blt.s",
+              "operand": "97"
+            },
+            {
+              "offset": 109,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "WorldUInt16.AfterTopology",
+        "rawIlSha256": "B1CEBB035747E0F25B41DE7FC3B43A6970F0D75539B17E1E17349D16410003D6",
+        "resolvedIlSha256": "B0F89012FA1014F0876799C334EE9A0FA2F6D9C1671629EB748FD0B89041AD58",
+        "canonical": {
+          "signature": "WorldUInt16::AfterTopology\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 7,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt16",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br",
+              "operand": "81000000"
+            },
+            {
+              "offset": 7,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 8,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 9,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 14,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 16,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 18,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 19,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 20,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 25,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 27,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 32,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 33,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 34,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 35,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::points:System.Int32[]"
+            },
+            {
+              "offset": 40,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 42,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 43,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 44,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 45,
+              "opcode": "shr",
+              "operand": ""
+            },
+            {
+              "offset": 46,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 48,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 49,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 50,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 52,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "stloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 55,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 56,
+              "opcode": "stloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 58,
+              "opcode": "br.s",
+              "operand": "25"
+            },
+            {
+              "offset": 60,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 61,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::world:Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E"
+            },
+            {
+              "offset": 66,
+              "opcode": "ldloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 68,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 69,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 71,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 72,
+              "opcode": "shl",
+              "operand": ""
+            },
+            {
+              "offset": 73,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 74,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 75,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 76,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 77,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 79,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E::TryGetLod\u003C\u003E(System.Int32,System.Int32,System.Int64,System.Int64,System.Int64,System.UInt16\u0026):System.Boolean"
+            },
+            {
+              "offset": 84,
+              "opcode": "brfalse.s",
+              "operand": "05"
+            },
+            {
+              "offset": 86,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 87,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 89,
+              "opcode": "br.s",
+              "operand": "0B"
+            },
+            {
+              "offset": 91,
+              "opcode": "ldloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 93,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 94,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 95,
+              "opcode": "stloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 97,
+              "opcode": "ldloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 99,
+              "opcode": "ldc.i4.8",
+              "operand": ""
+            },
+            {
+              "offset": 100,
+              "opcode": "blt.s",
+              "operand": "D6"
+            },
+            {
+              "offset": 102,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 103,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 109,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 111,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 112,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 113,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 115,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 117,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 118,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 120,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 125,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 126,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 127,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 132,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 133,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 134,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 135,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 136,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 137,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 138,
+              "opcode": "blt",
+              "operand": "78FFFFFF"
+            },
+            {
+              "offset": 143,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "WorldUInt32.AfterChunk",
+        "rawIlSha256": "9AFF7FE17457036CFA00FA77F11B1B507AD0C02C5E835B8C815D2963929477E1",
+        "resolvedIlSha256": "68B2F0669399C73CDCD1BEE81A5E14BC0C66F8A69CDDB691A74F37556ECC6B8C",
+        "canonical": {
+          "signature": "WorldUInt32::AfterChunk\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 5,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt32",
+              "IsPinned": false
+            },
+            {
+              "type": "Tedd.Voxtree.OctreeChunk",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br.s",
+              "operand": "6E"
+            },
+            {
+              "offset": 4,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 11,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 13,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 15,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 16,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 17,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 22,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 24,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 29,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 30,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 31,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 32,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::points:System.Int32[]"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 39,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 40,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::world:Tedd.Voxtree.WorldEntity"
+            },
+            {
+              "offset": 46,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 48,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 49,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 50,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 51,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 52,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "newobj",
+              "operand": "Tedd.Voxtree.ChunkAddress::.ctor\u003C\u003E(System.Int32,System.Int64,System.Int64,System.Int64):void"
+            },
+            {
+              "offset": 58,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 60,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity::TryGetChunk\u003C\u003E(Tedd.Voxtree.ChunkAddress,Tedd.Voxtree.OctreeChunk\u0026):System.Boolean"
+            },
+            {
+              "offset": 65,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 66,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 67,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 69,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "br.s",
+              "operand": "07"
+            },
+            {
+              "offset": 72,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 74,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.OctreeChunk::get_ChannelCount\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 79,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 81,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 82,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 83,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 88,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 90,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 91,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 92,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 93,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 95,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 96,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 98,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 103,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 105,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 110,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 111,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 112,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 113,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 114,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 115,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 116,
+              "opcode": "blt.s",
+              "operand": "8E"
+            },
+            {
+              "offset": 118,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "WorldUInt32.AfterGet",
+        "rawIlSha256": "B01CEC95744D21E0937CE31931871D44FDB00E5FBDD91A23B39A17FD2A961291",
+        "resolvedIlSha256": "D870C35E0B9ABB0F51E2C817E5B1FEB38282F9A5B47F0ED4A825BC1D2030C291",
+        "canonical": {
+          "signature": "WorldUInt32::AfterGet\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 6,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br.s",
+              "operand": "62"
+            },
+            {
+              "offset": 4,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 11,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 13,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 15,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 16,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 17,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 22,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 24,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 29,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 30,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 31,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 32,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::points:System.Int32[]"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 39,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 40,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 42,
+              "opcode": "shr",
+              "operand": ""
+            },
+            {
+              "offset": 43,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 44,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 45,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 46,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::world:Tedd.Voxtree.WorldEntity"
+            },
+            {
+              "offset": 52,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 54,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 55,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 56,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 57,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 58,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 59,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 61,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity::TryGet\u003C\u003E(System.Int32,System.Int64,System.Int64,System.Int64,System.UInt32\u0026):System.Boolean"
+            },
+            {
+              "offset": 66,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 68,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 69,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 75,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 77,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 78,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 79,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 81,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 83,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 84,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 86,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 91,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 92,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 93,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 98,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 99,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 100,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 101,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 102,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 103,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "blt.s",
+              "operand": "9A"
+            },
+            {
+              "offset": 106,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "WorldUInt32.AfterLod",
+        "rawIlSha256": "B5B7658878762A7790C43B63F4C7816450F4D9252A01AE024562F0E9DC058253",
+        "resolvedIlSha256": "82137F8F2EFE9A3A0C47BAABCAFCE3F7C8C3E027F027AEE6710A0B225B09B43E",
+        "canonical": {
+          "signature": "WorldUInt32::AfterLod\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 7,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br.s",
+              "operand": "65"
+            },
+            {
+              "offset": 4,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 11,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 13,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 15,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 16,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 17,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 22,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 24,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 29,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 30,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 31,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 32,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::points:System.Int32[]"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 39,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 40,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 42,
+              "opcode": "shr",
+              "operand": ""
+            },
+            {
+              "offset": 43,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 44,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 45,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 46,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::world:Tedd.Voxtree.WorldEntity"
+            },
+            {
+              "offset": 52,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 54,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 55,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 56,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 57,
+              "opcode": "shl",
+              "operand": ""
+            },
+            {
+              "offset": 58,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 59,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 60,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 61,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 62,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 64,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity::TryGetLod\u003C\u003E(System.Int32,System.Int32,System.Int64,System.Int64,System.Int64,System.UInt32\u0026):System.Boolean"
+            },
+            {
+              "offset": 69,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 71,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 72,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 73,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 78,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 80,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 81,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 82,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 84,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 86,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 87,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 89,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 94,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 95,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 96,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 101,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 102,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 103,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 105,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 106,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 107,
+              "opcode": "blt.s",
+              "operand": "97"
+            },
+            {
+              "offset": 109,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "WorldUInt32.AfterTopology",
+        "rawIlSha256": "F21DC5C9BD735D0151809446215A0640D447FA4886D1E5F910504851E3754018",
+        "resolvedIlSha256": "7F405FC3AA8BB02ED4F63B1E5D7AE1608595B7B440E13233A89721CE0D04E51A",
+        "canonical": {
+          "signature": "WorldUInt32::AfterTopology\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 7,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br",
+              "operand": "81000000"
+            },
+            {
+              "offset": 7,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 8,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 9,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 14,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 16,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 18,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 19,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 20,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 25,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 27,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 32,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 33,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 34,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 35,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::points:System.Int32[]"
+            },
+            {
+              "offset": 40,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 42,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 43,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 44,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 45,
+              "opcode": "shr",
+              "operand": ""
+            },
+            {
+              "offset": 46,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 48,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 49,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 50,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 52,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "stloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 55,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 56,
+              "opcode": "stloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 58,
+              "opcode": "br.s",
+              "operand": "25"
+            },
+            {
+              "offset": 60,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 61,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::world:Tedd.Voxtree.WorldEntity"
+            },
+            {
+              "offset": 66,
+              "opcode": "ldloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 68,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 69,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 71,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 72,
+              "opcode": "shl",
+              "operand": ""
+            },
+            {
+              "offset": 73,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 74,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 75,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 76,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 77,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 79,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity::TryGetLod\u003C\u003E(System.Int32,System.Int32,System.Int64,System.Int64,System.Int64,System.UInt32\u0026):System.Boolean"
+            },
+            {
+              "offset": 84,
+              "opcode": "brfalse.s",
+              "operand": "05"
+            },
+            {
+              "offset": 86,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 87,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 89,
+              "opcode": "br.s",
+              "operand": "0B"
+            },
+            {
+              "offset": 91,
+              "opcode": "ldloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 93,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 94,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 95,
+              "opcode": "stloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 97,
+              "opcode": "ldloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 99,
+              "opcode": "ldc.i4.8",
+              "operand": ""
+            },
+            {
+              "offset": 100,
+              "opcode": "blt.s",
+              "operand": "D6"
+            },
+            {
+              "offset": 102,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 103,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 109,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 111,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 112,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 113,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 115,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 117,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 118,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 120,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 125,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 126,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 127,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 132,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 133,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 134,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 135,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 136,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 137,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 138,
+              "opcode": "blt",
+              "operand": "78FFFFFF"
+            },
+            {
+              "offset": 143,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      }
+    ]
+  },
+  {
+    "entry": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n1\\WorldNormal.dll",
+    "sha256": "39CC8F6DD13B8FF470911D58591213EB8CC9E44B3BAA3283BA6ABA65C6135CA2",
+    "methods": [
+      {
+        "method": "WorldUInt16.AfterChunk",
+        "rawIlSha256": "8B4102104A6F1D5AF792109E9D9071E26D48D9FA77419176C2C65DDB82200E5E",
+        "resolvedIlSha256": "8C811592674B86BF9D80210A91FABAA36387D8C3ABA75558241F26D8F250CDAB",
+        "canonical": {
+          "signature": "WorldUInt16::AfterChunk\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 5,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt16",
+              "IsPinned": false
+            },
+            {
+              "type": "Tedd.Voxtree.OctreeChunk\u00601\u003CSystem.UInt16\u003E",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br.s",
+              "operand": "6F"
+            },
+            {
+              "offset": 4,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 11,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 13,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 15,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 16,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 17,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 22,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 24,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 29,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 30,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 31,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 32,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::points:System.Int32[]"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 39,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 40,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::world:Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E"
+            },
+            {
+              "offset": 46,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 48,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 49,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 50,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 51,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 52,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "newobj",
+              "operand": "Tedd.Voxtree.ChunkAddress::.ctor\u003C\u003E(System.Int32,System.Int64,System.Int64,System.Int64):void"
+            },
+            {
+              "offset": 58,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 60,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E::TryGetChunk\u003C\u003E(Tedd.Voxtree.ChunkAddress,Tedd.Voxtree.OctreeChunk\u00601\u003CSystem.UInt16\u003E\u0026):System.Boolean"
+            },
+            {
+              "offset": 65,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 66,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 67,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 69,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "br.s",
+              "operand": "07"
+            },
+            {
+              "offset": 72,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 74,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.OctreeChunk\u00601\u003CSystem.UInt16\u003E::get_ChannelCount\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 79,
+              "opcode": "conv.u2",
+              "operand": ""
+            },
+            {
+              "offset": 80,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 82,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 83,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 84,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 89,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 91,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 92,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 93,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 94,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 96,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 97,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 99,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 104,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 105,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 106,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 111,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 112,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 113,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 114,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 115,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 116,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 117,
+              "opcode": "blt.s",
+              "operand": "8D"
+            },
+            {
+              "offset": 119,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "WorldUInt16.AfterGet",
+        "rawIlSha256": "195EE75E359908100DD0698EE054BF3A0924809D9FD8435BEBCFFB61D1E48C98",
+        "resolvedIlSha256": "DEB2E5F05B39BAA7D1407987F16E584672B629CB4C8483A75B712890C972895C",
+        "canonical": {
+          "signature": "WorldUInt16::AfterGet\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 6,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt16",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br.s",
+              "operand": "62"
+            },
+            {
+              "offset": 4,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 11,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 13,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 15,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 16,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 17,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 22,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 24,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 29,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 30,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 31,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 32,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::points:System.Int32[]"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 39,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 40,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 42,
+              "opcode": "shr",
+              "operand": ""
+            },
+            {
+              "offset": 43,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 44,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 45,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 46,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::world:Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E"
+            },
+            {
+              "offset": 52,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 54,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 55,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 56,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 57,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 58,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 59,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 61,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E::TryGet\u003C\u003E(System.Int32,System.Int64,System.Int64,System.Int64,System.UInt16\u0026):System.Boolean"
+            },
+            {
+              "offset": 66,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 68,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 69,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 75,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 77,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 78,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 79,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 81,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 83,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 84,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 86,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 91,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 92,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 93,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 98,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 99,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 100,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 101,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 102,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 103,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "blt.s",
+              "operand": "9A"
+            },
+            {
+              "offset": 106,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "WorldUInt16.AfterLod",
+        "rawIlSha256": "133C2B49DA2B57DD7412028FA642B73C2444A9D6A049A7EEF590D6C1FF7E9718",
+        "resolvedIlSha256": "707A94AD387A0DEE57D4FC9EFE24A91DEC17649F35AC886310F5AF23A1BAED46",
+        "canonical": {
+          "signature": "WorldUInt16::AfterLod\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 7,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt16",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br.s",
+              "operand": "65"
+            },
+            {
+              "offset": 4,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 11,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 13,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 15,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 16,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 17,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 22,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 24,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 29,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 30,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 31,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 32,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::points:System.Int32[]"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 39,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 40,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 42,
+              "opcode": "shr",
+              "operand": ""
+            },
+            {
+              "offset": 43,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 44,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 45,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 46,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::world:Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E"
+            },
+            {
+              "offset": 52,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 54,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 55,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 56,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 57,
+              "opcode": "shl",
+              "operand": ""
+            },
+            {
+              "offset": 58,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 59,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 60,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 61,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 62,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 64,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E::TryGetLod\u003C\u003E(System.Int32,System.Int32,System.Int64,System.Int64,System.Int64,System.UInt16\u0026):System.Boolean"
+            },
+            {
+              "offset": 69,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 71,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 72,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 73,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 78,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 80,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 81,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 82,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 84,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 86,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 87,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 89,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 94,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 95,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 96,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 101,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 102,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 103,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 105,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 106,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 107,
+              "opcode": "blt.s",
+              "operand": "97"
+            },
+            {
+              "offset": 109,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "WorldUInt16.AfterTopology",
+        "rawIlSha256": "B1CEBB035747E0F25B41DE7FC3B43A6970F0D75539B17E1E17349D16410003D6",
+        "resolvedIlSha256": "B0F89012FA1014F0876799C334EE9A0FA2F6D9C1671629EB748FD0B89041AD58",
+        "canonical": {
+          "signature": "WorldUInt16::AfterTopology\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 7,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt16",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br",
+              "operand": "81000000"
+            },
+            {
+              "offset": 7,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 8,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 9,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 14,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 16,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 18,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 19,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 20,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::position:System.Int32"
+            },
+            {
+              "offset": 25,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 27,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 32,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 33,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 34,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 35,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::points:System.Int32[]"
+            },
+            {
+              "offset": 40,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 42,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 43,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 44,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 45,
+              "opcode": "shr",
+              "operand": ""
+            },
+            {
+              "offset": 46,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 48,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 49,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 50,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 52,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "stloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 55,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 56,
+              "opcode": "stloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 58,
+              "opcode": "br.s",
+              "operand": "25"
+            },
+            {
+              "offset": 60,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 61,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::world:Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E"
+            },
+            {
+              "offset": 66,
+              "opcode": "ldloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 68,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 69,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 71,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 72,
+              "opcode": "shl",
+              "operand": ""
+            },
+            {
+              "offset": 73,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 74,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 75,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 76,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 77,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 79,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity\u00601\u003CSystem.UInt16\u003E::TryGetLod\u003C\u003E(System.Int32,System.Int32,System.Int64,System.Int64,System.Int64,System.UInt16\u0026):System.Boolean"
+            },
+            {
+              "offset": 84,
+              "opcode": "brfalse.s",
+              "operand": "05"
+            },
+            {
+              "offset": 86,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 87,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 89,
+              "opcode": "br.s",
+              "operand": "0B"
+            },
+            {
+              "offset": 91,
+              "opcode": "ldloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 93,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 94,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 95,
+              "opcode": "stloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 97,
+              "opcode": "ldloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 99,
+              "opcode": "ldc.i4.8",
+              "operand": ""
+            },
+            {
+              "offset": 100,
+              "opcode": "blt.s",
+              "operand": "D6"
+            },
+            {
+              "offset": 102,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 103,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "ldfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 109,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 111,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 112,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 113,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 115,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 117,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 118,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 120,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 125,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 126,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 127,
+              "opcode": "stfld",
+              "operand": "WorldUInt16::sum:System.Int64"
+            },
+            {
+              "offset": 132,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 133,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 134,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 135,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 136,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 137,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 138,
+              "opcode": "blt",
+              "operand": "78FFFFFF"
+            },
+            {
+              "offset": 143,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "WorldUInt32.AfterChunk",
+        "rawIlSha256": "9AFF7FE17457036CFA00FA77F11B1B507AD0C02C5E835B8C815D2963929477E1",
+        "resolvedIlSha256": "68B2F0669399C73CDCD1BEE81A5E14BC0C66F8A69CDDB691A74F37556ECC6B8C",
+        "canonical": {
+          "signature": "WorldUInt32::AfterChunk\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 5,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt32",
+              "IsPinned": false
+            },
+            {
+              "type": "Tedd.Voxtree.OctreeChunk",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br.s",
+              "operand": "6E"
+            },
+            {
+              "offset": 4,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 11,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 13,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 15,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 16,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 17,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 22,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 24,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 29,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 30,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 31,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 32,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::points:System.Int32[]"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 39,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 40,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::world:Tedd.Voxtree.WorldEntity"
+            },
+            {
+              "offset": 46,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 48,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 49,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 50,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 51,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 52,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "newobj",
+              "operand": "Tedd.Voxtree.ChunkAddress::.ctor\u003C\u003E(System.Int32,System.Int64,System.Int64,System.Int64):void"
+            },
+            {
+              "offset": 58,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 60,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity::TryGetChunk\u003C\u003E(Tedd.Voxtree.ChunkAddress,Tedd.Voxtree.OctreeChunk\u0026):System.Boolean"
+            },
+            {
+              "offset": 65,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 66,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 67,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 69,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "br.s",
+              "operand": "07"
+            },
+            {
+              "offset": 72,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 74,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.OctreeChunk::get_ChannelCount\u003C\u003E():System.Int32"
+            },
+            {
+              "offset": 79,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 81,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 82,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 83,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 88,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 90,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 91,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 92,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 93,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 95,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 96,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 98,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 103,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 105,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 110,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 111,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 112,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 113,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 114,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 115,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 116,
+              "opcode": "blt.s",
+              "operand": "8E"
+            },
+            {
+              "offset": 118,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "WorldUInt32.AfterGet",
+        "rawIlSha256": "B01CEC95744D21E0937CE31931871D44FDB00E5FBDD91A23B39A17FD2A961291",
+        "resolvedIlSha256": "D870C35E0B9ABB0F51E2C817E5B1FEB38282F9A5B47F0ED4A825BC1D2030C291",
+        "canonical": {
+          "signature": "WorldUInt32::AfterGet\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 6,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br.s",
+              "operand": "62"
+            },
+            {
+              "offset": 4,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 11,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 13,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 15,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 16,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 17,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 22,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 24,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 29,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 30,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 31,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 32,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::points:System.Int32[]"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 39,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 40,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 42,
+              "opcode": "shr",
+              "operand": ""
+            },
+            {
+              "offset": 43,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 44,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 45,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 46,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::world:Tedd.Voxtree.WorldEntity"
+            },
+            {
+              "offset": 52,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 54,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 55,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 56,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 57,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 58,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 59,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 61,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity::TryGet\u003C\u003E(System.Int32,System.Int64,System.Int64,System.Int64,System.UInt32\u0026):System.Boolean"
+            },
+            {
+              "offset": 66,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 68,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 69,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 75,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 77,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 78,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 79,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 81,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 83,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 84,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 86,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 91,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 92,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 93,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 98,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 99,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 100,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 101,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 102,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 103,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "blt.s",
+              "operand": "9A"
+            },
+            {
+              "offset": 106,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "WorldUInt32.AfterLod",
+        "rawIlSha256": "B5B7658878762A7790C43B63F4C7816450F4D9252A01AE024562F0E9DC058253",
+        "resolvedIlSha256": "82137F8F2EFE9A3A0C47BAABCAFCE3F7C8C3E027F027AEE6710A0B225B09B43E",
+        "canonical": {
+          "signature": "WorldUInt32::AfterLod\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 7,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br.s",
+              "operand": "65"
+            },
+            {
+              "offset": 4,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 5,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 6,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 11,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 13,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 15,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 16,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 17,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 22,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 24,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 29,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 30,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 31,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 32,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::points:System.Int32[]"
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 38,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 39,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 40,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 42,
+              "opcode": "shr",
+              "operand": ""
+            },
+            {
+              "offset": 43,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 44,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 45,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 46,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::world:Tedd.Voxtree.WorldEntity"
+            },
+            {
+              "offset": 52,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 54,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 55,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 56,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 57,
+              "opcode": "shl",
+              "operand": ""
+            },
+            {
+              "offset": 58,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 59,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 60,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 61,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 62,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 64,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity::TryGetLod\u003C\u003E(System.Int32,System.Int32,System.Int64,System.Int64,System.Int64,System.UInt32\u0026):System.Boolean"
+            },
+            {
+              "offset": 69,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 71,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 72,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 73,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 78,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 80,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 81,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 82,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 84,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 86,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 87,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 89,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 94,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 95,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 96,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 101,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 102,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 103,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 105,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 106,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 107,
+              "opcode": "blt.s",
+              "operand": "97"
+            },
+            {
+              "offset": 109,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      },
+      {
+        "method": "WorldUInt32.AfterTopology",
+        "rawIlSha256": "F21DC5C9BD735D0151809446215A0640D447FA4886D1E5F910504851E3754018",
+        "resolvedIlSha256": "7F405FC3AA8BB02ED4F63B1E5D7AE1608595B7B440E13233A89721CE0D04E51A",
+        "canonical": {
+          "signature": "WorldUInt32::AfterTopology\u003C\u003E(System.Int32):System.Void",
+          "InitLocals": true,
+          "MaxStackSize": 7,
+          "locals": [
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Boolean",
+              "IsPinned": false
+            },
+            {
+              "type": "System.UInt32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            },
+            {
+              "type": "System.Int32",
+              "IsPinned": false
+            }
+          ],
+          "exceptions": [],
+          "instructions": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 1,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 2,
+              "opcode": "br",
+              "operand": "81000000"
+            },
+            {
+              "offset": 7,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 8,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 9,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 14,
+              "opcode": "stloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 16,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 18,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 19,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 20,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::position:System.Int32"
+            },
+            {
+              "offset": 25,
+              "opcode": "ldloc.s",
+              "operand": "06"
+            },
+            {
+              "offset": 27,
+              "opcode": "ldc.i4",
+              "operand": "FF030000"
+            },
+            {
+              "offset": 32,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 33,
+              "opcode": "stloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 34,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 35,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::points:System.Int32[]"
+            },
+            {
+              "offset": 40,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 41,
+              "opcode": "ldelem.i4",
+              "operand": ""
+            },
+            {
+              "offset": 42,
+              "opcode": "stloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 43,
+              "opcode": "ldloc.1",
+              "operand": ""
+            },
+            {
+              "offset": 44,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 45,
+              "opcode": "shr",
+              "operand": ""
+            },
+            {
+              "offset": 46,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 47,
+              "opcode": "and",
+              "operand": ""
+            },
+            {
+              "offset": 48,
+              "opcode": "stloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 49,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 50,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 52,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 53,
+              "opcode": "stloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 55,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 56,
+              "opcode": "stloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 58,
+              "opcode": "br.s",
+              "operand": "25"
+            },
+            {
+              "offset": 60,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 61,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::world:Tedd.Voxtree.WorldEntity"
+            },
+            {
+              "offset": 66,
+              "opcode": "ldloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 68,
+              "opcode": "ldloc.3",
+              "operand": ""
+            },
+            {
+              "offset": 69,
+              "opcode": "ldloc.2",
+              "operand": ""
+            },
+            {
+              "offset": 70,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 71,
+              "opcode": "ldc.i4.3",
+              "operand": ""
+            },
+            {
+              "offset": 72,
+              "opcode": "shl",
+              "operand": ""
+            },
+            {
+              "offset": 73,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 74,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 75,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 76,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 77,
+              "opcode": "ldloca.s",
+              "operand": "05"
+            },
+            {
+              "offset": 79,
+              "opcode": "callvirt",
+              "operand": "Tedd.Voxtree.WorldEntity::TryGetLod\u003C\u003E(System.Int32,System.Int32,System.Int64,System.Int64,System.Int64,System.UInt32\u0026):System.Boolean"
+            },
+            {
+              "offset": 84,
+              "opcode": "brfalse.s",
+              "operand": "05"
+            },
+            {
+              "offset": 86,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 87,
+              "opcode": "stloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 89,
+              "opcode": "br.s",
+              "operand": "0B"
+            },
+            {
+              "offset": 91,
+              "opcode": "ldloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 93,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 94,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 95,
+              "opcode": "stloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 97,
+              "opcode": "ldloc.s",
+              "operand": "07"
+            },
+            {
+              "offset": 99,
+              "opcode": "ldc.i4.8",
+              "operand": ""
+            },
+            {
+              "offset": 100,
+              "opcode": "blt.s",
+              "operand": "D6"
+            },
+            {
+              "offset": 102,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 103,
+              "opcode": "ldarg.0",
+              "operand": ""
+            },
+            {
+              "offset": 104,
+              "opcode": "ldfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 109,
+              "opcode": "ldloc.s",
+              "operand": "05"
+            },
+            {
+              "offset": 111,
+              "opcode": "conv.u8",
+              "operand": ""
+            },
+            {
+              "offset": 112,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 113,
+              "opcode": "ldloc.s",
+              "operand": "04"
+            },
+            {
+              "offset": 115,
+              "opcode": "brtrue.s",
+              "operand": "03"
+            },
+            {
+              "offset": 117,
+              "opcode": "ldc.i4.0",
+              "operand": ""
+            },
+            {
+              "offset": 118,
+              "opcode": "br.s",
+              "operand": "05"
+            },
+            {
+              "offset": 120,
+              "opcode": "ldc.i4",
+              "operand": "00000100"
+            },
+            {
+              "offset": 125,
+              "opcode": "conv.i8",
+              "operand": ""
+            },
+            {
+              "offset": 126,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 127,
+              "opcode": "stfld",
+              "operand": "WorldUInt32::sum:System.Int64"
+            },
+            {
+              "offset": 132,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 133,
+              "opcode": "ldc.i4.1",
+              "operand": ""
+            },
+            {
+              "offset": 134,
+              "opcode": "add",
+              "operand": ""
+            },
+            {
+              "offset": 135,
+              "opcode": "stloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 136,
+              "opcode": "ldloc.0",
+              "operand": ""
+            },
+            {
+              "offset": 137,
+              "opcode": "ldarg.1",
+              "operand": ""
+            },
+            {
+              "offset": 138,
+              "opcode": "blt",
+              "operand": "78FFFFFF"
+            },
+            {
+              "offset": 143,
+              "opcode": "ret",
+              "operand": ""
+            }
+          ]
+        },
+        "implementationFlags": "NoInlining"
+      }
+    ]
+  }
+]

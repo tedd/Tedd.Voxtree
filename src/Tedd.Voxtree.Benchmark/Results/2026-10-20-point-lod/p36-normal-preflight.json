@@ -1,0 +1,743 @@
+{
+  "passed": true,
+  "control": "f0772c8",
+  "candidate": "cache-maintenance-source, P36 only",
+  "fixtureVersion": "22",
+  "entryAssembly": "WorldNormal.dll",
+  "sourceMatched": true,
+  "callerMethodsMatched": 8,
+  "implementationFlagsMatched": true,
+  "dependencyClosureMatched": true,
+  "runtimeConfigMatched": true,
+  "depsJsonMatched": true,
+  "singleImplementationPerModule": true,
+  "semanticCasesPerModule": 48,
+  "comparativeRecords": 0,
+  "fixtureSha256": "e07c04fa2cfa6da4412757a37618aa6452b596dec25dc8500b3498609dbd2f7e",
+  "callerAuditSha256": "44105dce3476085fc4e1fa324d4828566b45cf41ff2c4351d6b070b711be5b2e",
+  "sourcePatchSha256": "68943c568b7c9e41bf2b1c3a5365e631379183d1393296759e774c14ef643bb7",
+  "sourceReview": [
+    {
+      "label": "p36n0",
+      "file": "ChunkCompressionCodec.cs",
+      "sha256": "0ce602a3b8d85b8e46f231555834a1e7dc49e307324f392cf85d425d92aa52f3",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "ChunkStorage.cs",
+      "sha256": "517a320dc768879a018c141120ecde7fcb8e8086f3d499706b31c1c3f2fedec1",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "DeferredChunkStore.Generic.cs",
+      "sha256": "f95a9a19e8d077b9ae3c73470b0b08a9af2fee6a982937dac92e45a97e63f6a6",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "DeferredChunkStore.cs",
+      "sha256": "0c4882db98d9fe72f819380e8c03852be819fe50e9bf910849202b76c27addca",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "DeferredOctreeChunk.Generic.cs",
+      "sha256": "b9357cb23b31f1076396abfd4ac4fce93fe421ff76b4200d66e148171e1e5c13",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "DeferredOctreeChunk.cs",
+      "sha256": "8839fe309c912fef3a847fccad37e8de9226cbdfab9bc575f947076e72f99f0c",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "DenseVoxel.Generic.Api.cs",
+      "sha256": "7ffc925931df181a1357de79850f0149d7166f42e9ff09c406ffc823c413c20f",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "DenseVoxelLayout.Generic.cs",
+      "sha256": "72b42a5afc7e137f835855027f6d65d9789d3805222d716380b38c1f3f40323a",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "DenseVoxelLayout.cs",
+      "sha256": "97e2641999b6392cba4347f9524f929386102bca802486ceedf7c51ee03ddd33",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "GenericOctreeCodec.cs",
+      "sha256": "f81924c62d8e106fbe4ffb0f030f7bfaf47114c0e9f3c385fe0ad1bd1a511155",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "GenericOctreeQueries.cs",
+      "sha256": "bb1429c23b1d743110ac46e1f8839cbcd242f7a04c15ee34c79858e0ece535cf",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "HotOctreeChunk.Generic.cs",
+      "sha256": "2bde3655202f63d24f7b8618b5c17317cc26c376cac513d79cb7316fbb7332f0",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "HotOctreeChunk.cs",
+      "sha256": "f1f51c2836c729f433fda2e1e87f2a0b432ddccb9e2ce50c9f1b6d92e0bb3aa7",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "MaskedVoxelSearch.cs",
+      "sha256": "ed88fc6a413473f2128a8adbc3ef2d9df53dce7376626f81b96f2634dabe6965",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "Octree.Blocks.cs",
+      "sha256": "97b2da4e88a15bee187408c2f64dbcff619b63a87964c0227b6c1b79de45906e",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "Octree.Generic.Queries.cs",
+      "sha256": "ffd12862b2de4223921edfd04ae0f822b7213749d07badcff9c852ac05a362c1",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "Octree.Generic.cs",
+      "sha256": "0c1de8baacde5e9a913dfe54d29296ec5a3c394bfc00c2271112b30495608c0e",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "Octree.Search.cs",
+      "sha256": "67075c42be0331719520844cd78f184f4f2e41397912204a84dd22d01da85957",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "Octree.cs",
+      "sha256": "502090007396466ae61edd5ee1c6638cec12ccb118830133f778779a155ffef7",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeChunk.Generic.cs",
+      "sha256": "0d773aab7b1160fbe385ece39e2a32909d43419d8a97019d115fb85ae1156268",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeChunk.cs",
+      "sha256": "576a8971281c8f300349dcc8bacbc5197d6001932c3b91ff412fbedbeeff6fa4",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeChunkSpan.cs",
+      "sha256": "aa40a10cdac8c4b1a50d9581207c2ab4768f44794e94c3fe1d724e787cd07248",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeCodec.cs",
+      "sha256": "bfbd5224c7c92bc2ce3e1bdcb6411a3e91dd73a6f4bff5c10f35b3402c9dbce3",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeLookup.cs",
+      "sha256": "30889b90cfa7a1a07ab2e438dccee484b881d9497000ca05aceb66d0d23bef6b",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeNeighborhood.Generic.cs",
+      "sha256": "e60eefdd49b93a946fe231ec21a49758fb49af78beb1b5d0c494954c57661edf",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeNeighborhoodCache.cs",
+      "sha256": "9ebe1f6ec52f11cc5420ecff9628d7cf5e25b7fc38d6a6b06ed0bdcf3a28241c",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeNeighborhoodSpan.cs",
+      "sha256": "26f9f03e2cb556d872e6a2f4b48e7b6043d328e7a176ca15854310f5c2650003",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeQueries.cs",
+      "sha256": "80af4af2d9d8e999056351dca8274ab5b0c2b4aff0824fed09bb315f17e60da5",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeSpan.Search.cs",
+      "sha256": "d49862967771e92f96cf14056109fc9681fde839a72f20fd8bec6a438678e0ff",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeSpan.cs",
+      "sha256": "45a427f4de401cb93bf76cb7b59c848c1a3c9399922e62b257dda17ae354d63d",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeThrowHelper.cs",
+      "sha256": "ab2594334fd1cc4b48135f482f512acef14535b9e8d2e3fb2f921c336b112f51",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeWorld.Generic.Hot.cs",
+      "sha256": "8b38f28403f6934ce4e3397675819b61b988b9e046bf10524c5a58f53b5cad65",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeWorld.Generic.cs",
+      "sha256": "fe7170e530d654b92e058d5fe5dfc62d51e971955b8797c706d0434ee4c07be3",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeWorld.Hot.cs",
+      "sha256": "5c955076bedb5c2e031b753214cfb74fc46fedd4c4aee862a754c3a756d11a87",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeWorld.Queries.cs",
+      "sha256": "f7539a59f325586cb9aa31159fdd1aec103df9eeae988574ccb088c08943defd",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeWorld.Threading.cs",
+      "sha256": "e33baed0fd75aca1aa09cb898c24bde5634f1317511b2154d81d7f386952984b",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "OctreeWorld.cs",
+      "sha256": "e03fa36cf46b844920a98e97cbcc5e5e73fcefb0c7f29f327a124c0f4113cef0",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "PackedVoxelSearch.cs",
+      "sha256": "9d7608f37129e389f76787a15d7708ba7ced84a111b97ab516be55fa47dc1aa0",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "PartialVoxelEdits.cs",
+      "sha256": "3ebdde16ce610f7c2f47ae194a67db8f858986d45691d2e045e237a2f7251942",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "SideChannelCollection.cs",
+      "sha256": "c0c5fd2b3c506a89e1e865b62d783a5d6e96a4e68ca49fbe15074f73fb12e1d3",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "SparseVoxelEdits.cs",
+      "sha256": "f44069614d91c1cb17bdeb14c593fcc6669e5ca579c98aa7f79ebe6b218b4750",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "StorageInteger.cs",
+      "sha256": "33f777fa0fe390ac881da6ba23044f248b9c565e3d9a5fc4fd8d51eef51abb8f",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "VoxelBox.cs",
+      "sha256": "1c3b4e46398a44d2634307bb2d00917a1229a5dfe050cc1ea2a0790a93fde104",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "VoxelFilter.Generic.cs",
+      "sha256": "d9455041fe48199d107b526d0d6a1e49f16e2b63c44eb1d4193d64fa1e7c021d",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "VoxelFilter.cs",
+      "sha256": "4af79fec7690a13f71db9f28269c154997e95a75315d0cf9f79d59325676a841",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "VoxelHit.cs",
+      "sha256": "b134beb29844de4d083b2334d48ce10ddea99467f5c4221ac6979bdfe2cb277c",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "VoxelType.cs",
+      "sha256": "9411370146c5185bc7e3498ce0f79df0c519805849c7705f44076cabaa3997ff",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "WorldEntity.Generic.Hot.cs",
+      "sha256": "0e5a6334f08725c0571fd714dbb1d5111bb9eb4497fee98eadf51a266728390e",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "WorldEntity.Generic.Storage.cs",
+      "sha256": "881aaa027e9c7a4e63d522c73982609aefa70293859da49d66abdd9d7ef5e4ad",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "WorldEntity.Generic.cs",
+      "sha256": "ff38ad5a58c7cfdd54758df36c78df023090bdcbf804d620dd61e7aca29dfb0e",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "WorldEntity.Hot.cs",
+      "sha256": "9301c6860dd19cda1c1cce1cd566f608ba43e6afdbd1ed96307fca5df96313a0",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "WorldEntity.Storage.cs",
+      "sha256": "dc53c84aa1f49dec2dc75a292ecb73f5a34d3d673df739c658c2d142732f44b2",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n0",
+      "file": "WorldEntity.cs",
+      "sha256": "7ebc2ce2417e607414e15310699822267b907d90f6b55bcb1296b665228c8faf",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "ChunkCompressionCodec.cs",
+      "sha256": "287c243f56c260bbe945f0158d5a197d91dccefcc7ffe80739e6660efadf4cde",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "ChunkStorage.cs",
+      "sha256": "ef12c351ef23a936058d3fabc10aea2a6ab2de92fa296f237f16771b9584b00a",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "DeferredChunkStore.Generic.cs",
+      "sha256": "545cd429e28b24483f6bd74d0e2f26fb0aa6f5cb68e5ac0336c2faf0cc94e084",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "DeferredChunkStore.cs",
+      "sha256": "bad1d9e0c67e4e38248331bc59ecab2dc10ba5f734ee1f2b0f21de3409abdae0",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "DeferredOctreeChunk.Generic.cs",
+      "sha256": "f158d84452c25b2bc209295eb640277a0167b1fd9a89581d84e89a3f43626771",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "DeferredOctreeChunk.cs",
+      "sha256": "19a8cd1d28e4dff3fc3e101b43683a25b0ebb984ae66276df74549be412e5e6d",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "DenseVoxel.Generic.Api.cs",
+      "sha256": "e2a688422a7ead3526f49f8efc39c5f8f0d5409b4aca81d61002d71c583cdb36",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "DenseVoxelLayout.Generic.cs",
+      "sha256": "ef6d464d11bdd7fcd8618bf5e8f67f61e0eb80c3a7877ea9268a3f24af9b6d60",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "DenseVoxelLayout.cs",
+      "sha256": "b38d91dbeb4601d05af3c10140860aaed3b3c65a95635a82bf891512231ffc31",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "GenericOctreeCodec.cs",
+      "sha256": "14dcb2a5ff3f60c099e1246092fb82bce8abf00acac081248fefb229a7f4553c",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "GenericOctreeQueries.cs",
+      "sha256": "a3bc0bd09c0d44b06cf08e407e2e13cca988f4044ecf1868ec1cc111f2895e56",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "HotOctreeChunk.Generic.cs",
+      "sha256": "329d457ca37ba8c6b6c52de2a40c7a50fee5766dfe94a56db814e2904dea9446",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "HotOctreeChunk.cs",
+      "sha256": "1de65aa14a0f69ebb4f69760288aebc39d35ec042d68d4535c2a33923c0dd1a6",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "MaskedVoxelSearch.cs",
+      "sha256": "09ac4d9cbdcacbe46c5a082ac5cb7ca60f543aede5dd0f150892ebc799301467",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "Octree.Blocks.cs",
+      "sha256": "9f0629294e6ce10991988ba6005e8d73f76f5000a82b75ad58b3f55aa4ce4dfb",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "Octree.Generic.Queries.cs",
+      "sha256": "bfd5e079d009eae9629b18794f4e6d50dfdfc9c563b0500a2e2c469b6102f0e9",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "Octree.Generic.cs",
+      "sha256": "51cf208dbde0c68589240626fcc6a0b527e9e44b8128e0f6c2d0d63371e22be4",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "Octree.Search.cs",
+      "sha256": "212a957fa456b90855ade78405b1540f211e9b11e91ec4b90e017eb046d14774",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "Octree.cs",
+      "sha256": "29d2e745c937c388b7ae2c1852158f86c6acc27a896f3b3579a750d9fc555c05",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeChunk.Generic.cs",
+      "sha256": "775858b56dd309f7a3289444dffc6de99e1403b2a0caf084d5a71c07ac437308",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeChunk.cs",
+      "sha256": "c8933d3519ce0e69de07d6d3c1e3ef481afa43b8f0f81a1c9cc47ef50adab40b",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeChunkSpan.cs",
+      "sha256": "fd3bc72e745e00393fc483781794b7f35757db23ceb6af73891af757fedef81c",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeCodec.cs",
+      "sha256": "1794b5ba0784630b89c8fa0ab1ef0612d063456f9bfd9e5a534758bded8d5310",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeLookup.cs",
+      "sha256": "3e3af4fa585f11e6578d98a9f1468f5736452d661ccf30e7166454af0090c5cb",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeNeighborhood.Generic.cs",
+      "sha256": "878e50c9e7fe367de88c1255726edee37fa6f8fecc5e51f39f4b715c94d83c8b",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeNeighborhoodCache.cs",
+      "sha256": "0ffc1520497a9bd4d01d97e52bbb6eb39c82b5c404d39e453076ad6153028496",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeNeighborhoodSpan.cs",
+      "sha256": "61a45eeb363cd349eb21c1a2bb5c7265aa95af220cdb7346ba77736019adf2c6",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeQueries.cs",
+      "sha256": "69ff7258d5378078b2a93c9e1ab629fb71514dbe6b57ffb55c96d4c3547df353",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeSpan.Search.cs",
+      "sha256": "e64030bb44efbcc2051331c226d709769382eca9e67e8c24091e85c0e6f1533a",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeSpan.cs",
+      "sha256": "2acbed65a80989d4e1dcfa69453005f94bbee0927f8942979c544e7698305164",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeThrowHelper.cs",
+      "sha256": "33ae52ae524476abc7c15adf3076897630e538b7576e8e6a9703e37eb4656ea9",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeWorld.Generic.Hot.cs",
+      "sha256": "a02a56ff46ff0a34505ca279fb9250356674efe5d6247eec1e30f365fb4714ef",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeWorld.Generic.cs",
+      "sha256": "c0ac75af863c87367e55272d85b48a5a330f772f227465cbd2c950772b217d30",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeWorld.Hot.cs",
+      "sha256": "1fe52e0450c01d5b2b244344c4a7899bef8dee1108d68b43848963c197444c79",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeWorld.Queries.cs",
+      "sha256": "96b1a1250e2056916f659c7c35cfb95aeaa56dab348d5c036647c276ada8d27e",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeWorld.Threading.cs",
+      "sha256": "18d653790f0af93e3a555177fe819b27d899eb1d0a6ef37d03a376423f1beee3",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "OctreeWorld.cs",
+      "sha256": "3b33ea7e7227ebe2b9d2a675c31923c915c5e4d680b989df824548e10cffb478",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "PackedVoxelSearch.cs",
+      "sha256": "932ab6c3d30f014e612b2e8040faeb195dd3e629825b2c82c8f3007dda7b14de",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "PartialVoxelEdits.cs",
+      "sha256": "baab48c90748a7f6175cd37dc381fd5ecbcdc98f733e9110014557aaa799dbca",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "SideChannelCollection.cs",
+      "sha256": "9931c1ccef22efaed2dc7716cedb1b2b2b36cfd328077d0358b1cf2a096b3c73",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "SparseVoxelEdits.cs",
+      "sha256": "b0ccd84e0ca7aad49080a31dd4476ac4143008d1f845380c3790fcfeabaab709",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "StorageInteger.cs",
+      "sha256": "624c86ff16bab69938392924948ff99bc61e46662c0c7ea76d8834b6e8614306",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "VoxelBox.cs",
+      "sha256": "19211e3628d8228a77b790a26a5c880d793117bd34feff76664f800897a8ec8b",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "VoxelFilter.Generic.cs",
+      "sha256": "8c4f10a25ec39f5b0399f4aac94337d2c4b627444891be48a59e63f2ee25317f",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "VoxelFilter.cs",
+      "sha256": "c3ee0439f32ee5922c8865970bae1acae2488256c902f6e6f2147fabf87df59a",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "VoxelHit.cs",
+      "sha256": "edb7bcb204ca109e0c784b15056381c4f9f3f5c9fc1e3665fa1cbf7ec462b57e",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "VoxelType.cs",
+      "sha256": "172af3a8b3ae50aca4e706bcdd57d259d411592da3ceaea769be0ea94d70c727",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "WorldEntity.Generic.Hot.cs",
+      "sha256": "dbbf5a03ebb414b88a1e4c4d4286ca51ec64864eb8ba3396a3f5e04e5a5a57e2",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "WorldEntity.Generic.Storage.cs",
+      "sha256": "e6155d6d097b2aa12342401a8018dbd2c142746396da7844afcee2018be1d0d1",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "WorldEntity.Generic.cs",
+      "sha256": "5ad67f854676ee6cb20e7428e554a98109c9cf75096bf1e0a12ef7e7f283ca66",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "WorldEntity.Hot.cs",
+      "sha256": "a931cc7f4a03f75ec6e76507f755d08718bef2abdb99ebfcc6c93d217ad98f1f",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "WorldEntity.Storage.cs",
+      "sha256": "f9989d6817b8eb999092e3afbdce67bed2fbc1ae6ffed3623815ec4ce926390c",
+      "normalizedSourceMatched": true
+    },
+    {
+      "label": "p36n1",
+      "file": "WorldEntity.cs",
+      "sha256": "23f5629851dc029a17e21ad13f4f00c8b5fec15991113d50a5fc4a46cfef3449",
+      "normalizedSourceMatched": true
+    }
+  ],
+  "bundles": [
+    {
+      "label": "p36n0",
+      "entry": "WorldNormal.dll",
+      "files": [
+        {
+          "name": "Tedd.DotNetLab.Contracts.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n0\\Tedd.DotNetLab.Contracts.dll",
+          "sha256": "9fcbd3519faa44edcf6d7e4d63aad75468418faa669f07f7d284511efe71cf1f"
+        },
+        {
+          "name": "Tedd.DotNetLab.Harness.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n0\\Tedd.DotNetLab.Harness.dll",
+          "sha256": "03f207f376ef324dd3c4dafe6d0be49f3083111ea68bf27136b06a3e3681a613"
+        },
+        {
+          "name": "Tedd.DotNetLab.Transport.Local.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n0\\Tedd.DotNetLab.Transport.Local.dll",
+          "sha256": "b8fd64c3de543f6642b1925128d1517caca92f56f29e2dbd489e395ef53ca87a"
+        },
+        {
+          "name": "Tedd.MortonEncoding.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n0\\Tedd.MortonEncoding.dll",
+          "sha256": "978e446481eebe8b562e8d52f35f33c443886e726b106a5dec5c340c314fce83"
+        },
+        {
+          "name": "WorldNormal.deps.json",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n0\\WorldNormal.deps.json",
+          "sha256": "ffad5a58d03b63fdc7607e55de81019001405d679e5805d4f024eeac70809de6"
+        },
+        {
+          "name": "WorldNormal.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n0\\WorldNormal.dll",
+          "sha256": "c8bdf9142becaa8d77a649b1f0e4b280f77c18f39cf9434dbb580659199cd716"
+        },
+        {
+          "name": "WorldNormal.runtimeconfig.json",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n0\\WorldNormal.runtimeconfig.json",
+          "sha256": "321bfd7323a8c5b57c55531d3ac9c3a02ea9f58936b41f0e9b7149edb2a5486a"
+        }
+      ]
+    },
+    {
+      "label": "p36n1",
+      "entry": "WorldNormal.dll",
+      "files": [
+        {
+          "name": "Tedd.DotNetLab.Contracts.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n1\\Tedd.DotNetLab.Contracts.dll",
+          "sha256": "9fcbd3519faa44edcf6d7e4d63aad75468418faa669f07f7d284511efe71cf1f"
+        },
+        {
+          "name": "Tedd.DotNetLab.Harness.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n1\\Tedd.DotNetLab.Harness.dll",
+          "sha256": "03f207f376ef324dd3c4dafe6d0be49f3083111ea68bf27136b06a3e3681a613"
+        },
+        {
+          "name": "Tedd.DotNetLab.Transport.Local.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n1\\Tedd.DotNetLab.Transport.Local.dll",
+          "sha256": "b8fd64c3de543f6642b1925128d1517caca92f56f29e2dbd489e395ef53ca87a"
+        },
+        {
+          "name": "Tedd.MortonEncoding.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n1\\Tedd.MortonEncoding.dll",
+          "sha256": "978e446481eebe8b562e8d52f35f33c443886e726b106a5dec5c340c314fce83"
+        },
+        {
+          "name": "WorldNormal.deps.json",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n1\\WorldNormal.deps.json",
+          "sha256": "ffad5a58d03b63fdc7607e55de81019001405d679e5805d4f024eeac70809de6"
+        },
+        {
+          "name": "WorldNormal.dll",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n1\\WorldNormal.dll",
+          "sha256": "39cc8f6dd13b8ff470911d58591213eb8cc9e44b3baa3283ba6aba65c6135ca2"
+        },
+        {
+          "name": "WorldNormal.runtimeconfig.json",
+          "path": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\bundles\\p36n1\\WorldNormal.runtimeconfig.json",
+          "sha256": "321bfd7323a8c5b57c55531d3ac9c3a02ea9f58936b41f0e9b7149edb2a5486a"
+        }
+      ]
+    }
+  ],
+  "effectsReview": "Generated project links only task-owned source and exact dependency DLLs, disables parent Directory.Build imports; startup/callbacks create synthetic arrays/dictionaries/octrees and task-owned Harness IPC, with no configured storage or database calls.",
+  "initialValidationDriverIssue": "Original script parse rejected the status string $label: before execution; preserved initial source and corrected ${label}; neither semantic producer was submitted before correction."
+}

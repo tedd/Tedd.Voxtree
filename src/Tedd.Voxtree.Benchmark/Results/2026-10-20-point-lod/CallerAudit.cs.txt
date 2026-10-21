@@ -11,6 +11,8 @@ var codes = typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static)
     .Select(f => (OpCode)f.GetValue(null)!).ToDictionary(c => unchecked((ushort)c.Value));
 bool countBoundary = args.Length > 0 && args[0] == "--count-boundary";
 if (countBoundary) args = args[1..];
+bool worldCallers = args.Length > 0 && args[0] == "--world-callers";
+if (worldCallers) args = args[1..];
 if (args.Length == 1 && args[0] == "--selftest")
 {
     var a = Audit(Fixture(false, false, 17));
@@ -37,11 +39,14 @@ foreach (var path in args.Skip(1).Select(Path.GetFullPath))
     try
     {
         var assembly = context.LoadFromAssemblyPath(path);
-        var methods = assembly.GetTypes().Where(t => countBoundary
+        var methods = assembly.GetTypes().Where(t => worldCallers
+                ? t.Namespace == null && (t.Name == "WorldUInt32" || t.Name == "WorldUInt16")
+                : countBoundary
                 ? t.Namespace == "Tedd.Voxtree" && (t.Name == "OctreeQueries" || t.Name == "GenericOctreeQueries`1")
                 : t.Namespace == null && t.Name.EndsWith("Scenario", StringComparison.Ordinal))
             .SelectMany(t => t.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
-                .Where(m => countBoundary ? m.Name == "CountPackedVector" : m.Name.StartsWith("AfterBatch", StringComparison.Ordinal)))
+                .Where(m => worldCallers ? m.Name is "AfterGet" or "AfterLod" or "AfterChunk" or "AfterTopology"
+                    : countBoundary ? m.Name == "CountPackedVector" : m.Name.StartsWith("AfterBatch", StringComparison.Ordinal)))
             .OrderBy(m => m.DeclaringType!.FullName, StringComparer.Ordinal).ThenBy(m => m.Name, StringComparer.Ordinal).Select(Audit).ToArray();
         inventories.Add(new { entry = path, sha256 = Hash(File.ReadAllBytes(path)), methods });
     }

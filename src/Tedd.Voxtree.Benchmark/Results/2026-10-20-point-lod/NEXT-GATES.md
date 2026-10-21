@@ -325,6 +325,22 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    NoInlining treatment is a separate possible hypothesis, not an implied P36
    combination. Compact-validator terminal specialization remains separate.
 
+20. P36 first normal family is now source-selected/frozen before timing:
+   hyp-b06fe639f0e64a17b2587dcf93d357bf, candidate-b31c99b21cc4411cabc98450e5a8c648,
+   private catalog p36-normal-screen. Distinct p36n0/p36n1 WorldNormal modules
+   use one actual implementation each, matched Program/project/deps/runtime,
+   eight resolved caller IL bodies/flags and48 semantic cases each. Version22
+   is a new single-library caller epoch. Phase27 preserves all binaries,
+   manifests, real hashes and twelve registered plans with zero timing;
+   see REPORT-PHASE27/WORLD-NORMAL-PROTOCOL. Execute Run-WorldNormal.ps1 once
+   under shared admission/central mutex, retaining accepted operation IDs.
+   Budget12 fresh pairs/case,288 sessions,N16,777,216,warmup1,prime1s,seed20261116.
+   Six cycling12 primaries1.10/six repeated cost guards1.05; use usable intervals
+   for futility/guard harm, retain allocation degeneracy, run every case after
+   statistical misses. Never restart an existing/partial family. This cannot
+   authorize adoption: independent full affected-API/mutation/construction/
+   storage/allocation/consumer qualification and the full10x objective remain.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining

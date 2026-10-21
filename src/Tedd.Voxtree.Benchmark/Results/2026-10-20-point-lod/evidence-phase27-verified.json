@@ -1,0 +1,20 @@
+{
+  "archive_bytes": 637116,
+  "manifest_paths": 174,
+  "unique_blobs": 153,
+  "catalogs": 1,
+  "metric_rows": 0,
+  "sha256": "782538688df43411d5d4d12ffe8c39547b33fe11453399be3ea89c9b9cb65783",
+  "required_paths": [
+    "p36-normal-screen/catalog-export.json",
+    "p36-normal-screen/plans.json",
+    "p36-normal-screen/inputs.json",
+    "p36-normal-preflight.json",
+    "bundles/p36n0/WorldNormal.dll",
+    "bundles/p36n1/WorldNormal.dll",
+    "bundles/p36-inventory/WorldScenarioInventory.dll",
+    "caller-audit-p36normal/out/Audit.dll",
+    "caller-audit-p36normal.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

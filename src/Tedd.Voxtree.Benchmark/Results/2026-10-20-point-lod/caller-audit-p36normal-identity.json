@@ -1,0 +1,12 @@
+{
+  "toolSha256": "2BD0A99A138D1EA1122D70CE4EE197F571C2AFC1E710DC9A2214C4F676C24A13",
+  "observer": "metadata-only caller identity audit; no fixture executed",
+  "selftestPassed": true,
+  "runtime": "10.0.13",
+  "bundleLabels": [
+    "p36n0",
+    "p36n1"
+  ],
+  "sourceSha256": "F4A7C76B19D6745B5FF7F2987F75AB8DF1226E431FC2EE90271E7A38A471EA6D",
+  "mode": "world-callers"
+}
