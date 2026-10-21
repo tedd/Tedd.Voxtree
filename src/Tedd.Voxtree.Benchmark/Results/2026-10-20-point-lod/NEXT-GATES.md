@@ -376,6 +376,24 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    with P36. Actual byte/one-channel consumer, all affected API/allocation and
    complete public10x qualification remain open.
 
+23. P38 hyp-f44d61a6291742dc92bc7ac217aad42c outlines only RebuildLookup on
+   f0772c8, retaining published AddRecent. Exact source reversal/all1203 raw and
+   resolved IL bodies/47-type API,408/409/410 tests, netstandard2.1 and48 prefixes
+   per normal module pass. Eight actual Tier1 callers shrink313–334 bytes and
+   call the278-byte/fixed-rsp32 helper. Six frames are unchanged, UInt32 topology
+   drops16, UInt16 topology grows16. The final caller fails the frozen all-eight
+   no-growth gate; P38 is not_supported. No time regression is inferred and no
+   timing/adoption is selected. Phase30 retains original modules, complete driver
+   snapshots and revised hypothesis; see REPORT-PHASE30. P37/P38 gates remain.
+   Move to independent P31 compact-R terminal validation: at level1 with origin
+   LOD0, four bounded UInt32LE row reads can replace eight level0 recursions.
+   All eight high LOD fields must be zero AND at least one raw value must differ
+   from the origin, preserving canonical rejection of redundant uniform leaves.
+   Freeze a complete independent equivalence/malformed/bounds model before
+   source work; retain P31 format/selection/parent source and exclude P32/P33 or
+   these annotations. Full corpus, regressions, actual native caller and fresh
+   original-control/consumer/allocation qualification remain. Full10x is open.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining

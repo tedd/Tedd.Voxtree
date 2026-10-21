@@ -1,0 +1,10 @@
+--- f0772c8/WorldEntity.cs
++++ P38/WorldEntity.cs
+@@ -601,6 +601,7 @@
+         RebuildLookup();
+     }
+ 
++    [MethodImpl(MethodImplOptions.NoInlining)]
+     private void RebuildLookup()
+     {
+         Array.Clear(_lookup, 0, _lookup.Length);

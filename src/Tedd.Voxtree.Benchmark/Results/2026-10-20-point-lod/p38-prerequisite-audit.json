@@ -1,0 +1,246 @@
+{
+  "passed": false,
+  "scope": "P38 feasibility only, NoInlining on published RebuildLookup; no comparative timing or adoption.",
+  "sourceReversalExact": true,
+  "otherFilesByteIdentical": 52,
+  "compiledSourcesExact": true,
+  "sourceManifestSha256": "9ac62373d7f960724d396ec0986f67db67320c0ee855b1d53d0d332a6c369547",
+  "libraryIlBodiesUnchanged": 1203,
+  "rawIlAndResolvedIlMatched": true,
+  "exportedTypesMatched": 47,
+  "changedImplementationFlag": "Tedd.Voxtree.RecentChunkMap`1<TChunk>::RebuildLookup<>():System.Void",
+  "callersMatched": 8,
+  "semanticCasesPerModule": 48,
+  "tests": [
+    {
+      "file": "tedd_T-5950X2_2026-10-21_15_54_17_net10.0.trx",
+      "sha256": "38f820e18be8f77dca6d85abf9818dd976cca20706553bb8c97478db87ed6c29",
+      "count": 409
+    },
+    {
+      "file": "tedd_T-5950X2_2026-10-21_15_54_17_net11.0.trx",
+      "sha256": "9b990a6e919f422aed69002039c0c861ea6a5de5c422475eea2ea04cfc2fad6f",
+      "count": 410
+    },
+    {
+      "file": "tedd_T-5950X2_2026-10-21_15_54_17_net8.0.trx",
+      "sha256": "23c9761c18afbcd9139a7db77a4e6b48864f3ffdacddf1ae00978c321d7752d7",
+      "count": 408
+    }
+  ],
+  "bundles": [
+    {
+      "Tedd.DotNetLab.Contracts.dll": "9fcbd3519faa44edcf6d7e4d63aad75468418faa669f07f7d284511efe71cf1f",
+      "Tedd.DotNetLab.Harness.dll": "03f207f376ef324dd3c4dafe6d0be49f3083111ea68bf27136b06a3e3681a613",
+      "Tedd.DotNetLab.Transport.Local.dll": "b8fd64c3de543f6642b1925128d1517caca92f56f29e2dbd489e395ef53ca87a",
+      "Tedd.MortonEncoding.dll": "978e446481eebe8b562e8d52f35f33c443886e726b106a5dec5c340c314fce83",
+      "WorldNormal.deps.json": "ffad5a58d03b63fdc7607e55de81019001405d679e5805d4f024eeac70809de6",
+      "WorldNormal.dll": "191f34b945f4a15baf4657c34772f2ebdaeb6de3c549c4af9a6d2e746ff89054",
+      "WorldNormal.runtimeconfig.json": "321bfd7323a8c5b57c55531d3ac9c3a02ea9f58936b41f0e9b7149edb2a5486a"
+    },
+    {
+      "Tedd.DotNetLab.Contracts.dll": "9fcbd3519faa44edcf6d7e4d63aad75468418faa669f07f7d284511efe71cf1f",
+      "Tedd.DotNetLab.Harness.dll": "03f207f376ef324dd3c4dafe6d0be49f3083111ea68bf27136b06a3e3681a613",
+      "Tedd.DotNetLab.Transport.Local.dll": "b8fd64c3de543f6642b1925128d1517caca92f56f29e2dbd489e395ef53ca87a",
+      "Tedd.MortonEncoding.dll": "978e446481eebe8b562e8d52f35f33c443886e726b106a5dec5c340c314fce83",
+      "WorldNormal.deps.json": "ffad5a58d03b63fdc7607e55de81019001405d679e5805d4f024eeac70809de6",
+      "WorldNormal.dll": "31f4ed89197a53c7947a6e28f9ed3b12c2feb961b38269ac0709d167fb87757a",
+      "WorldNormal.runtimeconfig.json": "321bfd7323a8c5b57c55531d3ac9c3a02ea9f58936b41f0e9b7149edb2a5486a"
+    }
+  ],
+  "candidateRebuildLookup": {
+    "method": "Tedd.Voxtree.RecentChunkMap`1[System.__Canon]:RebuildLookup():this (Tier1)",
+    "native_bytes": 278,
+    "listing_availability": "complete",
+    "declared_native_sizes": [
+      278
+    ],
+    "prologue_markers": 1,
+    "rsp_subtractions": [
+      32
+    ],
+    "call_sites": [
+      "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+      "call     [System.ThrowHelper:ThrowIndexOutOfRangeException()]",
+      "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]",
+      "call     CORINFO_HELP_RNGCHKFAIL"
+    ]
+  },
+  "nativeCallers": [
+    {
+      "width": "UInt32",
+      "operation": "Get",
+      "controlBytes": 3731,
+      "candidateBytes": 3412,
+      "controlFixedRsp": [
+        408
+      ],
+      "candidateFixedRsp": [
+        408
+      ],
+      "controlClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateClearSites": [],
+      "candidateRebuildLookupCalls": [
+        "call     [Tedd.Voxtree.RecentChunkMap`1[System.__Canon]:RebuildLookup():this]"
+      ],
+      "gatePassed": true
+    },
+    {
+      "width": "UInt32",
+      "operation": "Lod",
+      "controlBytes": 4195,
+      "candidateBytes": 3872,
+      "controlFixedRsp": [
+        424
+      ],
+      "candidateFixedRsp": [
+        424
+      ],
+      "controlClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateClearSites": [],
+      "candidateRebuildLookupCalls": [
+        "call     [Tedd.Voxtree.RecentChunkMap`1[System.__Canon]:RebuildLookup():this]"
+      ],
+      "gatePassed": true
+    },
+    {
+      "width": "UInt32",
+      "operation": "Chunk",
+      "controlBytes": 2700,
+      "candidateBytes": 2376,
+      "controlFixedRsp": [
+        264
+      ],
+      "candidateFixedRsp": [
+        264
+      ],
+      "controlClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateClearSites": [],
+      "candidateRebuildLookupCalls": [
+        "call     [Tedd.Voxtree.RecentChunkMap`1[System.__Canon]:RebuildLookup():this]"
+      ],
+      "gatePassed": true
+    },
+    {
+      "width": "UInt32",
+      "operation": "Topology",
+      "controlBytes": 4433,
+      "candidateBytes": 4099,
+      "controlFixedRsp": [
+        456
+      ],
+      "candidateFixedRsp": [
+        440
+      ],
+      "controlClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateClearSites": [],
+      "candidateRebuildLookupCalls": [
+        "call     [Tedd.Voxtree.RecentChunkMap`1[System.__Canon]:RebuildLookup():this]"
+      ],
+      "gatePassed": true
+    },
+    {
+      "width": "UInt16",
+      "operation": "Get",
+      "controlBytes": 3923,
+      "candidateBytes": 3603,
+      "controlFixedRsp": [
+        424
+      ],
+      "candidateFixedRsp": [
+        424
+      ],
+      "controlClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateClearSites": [],
+      "candidateRebuildLookupCalls": [
+        "call     [Tedd.Voxtree.RecentChunkMap`1[System.__Canon]:RebuildLookup():this]"
+      ],
+      "gatePassed": true
+    },
+    {
+      "width": "UInt16",
+      "operation": "Lod",
+      "controlBytes": 4367,
+      "candidateBytes": 4047,
+      "controlFixedRsp": [
+        440
+      ],
+      "candidateFixedRsp": [
+        440
+      ],
+      "controlClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateClearSites": [],
+      "candidateRebuildLookupCalls": [
+        "call     [Tedd.Voxtree.RecentChunkMap`1[System.__Canon]:RebuildLookup():this]"
+      ],
+      "gatePassed": true
+    },
+    {
+      "width": "UInt16",
+      "operation": "Chunk",
+      "controlBytes": 2700,
+      "candidateBytes": 2377,
+      "controlFixedRsp": [
+        264
+      ],
+      "candidateFixedRsp": [
+        264
+      ],
+      "controlClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateClearSites": [],
+      "candidateRebuildLookupCalls": [
+        "call     [Tedd.Voxtree.RecentChunkMap`1[System.__Canon]:RebuildLookup():this]"
+      ],
+      "gatePassed": true
+    },
+    {
+      "width": "UInt16",
+      "operation": "Topology",
+      "controlBytes": 4600,
+      "candidateBytes": 4287,
+      "controlFixedRsp": [
+        456
+      ],
+      "candidateFixedRsp": [
+        472
+      ],
+      "controlClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateClearSites": [],
+      "candidateRebuildLookupCalls": [
+        "call     [Tedd.Voxtree.RecentChunkMap`1[System.__Canon]:RebuildLookup():this]"
+      ],
+      "gatePassed": false
+    }
+  ],
+  "state": "not_supported",
+  "comparativeRecords": 0,
+  "limits": [
+    "Supported refers only to this feasibility gate, not performance.",
+    "Native bytes/fixed rsp are not elapsed-time causes, total stack, all timed code versions or application frequency.",
+    "Every affected API/constructor/mutation/churn/storage/allocation/realistic-byte-consumer time guard and full10x qualification remains open."
+  ]
+}

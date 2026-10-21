@@ -1,0 +1,8 @@
+{
+  "comparativeRecords": 0,
+  "promotionEligible": false,
+  "state": "not_supported",
+  "sourceAdoption": false,
+  "feasibilityPassed": false,
+  "scope": "P38 NoInlining only on complete published source. Native feasibility includes the frozen all-callers fixed-rsp guard; no time or hardware-causal claim. Full public10x objective remains open."
+}

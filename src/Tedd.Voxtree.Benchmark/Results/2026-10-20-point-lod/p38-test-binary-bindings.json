@@ -1,0 +1,498 @@
+[
+  {
+    "bytes": 137776,
+    "originalLastWriteUtc": "2025-06-02T12:00:48.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\Microsoft.TestPlatform.CommunicationUtilities.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "E38A359AA502BB1867D6092DCA9ABA5C130DD6F9111DECEA8156AA746B2C69E6",
+    "copy": "bundles/p38-tests/net8.0/Microsoft.TestPlatform.CommunicationUtilities.dll"
+  },
+  {
+    "bytes": 98336,
+    "originalLastWriteUtc": "2025-06-02T12:00:30.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\Microsoft.TestPlatform.CoreUtilities.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "F6E2495C44640D8915B2AEFC938F391C970300266DA014350FF35512A448EE84",
+    "copy": "bundles/p38-tests/net8.0/Microsoft.TestPlatform.CoreUtilities.dll"
+  },
+  {
+    "bytes": 316960,
+    "originalLastWriteUtc": "2025-06-02T12:00:52.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\Microsoft.TestPlatform.CrossPlatEngine.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "D55399BC66DC5B451D60AD82662452CA4A5F735918135DFC91CA9B5E3E38A6AB",
+    "copy": "bundles/p38-tests/net8.0/Microsoft.TestPlatform.CrossPlatEngine.dll"
+  },
+  {
+    "bytes": 51232,
+    "originalLastWriteUtc": "2025-06-02T12:00:28.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\Microsoft.TestPlatform.PlatformAbstractions.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "7B919CE4429C3B7B8FA2C36FD641B70B2F459A30ECB7C65FD80F437673CEC930",
+    "copy": "bundles/p38-tests/net8.0/Microsoft.TestPlatform.PlatformAbstractions.dll"
+  },
+  {
+    "bytes": 67104,
+    "originalLastWriteUtc": "2025-06-02T12:00:42.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\Microsoft.TestPlatform.Utilities.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "01FFD64D25A4BD905AEF9594D2AA700E020273A90A77A8720AF6BEC8B4FD5444",
+    "copy": "bundles/p38-tests/net8.0/Microsoft.TestPlatform.Utilities.dll"
+  },
+  {
+    "bytes": 17464,
+    "originalLastWriteUtc": "2025-02-26T16:16:08.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\Microsoft.VisualStudio.CodeCoverage.Shim.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "A753BC15F23A957F4F91A059376E4472C6BACD1503622DE4B9B2B079AD8EA289",
+    "copy": "bundles/p38-tests/net8.0/Microsoft.VisualStudio.CodeCoverage.Shim.dll"
+  },
+  {
+    "bytes": 248352,
+    "originalLastWriteUtc": "2025-06-02T12:00:46.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\Microsoft.VisualStudio.TestPlatform.Common.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "059AA2F335C3F7B14AC3FB7CAA1625BC2767581B9548E9FF53A246C7F2F94D6A",
+    "copy": "bundles/p38-tests/net8.0/Microsoft.VisualStudio.TestPlatform.Common.dll"
+  },
+  {
+    "bytes": 334392,
+    "originalLastWriteUtc": "2025-06-02T12:00:42.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "F83E38EE9020BAA42E284E2299E233070FFA86CE4B10213583F9B7C8A521BCD0",
+    "copy": "bundles/p38-tests/net8.0/Microsoft.VisualStudio.TestPlatform.ObjectModel.dll"
+  },
+  {
+    "bytes": 712464,
+    "originalLastWriteUtc": "2023-03-08T07:09:54.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\Newtonsoft.Json.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "22C649F75FCE5BE7C7CCDA8880473B634EF69ECF33F5D1AB8AD892CAF47D5A07",
+    "copy": "bundles/p38-tests/net8.0/Newtonsoft.Json.dll"
+  },
+  {
+    "bytes": 6144,
+    "originalLastWriteUtc": "2020-01-11T20:09:16.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\Tedd.MortonEncoding.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "978E446481EEBE8B562E8D52F35F33C443886E726B106A5DEC5C340C314FCE83",
+    "copy": "bundles/p38-tests/net8.0/Tedd.MortonEncoding.dll"
+  },
+  {
+    "bytes": 187392,
+    "originalLastWriteUtc": "2026-10-21T13:54:11.5744316Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\Tedd.Voxtree.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "1F80F9A920494A46F8E5E9A5424F0F2E8BFF23FA9B750A14ED65DB10D79B2CEF",
+    "copy": "bundles/p38-tests/net8.0/Tedd.Voxtree.dll"
+  },
+  {
+    "bytes": 49696,
+    "originalLastWriteUtc": "2025-06-02T12:00:54.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\testhost.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "92CBDF52DB5249112F9F53F1FCDAF9F9AA3FCE467141C688A31A7FE095E4D304",
+    "copy": "bundles/p38-tests/net8.0/testhost.dll"
+  },
+  {
+    "bytes": 24543,
+    "originalLastWriteUtc": "2026-10-21T13:54:14.8743117Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\Tests.deps.json",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "372C50BB0C393A6A5B1980C2A3471B05F9FFE64FA4D9300F7A0D552F68B4B9D5",
+    "copy": "bundles/p38-tests/net8.0/Tests.deps.json"
+  },
+  {
+    "bytes": 406528,
+    "originalLastWriteUtc": "2026-10-21T13:54:14.7369289Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\Tests.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "70AE6786B464E3D8EF325961B01C3A3222F3BB4F9B67ABBCE687C703B1571257",
+    "copy": "bundles/p38-tests/net8.0/Tests.dll"
+  },
+  {
+    "bytes": 388,
+    "originalLastWriteUtc": "2026-10-21T13:54:14.8903113Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\Tests.runtimeconfig.json",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "7B7401577F185805BF9F44124CDBB0B919047AD4CDE5B4AC4E9F0B37468F68CA",
+    "copy": "bundles/p38-tests/net8.0/Tests.runtimeconfig.json"
+  },
+  {
+    "bytes": 21928,
+    "originalLastWriteUtc": "2018-08-25T19:54:14.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\xunit.abstractions.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "3166DC70323FB30CCF1CEDB0FE86F2AD122C46D254542342D90386EFC4C9285C",
+    "copy": "bundles/p38-tests/net8.0/xunit.abstractions.dll"
+  },
+  {
+    "bytes": 187088,
+    "originalLastWriteUtc": "2025-01-08T17:29:24.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\xunit.assert.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "BCD9711B22D227AC8CD4C1568E72433A0F576D2EC8AAE64AC508081892015B1D",
+    "copy": "bundles/p38-tests/net8.0/xunit.assert.dll"
+  },
+  {
+    "bytes": 70352,
+    "originalLastWriteUtc": "2025-01-08T17:29:58.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\xunit.core.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "2F7FEEEC8C6DEC7DF684C25FB80AADB292B963D09723460F03D53C5AD2088ACC",
+    "copy": "bundles/p38-tests/net8.0/xunit.core.dll"
+  },
+  {
+    "bytes": 279760,
+    "originalLastWriteUtc": "2025-01-08T17:30:02.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\xunit.execution.dotnet.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "E70FEBE547C15F8155DB3E2D95C3BA4445A59CBC21A3E7541AB22ED49D3DCF7B",
+    "copy": "bundles/p38-tests/net8.0/xunit.execution.dotnet.dll"
+  },
+  {
+    "bytes": 1253376,
+    "originalLastWriteUtc": "2025-09-27T23:09:56.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net8.0\\xunit.runner.visualstudio.testadapter.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "384ABA4BAD96399A7FD2205A5A3517B643A16F4D7E843BD0B92E1E42F81FCE2A",
+    "copy": "bundles/p38-tests/net8.0/xunit.runner.visualstudio.testadapter.dll"
+  },
+  {
+    "bytes": 137776,
+    "originalLastWriteUtc": "2025-06-02T12:00:48.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\Microsoft.TestPlatform.CommunicationUtilities.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "E38A359AA502BB1867D6092DCA9ABA5C130DD6F9111DECEA8156AA746B2C69E6",
+    "copy": "bundles/p38-tests/net10.0/Microsoft.TestPlatform.CommunicationUtilities.dll"
+  },
+  {
+    "bytes": 98336,
+    "originalLastWriteUtc": "2025-06-02T12:00:30.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\Microsoft.TestPlatform.CoreUtilities.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "F6E2495C44640D8915B2AEFC938F391C970300266DA014350FF35512A448EE84",
+    "copy": "bundles/p38-tests/net10.0/Microsoft.TestPlatform.CoreUtilities.dll"
+  },
+  {
+    "bytes": 316960,
+    "originalLastWriteUtc": "2025-06-02T12:00:52.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\Microsoft.TestPlatform.CrossPlatEngine.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "D55399BC66DC5B451D60AD82662452CA4A5F735918135DFC91CA9B5E3E38A6AB",
+    "copy": "bundles/p38-tests/net10.0/Microsoft.TestPlatform.CrossPlatEngine.dll"
+  },
+  {
+    "bytes": 51232,
+    "originalLastWriteUtc": "2025-06-02T12:00:28.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\Microsoft.TestPlatform.PlatformAbstractions.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "7B919CE4429C3B7B8FA2C36FD641B70B2F459A30ECB7C65FD80F437673CEC930",
+    "copy": "bundles/p38-tests/net10.0/Microsoft.TestPlatform.PlatformAbstractions.dll"
+  },
+  {
+    "bytes": 67104,
+    "originalLastWriteUtc": "2025-06-02T12:00:42.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\Microsoft.TestPlatform.Utilities.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "01FFD64D25A4BD905AEF9594D2AA700E020273A90A77A8720AF6BEC8B4FD5444",
+    "copy": "bundles/p38-tests/net10.0/Microsoft.TestPlatform.Utilities.dll"
+  },
+  {
+    "bytes": 17464,
+    "originalLastWriteUtc": "2025-02-26T16:16:08.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\Microsoft.VisualStudio.CodeCoverage.Shim.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "A753BC15F23A957F4F91A059376E4472C6BACD1503622DE4B9B2B079AD8EA289",
+    "copy": "bundles/p38-tests/net10.0/Microsoft.VisualStudio.CodeCoverage.Shim.dll"
+  },
+  {
+    "bytes": 248352,
+    "originalLastWriteUtc": "2025-06-02T12:00:46.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\Microsoft.VisualStudio.TestPlatform.Common.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "059AA2F335C3F7B14AC3FB7CAA1625BC2767581B9548E9FF53A246C7F2F94D6A",
+    "copy": "bundles/p38-tests/net10.0/Microsoft.VisualStudio.TestPlatform.Common.dll"
+  },
+  {
+    "bytes": 334392,
+    "originalLastWriteUtc": "2025-06-02T12:00:42.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "F83E38EE9020BAA42E284E2299E233070FFA86CE4B10213583F9B7C8A521BCD0",
+    "copy": "bundles/p38-tests/net10.0/Microsoft.VisualStudio.TestPlatform.ObjectModel.dll"
+  },
+  {
+    "bytes": 712464,
+    "originalLastWriteUtc": "2023-03-08T07:09:54.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\Newtonsoft.Json.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "22C649F75FCE5BE7C7CCDA8880473B634EF69ECF33F5D1AB8AD892CAF47D5A07",
+    "copy": "bundles/p38-tests/net10.0/Newtonsoft.Json.dll"
+  },
+  {
+    "bytes": 6144,
+    "originalLastWriteUtc": "2020-01-11T20:09:16.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\Tedd.MortonEncoding.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "978E446481EEBE8B562E8D52F35F33C443886E726B106A5DEC5C340C314FCE83",
+    "copy": "bundles/p38-tests/net10.0/Tedd.MortonEncoding.dll"
+  },
+  {
+    "bytes": 192512,
+    "originalLastWriteUtc": "2026-10-21T13:54:12.6106429Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\Tedd.Voxtree.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "713BBF27F61BE8D2FDA03306E7F241948F12F02004BD56DD36854EEFB9FD4FEE",
+    "copy": "bundles/p38-tests/net10.0/Tedd.Voxtree.dll"
+  },
+  {
+    "bytes": 49696,
+    "originalLastWriteUtc": "2025-06-02T12:00:54.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\testhost.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "92CBDF52DB5249112F9F53F1FCDAF9F9AA3FCE467141C688A31A7FE095E4D304",
+    "copy": "bundles/p38-tests/net10.0/testhost.dll"
+  },
+  {
+    "bytes": 24545,
+    "originalLastWriteUtc": "2026-10-21T13:54:15.9365817Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\Tests.deps.json",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "28D8B5D39CF82FC46B2D8ABABF285A01469CB266167995E390474322F28E6FBB",
+    "copy": "bundles/p38-tests/net10.0/Tests.deps.json"
+  },
+  {
+    "bytes": 410624,
+    "originalLastWriteUtc": "2026-10-21T13:54:15.8070833Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\Tests.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "072F96521D55E46F63C3EBC1F63B786670962149FB2E96306E42565F52A54C3F",
+    "copy": "bundles/p38-tests/net10.0/Tests.dll"
+  },
+  {
+    "bytes": 390,
+    "originalLastWriteUtc": "2026-10-21T13:54:15.9445829Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\Tests.runtimeconfig.json",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "A217D17BE0661ABF2717A26937C6E379C33542CB6F292FD3FC5A2D5113A9D6DC",
+    "copy": "bundles/p38-tests/net10.0/Tests.runtimeconfig.json"
+  },
+  {
+    "bytes": 21928,
+    "originalLastWriteUtc": "2018-08-25T19:54:14.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\xunit.abstractions.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "3166DC70323FB30CCF1CEDB0FE86F2AD122C46D254542342D90386EFC4C9285C",
+    "copy": "bundles/p38-tests/net10.0/xunit.abstractions.dll"
+  },
+  {
+    "bytes": 187088,
+    "originalLastWriteUtc": "2025-01-08T17:29:24.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\xunit.assert.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "BCD9711B22D227AC8CD4C1568E72433A0F576D2EC8AAE64AC508081892015B1D",
+    "copy": "bundles/p38-tests/net10.0/xunit.assert.dll"
+  },
+  {
+    "bytes": 70352,
+    "originalLastWriteUtc": "2025-01-08T17:29:58.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\xunit.core.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "2F7FEEEC8C6DEC7DF684C25FB80AADB292B963D09723460F03D53C5AD2088ACC",
+    "copy": "bundles/p38-tests/net10.0/xunit.core.dll"
+  },
+  {
+    "bytes": 279760,
+    "originalLastWriteUtc": "2025-01-08T17:30:02.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\xunit.execution.dotnet.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "E70FEBE547C15F8155DB3E2D95C3BA4445A59CBC21A3E7541AB22ED49D3DCF7B",
+    "copy": "bundles/p38-tests/net10.0/xunit.execution.dotnet.dll"
+  },
+  {
+    "bytes": 1253376,
+    "originalLastWriteUtc": "2025-09-27T23:09:56.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net10.0\\xunit.runner.visualstudio.testadapter.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "384ABA4BAD96399A7FD2205A5A3517B643A16F4D7E843BD0B92E1E42F81FCE2A",
+    "copy": "bundles/p38-tests/net10.0/xunit.runner.visualstudio.testadapter.dll"
+  },
+  {
+    "bytes": 137776,
+    "originalLastWriteUtc": "2025-06-02T12:00:48.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\Microsoft.TestPlatform.CommunicationUtilities.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "E38A359AA502BB1867D6092DCA9ABA5C130DD6F9111DECEA8156AA746B2C69E6",
+    "copy": "bundles/p38-tests/net11.0/Microsoft.TestPlatform.CommunicationUtilities.dll"
+  },
+  {
+    "bytes": 98336,
+    "originalLastWriteUtc": "2025-06-02T12:00:30.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\Microsoft.TestPlatform.CoreUtilities.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "F6E2495C44640D8915B2AEFC938F391C970300266DA014350FF35512A448EE84",
+    "copy": "bundles/p38-tests/net11.0/Microsoft.TestPlatform.CoreUtilities.dll"
+  },
+  {
+    "bytes": 316960,
+    "originalLastWriteUtc": "2025-06-02T12:00:52.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\Microsoft.TestPlatform.CrossPlatEngine.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "D55399BC66DC5B451D60AD82662452CA4A5F735918135DFC91CA9B5E3E38A6AB",
+    "copy": "bundles/p38-tests/net11.0/Microsoft.TestPlatform.CrossPlatEngine.dll"
+  },
+  {
+    "bytes": 51232,
+    "originalLastWriteUtc": "2025-06-02T12:00:28.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\Microsoft.TestPlatform.PlatformAbstractions.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "7B919CE4429C3B7B8FA2C36FD641B70B2F459A30ECB7C65FD80F437673CEC930",
+    "copy": "bundles/p38-tests/net11.0/Microsoft.TestPlatform.PlatformAbstractions.dll"
+  },
+  {
+    "bytes": 67104,
+    "originalLastWriteUtc": "2025-06-02T12:00:42.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\Microsoft.TestPlatform.Utilities.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "01FFD64D25A4BD905AEF9594D2AA700E020273A90A77A8720AF6BEC8B4FD5444",
+    "copy": "bundles/p38-tests/net11.0/Microsoft.TestPlatform.Utilities.dll"
+  },
+  {
+    "bytes": 17464,
+    "originalLastWriteUtc": "2025-02-26T16:16:08.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\Microsoft.VisualStudio.CodeCoverage.Shim.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "A753BC15F23A957F4F91A059376E4472C6BACD1503622DE4B9B2B079AD8EA289",
+    "copy": "bundles/p38-tests/net11.0/Microsoft.VisualStudio.CodeCoverage.Shim.dll"
+  },
+  {
+    "bytes": 248352,
+    "originalLastWriteUtc": "2025-06-02T12:00:46.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\Microsoft.VisualStudio.TestPlatform.Common.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "059AA2F335C3F7B14AC3FB7CAA1625BC2767581B9548E9FF53A246C7F2F94D6A",
+    "copy": "bundles/p38-tests/net11.0/Microsoft.VisualStudio.TestPlatform.Common.dll"
+  },
+  {
+    "bytes": 334392,
+    "originalLastWriteUtc": "2025-06-02T12:00:42.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "F83E38EE9020BAA42E284E2299E233070FFA86CE4B10213583F9B7C8A521BCD0",
+    "copy": "bundles/p38-tests/net11.0/Microsoft.VisualStudio.TestPlatform.ObjectModel.dll"
+  },
+  {
+    "bytes": 712464,
+    "originalLastWriteUtc": "2023-03-08T07:09:54.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\Newtonsoft.Json.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "22C649F75FCE5BE7C7CCDA8880473B634EF69ECF33F5D1AB8AD892CAF47D5A07",
+    "copy": "bundles/p38-tests/net11.0/Newtonsoft.Json.dll"
+  },
+  {
+    "bytes": 6144,
+    "originalLastWriteUtc": "2020-01-11T20:09:16.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\Tedd.MortonEncoding.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "978E446481EEBE8B562E8D52F35F33C443886E726B106A5DEC5C340C314FCE83",
+    "copy": "bundles/p38-tests/net11.0/Tedd.MortonEncoding.dll"
+  },
+  {
+    "bytes": 192512,
+    "originalLastWriteUtc": "2026-10-21T13:54:12.0502696Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\Tedd.Voxtree.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "4A0E66BAB4503D1B2CB5E8479A34DB2661ABFB6527729DCCA8BE6F1D930B9E06",
+    "copy": "bundles/p38-tests/net11.0/Tedd.Voxtree.dll"
+  },
+  {
+    "bytes": 49696,
+    "originalLastWriteUtc": "2025-06-02T12:00:54.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\testhost.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "92CBDF52DB5249112F9F53F1FCDAF9F9AA3FCE467141C688A31A7FE095E4D304",
+    "copy": "bundles/p38-tests/net11.0/testhost.dll"
+  },
+  {
+    "bytes": 24545,
+    "originalLastWriteUtc": "2026-10-21T13:54:14.9618295Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\Tests.deps.json",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "C817CA1EF34B3EE633E6C42F6F9B55BA993A24F618A2AD931A1CBF104AFF2677",
+    "copy": "bundles/p38-tests/net11.0/Tests.deps.json"
+  },
+  {
+    "bytes": 410624,
+    "originalLastWriteUtc": "2026-10-21T13:54:14.8357989Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\Tests.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "E522F55F3BC33B396FA45E2690FF46CFCA92D71423697231D4AB62188F37CA08",
+    "copy": "bundles/p38-tests/net11.0/Tests.dll"
+  },
+  {
+    "bytes": 405,
+    "originalLastWriteUtc": "2026-10-21T13:54:14.9688268Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\Tests.runtimeconfig.json",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "2234015784AA96066DFD603B1FBACD82B86CA0AFE2FC1137E1C91BA3115F7418",
+    "copy": "bundles/p38-tests/net11.0/Tests.runtimeconfig.json"
+  },
+  {
+    "bytes": 21928,
+    "originalLastWriteUtc": "2018-08-25T19:54:14.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\xunit.abstractions.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "3166DC70323FB30CCF1CEDB0FE86F2AD122C46D254542342D90386EFC4C9285C",
+    "copy": "bundles/p38-tests/net11.0/xunit.abstractions.dll"
+  },
+  {
+    "bytes": 187088,
+    "originalLastWriteUtc": "2025-01-08T17:29:24.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\xunit.assert.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "BCD9711B22D227AC8CD4C1568E72433A0F576D2EC8AAE64AC508081892015B1D",
+    "copy": "bundles/p38-tests/net11.0/xunit.assert.dll"
+  },
+  {
+    "bytes": 70352,
+    "originalLastWriteUtc": "2025-01-08T17:29:58.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\xunit.core.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "2F7FEEEC8C6DEC7DF684C25FB80AADB292B963D09723460F03D53C5AD2088ACC",
+    "copy": "bundles/p38-tests/net11.0/xunit.core.dll"
+  },
+  {
+    "bytes": 279760,
+    "originalLastWriteUtc": "2025-01-08T17:30:02.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\xunit.execution.dotnet.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "E70FEBE547C15F8155DB3E2D95C3BA4445A59CBC21A3E7541AB22ED49D3DCF7B",
+    "copy": "bundles/p38-tests/net11.0/xunit.execution.dotnet.dll"
+  },
+  {
+    "bytes": 1253376,
+    "originalLastWriteUtc": "2025-09-27T23:09:56.0000000Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Tests\\release_net11.0\\xunit.runner.visualstudio.testadapter.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "384ABA4BAD96399A7FD2205A5A3517B643A16F4D7E843BD0B92E1E42F81FCE2A",
+    "copy": "bundles/p38-tests/net11.0/xunit.runner.visualstudio.testadapter.dll"
+  },
+  {
+    "bytes": 1945,
+    "originalLastWriteUtc": "2026-10-21T13:54:11.6745594Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Library\\release_netstandard2.1\\Tedd.Voxtree.deps.json",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "87895E3B0C278603F3F575FFDC5F39AC9EE660F784701861279DAD9016C05499",
+    "copy": "bundles/p38-tests/netstandard2.1/Tedd.Voxtree.deps.json"
+  },
+  {
+    "bytes": 187392,
+    "originalLastWriteUtc": "2026-10-21T13:54:11.5744316Z",
+    "original": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\tests-packed-lookup-p38world\\bin\\Library\\release_netstandard2.1\\Tedd.Voxtree.dll",
+    "scope": "Original completed P38 test output; no rebuild or rerun",
+    "sha256": "1F80F9A920494A46F8E5E9A5424F0F2E8BFF23FA9B750A14ED65DB10D79B2CEF",
+    "copy": "bundles/p38-tests/netstandard2.1/Tedd.Voxtree.dll"
+  }
+]

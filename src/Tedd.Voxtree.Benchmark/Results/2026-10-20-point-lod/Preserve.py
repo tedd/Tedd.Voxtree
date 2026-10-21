@@ -114,6 +114,8 @@ with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compre
             include = True
         if parts[0] in source_directories and not any(p in {"obj", "bin"} for p in parts[1:-1]):
             include = path.suffix in {".cs", ".csproj", ".txt", ".json"}
+            if parts[0].endswith('-driver-source'):
+                include = path.suffix in {'.cs', '.csproj', '.txt', '.json', '.py', '.ps1', '.md'}
             if parts[0]=='coldlog-controller-source':
                 include = path.suffix.lower() in {'.cs','.csproj','.props','.targets','.config','.txt','.json','.diff'}
                 if any(p in {'base-out','base2-out','logged2-out'} for p in parts[1:-1]):include=True
