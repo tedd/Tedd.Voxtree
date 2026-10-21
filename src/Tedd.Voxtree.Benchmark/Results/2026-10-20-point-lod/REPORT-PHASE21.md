@@ -81,5 +81,9 @@ both must pass to select the full point48/LOD4/bulk96 families. All allocations,
 insufficient-independent-evidence flags and adverse results remain. No adoption
 or direct-release10x claim follows from these prerequisites.
 
+Subsequent phase22 completes the original Get-first rejection stage. Both owned
+LOD primary estimates pass, but mandatory getters/other guards fail; P33 is
+not_supported and later timing families are not selected. See REPORT-PHASE22.
+
 The active workspace D:\Workspaces\AI\voxtree-point-lod-20261020 remains needed.
 No temporary worktree or branch was created.

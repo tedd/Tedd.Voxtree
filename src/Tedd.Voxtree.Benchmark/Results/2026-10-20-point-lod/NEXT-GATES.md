@@ -243,8 +243,20 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    411 HW-off,48/96 semantic cases,full corpus and378 writer cases pass. The
    initial path-order assertion failure is preserved, with a fresh v2 source
    identity; no build/run preceded it. Phase21 preserves complete prerequisites
-   and actual binaries. See REPORT-PHASE21. Frozen conditional Get-first/LOD-first
-   timing and full-family/release qualification remain; no source is adopted.
+   and actual binaries. See REPORT-PHASE21. The original Get-first stage now
+   completes48 cases/384 correct,quiescent,joined records. Owned LOD primaries
+   pass1.10 (1.490/1.549), but UInt32 owned/span Get fail (0.761/0.927), as do
+   seven other40 guards. P33 is not_supported; later timing families are not
+   selected. All40 steady-read cases observe zero allocation. Phase22 preserves
+   all observations and the revised hypothesis. See REPORT-PHASE22.
+15. Prefer a separately proved work-elimination lead before further global hints:
+   audit all compact TryReadWord/TryGet/CopyTo caller bounds before removing a
+   redundant flat-index count check; investigate repeated world-resolution
+   address/hash/cache work with exact LRU/access/eviction behavior retained.
+   Neither is yet implemented/measured. Keep P31 as an unpromoted control,
+   excluding P32/P33; any combination needs an explicit interaction study.
+   WorldEntity.TryGetLod, other public families, direct-release10x confirmation
+   and complete API/consumer/memory qualification remain in the full objective.
 
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.

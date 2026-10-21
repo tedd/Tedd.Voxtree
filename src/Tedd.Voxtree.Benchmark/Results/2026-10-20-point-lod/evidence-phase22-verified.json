@@ -1,0 +1,15 @@
+{
+  "archive_bytes": 1529284,
+  "manifest_paths": 904,
+  "unique_blobs": 902,
+  "catalogs": 2,
+  "metric_rows": 48,
+  "sha256": "5a64dfbbeb8c154af879b89bbe9ebdd437683c86f75d4fb2234d6e00b1c32cd9",
+  "required_paths": [
+    "p33point-screen/catalog-export.json",
+    "p33point-audit.json",
+    "p33-disposition.json",
+    "p33-hypothesis/disposition-revision-response.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}
