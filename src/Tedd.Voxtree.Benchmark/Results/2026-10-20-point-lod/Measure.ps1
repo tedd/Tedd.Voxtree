@@ -8,7 +8,7 @@ param(
     [ValidatePattern('^[0-9]+$')][string]$Seed = '20261022',
     [ValidateRange(1,12)][int]$Blocks = 12,
     [ValidateRange(0,4)][int]$WarmupBatches = 4,
-    [ValidateSet('fixed','scaled','precision','bounded-lifecycle','bounded-point','bounded-consumer','bounded-consumer-v14','bounded-consumer-v16','bounded-consumer-v17')][string]$Budget = 'fixed',
+    [ValidateSet('fixed','scaled','precision','bounded-lifecycle','bounded-point','bounded-consumer','bounded-consumer-v14','bounded-consumer-v16','bounded-consumer-v17','bounded-consumer-v18')][string]$Budget = 'fixed',
     [ValidateSet('quiet-validation','cpu-diagnostic')][string]$Profile = 'quiet-validation',
     [string]$JitDisasm = '',
     [string]$JitAssembly = '',
@@ -126,6 +126,10 @@ try {
         }
         if ($Budget -eq 'bounded-consumer-v17') {
             if($scenario.version -ne '17' -or $scenario.id -notlike 'bulk-*'){throw 'Version-17 consumer budget requires its frozen bounds fixture'}
+            $operations=if($scenario.id -like '*-buildread'){2}elseif($scenario.id -match '-(copy|validate|count|miss|count7|miss7|count17|miss17)$'){64}else{16}
+        }
+        if ($Budget -eq 'bounded-consumer-v18') {
+            if($scenario.version -ne '18' -or $scenario.id -notlike 'bulk-*'){throw 'Version-18 consumer budget requires its frozen snapshot fixture'}
             $operations=if($scenario.id -like '*-buildread'){2}elseif($scenario.id -match '-(copy|validate|count|miss|count7|miss7|count17|miss17)$'){64}else{16}
         }
         $plan = Invoke-Lab 'lab.experiment' @{

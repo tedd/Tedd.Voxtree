@@ -1,0 +1,352 @@
+{
+  "parent": "complete P31, unpromoted; no P32",
+  "hypothesis": "hyp-26c4086d5214411183959de88f9428a7",
+  "manifest": [
+    {
+      "file": "ChunkCompressionCodec.cs",
+      "beforeSha256": "fb3e22f31a58bdb6d5311507b6ee74ccb979126c559a18bf97b3653c0c9175c6",
+      "afterSha256": "fb3e22f31a58bdb6d5311507b6ee74ccb979126c559a18bf97b3653c0c9175c6",
+      "changed": false
+    },
+    {
+      "file": "ChunkStorage.cs",
+      "beforeSha256": "d82a0a1fbb2f6192ac5300421d03bbaebf50bf56394d19ae04f93971ddb2f2b3",
+      "afterSha256": "d82a0a1fbb2f6192ac5300421d03bbaebf50bf56394d19ae04f93971ddb2f2b3",
+      "changed": false
+    },
+    {
+      "file": "CompactLeafEncoding.cs",
+      "beforeSha256": "f1556ace03ec400f3edb01ec84543bd1b8a942f2f54166f19825720742a23613",
+      "afterSha256": "f1556ace03ec400f3edb01ec84543bd1b8a942f2f54166f19825720742a23613",
+      "changed": false
+    },
+    {
+      "file": "CompactWordSearch.cs",
+      "beforeSha256": "53c6849d38a5dbb607ea78c399bd76106c6764ab526f68859ddfae705a229606",
+      "afterSha256": "53c6849d38a5dbb607ea78c399bd76106c6764ab526f68859ddfae705a229606",
+      "changed": false
+    },
+    {
+      "file": "DeferredChunkStore.cs",
+      "beforeSha256": "b016f40bd936a8c85dae43caad34eab5651797c79a5e99f8fe9c2b513fdcc078",
+      "afterSha256": "b016f40bd936a8c85dae43caad34eab5651797c79a5e99f8fe9c2b513fdcc078",
+      "changed": false
+    },
+    {
+      "file": "DeferredChunkStore.Generic.cs",
+      "beforeSha256": "ecdff481eb67d666153f3a9cb23e73eb04749d040e02f1b29dfa419a35ee217f",
+      "afterSha256": "ecdff481eb67d666153f3a9cb23e73eb04749d040e02f1b29dfa419a35ee217f",
+      "changed": false
+    },
+    {
+      "file": "DeferredOctreeChunk.cs",
+      "beforeSha256": "0aab152a446dc382871addaaa8fac37578f40a0a27331de9dce4a9f06f8d2c09",
+      "afterSha256": "0aab152a446dc382871addaaa8fac37578f40a0a27331de9dce4a9f06f8d2c09",
+      "changed": false
+    },
+    {
+      "file": "DeferredOctreeChunk.Generic.cs",
+      "beforeSha256": "b226a051bb85f2e93e30596ca74ecc513987b70a5039ebc72473a3f04cf7aa8b",
+      "afterSha256": "b226a051bb85f2e93e30596ca74ecc513987b70a5039ebc72473a3f04cf7aa8b",
+      "changed": false
+    },
+    {
+      "file": "DenseVoxel.Generic.Api.cs",
+      "beforeSha256": "fd3e6724c6565d97e8c36d40667352509501a21be328ef43585133d4a4c95812",
+      "afterSha256": "fd3e6724c6565d97e8c36d40667352509501a21be328ef43585133d4a4c95812",
+      "changed": false
+    },
+    {
+      "file": "DenseVoxelLayout.cs",
+      "beforeSha256": "4fd520b98aaa48c4f6a568bec9bc13809e479e5395c6e715df7590b8cdb2c9a3",
+      "afterSha256": "4fd520b98aaa48c4f6a568bec9bc13809e479e5395c6e715df7590b8cdb2c9a3",
+      "changed": false
+    },
+    {
+      "file": "DenseVoxelLayout.Generic.cs",
+      "beforeSha256": "9758c8c5856d2598ba8dd545a7d83c677b5c0e634fe444bf2a2525adfe7c64a1",
+      "afterSha256": "9758c8c5856d2598ba8dd545a7d83c677b5c0e634fe444bf2a2525adfe7c64a1",
+      "changed": false
+    },
+    {
+      "file": "GenericOctreeCodec.cs",
+      "beforeSha256": "94309d34eb7733dcfcee242481c5e07248c51e1934201a0b42ec60feb453ab10",
+      "afterSha256": "94309d34eb7733dcfcee242481c5e07248c51e1934201a0b42ec60feb453ab10",
+      "changed": false
+    },
+    {
+      "file": "GenericOctreeQueries.cs",
+      "beforeSha256": "ac5ea8629068567322f281cb226e8ac6ba1336a40abdc3c4c8be92a63f9c1541",
+      "afterSha256": "ac5ea8629068567322f281cb226e8ac6ba1336a40abdc3c4c8be92a63f9c1541",
+      "changed": false
+    },
+    {
+      "file": "HotOctreeChunk.cs",
+      "beforeSha256": "81b8025c83c09c1d918e394c429dd3c5de03b7b1b1d2dea213615ba3edf296fe",
+      "afterSha256": "81b8025c83c09c1d918e394c429dd3c5de03b7b1b1d2dea213615ba3edf296fe",
+      "changed": false
+    },
+    {
+      "file": "HotOctreeChunk.Generic.cs",
+      "beforeSha256": "e5a9e3ea6d4b0e34427b5f2cb67f3486e8ca85d4c6434895393534bce14d6aeb",
+      "afterSha256": "e5a9e3ea6d4b0e34427b5f2cb67f3486e8ca85d4c6434895393534bce14d6aeb",
+      "changed": false
+    },
+    {
+      "file": "MaskedVoxelSearch.cs",
+      "beforeSha256": "c9443017f1832c8eb4be157cce72ead19df94e1e4dec0fe58d03a2e2250d8a5a",
+      "afterSha256": "c9443017f1832c8eb4be157cce72ead19df94e1e4dec0fe58d03a2e2250d8a5a",
+      "changed": false
+    },
+    {
+      "file": "Octree.Blocks.cs",
+      "beforeSha256": "aa17348b4daacbeeb0a58e61958c9f8f25f1ce770806fde356f62250dca74bef",
+      "afterSha256": "aa17348b4daacbeeb0a58e61958c9f8f25f1ce770806fde356f62250dca74bef",
+      "changed": false
+    },
+    {
+      "file": "Octree.cs",
+      "beforeSha256": "7b0ce6d0d54acec8172f4331eadf98331130d63992aca183e43fa4c9101d9c70",
+      "afterSha256": "0a5049a5f80c80ef20d6253c50d04d9371750412cba679d4880eb9accc24cbf9",
+      "changed": true
+    },
+    {
+      "file": "Octree.Generic.cs",
+      "beforeSha256": "78c94c98eb5b54440e03da96c764ac614f59e9d363d129daf069cf870a128aed",
+      "afterSha256": "f60a32da00040a85ca5fd686159e40e6ec201a6cabf3b2e8b0071b324b9df4de",
+      "changed": true
+    },
+    {
+      "file": "Octree.Generic.Queries.cs",
+      "beforeSha256": "5cf19c0e77d9dc6c7b75c114a917c4890361a03e12d3e3851208a848782f365f",
+      "afterSha256": "5cf19c0e77d9dc6c7b75c114a917c4890361a03e12d3e3851208a848782f365f",
+      "changed": false
+    },
+    {
+      "file": "Octree.Search.cs",
+      "beforeSha256": "f482725355934bba7eecde848e60feffff76f2d82a9774d166ddd92063dd785d",
+      "afterSha256": "f482725355934bba7eecde848e60feffff76f2d82a9774d166ddd92063dd785d",
+      "changed": false
+    },
+    {
+      "file": "OctreeChunk.cs",
+      "beforeSha256": "67bb634e6a9a7cb44e89087d1ca38027939d2e75b72bc9c60556bae5c0667d94",
+      "afterSha256": "67bb634e6a9a7cb44e89087d1ca38027939d2e75b72bc9c60556bae5c0667d94",
+      "changed": false
+    },
+    {
+      "file": "OctreeChunk.Generic.cs",
+      "beforeSha256": "7482ba55f374a47b1cd992ccd07c18352a04892ba815bc1d508a6ff5c63fa764",
+      "afterSha256": "7482ba55f374a47b1cd992ccd07c18352a04892ba815bc1d508a6ff5c63fa764",
+      "changed": false
+    },
+    {
+      "file": "OctreeChunkSpan.cs",
+      "beforeSha256": "69aad210208d1118a76452af31637a0afa76f26adb3dd35ca63a7d594a604d0a",
+      "afterSha256": "69aad210208d1118a76452af31637a0afa76f26adb3dd35ca63a7d594a604d0a",
+      "changed": false
+    },
+    {
+      "file": "OctreeCodec.cs",
+      "beforeSha256": "03edc91a61a7df37fd446bd41beb2a1750a735961d51a2659b397bef5504e33c",
+      "afterSha256": "03edc91a61a7df37fd446bd41beb2a1750a735961d51a2659b397bef5504e33c",
+      "changed": false
+    },
+    {
+      "file": "OctreeLookup.cs",
+      "beforeSha256": "5d8c5c3eaa495c991b61da0a844c038771dc8e6e73763a6ea5b832bd09ebb811",
+      "afterSha256": "5d8c5c3eaa495c991b61da0a844c038771dc8e6e73763a6ea5b832bd09ebb811",
+      "changed": false
+    },
+    {
+      "file": "OctreeNeighborhood.Generic.cs",
+      "beforeSha256": "f3dc7a76a832156c6f56a950d1f53323832fecbcc493e85fc2c2322fe30d3c79",
+      "afterSha256": "f3dc7a76a832156c6f56a950d1f53323832fecbcc493e85fc2c2322fe30d3c79",
+      "changed": false
+    },
+    {
+      "file": "OctreeNeighborhoodCache.cs",
+      "beforeSha256": "cda24a29c0f4e2f6faef7bcc2cf21db54b8bb21d635f9fa69c5bec4de431062f",
+      "afterSha256": "cda24a29c0f4e2f6faef7bcc2cf21db54b8bb21d635f9fa69c5bec4de431062f",
+      "changed": false
+    },
+    {
+      "file": "OctreeNeighborhoodSpan.cs",
+      "beforeSha256": "9c75e999883e190349959610f00db2db6a635730534986089a4d73956593e141",
+      "afterSha256": "9c75e999883e190349959610f00db2db6a635730534986089a4d73956593e141",
+      "changed": false
+    },
+    {
+      "file": "OctreeQueries.cs",
+      "beforeSha256": "3c21bc0b42cf2ed892626ade7f2f133ca9a1505c6243b9d4cd7fd984bcdabb15",
+      "afterSha256": "3c21bc0b42cf2ed892626ade7f2f133ca9a1505c6243b9d4cd7fd984bcdabb15",
+      "changed": false
+    },
+    {
+      "file": "OctreeSpan.cs",
+      "beforeSha256": "e08fca9a80c3719a4ed3df6f79f10df2291676172ee93f44642439d6303e0588",
+      "afterSha256": "e08fca9a80c3719a4ed3df6f79f10df2291676172ee93f44642439d6303e0588",
+      "changed": false
+    },
+    {
+      "file": "OctreeSpan.Search.cs",
+      "beforeSha256": "16bb69efdb1412a244bd91ba21e5fa097dce33c8cd3a4ba12c4297c1b820921c",
+      "afterSha256": "16bb69efdb1412a244bd91ba21e5fa097dce33c8cd3a4ba12c4297c1b820921c",
+      "changed": false
+    },
+    {
+      "file": "OctreeThrowHelper.cs",
+      "beforeSha256": "c43190d60047033db0fc7ba5fa3332c4aa48f411b43af9abbd3297149b0b64fb",
+      "afterSha256": "c43190d60047033db0fc7ba5fa3332c4aa48f411b43af9abbd3297149b0b64fb",
+      "changed": false
+    },
+    {
+      "file": "OctreeWorld.cs",
+      "beforeSha256": "2b97eb668be540d34f3a1a1f07dd45768fec4a370fdc36545554dfda858bbc75",
+      "afterSha256": "2b97eb668be540d34f3a1a1f07dd45768fec4a370fdc36545554dfda858bbc75",
+      "changed": false
+    },
+    {
+      "file": "OctreeWorld.Generic.cs",
+      "beforeSha256": "58af80e33bc93fb327db4bcb0b6a16b10b654ea6befa3751a4693a822fb0689a",
+      "afterSha256": "58af80e33bc93fb327db4bcb0b6a16b10b654ea6befa3751a4693a822fb0689a",
+      "changed": false
+    },
+    {
+      "file": "OctreeWorld.Generic.Hot.cs",
+      "beforeSha256": "b8c42fd2f819b24d5f566f0f53f41d3fde9563957d8586e56fe3a38408324221",
+      "afterSha256": "b8c42fd2f819b24d5f566f0f53f41d3fde9563957d8586e56fe3a38408324221",
+      "changed": false
+    },
+    {
+      "file": "OctreeWorld.Hot.cs",
+      "beforeSha256": "342c5a377b3393cd277ce7075d6fbf2865a62ecf856a0b9f4c67ad56c29d258c",
+      "afterSha256": "342c5a377b3393cd277ce7075d6fbf2865a62ecf856a0b9f4c67ad56c29d258c",
+      "changed": false
+    },
+    {
+      "file": "OctreeWorld.Queries.cs",
+      "beforeSha256": "c407ababd704164e655864263a8c948ba633ef7f230fa6585c428c9d4cad3409",
+      "afterSha256": "c407ababd704164e655864263a8c948ba633ef7f230fa6585c428c9d4cad3409",
+      "changed": false
+    },
+    {
+      "file": "OctreeWorld.Threading.cs",
+      "beforeSha256": "35f20d8ef034500b9fe39181d2dce4f766526043961a969b3618931811fae84e",
+      "afterSha256": "35f20d8ef034500b9fe39181d2dce4f766526043961a969b3618931811fae84e",
+      "changed": false
+    },
+    {
+      "file": "PackedVoxelSearch.cs",
+      "beforeSha256": "cf2057e64c7b70f9f73bbe24571b692db4ee94e6ba76ce67633235012d1d2402",
+      "afterSha256": "cf2057e64c7b70f9f73bbe24571b692db4ee94e6ba76ce67633235012d1d2402",
+      "changed": false
+    },
+    {
+      "file": "PartialVoxelEdits.cs",
+      "beforeSha256": "21beb63474f793236fd0581824652606a5389ba684f739a4883603c049780e5b",
+      "afterSha256": "21beb63474f793236fd0581824652606a5389ba684f739a4883603c049780e5b",
+      "changed": false
+    },
+    {
+      "file": "SideChannelCollection.cs",
+      "beforeSha256": "ec2d5ecf5a0e79d1bff335bd21cd55a8514b2ea4fc669eb8429f9b5f6ca5a4f6",
+      "afterSha256": "ec2d5ecf5a0e79d1bff335bd21cd55a8514b2ea4fc669eb8429f9b5f6ca5a4f6",
+      "changed": false
+    },
+    {
+      "file": "SparseVoxelEdits.cs",
+      "beforeSha256": "da266f37bd99b185a8af422ffa1ed54919ae7b4116c1eb434cc0b7b7cc97d255",
+      "afterSha256": "da266f37bd99b185a8af422ffa1ed54919ae7b4116c1eb434cc0b7b7cc97d255",
+      "changed": false
+    },
+    {
+      "file": "StorageInteger.cs",
+      "beforeSha256": "314843420e7f8551329a475f1c596d950619a1d756a70fbab95802e16671cc7b",
+      "afterSha256": "314843420e7f8551329a475f1c596d950619a1d756a70fbab95802e16671cc7b",
+      "changed": false
+    },
+    {
+      "file": "VoxelBox.cs",
+      "beforeSha256": "a70dd31450f4a21eb9e4cfaa3a0af6c14404245166a83b979e5d945b6e010ca4",
+      "afterSha256": "a70dd31450f4a21eb9e4cfaa3a0af6c14404245166a83b979e5d945b6e010ca4",
+      "changed": false
+    },
+    {
+      "file": "VoxelFilter.cs",
+      "beforeSha256": "93534e3c1fe602f78095544160afdd993ad8cbf1de03c0a62a02aee65447c97f",
+      "afterSha256": "93534e3c1fe602f78095544160afdd993ad8cbf1de03c0a62a02aee65447c97f",
+      "changed": false
+    },
+    {
+      "file": "VoxelFilter.Generic.cs",
+      "beforeSha256": "491f0848973612f9ccd0de800224c2a254cf49058cc704ea7ca7293f6dbd62fd",
+      "afterSha256": "491f0848973612f9ccd0de800224c2a254cf49058cc704ea7ca7293f6dbd62fd",
+      "changed": false
+    },
+    {
+      "file": "VoxelHit.cs",
+      "beforeSha256": "a7b5f3eee690b0b8bd31de9978699e52e76715440709d428df1fcfb7b411e86b",
+      "afterSha256": "a7b5f3eee690b0b8bd31de9978699e52e76715440709d428df1fcfb7b411e86b",
+      "changed": false
+    },
+    {
+      "file": "VoxelType.cs",
+      "beforeSha256": "913d5f70527494059c6057f3c5a4d57f864a3ff1fe42a2552cc3260225de458c",
+      "afterSha256": "913d5f70527494059c6057f3c5a4d57f864a3ff1fe42a2552cc3260225de458c",
+      "changed": false
+    },
+    {
+      "file": "WorldEntity.cs",
+      "beforeSha256": "e5b1fe205a1f0f1f2e4c686f7e8ce65c3cd9841371803d7352e4ad234f68c427",
+      "afterSha256": "e5b1fe205a1f0f1f2e4c686f7e8ce65c3cd9841371803d7352e4ad234f68c427",
+      "changed": false
+    },
+    {
+      "file": "WorldEntity.Generic.cs",
+      "beforeSha256": "0a8a6eb7cefcc14eb28a5d5231f461dd3e16e035334a8ea90fffeb77ba9eef54",
+      "afterSha256": "0a8a6eb7cefcc14eb28a5d5231f461dd3e16e035334a8ea90fffeb77ba9eef54",
+      "changed": false
+    },
+    {
+      "file": "WorldEntity.Generic.Hot.cs",
+      "beforeSha256": "575b13854c09acf14c986cc3fb31633f15f26f0941205b2572280f4fe83e87ac",
+      "afterSha256": "575b13854c09acf14c986cc3fb31633f15f26f0941205b2572280f4fe83e87ac",
+      "changed": false
+    },
+    {
+      "file": "WorldEntity.Generic.Storage.cs",
+      "beforeSha256": "26b8b798e1bbdaf401eb169f88b2ec174d265dddc6b709a41abf88a9a779f2de",
+      "afterSha256": "26b8b798e1bbdaf401eb169f88b2ec174d265dddc6b709a41abf88a9a779f2de",
+      "changed": false
+    },
+    {
+      "file": "WorldEntity.Hot.cs",
+      "beforeSha256": "8fe8f6a7f95834323248d81998e47a73dcc40a54e3ad5ae3b5721ff633dffb34",
+      "afterSha256": "8fe8f6a7f95834323248d81998e47a73dcc40a54e3ad5ae3b5721ff633dffb34",
+      "changed": false
+    },
+    {
+      "file": "WorldEntity.Storage.cs",
+      "beforeSha256": "32e001a6bc257b346c1259bf7dd85a5130afd2e6dc856583256c035401db7ff8",
+      "afterSha256": "32e001a6bc257b346c1259bf7dd85a5130afd2e6dc856583256c035401db7ff8",
+      "changed": false
+    }
+  ],
+  "fixtures": [
+    {
+      "parent": "Scenarios-compact-leaf.cs.txt",
+      "file": "Scenarios-snapshot-visibility.cs.txt",
+      "sha256": "7078f3362f4f0d62bcce20e2302f5991ef6d208ac657ec6473d69f056f3e5b8d",
+      "onlyVersionChanged": true
+    },
+    {
+      "parent": "Scenarios-compact-bulk.cs.txt",
+      "file": "Scenarios-snapshot-visibility-bulk.cs.txt",
+      "sha256": "0a7cf2614929ad0ceb6cf352a8ab5540005dd32277fb78bf5fecb6e946b36db7",
+      "onlyVersionChanged": true
+    }
+  ],
+  "delta": "Only AggressiveInlining flags on the two AsSpan factories; executable source bodies unchanged",
+  "measured": false
+}

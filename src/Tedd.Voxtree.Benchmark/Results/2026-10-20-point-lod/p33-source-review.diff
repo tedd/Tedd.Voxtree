@@ -1,0 +1,20 @@
+--- P31/Octree.cs
++++ P33/Octree.cs
+@@ -238,6 +238,7 @@
+ 
+     /// <summary>Captures an allocation-free, stack-only snapshot that remains valid across subsequent builds.</summary>
+     /// <exception cref="InvalidOperationException">The tree has not been built.</exception>
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     public OctreeSpan AsSpan()
+     {
+         var encoded = Volatile.Read(ref _data);
+--- P31/Octree.Generic.cs
++++ P33/Octree.Generic.cs
+@@ -172,6 +172,7 @@
+     }
+ 
+     /// <summary>Captures an allocation-free snapshot that remains valid across subsequent builds.</summary>
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     public OctreeSpan<T> AsSpan()
+     {
+         var encoded = Volatile.Read(ref _data);

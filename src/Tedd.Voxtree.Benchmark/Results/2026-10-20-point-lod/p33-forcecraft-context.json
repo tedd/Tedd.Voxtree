@@ -1,0 +1,22 @@
+{
+  "readOnly": true,
+  "applicationExecuted": false,
+  "sites": [
+    {
+      "file": "D:\\SourceCode\\Tedd.Forcecraft10\\src\\Tedd.Forcecraft.Common\\Fluids\\PlanetAtmosphere.cs",
+      "sha256": "7d828fbc8a4d753a74c74f7394f1fa3c63fed4e4d8e2e646c90b69f3dc98118b",
+      "staticContext": "TryInitializeUniform reads byte channel stored-leaf LOD at the origin"
+    },
+    {
+      "file": "D:\\SourceCode\\Tedd.Forcecraft10\\src\\Tedd.Forcecraft.Common\\Models\\Lod\\LodTopologyIndex.cs",
+      "sha256": "a814128fdeba9a38da10d16e0afff8ca3d7a71dffc4991dd4fc1f75e6c69c30e",
+      "staticContext": "TryGetOwner uses WorldEntity.TryGetLod resolution lookup under its external gate"
+    },
+    {
+      "file": "D:\\SourceCode\\Tedd.Forcecraft10\\src\\Tedd.Forcecraft.Common\\Fluids\\FluidChunkSnapshot.cs",
+      "sha256": "c43e9f58605d561614eed0dff829fad5c7b2f07f322ebba3da8285dc88707e85",
+      "staticContext": "Fluid channel snapshots use OctreeChunk<byte>"
+    }
+  ],
+  "limits": "Static call-site/type context only; no access frequency, application speedup or actual-world LOD equivalence claim."
+}

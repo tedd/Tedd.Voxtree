@@ -235,6 +235,16 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    verify both histories and preserve atomic publication/error outputs. Do not
    equate the isolated P28 no-boundary finding with all caller contexts. Fresh
    direct-release normal qualification and the full public API objective remain.
+14. P33 hyp-26c4086d5214411183959de88f9428a7 now tests only AggressiveInlining
+   on the two AsSpan factories, using complete P31 and excluding P32/P16 hints.
+   Both-history native gate passes: Get-first owned AsSpan calls disappear;
+   UInt16 retains one codec call, and span/LOD-first per-read routes add none.
+   Source bodies, snapshots, errors and exact bytes remain. Tests410/411/412,
+   411 HW-off,48/96 semantic cases,full corpus and378 writer cases pass. The
+   initial path-order assertion failure is preserved, with a fresh v2 source
+   identity; no build/run preceded it. Phase21 preserves complete prerequisites
+   and actual binaries. See REPORT-PHASE21. Frozen conditional Get-first/LOD-first
+   timing and full-family/release qualification remain; no source is adopted.
 
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.

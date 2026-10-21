@@ -1,0 +1,46 @@
+{
+  "prerequisitesPassed": true,
+  "nativeBothHistoriesPassed": true,
+  "sourceDelta": "Only two AsSpan implementation flags",
+  "nativeAuditSha256": "d9833a5e3820dd03344ac7e788cae1376a563e62b974c97ecfc71681051e7fe9",
+  "sourceOriginSha256": "2514994d9f7eb7e7ed634a7e1bd9a55cbcc085af46ee28141e6b7511b4a8db12",
+  "sourceReviewSha256": "acb9f1d6a0f25dcd4bd77157e5f44aa867bdf849b9d0662a01dbe4f56cc799a0",
+  "protocolSha256": "4aeb498f7f0413f1c21cd119e23bf2e1264f305f36b608f309279a952eb8e4fc",
+  "chunks": 1286,
+  "cells": 42139648,
+  "uniqueArrays": 686,
+  "corpusSha256": "7eb67be1b9290ec964487b79a71e84fd3f4a0b18d388a23cc849f2c274ba56c8",
+  "exactParentBytesAndPayload": true,
+  "frameworkTests": [
+    {
+      "file": "packed-lookup-p33sem-results\\tedd_T-5950X2_2026-10-21_11_41_21_net8.0.trx",
+      "sha256": "c17f5893d0883b95c62120b8dee606c2314451723cb1af1f315d611bef7cf7a1",
+      "passed": 410
+    },
+    {
+      "file": "packed-lookup-p33sem-results\\tedd_T-5950X2_2026-10-21_11_41_22_net10.0.trx",
+      "sha256": "3c56c49462425df9a3c159c721aaf6c569156551c3e98ffac4525eab33883463",
+      "passed": 411
+    },
+    {
+      "file": "packed-lookup-p33sem-results\\tedd_T-5950X2_2026-10-21_11_41_22_net11.0.trx",
+      "sha256": "75e4f65a938f3d9f6b3416bf0229ae271563e099f0ef8f02d554400c5eac2230",
+      "passed": 412
+    },
+    {
+      "file": "packed-lookup-p33sem-hwoff-results\\tedd_T-5950X2_2026-10-21_11_42_54_net10.0.trx",
+      "sha256": "569c66e61a943bc7e397770a05f8b3d3d23ce286cc20090de52de1b390b7b44d",
+      "passed": 411
+    }
+  ],
+  "writer": {
+    "cases": 378,
+    "cells": 16178022,
+    "capacities": 2920,
+    "correct": true,
+    "control": "published release Snapshot.Voxtree source plus independent dense-to-R oracle",
+    "wire": "canonical R bytes or exact release fallback, including capacity-failure mutations"
+  },
+  "promotionEligible": false,
+  "limits": "Source/native/semantic prerequisites only; no quiet or application benefit, release guard qualification or public-API completion follows."
+}

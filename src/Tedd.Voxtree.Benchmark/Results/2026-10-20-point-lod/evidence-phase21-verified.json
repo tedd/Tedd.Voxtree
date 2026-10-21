@@ -1,0 +1,18 @@
+{
+  "archive_bytes": 2144186,
+  "manifest_paths": 563,
+  "unique_blobs": 311,
+  "catalogs": 1,
+  "metric_rows": 0,
+  "sha256": "0a1918230219ff776eb98a7547d853f1bc5c57ada1c3143fe4cb5aa1bb127859",
+  "required_paths": [
+    "p33-prerequisite-audit.json",
+    "p33-native-audit.json",
+    "p33-screen-frozen-dependencies.json",
+    "bundles/p33-probe/P33Probe.dll",
+    "bundles/p33-probe/p33point.dll",
+    "owned-snapshot-inline-v2-source/Octree.cs",
+    "p33-first-source-preparation-issue.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}
