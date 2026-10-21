@@ -1,0 +1,21 @@
+--- a/src/Tedd.DotNetLab.Application/ConfirmationService.cs
++++ b/src/Tedd.DotNetLab.Application/ConfirmationService.cs
+@@ -114,6 +114,18 @@
+             catch(Exception e) when(e is not OutOfMemoryException)
+             {
+                 string code=e is LabException error?error.Code:e is OperationCanceledException?"cancelled":"confirmation_failed";
++                try
++                {
++                    string detail=e.ToString();
++                    Console.Error.WriteLine("DOTNETLAB_CONFIRMATION_FAILURE "+JsonSerializer.Serialize(new
++                    {
++                        operation_id=operation.Id,plan_id=plan.Id,execution_id=id,failure_code=code,
++                        exception_type=e.GetType().FullName,hresult=e.HResult,
++                        detail=detail.Length<=32768?detail:detail[..32768],detail_truncated=detail.Length>32768,
++                        recorded_utc=DateTimeOffset.UtcNow
++                    }));
++                }
++                catch(Exception loggingError) when(loggingError is not OutOfMemoryException) { }
+                 joined=code!="process_quiescence_unknown";
+                 var failed=root with { State="failed",SessionIds=sessions.ToArray(),EndedAt=DateTimeOffset.UtcNow,Failure=code };
+                 await SealConfirmationAsync(operation.Id,failed);

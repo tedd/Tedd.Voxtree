@@ -1,0 +1,26 @@
+{
+  "archive_bytes": 98626824,
+  "manifest_paths": 40916,
+  "unique_blobs": 33930,
+  "catalogs": 42,
+  "metric_rows": 1050,
+  "sha256": "7cf285f39e0f7d7b4f8831ce902617576eceb0695c6c7e5814547c6bf90ff592",
+  "required_paths": [
+    "coldlog-functional-audit.json",
+    "all-workers-quiescent-phase9.json",
+    "coldlog-source-9c23369.zip",
+    "coldlog-controller-source/global.json",
+    "coldlog-controller-source/Directory.Build.props",
+    "coldlog-controller-source/complete-source-review.json",
+    "coldlog-controller-source/base2-out/Tedd.DotNetLab.Host.dll",
+    "coldlog-controller-source/logged2-out/Tedd.DotNetLab.Host.dll",
+    "coldlog-controller-source/cold-failure-log.diff",
+    "coldlog-base-proof2/invalid-terminal.json",
+    "coldlog-base-proof2/valid-terminal.json",
+    "coldlog-logged-proof2/controller.log",
+    "coldlog-logged-proof2/invalid-execution.json",
+    "coldlog-logged-proof2/valid-sessions.json",
+    "coldlog-logged-proof2/revision-response.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

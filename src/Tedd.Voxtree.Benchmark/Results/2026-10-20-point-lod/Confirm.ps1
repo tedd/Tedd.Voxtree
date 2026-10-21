@@ -14,7 +14,7 @@ $ErrorActionPreference = 'Stop'
 $dotnetExecutable = (Get-Command dotnet).Source
 $controller = $null; $rpcSequence = 0
 . (Join-Path $PSScriptRoot 'Host-Lock.ps1')
-$hostLeases = Enter-VoxtreePerformanceHost -ControllerAdmission
+$hostLeases = Enter-VoxtreePerformanceHost -ControllerAdmission -DriverPath $PSCommandPath
 $preparationLeases = $null
 try {
     $preparationLeases = Enter-VoxtreePerformanceHost
@@ -201,9 +201,10 @@ finally {
     if ($controller -and -not $controller.HasExited) {
         $controller.StandardInput.Close()
         if (-not $controller.WaitForExit(30000)) { throw 'Controller did not exit; preserve workspace.' }
-        $errors.GetAwaiter().GetResult() | Set-Content -LiteralPath (Join-Path $Workspace "$Label-controller.log")
     }
     if($controller){
+        # Persist stderr even when the controller exited before this finally.
+        if($errors){$errors.GetAwaiter().GetResult() | Set-Content -LiteralPath (Join-Path $Workspace "$Label-controller.log")}
         @{controllerPid=$controller.Id;controllerExited=$controller.HasExited;exitCode=if($controller.HasExited){$controller.ExitCode}else{$null};checkedAt=[DateTimeOffset]::UtcNow.ToString('o');sessionJoinEvidence='Inspect each retained normal-build session; controller exit alone does not prove child quiescence'} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $Workspace "$Label-controller-shutdown.json")
     }
     if ($preparationLeases) { Exit-VoxtreePerformanceHost $preparationLeases }

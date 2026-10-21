@@ -2,7 +2,7 @@
 
 Original integration branch: main. Full public-method objective remains active.
 No prototype source is adopted into the production library. Current continuation
-evidence is REPORT-PHASE8.md; earlier failed gates remain retained. P19/P23 are
+evidence is REPORT-PHASE9.md; earlier failed gates remain retained. P19/P23 are
 not_supported; P20/P21/P22 remain inconclusive after their complete screens.
 
 1. Retain the failed family and strengthen failure details before another
@@ -35,6 +35,16 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    Next prepare durable full exception details on an isolated controller's cold
    failure path, with a controlled functional failure proof. No shared install
    change or new decision family is implied by D1's unreproduced result.
+   L1 now validates failure-only JSON stderr logging in an isolated pinned
+   controller copy. Unchanged/logging arms preserve invalid_plan for deliberate
+   bad hashes, then complete 48 valid sessions total, correct/quiescent/joined.
+   Only the candidate emits matching exception/stack detail for its rejected
+   operation. No observer or timing comparison is used. The original source
+   checkout and shared installation are unchanged. Future separately frozen
+   confirmation may explicitly select coldlog-controller-source/logged2-out/
+   Tedd.DotNetLab.Host.dll. The confirmation driver retains stderr on an early
+   controller exit. This clears future failure-detail availability, not the
+   historic failure or any library performance/format/guard requirement.
 2. Preserve the count tradeoffs. P19 scalar specialization fails its UInt16
    primary despite removing general dispatch. P20 validated masked-vector counts
    improve dominant full callers 9.6..181.8x versus P19 but regress short rows.

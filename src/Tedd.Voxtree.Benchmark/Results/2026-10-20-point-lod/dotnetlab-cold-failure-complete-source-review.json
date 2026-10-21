@@ -1,0 +1,617 @@
+{
+  "csharp_files": 121,
+  "changed_csharp_files": [
+    "src/Tedd.DotNetLab.Application/ConfirmationService.cs"
+  ],
+  "manifest": [
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Native/CilFaultProbeRewriter.cs",
+      "original_sha256": "d81f6f060f2825bebf3cf168748f59bbdf36926efc7c7d2e15db9f252018561d",
+      "current_sha256": "d81f6f060f2825bebf3cf168748f59bbdf36926efc7c7d2e15db9f252018561d"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Native/CilProbeRewriter.cs",
+      "original_sha256": "bce8cb4714271c1797843f1edbab8cfe8405203966b1022ce912348185bad8ab",
+      "current_sha256": "bce8cb4714271c1797843f1edbab8cfe8405203966b1022ce912348185bad8ab"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Native/CilVerifier.cs",
+      "original_sha256": "50959381fab8e895235015711a18e5a9b8a222e23e5ffbb62cc946b36fe8c17a",
+      "current_sha256": "50959381fab8e895235015711a18e5a9b8a222e23e5ffbb62cc946b36fe8c17a"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Native/NativeBodyPolicy.cs",
+      "original_sha256": "2352128479c0b56bd37a9a7872aa06670cde229ead30f427677c1d1a079bdf84",
+      "current_sha256": "2352128479c0b56bd37a9a7872aa06670cde229ead30f427677c1d1a079bdf84"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Native/NativeDecoder.cs",
+      "original_sha256": "2a9bd7aa49b9942792a1841f6091fa88c4142818eec386e69defc92195c3f2e8",
+      "current_sha256": "2a9bd7aa49b9942792a1841f6091fa88c4142818eec386e69defc92195c3f2e8"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Native/NativeLeafPolicy.cs",
+      "original_sha256": "ea79e7afcbe114d81faa53504e503744121d72a0d55b1bc13ba2980a6f2b3644",
+      "current_sha256": "ea79e7afcbe114d81faa53504e503744121d72a0d55b1bc13ba2980a6f2b3644"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Native/NativeSnapshotAcquirer.cs",
+      "original_sha256": "72907b880f76b3f4204aa560e38e505e3ac871d7e70d8604f8514e61414a2f45",
+      "current_sha256": "72907b880f76b3f4204aa560e38e505e3ac871d7e70d8604f8514e61414a2f45"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Native/PeInspector.cs",
+      "original_sha256": "ebf8970e32b661f2a9d555ef99a1ffad090f4369b1d4a9ac131fce3d0d6f667f",
+      "current_sha256": "ebf8970e32b661f2a9d555ef99a1ffad090f4369b1d4a9ac131fce3d0d6f667f"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Runtime/CounterAdapters.cs",
+      "original_sha256": "fcf9b73b93c9901b6dfd40d2c8ad37b99c0a5357f5cab5feb2ec8d692d569bda",
+      "current_sha256": "fcf9b73b93c9901b6dfd40d2c8ad37b99c0a5357f5cab5feb2ec8d692d569bda"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Runtime/CounterAnalyzer.cs",
+      "original_sha256": "2b85ca67212660867bb299f08f00a92a53293f7aa3ad427bec54b1a2d92fa2b1",
+      "current_sha256": "2b85ca67212660867bb299f08f00a92a53293f7aa3ad427bec54b1a2d92fa2b1"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Runtime/Intervals.cs",
+      "original_sha256": "f796731c75e862572a1c918cb697fe9217035ea21ed551d979a3a4205f3e5431",
+      "current_sha256": "f796731c75e862572a1c918cb697fe9217035ea21ed551d979a3a4205f3e5431"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Runtime/SampledStacks.cs",
+      "original_sha256": "4fa35b44b26e04a40e0b1262b1f8c3fe0e02f6db171cf8c82396213f0df8f1a8",
+      "current_sha256": "4fa35b44b26e04a40e0b1262b1f8c3fe0e02f6db171cf8c82396213f0df8f1a8"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Runtime/StackParser.cs",
+      "original_sha256": "a904782d27d6913cd57181577f46fa85e9a63f29ab0483078c92eb0deaa4982e",
+      "current_sha256": "a904782d27d6913cd57181577f46fa85e9a63f29ab0483078c92eb0deaa4982e"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Runtime/TemporalRecords.cs",
+      "original_sha256": "23effbc24155268ded0ae31c001b5ed7df55df5a5bd4fdc504e6f99249ae961b",
+      "current_sha256": "23effbc24155268ded0ae31c001b5ed7df55df5a5bd4fdc504e6f99249ae961b"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Runtime/TraceAnalyzer.cs",
+      "original_sha256": "a9bd5569e8f4783e26a4a5a93903a34354c1f6e3d449f8737648f2e27b3b84e1",
+      "current_sha256": "a9bd5569e8f4783e26a4a5a93903a34354c1f6e3d449f8737648f2e27b3b84e1"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Runtime/TraceWorkerProtocol.cs",
+      "original_sha256": "a05f1dc5f7915c295dd0f5e125a7eaa07ca1e80b369ff48ee7d8afcf9b9acec3",
+      "current_sha256": "a05f1dc5f7915c295dd0f5e125a7eaa07ca1e80b369ff48ee7d8afcf9b9acec3"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Runtime/WindowAnalyzer.cs",
+      "original_sha256": "2a3b48202b733d29add6b8c188eccf88f9fa1b44725aa7920bf33e1244c88406",
+      "current_sha256": "2a3b48202b733d29add6b8c188eccf88f9fa1b44725aa7920bf33e1244c88406"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Statistics/FactorialEngine.cs",
+      "original_sha256": "d173e5a4090929979d7f56c0de8a4541ee2e4221e187cb880100cc10b5a89607",
+      "current_sha256": "d173e5a4090929979d7f56c0de8a4541ee2e4221e187cb880100cc10b5a89607"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Statistics/NativeSessionEngine.cs",
+      "original_sha256": "c6a8dd0e234edf1821128c0342ff05686c15c5744e7400286366e0902b098143",
+      "current_sha256": "c6a8dd0e234edf1821128c0342ff05686c15c5744e7400286366e0902b098143"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Statistics/ObjectiveEngine.cs",
+      "original_sha256": "47ae532db063651cda72821127c1f33ee1e279dfeea984d6d5aa61957c63ed51",
+      "current_sha256": "47ae532db063651cda72821127c1f33ee1e279dfeea984d6d5aa61957c63ed51"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Statistics/StatisticalEngine.cs",
+      "original_sha256": "e5dd8c4f592f9c093fbc52e60296a5d1aa550d4352cb4d20bd121ae72d3e9099",
+      "current_sha256": "e5dd8c4f592f9c093fbc52e60296a5d1aa550d4352cb4d20bd121ae72d3e9099"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Analysis.Statistics/StudentT.cs",
+      "original_sha256": "c287af745c9e8d7bab9d99bf4a5ee20af10726b22a5a6b437c426657654986cc",
+      "current_sha256": "c287af745c9e8d7bab9d99bf4a5ee20af10726b22a5a6b437c426657654986cc"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/ArtifactRecoveryService.cs",
+      "original_sha256": "3905945a354dbba2f89320679810ec443e0749df65df2f3406527103a412370e",
+      "current_sha256": "3905945a354dbba2f89320679810ec443e0749df65df2f3406527103a412370e"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/BaselineService.cs",
+      "original_sha256": "c06fc08451dfe3bebc5de9eaef627f86479ddd2f84ada5ea1e69889ca0e3f549",
+      "current_sha256": "c06fc08451dfe3bebc5de9eaef627f86479ddd2f84ada5ea1e69889ca0e3f549"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/BoundedResultService.cs",
+      "original_sha256": "b53b208f13d57d147d8c3672df6c946eb1fabaa0151499e33b9caaf5817e8774",
+      "current_sha256": "b53b208f13d57d147d8c3672df6c946eb1fabaa0151499e33b9caaf5817e8774"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/BundleArchiveReader.cs",
+      "original_sha256": "4968743c8c82ba705bb47dcdbf85c27d564c944de4a9657765882676c655caf3",
+      "current_sha256": "4968743c8c82ba705bb47dcdbf85c27d564c944de4a9657765882676c655caf3"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/BundleImportRecords.cs",
+      "original_sha256": "997c1b5480d717fc5ceaa71266144c2cda2db147589426a0594738c420eeda0a",
+      "current_sha256": "997c1b5480d717fc5ceaa71266144c2cda2db147589426a0594738c420eeda0a"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/BundleImportService.cs",
+      "original_sha256": "084efe0e23b8d8b2276c486c4aea191837849d724115be757e0942c1bf40e142",
+      "current_sha256": "084efe0e23b8d8b2276c486c4aea191837849d724115be757e0942c1bf40e142"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/CatalogMaintenanceService.cs",
+      "original_sha256": "898165b5c7de556521a8bc169affd7e80aaf56feecd9e1373d362dba17cb37b9",
+      "current_sha256": "898165b5c7de556521a8bc169affd7e80aaf56feecd9e1373d362dba17cb37b9"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/CompatibilityReport.cs",
+      "original_sha256": "00a0c13f67730ecc19dd17e36b196c7406fd2794a2ec0cc76b34417041c11845",
+      "current_sha256": "00a0c13f67730ecc19dd17e36b196c7406fd2794a2ec0cc76b34417041c11845"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/CompilationAdmissionService.cs",
+      "original_sha256": "b3d9df1bf1b8f0f8394c66ec4fd0f1c15401329d303eeebce4ba8c2e9bea14cb",
+      "current_sha256": "b3d9df1bf1b8f0f8394c66ec4fd0f1c15401329d303eeebce4ba8c2e9bea14cb"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/CompilationControlService.cs",
+      "original_sha256": "7cb1fdb58a3925919bd792b7ed6c9e69335c1d7f372c7cbd417ce677e586fed9",
+      "current_sha256": "7cb1fdb58a3925919bd792b7ed6c9e69335c1d7f372c7cbd417ce677e586fed9"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/ConfirmationRecords.cs",
+      "original_sha256": "1f497bd1b23a20a7aa7dbf051bee549e65c3d40126c4e64eb383c3f45ae87daa",
+      "current_sha256": "1f497bd1b23a20a7aa7dbf051bee549e65c3d40126c4e64eb383c3f45ae87daa"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/ConfirmationService.cs",
+      "original_sha256": "c307226cb2e3970dd80d1dd81d3ac9747638332dbfcbeac680c1b1551dc214ff",
+      "current_sha256": "4338bfa1739bfdc66d4df7045516edd77f8c9519209b44503cef61044f18fa60"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/ControllerResourceService.cs",
+      "original_sha256": "91e614695707f68f906e807e8735b477e772f3926dd1588c04f506fb23efb999",
+      "current_sha256": "91e614695707f68f906e807e8735b477e772f3926dd1588c04f506fb23efb999"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/CounterService.cs",
+      "original_sha256": "bba5e896c5ed01ac25bccdc43ce08ade00e0a3e8e490f1f7d73ee18b5c1cb918",
+      "current_sha256": "bba5e896c5ed01ac25bccdc43ce08ade00e0a3e8e490f1f7d73ee18b5c1cb918"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/DiagnosticObjectiveService.cs",
+      "original_sha256": "0252aa72f59154abf0493537d14396f5a6f5d4015a6b6a3f947b1b814f97160c",
+      "current_sha256": "0252aa72f59154abf0493537d14396f5a6f5d4015a6b6a3f947b1b814f97160c"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/ExecutionQualification.cs",
+      "original_sha256": "4e21bcf38eda4041c4bd3d04fe65078cccde85c59a423c95a3712ce1e2372e25",
+      "current_sha256": "4e21bcf38eda4041c4bd3d04fe65078cccde85c59a423c95a3712ce1e2372e25"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/ExportBudgetStream.cs",
+      "original_sha256": "e1568c4da26848d10a1e9bb3e62b8f73137e197d67fc78c9c4a008bf30e5159c",
+      "current_sha256": "e1568c4da26848d10a1e9bb3e62b8f73137e197d67fc78c9c4a008bf30e5159c"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/ExportRecords.cs",
+      "original_sha256": "0b515dc2dcd2a1120ca987f2a3cd7761ec5f895066d889989e92aa4e4216e5d1",
+      "current_sha256": "0b515dc2dcd2a1120ca987f2a3cd7761ec5f895066d889989e92aa4e4216e5d1"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/ExportService.cs",
+      "original_sha256": "ebe900be41007df207149a145bd5c5a2ffa0dc02654b1bd4017dae5e964a9bbd",
+      "current_sha256": "ebe900be41007df207149a145bd5c5a2ffa0dc02654b1bd4017dae5e964a9bbd"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/FactorialService.cs",
+      "original_sha256": "689bdf32e1079c410b12e58b778acbfdb440f7354bee79fd080c53dee583d6cd",
+      "current_sha256": "689bdf32e1079c410b12e58b778acbfdb440f7354bee79fd080c53dee583d6cd"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/IndividualLatencyService.cs",
+      "original_sha256": "84a1c3407af547d68b9248d15574a17f05b98ebf21e27776ef93e7930628f415",
+      "current_sha256": "84a1c3407af547d68b9248d15574a17f05b98ebf21e27776ef93e7930628f415"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/LabService.cs",
+      "original_sha256": "c392881a5800decf53afac46bf9dc3f50537af8290cc1135fe6b1c2b9fb948c5",
+      "current_sha256": "c392881a5800decf53afac46bf9dc3f50537af8290cc1135fe6b1c2b9fb948c5"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/LinuxParserGroup.cs",
+      "original_sha256": "3883341e8baa7a1d190f05008c01742fa75536538d9ac3077c5fac63d0e8e383",
+      "current_sha256": "3883341e8baa7a1d190f05008c01742fa75536538d9ac3077c5fac63d0e8e383"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/LiveCodeService.cs",
+      "original_sha256": "2432332f9c43ce73c4067b67446db995076614c69e7a991d901abb3ec9d6dbb7",
+      "current_sha256": "2432332f9c43ce73c4067b67446db995076614c69e7a991d901abb3ec9d6dbb7"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/MeasurementScheduling.cs",
+      "original_sha256": "fbcce85f852afa20a61efcce2dd775b63d608dc86b020c8358069240a8a1140a",
+      "current_sha256": "fbcce85f852afa20a61efcce2dd775b63d608dc86b020c8358069240a8a1140a"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/MutationRecords.cs",
+      "original_sha256": "82cfed686ae7110382a6dd0949df34786b54dba54493bce67e2990a52d72aa82",
+      "current_sha256": "82cfed686ae7110382a6dd0949df34786b54dba54493bce67e2990a52d72aa82"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/MutationRecoveryService.cs",
+      "original_sha256": "4c5c4bde5fb6c12f4b9c64b46653d849b5625bfc4dbf75a47b21c9c3582523f2",
+      "current_sha256": "4c5c4bde5fb6c12f4b9c64b46653d849b5625bfc4dbf75a47b21c9c3582523f2"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/MutationService.cs",
+      "original_sha256": "b42d818bdaa6d21b924f30d0f9344f4a4818fdac5c532c8080088b2fb3cca123",
+      "current_sha256": "b42d818bdaa6d21b924f30d0f9344f4a4818fdac5c532c8080088b2fb3cca123"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/NativeSeriesService.cs",
+      "original_sha256": "0679d8d99aed6d67344b6c279ea8d0844ed4e03a576695ab641122ad32739963",
+      "current_sha256": "0679d8d99aed6d67344b6c279ea8d0844ed4e03a576695ab641122ad32739963"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/NativeTrialService.cs",
+      "original_sha256": "e25408d29eb91d92b15c7a4a97e8d61b7321af6929945e79285e3e24da35dfe2",
+      "current_sha256": "e25408d29eb91d92b15c7a4a97e8d61b7321af6929945e79285e3e24da35dfe2"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/NormalBuildService.cs",
+      "original_sha256": "98eb60dcadc2d63af343e9c7759ae97811bd35b086f0ddc10c9f62837651edce",
+      "current_sha256": "98eb60dcadc2d63af343e9c7759ae97811bd35b086f0ddc10c9f62837651edce"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/ObjectiveService.cs",
+      "original_sha256": "4b7f4bcb85f1342e1337e5fab0677814d741d569ef77b81ad2c9a1243b0e6921",
+      "current_sha256": "4b7f4bcb85f1342e1337e5fab0677814d741d569ef77b81ad2c9a1243b0e6921"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/ParserJob.cs",
+      "original_sha256": "070e460740c330c61ae9e3d80927a675b03c2e8249246d928e8002be8a32f4f0",
+      "current_sha256": "070e460740c330c61ae9e3d80927a675b03c2e8249246d928e8002be8a32f4f0"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/ParserMeasurementGate.cs",
+      "original_sha256": "0dc8c608c350af567d6b4817735151f4e6227b32c699e969dcf0bc2d57ccf186",
+      "current_sha256": "0dc8c608c350af567d6b4817735151f4e6227b32c699e969dcf0bc2d57ccf186"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/ProbeService.cs",
+      "original_sha256": "a295627e985104f9ad2da9b278950727866b209f3761b5d7eefdfb57f3d56f6d",
+      "current_sha256": "a295627e985104f9ad2da9b278950727866b209f3761b5d7eefdfb57f3d56f6d"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/ProfilerAttachmentService.cs",
+      "original_sha256": "07412cc07cd855ea896308d9318a96bc6564c0e496ed15e6aeeaf7e6b4932622",
+      "current_sha256": "07412cc07cd855ea896308d9318a96bc6564c0e496ed15e6aeeaf7e6b4932622"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/QuantileHarnessService.cs",
+      "original_sha256": "9680596dac2fa9fc20100612338d2c72200bc4e5979fe8f6db24763fc90b30e0",
+      "current_sha256": "9680596dac2fa9fc20100612338d2c72200bc4e5979fe8f6db24763fc90b30e0"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/QuantileService.cs",
+      "original_sha256": "c194ff126c507ac45fa7694451a067337db5f2d107b6daf0a335f4763bf24bc4",
+      "current_sha256": "c194ff126c507ac45fa7694451a067337db5f2d107b6daf0a335f4763bf24bc4"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/Records.cs",
+      "original_sha256": "f45d1be2b88893be8a79cabf400b7542624fcd4a13ff1541d3753d4950241e51",
+      "current_sha256": "f45d1be2b88893be8a79cabf400b7542624fcd4a13ff1541d3753d4950241e51"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/ReferenceReleaseService.cs",
+      "original_sha256": "86d973871666a0db88cd10e861f2022b7741558983b0245468fabe9daf1f9d61",
+      "current_sha256": "86d973871666a0db88cd10e861f2022b7741558983b0245468fabe9daf1f9d61"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/RetentionService.cs",
+      "original_sha256": "509a65b6691f68440734d0e834d4d0502fce5050eb82696453a0d9d9cac18fd9",
+      "current_sha256": "509a65b6691f68440734d0e834d4d0502fce5050eb82696453a0d9d9cac18fd9"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/SnapshotAcquisitionService.cs",
+      "original_sha256": "eb090708a0305d3b9cdf52fefc71c38312e1b6993c59a0685f2cd7c5c88e15fa",
+      "current_sha256": "eb090708a0305d3b9cdf52fefc71c38312e1b6993c59a0685f2cd7c5c88e15fa"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/StackAnalysisService.cs",
+      "original_sha256": "93433b80ae8387e81f768548a8035f98ae2cbbc56c6e3a346e86f4558356172f",
+      "current_sha256": "93433b80ae8387e81f768548a8035f98ae2cbbc56c6e3a346e86f4558356172f"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/StoredCodeService.cs",
+      "original_sha256": "dca643e22ca01f9c794405f8328bb5414d886345da5ebe4a5bb5a8c1830240b6",
+      "current_sha256": "dca643e22ca01f9c794405f8328bb5414d886345da5ebe4a5bb5a8c1830240b6"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/TraceAnalysisService.cs",
+      "original_sha256": "7520dcc5ab7be2c026acf88ed5b40e463b442da5c0458833278d803ccfdf8993",
+      "current_sha256": "7520dcc5ab7be2c026acf88ed5b40e463b442da5c0458833278d803ccfdf8993"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/TraceWorkerClient.cs",
+      "original_sha256": "c19d715027e2094d84e22bf3971d4266406a9d10a6524c9af8c58089eabd7235",
+      "current_sha256": "c19d715027e2094d84e22bf3971d4266406a9d10a6524c9af8c58089eabd7235"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Application/WindowService.cs",
+      "original_sha256": "68f6bec25be9959f251d0b358803a69920a46f51122acba7d07812694244b715",
+      "current_sha256": "68f6bec25be9959f251d0b358803a69920a46f51122acba7d07812694244b715"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Artifacts/ArtifactRecovery.cs",
+      "original_sha256": "c88b8d2274fb9f08481a8c5c03fa002dea54aa1732bf29b11078fc25a1cc800a",
+      "current_sha256": "c88b8d2274fb9f08481a8c5c03fa002dea54aa1732bf29b11078fc25a1cc800a"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Artifacts/ArtifactStore.cs",
+      "original_sha256": "de6f2cd0a69f806176c90054b205551862b4b9e851561d1149bd434cc298c109",
+      "current_sha256": "de6f2cd0a69f806176c90054b205551862b4b9e851561d1149bd434cc298c109"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Artifacts/OwnedDirectoryCleanup.cs",
+      "original_sha256": "5a1cd59d12316c0c292ddfdd075832d56dbf9b40a9d361daebe1760431dddd14",
+      "current_sha256": "5a1cd59d12316c0c292ddfdd075832d56dbf9b40a9d361daebe1760431dddd14"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Collector.EventPipe/Collector.cs",
+      "original_sha256": "74b8520de048fd89fbf2099afc7f17173f011862afd43c52ba32801dd1e6b3ae",
+      "current_sha256": "74b8520de048fd89fbf2099afc7f17173f011862afd43c52ba32801dd1e6b3ae"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Collector.EventPipe/Targets.cs",
+      "original_sha256": "8393c614e0d06647745b4fbc107b862d638b0aa5e433b1fd5311ca6616f4b476",
+      "current_sha256": "8393c614e0d06647745b4fbc107b862d638b0aa5e433b1fd5311ca6616f4b476"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Contracts/DiskSpace.cs",
+      "original_sha256": "261ec3fe05cb5ad52a10bb680e38c90f77197f123cd6296f6aa4db18fe0cef62",
+      "current_sha256": "261ec3fe05cb5ad52a10bb680e38c90f77197f123cd6296f6aa4db18fe0cef62"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Contracts/Factorial.cs",
+      "original_sha256": "03a64e99b71c3aa7c70c99bee131f1426d3e7e3cc1945862e2b6075960336f19",
+      "current_sha256": "03a64e99b71c3aa7c70c99bee131f1426d3e7e3cc1945862e2b6075960336f19"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Contracts/MachineMutex.cs",
+      "original_sha256": "cd9196a32001231d96a5a6d5e7a9a13031d6a168e9448d88f800d2552eff57a1",
+      "current_sha256": "cd9196a32001231d96a5a6d5e7a9a13031d6a168e9448d88f800d2552eff57a1"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Contracts/Models.cs",
+      "original_sha256": "d5d7327bcea2f77449b55a69c287d76472540fe4bcda58c9145fe38d1a2843ca",
+      "current_sha256": "d5d7327bcea2f77449b55a69c287d76472540fe4bcda58c9145fe38d1a2843ca"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Contracts/MutationRecovery.cs",
+      "original_sha256": "d153512420b8c9012daae311be104adf26ab8da229686014f7bbc5ac865a80b2",
+      "current_sha256": "d153512420b8c9012daae311be104adf26ab8da229686014f7bbc5ac865a80b2"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Contracts/Objectives.cs",
+      "original_sha256": "b2dfae448852f6c592b44295d4d6be875a6b60599cfa5b496e00e56dd202a252",
+      "current_sha256": "b2dfae448852f6c592b44295d4d6be875a6b60599cfa5b496e00e56dd202a252"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Contracts/ParserParentGuard.cs",
+      "original_sha256": "a39ea5df1a753b60d4a7aaa2f4acf10f25bcf4f18d77af8cec615de62d275129",
+      "current_sha256": "a39ea5df1a753b60d4a7aaa2f4acf10f25bcf4f18d77af8cec615de62d275129"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Contracts/ProcessIdentity.cs",
+      "original_sha256": "56909cbbe0e4e1f8b7f1506d190bc12ea4376c67d07c94e05c93eac932205016",
+      "current_sha256": "56909cbbe0e4e1f8b7f1506d190bc12ea4376c67d07c94e05c93eac932205016"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Contracts/ProfilerAttachment.cs",
+      "original_sha256": "2a5ee7f0594572c529e3dd122f96417dd3b0b1bdef813db29622a53614c30d83",
+      "current_sha256": "2a5ee7f0594572c529e3dd122f96417dd3b0b1bdef813db29622a53614c30d83"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Contracts/RecoveryHints.cs",
+      "original_sha256": "ee78a9397e58fd1fc42ee65c450d678c291824f06a0ccad4164eaf8b2dc70fcd",
+      "current_sha256": "ee78a9397e58fd1fc42ee65c450d678c291824f06a0ccad4164eaf8b2dc70fcd"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Contracts/RuntimeSupport.cs",
+      "original_sha256": "0213df02f2699d651529aa901f446183cd4a2ee45758fec12045a4edd2ff8130",
+      "current_sha256": "0213df02f2699d651529aa901f446183cd4a2ee45758fec12045a4edd2ff8130"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Contracts/Wire.cs",
+      "original_sha256": "9ccad1a6b3aab6351f6e248b0f4d570be2cb97e65720dc1a52ac64e08261ac3c",
+      "current_sha256": "9ccad1a6b3aab6351f6e248b0f4d570be2cb97e65720dc1a52ac64e08261ac3c"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Contracts/WorkspacePolicy.cs",
+      "original_sha256": "eeb4ebac426b6ed75f32ee43facbfd8b17d0cfd85480d6b22be25bb4fb5fdc12",
+      "current_sha256": "eeb4ebac426b6ed75f32ee43facbfd8b17d0cfd85480d6b22be25bb4fb5fdc12"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Domain/Lifecycle.cs",
+      "original_sha256": "f68465a11fe4c1f264d623c1955a30d2179b3628469d2b06d8d6be9782b6e26f",
+      "current_sha256": "f68465a11fe4c1f264d623c1955a30d2179b3628469d2b06d8d6be9782b6e26f"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Domain/Metrics.cs",
+      "original_sha256": "0f71bbff1372d53ba0eaf4e4dd79f8b1549da1eaf9eb45e9f6b03e8cdaaa5f92",
+      "current_sha256": "0f71bbff1372d53ba0eaf4e4dd79f8b1549da1eaf9eb45e9f6b03e8cdaaa5f92"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Domain/Policies.cs",
+      "original_sha256": "822762913e0687b69484f3b020e7b1fe7538032c3adc320ebe5b3a0812509b2e",
+      "current_sha256": "822762913e0687b69484f3b020e7b1fe7538032c3adc320ebe5b3a0812509b2e"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Harness/ApplicationThreadDispatcher.cs",
+      "original_sha256": "99cc554f1b711c25cdbf1232815194a3c8bda465fef94b02fb09cb78e9933b9f",
+      "current_sha256": "99cc554f1b711c25cdbf1232815194a3c8bda465fef94b02fb09cb78e9933b9f"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Harness/HarnessPipe.cs",
+      "original_sha256": "ef4e1e1da4f1786bb1c09214f3ae18d0e108d24f712f3cede321619e4c0f1d56",
+      "current_sha256": "ef4e1e1da4f1786bb1c09214f3ae18d0e108d24f712f3cede321619e4c0f1d56"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Harness/Markers.cs",
+      "original_sha256": "0444e4e5ebb44f9909385d426b16a73cc9d99c2485b77a08ec378df36bb5cd5e",
+      "current_sha256": "0444e4e5ebb44f9909385d426b16a73cc9d99c2485b77a08ec378df36bb5cd5e"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Harness/MethodBinding.cs",
+      "original_sha256": "5f79a4e38b4b63de96a4b98215b95c8d0cc0079740ab7bcc048370e8bac18985",
+      "current_sha256": "5f79a4e38b4b63de96a4b98215b95c8d0cc0079740ab7bcc048370e8bac18985"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Harness/NativeCoordination.cs",
+      "original_sha256": "85ab89058b566f894db738f49dc82fc79b68c9a3d483e7986595120e3362874b",
+      "current_sha256": "85ab89058b566f894db738f49dc82fc79b68c9a3d483e7986595120e3362874b"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Harness/ProbeSupport.cs",
+      "original_sha256": "5a762e6edc494c717ad54b5015d417db59f6be7696191bec0b2013b08841bb47",
+      "current_sha256": "5a762e6edc494c717ad54b5015d417db59f6be7696191bec0b2013b08841bb47"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Harness/RuntimeFootprint.cs",
+      "original_sha256": "f93c9fd263a65becbb17f8a1bf531fab5cc2157d03617180c65f1dc226c619e3",
+      "current_sha256": "f93c9fd263a65becbb17f8a1bf531fab5cc2157d03617180c65f1dc226c619e3"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Harness/ScenarioRunner.cs",
+      "original_sha256": "960b77f0ef0d80963e7238fd6a67089f1ac809508b562bd451e3ac43613e020c",
+      "current_sha256": "960b77f0ef0d80963e7238fd6a67089f1ac809508b562bd451e3ac43613e020c"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Harness/Scenarios.cs",
+      "original_sha256": "3dc6cf88649114cf3ce7bdf554529c0da29e40cb40f19826f0ac22a5769d920a",
+      "current_sha256": "3dc6cf88649114cf3ce7bdf554529c0da29e40cb40f19826f0ac22a5769d920a"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Host/ConnectionLog.cs",
+      "original_sha256": "b411cc89678266965011fb92b8fdec03a7c5f828ceb660f3cd28992d10c7e19b",
+      "current_sha256": "b411cc89678266965011fb92b8fdec03a7c5f828ceb660f3cd28992d10c7e19b"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Host/Program.cs",
+      "original_sha256": "fb6a7cd28ec9b93dc9121f5153bd0b00cac8340fee5d83443a85cec3e30d9ed5",
+      "current_sha256": "fb6a7cd28ec9b93dc9121f5153bd0b00cac8340fee5d83443a85cec3e30d9ed5"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Host/SharedController.cs",
+      "original_sha256": "521975c4c8cf9c8e525bdc51f38a9181b32eaf0df7b208bef82fe52715eb2cd4",
+      "current_sha256": "521975c4c8cf9c8e525bdc51f38a9181b32eaf0df7b208bef82fe52715eb2cd4"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Mcp/LabTools.cs",
+      "original_sha256": "bc969e23436a0a4f3433b70f875f1e081bbbeed1de0d29692158ba1b507f2bc6",
+      "current_sha256": "bc969e23436a0a4f3433b70f875f1e081bbbeed1de0d29692158ba1b507f2bc6"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Mcp/McpTools.cs",
+      "original_sha256": "45c26ead3ead080ed8df86940b4e5ae19c0b88e158b6c1d7888509518fefdbf0",
+      "current_sha256": "45c26ead3ead080ed8df86940b4e5ae19c0b88e158b6c1d7888509518fefdbf0"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Mcp/Requests.cs",
+      "original_sha256": "ffd75d96617562dd8af69ea1d14f4e7f25618b38219b7788a673ea1cd6c3b3ab",
+      "current_sha256": "ffd75d96617562dd8af69ea1d14f4e7f25618b38219b7788a673ea1cd6c3b3ab"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Mcp/SchemaDocuments.cs",
+      "original_sha256": "ccdea64ebe5c2b852c82123ef8c586bb8ca2c3194a417c5026cf92ce8f11ad50",
+      "current_sha256": "ccdea64ebe5c2b852c82123ef8c586bb8ca2c3194a417c5026cf92ce8f11ad50"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Probes/HarnessProbeSupport.cs",
+      "original_sha256": "67f120fa6cf3d69cb7607e37bbde4537f60a73dbe326ea11bc74c688abcdcdb4",
+      "current_sha256": "67f120fa6cf3d69cb7607e37bbde4537f60a73dbe326ea11bc74c688abcdcdb4"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Probes/ProbeRuntime.cs",
+      "original_sha256": "687270be930a19fc4a179becf8666b7345e3fac721f084292bb6dbd7afc646d9",
+      "current_sha256": "687270be930a19fc4a179becf8666b7345e3fac721f084292bb6dbd7afc646d9"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Storage/ArtifactRetention.cs",
+      "original_sha256": "1b6d4015e29a53e5a6011cdf117a087d4b1a90ffa0c95910af3d9a19fd00c1e0",
+      "current_sha256": "1b6d4015e29a53e5a6011cdf117a087d4b1a90ffa0c95910af3d9a19fd00c1e0"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Storage/BundleImportPublication.cs",
+      "original_sha256": "c2b047d144ce356ebfcfa552a410e63db0dd910c78a595f0dc5b51c7dc75ef82",
+      "current_sha256": "c2b047d144ce356ebfcfa552a410e63db0dd910c78a595f0dc5b51c7dc75ef82"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Storage/Catalog.cs",
+      "original_sha256": "69a6d3984773cab062a99807b619b296de1c84236dcd099f8706b688d0b2563a",
+      "current_sha256": "69a6d3984773cab062a99807b619b296de1c84236dcd099f8706b688d0b2563a"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Storage/CatalogFileSystem.cs",
+      "original_sha256": "383c420aed6a53433484131690985e56fe003606677762077c2692564aeb65d6",
+      "current_sha256": "383c420aed6a53433484131690985e56fe003606677762077c2692564aeb65d6"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Storage/CatalogSchema.cs",
+      "original_sha256": "fd53a0670bafb618c7d01f776b0f58b8e5425302a9ef58c61c680c74b9e0d8bb",
+      "current_sha256": "fd53a0670bafb618c7d01f776b0f58b8e5425302a9ef58c61c680c74b9e0d8bb"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Storage/ImportedMemberQuery.cs",
+      "original_sha256": "b21791e5bff093725b9e66f31f316e254034ece5c121e50de9e2e89508d2bbda",
+      "current_sha256": "b21791e5bff093725b9e66f31f316e254034ece5c121e50de9e2e89508d2bbda"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Storage/NativeSeriesFreeze.cs",
+      "original_sha256": "c8d7e77be699763e5e3a0de7f1aed7af87a637a19d49b51518c71517925404ec",
+      "current_sha256": "c8d7e77be699763e5e3a0de7f1aed7af87a637a19d49b51518c71517925404ec"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Storage/ProfilerAttachmentRecovery.cs",
+      "original_sha256": "3e81a30e65cad648fe33d6ac3fd9a2f9077c537672ec879476481d8b0850249f",
+      "current_sha256": "3e81a30e65cad648fe33d6ac3fd9a2f9077c537672ec879476481d8b0850249f"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Storage/WorkspacePolicyStore.cs",
+      "original_sha256": "719843d76b6f9e91e7312604b5473e8c4f534eeb6e800f42063b22dfc08bf6da",
+      "current_sha256": "719843d76b6f9e91e7312604b5473e8c4f534eeb6e800f42063b22dfc08bf6da"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.TraceWorker/Program.cs",
+      "original_sha256": "9fd220cffc1a0e03aa010eb31b0594b62af22221b017259ee28a47f0976144f4",
+      "current_sha256": "9fd220cffc1a0e03aa010eb31b0594b62af22221b017259ee28a47f0976144f4"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Transport.Local/Frames.cs",
+      "original_sha256": "af1b789a88b8b006cbc3b765b817cfe4fa31ab001d32364dd90ea756b3db90bd",
+      "current_sha256": "af1b789a88b8b006cbc3b765b817cfe4fa31ab001d32364dd90ea756b3db90bd"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Transport.Local/PeerIdentity.cs",
+      "original_sha256": "653ca70940e31445726a8af2992c7ff8caa973acaba9a56829171dbb0ff4f154",
+      "current_sha256": "653ca70940e31445726a8af2992c7ff8caa973acaba9a56829171dbb0ff4f154"
+    },
+    {
+      "path": "src/Tedd.DotNetLab.Transport.Local/ProfilerClient.cs",
+      "original_sha256": "f063875598467ff5c93f40e4c3ccea97c485eddb3fd03cb7b5b727144153f7d7",
+      "current_sha256": "f063875598467ff5c93f40e4c3ccea97c485eddb3fd03cb7b5b727144153f7d7"
+    }
+  ],
+  "failed_initial_setup_records": 0,
+  "failed_initial_setup_operations": 0,
+  "build_failure": "Initial RID publish NETSDK1152; preserved. Fresh ordinary build outputs used.",
+  "initial_audit_correction": "Three dependent DLLs differ, not one; functional/source proof is reported without claiming binary identity."
+}

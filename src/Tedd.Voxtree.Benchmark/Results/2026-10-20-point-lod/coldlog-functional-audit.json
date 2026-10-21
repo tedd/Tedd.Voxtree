@@ -1,0 +1,89 @@
+{
+  "purpose": "Controller functional proof only; no performance statistics or promotion",
+  "variants": [
+    {
+      "variant": "base",
+      "cases": [
+        {
+          "label": "invalid",
+          "operation_id": "op-24c15d44d3074986971f96b6c73a42d6",
+          "state": "failed",
+          "failure_code": "invalid_plan",
+          "returned_sessions": 0,
+          "launches": 1
+        },
+        {
+          "label": "valid",
+          "operation_id": "op-bc6cad75a3174b449593ee0fd7ea997a",
+          "state": "completed",
+          "failure_code": null,
+          "returned_sessions": 24,
+          "launches": 24
+        }
+      ],
+      "controller_joined": true,
+      "controller_exit_code": 0,
+      "structured_failure_lines": 0,
+      "details": [],
+      "successful_sessions_correct_quiescent_joined": 24
+    },
+    {
+      "variant": "logged",
+      "cases": [
+        {
+          "label": "invalid",
+          "operation_id": "op-6a3cca60f16242ef92f2658f153f83a1",
+          "state": "failed",
+          "failure_code": "invalid_plan",
+          "returned_sessions": 0,
+          "launches": 1
+        },
+        {
+          "label": "valid",
+          "operation_id": "op-98410fc8e6e243a7a8821320d66d9424",
+          "state": "completed",
+          "failure_code": null,
+          "returned_sessions": 24,
+          "launches": 24
+        }
+      ],
+      "controller_joined": true,
+      "controller_exit_code": 0,
+      "structured_failure_lines": 1,
+      "details": [
+        {
+          "operation_id": "op-6a3cca60f16242ef92f2658f153f83a1",
+          "plan_id": "confirm-plan-0d8051f8146b48519133710fbca5a512",
+          "execution_id": "op-6a3cca60f16242ef92f2658f153f83a1-confirmation",
+          "failure_code": "invalid_plan",
+          "exception_type": "Tedd.DotNetLab.Contracts.LabException",
+          "hresult": -2146233088,
+          "detail": "Tedd.DotNetLab.Contracts.LabException: Normal-build scenario differs from the frozen input/variant.\r\n   at Tedd.DotNetLab.Application.LabService.RunNormalSessionAsync(ConfirmationPlan plan, NormalBuild build, String executionId, Int32 block, Int32 arm, String variant, Grant parent, CancellationToken cancellation) in D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\coldlog-controller-source\\src\\Tedd.DotNetLab.Application\\ConfirmationService.cs:line 211\r\n   at Tedd.DotNetLab.Application.LabService.RunNormalSessionAsync(ConfirmationPlan plan, NormalBuild build, String executionId, Int32 block, Int32 arm, String variant, Grant parent, CancellationToken cancellation)\r\n   at Tedd.DotNetLab.Application.LabService.<>c__DisplayClass35_0.<<StartConfirmation>b__0>d.MoveNext() in D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\coldlog-controller-source\\src\\Tedd.DotNetLab.Application\\ConfirmationService.cs:line 106",
+          "detail_truncated": false,
+          "recorded_utc": "2026-10-21T02:03:40.853783+00:00"
+        }
+      ],
+      "successful_sessions_correct_quiescent_joined": 24
+    }
+  ],
+  "valid_sessions": 48,
+  "launches": 50,
+  "expected_rejected_launches": 2,
+  "dll_count_per_output": 69,
+  "changed_dlls": [
+    "Tedd.DotNetLab.Application.dll",
+    "Tedd.DotNetLab.Host.dll",
+    "Tedd.DotNetLab.Mcp.dll"
+  ],
+  "source_review": {
+    "one_changed_source_file": true,
+    "outside_added_catch_logging_identical": true,
+    "diff_sha256": "3b1248fe4bc9a98ae3154f16a4d224edd5026246bad6405801df3f9d6a60ba75",
+    "bounded_detail_characters": 32768,
+    "no_background_observer": true
+  },
+  "supported_functionally": true,
+  "historic_fault_fixed": false,
+  "shared_installation_changed": false,
+  "interpretation": "Failure codes and valid lifecycle outcomes match. Logging variant provides original exception details only for the controlled failure. This does not localize/repair the historic failure or qualify any library optimization."
+}
