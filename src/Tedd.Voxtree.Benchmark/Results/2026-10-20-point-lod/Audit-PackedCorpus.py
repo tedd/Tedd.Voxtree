@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 parser=argparse.ArgumentParser();parser.add_argument('task_root',type=Path)
-parser.add_argument('--bundle-label',choices=['p18census','p20census','p22bulk','p23bulk','p24census','p25census','p27setup','p29census'],default='p18census');args=parser.parse_args()
+parser.add_argument('--bundle-label',choices=['p18census','p20census','p22bulk','p23bulk','p24census','p25census','p27setup','p29census','p30census'],default='p18census');args=parser.parse_args()
 root=args.task_root.resolve()
 if root!=Path('D:/Workspaces/AI/voxtree-point-lod-20261020').resolve():raise SystemExit('Unexpected task root')
 source=root/('forcecraft-census-packed-'+args.bundle_label+'/packed-corpus.json')
@@ -38,7 +38,7 @@ if args.bundle_label in {'p20census','p24census','p25census'}:
     previous=json.loads((root/'packed-corpus-audit.json').read_text())
     assert summary['all_chunks']==previous['all_chunks'] and summary['unique_arrays']==previous['unique_arrays']
     summary['footprint_eligibility_equal_to_p18_census']=True
-if args.bundle_label in {'p27setup','p29census'}:
+if args.bundle_label in {'p27setup','p29census','p30census'}:
     projection=json.loads((root/'j1-audit.json').read_text(encoding='utf-8-sig'))
     for scope,expected_scope in [('all_chunks','all_chunks'),('unique_arrays','unique_arrays_summary')]:
         actual=summary[scope];expected=projection[expected_scope]

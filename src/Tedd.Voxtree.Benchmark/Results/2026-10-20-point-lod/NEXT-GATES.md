@@ -156,10 +156,25 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    in the common validated writer, eliminating its second measurement on tree
    fallback. Public caller-buffer paths must still compute their own plan;
    no caller-data cache, speculative tail write or new writer policy is implied.
-   BUILD-PLAN-REUSE-PROTOCOL and Prepare-BuildPlanReuse.py are prepared, unexecuted.
-   Register P30 before generating its source. Its eight constructor/owned-Build
-   primaries require actual legacy tree storage and >=1.20 gain; all80 other
-   complete-operation guards remain. Do not combine P29 into its P27 control.
+   P30 is now generated and registered as hyp-392bc6b265b34a3e8ca46ae2959faac8.
+   Its two-codec source review matches all paired/corpus snapshots and unchanged
+   planned write bodies. Tests407/408/409 and408 hardware-off pass, along with
+   all point/bulk oracles,378 differential cases/16178022 cells/2832 capacities,
+   and the complete1286-chunk exact-P27/release-control census. All eight primary
+   fixtures are legacy tree. Native first-planner/write inlining is preserved;
+   the redundant external CreateBuildPlan call is removed. The first derived
+   audit incorrectly expected an explicit TryBuild call; its script/error are
+   preserved and the actual expanded path is audited, without rerunning producers.
+   The fixed88-case timing screen is active; primary >=1.20, all80 guards retained.
+   Close-P30 is queued behind it. No P29 source is combined into this P27 control.
+11. K2 is a prospective metadata-only13+3-bit compact-word projection, queued
+   after original P30 closure. Preserve original Q eligibility and full-value
+   fallback for raw values>8191; project header+2*N bytes for eligible depth5
+   corpus chunks. Require existing maximum capacity, <=2.5 released bytes per
+   selected chunk and complete classic encoded-plus-distinct-lookup projection
+   <=release assuming future encoded sharing. Report encoded growth separately.
+   No new encoder or timing is claimed. It tests whether one word per cell can
+   address Q's dependent state-table load without P24's four-byte expansion.
 
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.

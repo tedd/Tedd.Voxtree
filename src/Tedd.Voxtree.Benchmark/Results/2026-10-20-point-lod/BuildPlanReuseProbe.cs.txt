@@ -1,0 +1,32 @@
+// Source-bound format prerequisite and native diagnostics; no timing export.
+using System.Diagnostics;
+using System.Text.Json;
+using Tedd.DotNetLab.Contracts;
+using Tedd.DotNetLab.Harness;
+using Before=Snapshot.Voxtree;
+using After=Tedd.Voxtree;
+if(OperatingSystem.IsWindows())Process.GetCurrentProcess().ProcessorAffinity=(nint)4;
+var formats=new List<object>();
+foreach(string pattern in new[]{"mixed-u7-air","mixed-u8-air"})
+{
+    var small=ForcecraftCorpus.Load(pattern);var wide=Array.ConvertAll(small,v=>(uint)v);
+    var old32=new Before.Octree(5,wide);var next32=new After.Octree(5,wide);
+    var old16=new Before.Octree<ushort>(5,small);var next16=new After.Octree<ushort>(5,small);
+    if((old32.Data.Span[1]&3)!=0||(old16.Data.Span[1]&3)!=0)throw new Exception("P30 primary fixture is not a legacy tree");
+    if(!old32.Data.Span.SequenceEqual(next32.Data.Span)||!old16.Data.Span.SequenceEqual(next16.Data.Span))throw new Exception("P30 native prerequisite bytes differ");
+    formats.Add(new{pattern,inputHash=ForcecraftCorpus.Hash(pattern),classicKind=0,narrowKind=0,classicBytes=old32.Data.Length,narrowBytes=old16.Data.Length});
+}
+Console.WriteLine(JsonSerializer.Serialize(new{allPrimaryFixturesLegacyTree=true,formats}));
+foreach(string type in new[]{"UInt32","UInt16"})
+foreach(string pattern in new[]{"mixed-u7-air","mixed-u8-air"})
+foreach(string op in new[]{"construct","callerbuild"})
+{
+    ISynchronousScenario scenario=type=="UInt32"?new BulkUInt32Scenario(pattern,op):new BulkUInt16Scenario(pattern,op);
+    foreach(string variant in new[]{"baseline","candidate"})
+    {
+        scenario.Prepare(new ScenarioContext(variant,CancellationToken.None));
+        scenario.Reset(new ResetContext(ResetLevel.LogicalState));
+        if(scenario.ExecuteBatch(16)!=16||!scenario.Validate().Correct)throw new Exception("Plan-reuse native oracle failed");
+        scenario.Cleanup();Console.WriteLine(scenario.Describe().Id+" "+variant+" valid");
+    }
+}

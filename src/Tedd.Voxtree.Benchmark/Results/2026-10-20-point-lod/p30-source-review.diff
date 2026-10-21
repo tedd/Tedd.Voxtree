@@ -1,0 +1,57 @@
+--- a/GenericOctreeCodec.cs
++++ b/GenericOctreeCodec.cs
+@@ -97,7 +97,7 @@
+             return encoded;
+         }
+ 
+-        if (!TryBuild(source, levels, encoded, out var written, layout) || written != encoded.Length)
++        if (!TryBuildPlanned(source, levels, encoded, out var written, layout, plan) || written != encoded.Length)
+             throw new InvalidOperationException("The octree encoder produced an inconsistent tree result.");
+         return encoded;
+     }
+@@ -152,6 +152,15 @@
+ 
+         var palettePlan = levels is >= 3 and <= 6 && ValueSize is 2 or 4
+             ? CreateBuildPlan(source, levels, layout) : default;
++        return TryBuildPlanned(source, levels, destination, out bytesWritten, layout, palettePlan);
++    }
++
++    // The source, layout, destination minimum and plan are validated by
++    // the caller. Owned tree builds reuse the plan from this same build call.
++    private static bool TryBuildPlanned(ReadOnlySpan<TStorage> source, int levels, Span<byte> destination,
++        out int bytesWritten, DenseVoxelLayout layout, BuildPlan palettePlan)
++    {
++        bytesWritten = 0;
+         if (palettePlan.StorageKind == StorageKind.PackedLeaf && destination.Length >= palettePlan.EncodedLength)
+         {
+             PaletteLeafEncoding<TStorage>.Write(source, levels, layout, destination, HeaderSize);
+--- a/OctreeCodec.cs
++++ b/OctreeCodec.cs
+@@ -108,7 +108,7 @@
+             return encoded;
+         }
+ 
+-        if (!TryBuild(source, levels, encoded, out var written, layout) || written != encoded.Length)
++        if (!TryBuildPlanned(source, levels, encoded, out var written, layout, plan) || written != encoded.Length)
+             throw new InvalidOperationException("The octree encoder produced an inconsistent tree result.");
+ 
+         return encoded;
+@@ -171,6 +171,18 @@
+ 
+         var palettePlan = levels is >= 3 and <= 6
+             ? CreateBuildPlan(source, levels, layout) : default;
++        return TryBuildPlanned(source, levels, destination, out bytesWritten, layout, palettePlan);
++    }
++
++    // The source, layout, destination minimum and plan are validated by
++    // the caller. Owned tree builds reuse the plan from this same build call.
++    private static bool TryBuildPlanned(
++        ReadOnlySpan<uint> source,
++        int levels,
++        Span<byte> destination,
++        out int bytesWritten, DenseVoxelLayout layout, BuildPlan palettePlan)
++    {
++        bytesWritten = 0;
+         if (palettePlan.StorageKind == StorageKind.PackedLeaf && destination.Length >= palettePlan.EncodedLength)
+         {
+             PaletteLeafEncoding<uint>.Write(source, levels, layout, destination, HeaderSize);

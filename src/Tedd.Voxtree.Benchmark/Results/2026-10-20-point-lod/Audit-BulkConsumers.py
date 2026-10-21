@@ -6,7 +6,7 @@ import statistics
 from pathlib import Path
 
 parser=argparse.ArgumentParser();parser.add_argument('task_root',type=Path)
-parser.add_argument('--label',choices=['p18bulk','p19bulk','p20bulk','p21bulk','p22bulk','p23bulk','p25bulk','p26bulk','p27bulk'],default='p18bulk');args=parser.parse_args()
+parser.add_argument('--label',choices=['p18bulk','p19bulk','p20bulk','p21bulk','p22bulk','p23bulk','p25bulk','p26bulk','p27bulk','p30bulk'],default='p18bulk');args=parser.parse_args()
 task=args.task_root.resolve()
 if task!=Path('D:/Workspaces/AI/voxtree-point-lod-20261020').resolve():raise SystemExit('Unexpected task root')
 label=args.label
@@ -18,7 +18,8 @@ version,family,control,treatment={'p18bulk':('13',88,'f0772c8','complete P18 sou
     'p23bulk':('13',88,'f0772c8','P23 measurement-only token lengths'),
     'p25bulk':('13',88,'complete P24 source','P25 bottom-up packed writer'),
     'p26bulk':('13',88,'complete P25 source','P26 stop initialized single-voxel fills'),
-    'p27bulk':('13',88,'f0772c8','P27 bounded byte-palette representation')}[label]
+    'p27bulk':('13',88,'f0772c8','P27 bounded byte-palette representation'),
+    'p30bulk':('13',88,'complete P27 source','P30 owned BuildPlan reuse')}[label]
 root=task/(label+'-screen');output=task/(label+'-audit.json')
 if output.exists():raise SystemExit('Preserve original bulk audit')
 read=lambda p:json.loads(p.read_text(encoding='utf-8-sig'))
@@ -38,6 +39,7 @@ for item in plans:
     if label=='p25bulk':assert plan['seed']=='20261027'
     if label=='p26bulk':assert plan['seed']=='20261028'
     if label=='p27bulk':assert plan['seed']=='20261030'
+    if label=='p30bulk':assert plan['seed']=='20261102'
     stem=root/(label+'-'+name);terminal=read(Path(str(stem)+'-terminal.json'));assert terminal['state']=='completed'
     runs=[unwrap(v) for v in read(Path(str(stem)+'-runs.json'))];assert len(runs)==24
     observations={a:[] for a in ['baseline','candidate']};allocations={a:[] for a in observations};blocks={}
