@@ -1,0 +1,20 @@
+{
+  "archive_bytes": 1692790,
+  "manifest_paths": 524,
+  "unique_blobs": 517,
+  "catalogs": 1,
+  "metric_rows": 24,
+  "sha256": "41dca1115ebba26cf9a91edf09bcba3fdea6e99a97e61fca31826566c969f60f",
+  "required_paths": [
+    "p36-normal-screen/catalog-export.json",
+    "p36-normal-screen/plans.json",
+    "p36-normal-screen/run-driver-completed.json",
+    "p36-normal-screen/disposition-revision-response.json",
+    "p36-normal-family-audit.json",
+    "p36-normal-family-disposition.json",
+    "p36-normal-p36n0-native.asm",
+    "p36-normal-p36n1-native.asm",
+    "native-summary-phase28-normal.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

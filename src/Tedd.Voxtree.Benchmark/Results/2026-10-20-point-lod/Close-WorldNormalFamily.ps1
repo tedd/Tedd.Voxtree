@@ -24,12 +24,12 @@ try{
  $request|ConvertTo-Json -Depth 30|Set-Content -LiteralPath (Join-Path $root 'disposition-revision-request.json')
  $result=Invoke-Lab lab.experiment $request
  $result|ConvertTo-Json -Depth 70|Set-Content -LiteralPath (Join-Path $root 'disposition-revision-response.json')
- foreach($n in @('p36-normal-family-audit.json','p36-normal-family-disposition.json')){Copy-Item -LiteralPath (Join-Path $TaskRoot $n) -Destination (Join-Path $PSScriptRoot $n)}
+ foreach($n in @('p36-normal-family-audit.json','p36-normal-family-disposition.json','native-summary-phase28-normal.json')){Copy-Item -LiteralPath (Join-Path $TaskRoot $n) -Destination (Join-Path $PSScriptRoot $n)}
  $arguments=@((Join-Path $PSScriptRoot 'Preserve.py'),$TaskRoot,$PSScriptRoot,'--label','phase28','--content-addressed')
- foreach($prefix in @('p36-normal-screen','p36-normal-family-audit.json','p36-normal-family-disposition.json')){$arguments+=@('--include-prefix',$prefix)}
+ foreach($prefix in @('p36-normal-screen','p36-normal-family-audit.json','p36-normal-family-disposition.json','p36-normal-p36n0-native','p36-normal-p36n1-native','native-summary-phase28-normal.json')){$arguments+=@('--include-prefix',$prefix)}
  & python @arguments
  if($LASTEXITCODE -ne 0){throw 'Normal family preservation failed; retain original artifacts'}
- & python (Join-Path $PSScriptRoot 'Verify-Evidence.py') $PSScriptRoot --label phase28 --require p36-normal-screen/catalog-export.json --require p36-normal-screen/plans.json --require p36-normal-screen/run-driver-completed.json --require p36-normal-screen/disposition-revision-response.json --require p36-normal-family-audit.json --require p36-normal-family-disposition.json
+ & python (Join-Path $PSScriptRoot 'Verify-Evidence.py') $PSScriptRoot --label phase28 --require p36-normal-screen/catalog-export.json --require p36-normal-screen/plans.json --require p36-normal-screen/run-driver-completed.json --require p36-normal-screen/disposition-revision-response.json --require p36-normal-family-audit.json --require p36-normal-family-disposition.json --require p36-normal-p36n0-native.asm --require p36-normal-p36n1-native.asm --require native-summary-phase28-normal.json
  if($LASTEXITCODE -ne 0){throw 'Normal family archive verification failed'}
  $result|ConvertTo-Json -Depth 15
 }finally{Exit-VoxtreePerformanceHost $lease}

@@ -148,6 +148,28 @@ if complete:
     assert len(ids) == len(identities) == 288 and len(controllers) == 12
     assert all(r['state'] == 'completed' for r in rows)
 counterevidence = complete and any(r.get('primary_futility') or r.get('guarded_harm') for r in rows)
+native_summary = read(task / 'native-summary-phase28-normal.json')
+native = {}
+expected_callers = {f'World{w}:After{op}(int):this (Tier1)' for w in ['UInt32', 'UInt16']
+                    for op in ['Get', 'Lod', 'Chunk', 'Topology']}
+for arm, label, listing in zip(['baseline', 'candidate'], ['p36n0', 'p36n1'], native_summary['listings']):
+    stem = 'p36-normal-' + label + '-native'
+    assert listing['file'] == stem + '.asm'
+    assert hashlib.sha256((task / listing['file']).read_bytes()).hexdigest() == listing['sha256']
+    identity = read(task / (stem + '-identity.json'))
+    shutdown = read(task / (stem + '-shutdown.json'))
+    assert identity['hash'].lower() == bundle_hashes[arm]['WorldNormal.dll']
+    assert identity['regime'] == 'external-owned-JIT-diagnostic-not-quiet' and identity['scenario'] == 'cycle12'
+    assert identity['pid'] == shutdown['pid'] and shutdown['exited'] and shutdown['exitCode'] == 0
+    assert len([s for s in (task / (stem + '-output.log')).read_text(encoding='utf-8-sig').splitlines() if s.endswith(' valid')]) == 8
+    callers = [m for m in listing['methods'] if m['method'] in expected_callers]
+    assert len(callers) == 8 and {m['method'] for m in callers} == expected_callers
+    assert all(m['listing_availability'] == 'complete' for m in callers)
+    native[arm] = {}
+    for m in callers:
+        clear_sites = sum('ClearWithoutReferences' in c or 'ClearWithReferences' in c for c in m['call_sites'])
+        assert (clear_sites > 0) if arm == 'baseline' else (clear_sites == 0)
+        native[arm][m['method']] = dict(native_bytes=m['native_bytes'], fixed_rsp_subtractions=m['rsp_subtractions'], static_clear_call_sites=clear_sites)
 audit = dict(epoch='p36-normal-first-family-v22', control='f0772c8', candidate='P36 ordered incremental maintenance only',
              complete=complete, planned_cases=12, planned_sessions=288,
              completed_cases=sum(r['state'] == 'completed' for r in rows), distinct_process_start_identities=len(identities),
@@ -155,7 +177,8 @@ audit = dict(epoch='p36-normal-first-family-v22', control='f0772c8', candidate='
              primary_futility_count=sum(r.get('primary_futility', False) for r in rows),
              guarded_harm_count=sum(r.get('guarded_harm', False) for r in rows),
              disposition='not_supported' if counterevidence else 'inconclusive', source_adoption=False,
-             cases=rows, rule='Only prospective usable/available difference intervals classify futility or guarded harm; no point-estimate rejection, allocation waiver, pooling or expansion.',
+             cases=rows, separate_exact_module_native_callers=native,
+             rule='Only prospective usable/available difference intervals classify futility or guarded harm; no point-estimate rejection, allocation waiver, pooling or expansion.',
              limits='First family cannot authorize adoption. Residual paired independence is assumed; default hash seeds, heap/JIT placement and environmental drift remain. Full affected API, construction, mutation, storage, allocation and real-consumer confirmation plus original10x qualification remain open.')
 output.write_text(json.dumps(audit, indent=2) + '\n')
-print(json.dumps({k: v for k, v in audit.items() if k not in ['cases', 'limits', 'rule']}))
+print(json.dumps({k: v for k, v in audit.items() if k not in ['cases', 'limits', 'rule', 'separate_exact_module_native_callers']}))

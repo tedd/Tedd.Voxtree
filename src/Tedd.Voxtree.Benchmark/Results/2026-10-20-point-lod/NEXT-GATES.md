@@ -341,6 +341,25 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    authorize adoption: independent full affected-API/mutation/construction/
    storage/allocation/consumer qualification and the full10x objective remain.
 
+21. The complete original P36 normal family now finishes12 cases/288 distinct,
+   joined, correct and quiescent sessions. Audit binds all plans, input/build/
+   runtime/dependency hashes and nonoverlapping process lifetimes. Churn speedup
+   estimates1.170–1.351 all have intervals crossing1.10; zero primary futility
+   and zero guarded harm under the frozen rules. This does not establish all
+   hit guards. Only UInt32 repeated Get/LOD time is equivalent; ten other time
+   objectives and all twelve zero-variance allocation guards are inconclusive.
+   Hyp-b06fe639f0e64a17b2587dcf93d357bf is inconclusive; no source is adopted.
+   Separate post-family diagnostics of exact normal modules remove clears in
+   all eight candidate callers while growing125–201 bytes/fixed rsp16–32.
+   Phase28 preserves original IDs, all objectives/flags, joins, native evidence
+   and revised hypothesis; see REPORT-PHASE28. No timing/binary is replaced.
+   If pursuing unchanged P36, first freeze independent full affected-API/
+   mutation/construction/storage/allocation/real-byte-consumer confirmation,
+   including all twelve logical cases and a justified prospective budget.
+   Do not expand/pool this family or waive allocation degeneracy. Actual normal
+   caller growth also supports a separate AddRecent outlining investigation;
+   no benefit, composition, source adoption or full10x result is established.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining
