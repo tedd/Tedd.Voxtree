@@ -1,6 +1,7 @@
 param([Parameter(Mandatory)][string]$TaskRoot,[ValidatePattern('^[a-z][a-z0-9-]*$')][string]$Label='p7b',
       [ValidatePattern('^[a-z][a-z0-9-]*$')][string]$SourceDirectoryName='packed-lookup-source',
       [string]$FixtureName='PackedLookupTests.cs.txt',
+      [string]$ExtraFixtureName='',
       [switch]$JointStates,
       [switch]$DirectStates,
       [switch]$ByteEncoding,
@@ -14,6 +15,10 @@ $validation=Join-Path $TaskRoot "packed-lookup-validation-$Label"
 New-Item -ItemType Directory -Path $validation,(Join-Path $validation 'tests') -Force | Out-Null
 $excludedTests="$repo/src/Tedd.Voxtree.Tests/CompiledLeafGridTests.cs"
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot $FixtureName) -Destination (Join-Path $validation 'tests/PackedLookupTests.cs')
+if($ExtraFixtureName){
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot $ExtraFixtureName) -Destination (Join-Path $validation 'tests/ExtraReadTests.cs')
+    @{fixture=$ExtraFixtureName;sha256=(Get-FileHash -LiteralPath (Join-Path $validation 'tests/ExtraReadTests.cs')).Hash}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $validation 'extra-fixture-binding.json')
+}
 if($WordStorage){
     $testPath=Join-Path $validation 'tests/PackedLookupTests.cs'
     $text=Get-Content -LiteralPath $testPath -Raw

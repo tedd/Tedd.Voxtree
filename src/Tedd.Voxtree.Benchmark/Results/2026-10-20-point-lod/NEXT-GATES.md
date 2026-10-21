@@ -130,6 +130,32 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    Select a distinct read mechanism from actual executed code; direct-release10x
    confirmation remains necessary, without multiplying successive ratios.
 
+9. P29 is implemented as a separate complete P27 fork, registered as
+   hyp-94bb1dbf2bc2407d8145f739ff332630. Direct throwing palette reads preserve
+   all old boolean readers and format bytes. The paired source review matches
+   six changed files across point/bulk/census bundles. Parent and candidate
+   .NET8/10/11 suites pass407/408/409, plus408 hardware-off tests. All point and
+   complete-operation oracles pass. A third, explicitly aliased exact P27
+   assembly verifies every corpus encoding byte while f0772c8 supplies the
+   independent release value/LOD control; all1286 chunks/42139648 cells pass.
+   The matched native gate removes temporary output stores/reload and success
+   propagation after the state load. Whole owned Get caller size3336->3237
+   bytes, fixed rsp subtraction232->248. These facts establish no timing gain.
+   Its fixed48-case screen is running, with four UInt32 >=1.10 primaries and
+   44 original guards. Initial owned/span value-only estimates are1.317/1.165;
+   LOD1.057/0.998 misses the primary. Complete every original case and preserve
+   all adverse guards. Close-P29 is queued behind that exact run and includes
+   the previously unarchived p27contracts and P29 precheck evidence.
+10. A simple write-legacy-first palette builder is invalid: corpus region
+   DefaultWorld/r.4.488.1.region slot5447, hashDBC87DF99E06B3E001A3BFB1C37958BF2AC36B3415EF27EDE6883FF6FF261DBB,
+   encodes34116 released bytes but33300 palette bytes. Speculative legacy
+   output could corrupt816 bytes beyond the selected output tail. Preserve
+   exact capacity/tail/failed-prefix behavior in any writer study. A separate
+   minimal next candidate can reuse BuildOwned's already computed BuildPlan
+   in the common validated writer, eliminating its second measurement on tree
+   fallback. Public caller-buffer paths must still compute their own plan;
+   no caller-data cache, speculative tail write or new writer policy is implied.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining

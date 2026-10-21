@@ -1,0 +1,99 @@
+using System.Buffers.Binary;
+using System.Runtime.InteropServices;
+using Xunit;
+
+namespace Tedd.Voxtree.Tests;
+
+public class PaletteReturnCases
+{
+    private static byte[] UniformPalette(bool generic, bool narrow)
+    {
+        int header=generic?3:2, width=narrow?4:8;
+        var bytes=new byte[header+2+512+width];
+        bytes[0]=0x51;bytes[1]=0xcf;if(generic)bytes[2]=(byte)(narrow?1:2);
+        BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(header),1);
+        SetState(bytes,generic,narrow,3);
+        return bytes;
+    }
+
+    private static void SetState(byte[] data,bool generic,bool narrow,uint lod)
+    {
+        int table=(generic?3:2)+2+512;
+        if(narrow)BinaryPrimitives.WriteUInt32LittleEndian(data.AsSpan(table),ushort.MaxValue|(lod<<16));
+        else BinaryPrimitives.WriteUInt64LittleEndian(data.AsSpan(table),uint.MaxValue|((ulong)lod<<32));
+    }
+
+    [Fact]
+    public void MaximumRawValuesWithValidLodRemainDistinctFromFailureSentinel()
+    {
+        var classic=Octree.FromEncoded(UniformPalette(false,false));
+        var narrow=Octree<ushort>.FromEncoded(UniformPalette(true,true));
+        var wide=Octree<uint>.FromEncoded(UniformPalette(true,false));
+        var signed=Octree<int>.FromEncoded(UniformPalette(true,false));
+        var floating=Octree<float>.FromEncoded(UniformPalette(true,false));
+        foreach(int p in new[]{0,7})
+        {
+            Assert.Equal(uint.MaxValue,classic.Get(p,p,p));
+            Assert.Equal(uint.MaxValue,classic.Get(p,p,p,out int lod));Assert.Equal(3,lod);
+            Assert.Equal(uint.MaxValue,classic.AsSpan().Get(p,p,p,out lod));Assert.Equal(3,lod);
+            Assert.Equal(ushort.MaxValue,narrow.Get(p,p,p));
+            Assert.Equal(ushort.MaxValue,narrow.Get(p,p,p,out lod));Assert.Equal(3,lod);
+            Assert.Equal(ushort.MaxValue,narrow.AsSpan().Get(p,p,p,out lod));Assert.Equal(3,lod);
+            Assert.Equal(uint.MaxValue,wide.Get(p,p,p));
+            Assert.Equal(uint.MaxValue,wide.Get(p,p,p,out lod));Assert.Equal(3,lod);
+            Assert.Equal(-1,signed.Get(p,p,p,out lod));Assert.Equal(3,lod);
+            Assert.Equal(-1,BitConverter.SingleToInt32Bits(floating.Get(p,p,p,out lod)));Assert.Equal(3,lod);
+        }
+    }
+
+    [Fact]
+    public void ClassicThrowingAndBooleanReadsAgreeAfterMalformedMutation()
+    {
+        var changes=new Action<byte[]>[]{b=>b[4]=255,b=>SetState(b,false,false,4),
+            b=>SetState(b,false,false,0x80000000),b=>SetState(b,false,false,uint.MaxValue)};
+        foreach(var change in changes)
+        {
+            var data=UniformPalette(false,false);var captured=new OctreeSpan(data);
+            var owner=Octree.FromEncoded(data);
+            Assert.True(MemoryMarshal.TryGetArray(owner.Data,out ArraySegment<byte> segment));
+            change(data);change(segment.Array!);
+            Assert.False(captured.TryGet(0,0,0,out uint value,out int lod));Assert.Equal(0u,value);Assert.Equal(0,lod);
+            Assert.Equal("The octree data is malformed.",Assert.Throws<FormatException>(()=>owner.Get(0,0,0)).Message);
+            lod=123;Assert.Throws<FormatException>(()=>owner.Get(0,0,0,out lod));Assert.Equal(0,lod);
+            value=123;Assert.Throws<FormatException>(()=>owner.GetLod(0,0,0,out value));Assert.Equal(123u,value);
+            lod=123;try{captured.Get(0,0,0,out lod);Assert.Fail("Malformed captured read succeeded");}
+            catch(FormatException error){Assert.Equal("The octree data is malformed.",error.Message);}
+            Assert.Equal(0,lod);
+            lod=123;Assert.Equal("x",Assert.Throws<ArgumentOutOfRangeException>(()=>owner.Get(-1,0,0,out lod)).ParamName);Assert.Equal(0,lod);
+        }
+    }
+
+    [Fact]
+    public void GenericThrowingAndBooleanReadsAgreeAfterMalformedMutation()
+    {
+        GenericMalformed<ushort>(true,new uint[]{4,0x8000,ushort.MaxValue});
+        GenericMalformed<uint>(false,new uint[]{4,0x80000000,uint.MaxValue});
+        GenericMalformed<int>(false,new uint[]{4,0x80000000,uint.MaxValue});
+        GenericMalformed<float>(false,new uint[]{4,0x80000000,uint.MaxValue});
+    }
+
+    private static void GenericMalformed<T>(bool narrow,uint[] badLods) where T:unmanaged
+    {
+        var changes=new List<Action<byte[]>>{b=>b[5]=255};
+        foreach(uint bad in badLods)changes.Add(b=>SetState(b,true,narrow,bad));
+        foreach(var change in changes)
+        {
+            var data=UniformPalette(true,narrow);var captured=new OctreeSpan<T>(data);
+            var owner=Octree<T>.FromEncoded(data);
+            Assert.True(MemoryMarshal.TryGetArray(owner.Data,out ArraySegment<byte> segment));
+            change(data);change(segment.Array!);
+            Assert.False(captured.TryGet(0,0,0,out var value,out int lod));Assert.Equal(default,value);Assert.Equal(0,lod);
+            Assert.Equal("The octree data is malformed.",Assert.Throws<FormatException>(()=>owner.Get(0,0,0)).Message);
+            lod=123;Assert.Throws<FormatException>(()=>owner.Get(0,0,0,out lod));Assert.Equal(0,lod);
+            lod=123;try{captured.Get(0,0,0,out lod);Assert.Fail("Malformed captured generic read succeeded");}
+            catch(FormatException error){Assert.Equal("The octree data is malformed.",error.Message);}
+            Assert.Equal(0,lod);
+            lod=123;Assert.Equal("x",Assert.Throws<ArgumentOutOfRangeException>(()=>owner.Get(-1,0,0,out lod)).ParamName);Assert.Equal(0,lod);
+        }
+    }
+}

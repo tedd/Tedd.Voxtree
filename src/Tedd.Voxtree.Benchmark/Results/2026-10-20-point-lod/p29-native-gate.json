@@ -1,0 +1,27 @@
+{
+  "gate_passed": true,
+  "file": "p29-UInt32-owned-get-code.asm",
+  "sha256": "28748695e77684ca839952dc352de2323a43f3a258659128d730b9685d93a1c6",
+  "control_post_state_load_branch": "       mov      rcx, qword ptr [rax]\n       mov      rdx, rcx\n       shr      rdx, 32\n       cmp      edx, r14d\n       ja       G_M000_IG66\n       mov      dword ptr [rsp+0xC0], ecx\n       mov      dword ptr [rsp+0xB8], edx\n       mov      r15d, 1\n \nG_M000_IG10:                ;; offset=0x0200\n       test     r15d, r15d\n       je       G_M000_IG68\n \nG_M000_IG11:                ;; offset=0x0209\n       mov      ebp, dword ptr [rsp+0xC0]\n \nG_M000_IG12:                ;; offset=0x0210\n       mov      ecx, ebp\n       add      qword ptr [rbx+0x60], rcx\n       inc      edi\n       cmp      edi, esi\n       jl       G_M000_IG07\n \n",
+  "candidate_post_state_load_branch": "       mov      rax, qword ptr [rax]\n \nG_M000_IG09:                ;; offset=0x01A8\n       mov      rcx, rax\n       shr      rcx, 32\n       cmp      ecx, r14d\n       ja       G_M000_IG68\n \nG_M000_IG10:                ;; offset=0x01B8\n       mov      ecx, eax\n       add      qword ptr [rbx+0x60], rcx\n       inc      edi\n       cmp      edi, esi\n       jl       G_M000_IG07\n \n",
+  "methods": [
+    {
+      "arm": "control",
+      "method": "ForceUInt32Scenario:BeforeBatchOwned(int):this (Tier1)",
+      "native_bytes": 3336,
+      "fixed_rsp_subtractions": [
+        232
+      ]
+    },
+    {
+      "arm": "candidate",
+      "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1)",
+      "native_bytes": 3237,
+      "fixed_rsp_subtractions": [
+        248
+      ]
+    }
+  ],
+  "finding": "Matched final Tier1 UInt32 owned Get palette branch removes temporary value store/reload, discarded LOD store and boolean-success propagation after the loaded state.",
+  "limits": "Code gate only; no measured gain, PMU attribution, exact quiet code identity or total stack claim. Other branches/frames may grow."
+}

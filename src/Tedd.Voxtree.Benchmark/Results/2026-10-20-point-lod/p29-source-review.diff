@@ -1,0 +1,222 @@
+--- a/Octree.cs
++++ b/Octree.cs
+@@ -137,19 +137,13 @@
+         if ((uint)z >= (uint)SideLength)
+             return OctreeThrowHelper.ThrowCoordinate(nameof(z), z);
+ 
+-        if (!OctreeCodec.TryGetUnchecked(
++        return OctreeCodec.GetUnchecked(
+                 encoded,
+                 _levels,
+                 OctreeCodec.GetStorageKindUnchecked(encoded),
+                 x,
+                 y,
+-                z,
+-                out var value))
+-        {
+-            return OctreeThrowHelper.ThrowMalformed();
+-        }
+-
+-        return value;
++                z);
+     }
+ 
+     /// <summary>Gets the voxel value and the LOD level of its stored leaf in one query.</summary>
+--- a/Octree.Generic.cs
++++ b/Octree.Generic.cs
+@@ -96,10 +96,8 @@
+         if ((uint)x >= (uint)SideLength) return GenericOctreeThrowHelper<T>.ThrowCoordinate(nameof(x), x);
+         if ((uint)y >= (uint)SideLength) return GenericOctreeThrowHelper<T>.ThrowCoordinate(nameof(y), y);
+         if ((uint)z >= (uint)SideLength) return GenericOctreeThrowHelper<T>.ThrowCoordinate(nameof(z), z);
+-        if (!VoxelCodec<T>.TryGetUnchecked(encoded, _levels, VoxelCodec<T>.GetStorageKindUnchecked(encoded),
+-                x, y, z, out var value))
+-            return GenericOctreeThrowHelper<T>.ThrowMalformed();
+-        return value;
++        return VoxelCodec<T>.GetUnchecked(encoded, _levels, VoxelCodec<T>.GetStorageKindUnchecked(encoded),
++                x, y, z);
+     }
+ 
+     /// <summary>Gets the voxel value and the LOD level of its stored leaf in one query.</summary>
+@@ -282,9 +280,7 @@
+         if ((uint)x >= (uint)SideLength) return GenericOctreeThrowHelper<T>.ThrowCoordinate(nameof(x), x);
+         if ((uint)y >= (uint)SideLength) return GenericOctreeThrowHelper<T>.ThrowCoordinate(nameof(y), y);
+         if ((uint)z >= (uint)SideLength) return GenericOctreeThrowHelper<T>.ThrowCoordinate(nameof(z), z);
+-        if (!VoxelCodec<T>.TryGetUnchecked(_data, _levels, _storageKind, x, y, z, out var value))
+-            return GenericOctreeThrowHelper<T>.ThrowMalformed();
+-        return value;
++        return VoxelCodec<T>.GetUnchecked(_data, _levels, _storageKind, x, y, z);
+     }
+ 
+     /// <summary>Gets the voxel value and the LOD level of its stored leaf in one query.</summary>
+@@ -303,9 +299,7 @@
+         if ((uint)x >= (uint)SideLength) return GenericOctreeThrowHelper<T>.ThrowCoordinate(nameof(x), x);
+         if ((uint)y >= (uint)SideLength) return GenericOctreeThrowHelper<T>.ThrowCoordinate(nameof(y), y);
+         if ((uint)z >= (uint)SideLength) return GenericOctreeThrowHelper<T>.ThrowCoordinate(nameof(z), z);
+-        if (!VoxelCodec<T>.TryGetUnchecked(_data, _levels, _storageKind, x, y, z, out var value, out lodLevel))
+-            return GenericOctreeThrowHelper<T>.ThrowMalformed();
+-        return value;
++        return VoxelCodec<T>.GetUnchecked(_data, _levels, _storageKind, x, y, z, out lodLevel);
+     }
+ 
+     /// <summary>Gets the stored leaf LOD level at a coordinate and returns its voxel value.</summary>
+--- a/OctreeCodec.cs
++++ b/OctreeCodec.cs
+@@ -336,6 +336,28 @@
+         }
+ 
+         return TryGetUnchecked(data, levels, storageKind, x, y, z, out value);
++    }
++
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    internal static uint GetUnchecked(ReadOnlySpan<byte> data, int levels, StorageKind storageKind,
++        int x, int y, int z)
++    {
++        if (storageKind == StorageKind.PackedLeaf)
++            return PaletteLeafEncoding<uint>.GetValue(data, HeaderSize, levels, x, y, z);
++        if (!TryGetUnchecked(data, levels, storageKind, x, y, z, out var value))
++            return OctreeThrowHelper.ThrowMalformed();
++        return value;
++    }
++
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    internal static uint GetUnchecked(ReadOnlySpan<byte> data, int levels, StorageKind storageKind,
++        int x, int y, int z, out int lod)
++    {
++        if (storageKind == StorageKind.PackedLeaf)
++            return PaletteLeafEncoding<uint>.GetValue(data, HeaderSize, levels, x, y, z, out lod);
++        if (!TryGetUnchecked(data, levels, storageKind, x, y, z, out var value, out lod))
++            return OctreeThrowHelper.ThrowMalformed();
++        return value;
+     }
+ 
+     internal static bool TryGetUnchecked(
+--- a/OctreeSpan.cs
++++ b/OctreeSpan.cs
+@@ -80,10 +80,7 @@
+         if ((uint)z >= (uint)SideLength)
+             return OctreeThrowHelper.ThrowCoordinate(nameof(z), z);
+ 
+-        if (!OctreeCodec.TryGetUnchecked(_data, _levels, _storageKind, x, y, z, out var value))
+-            return OctreeThrowHelper.ThrowMalformed();
+-
+-        return value;
++        return OctreeCodec.GetUnchecked(_data, _levels, _storageKind, x, y, z);
+     }
+ 
+     /// <summary>Gets the voxel value and the LOD level of its stored leaf in one query.</summary>
+@@ -102,9 +99,7 @@
+         if ((uint)x >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(x), x);
+         if ((uint)y >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(y), y);
+         if ((uint)z >= (uint)SideLength) return OctreeThrowHelper.ThrowCoordinate(nameof(z), z);
+-        if (!OctreeCodec.TryGetUnchecked(_data, _levels, _storageKind, x, y, z, out var value, out lodLevel))
+-            return OctreeThrowHelper.ThrowMalformed();
+-        return value;
++        return OctreeCodec.GetUnchecked(_data, _levels, _storageKind, x, y, z, out lodLevel);
+     }
+ 
+     /// <summary>Gets the stored leaf LOD level at a coordinate and returns its voxel value.</summary>
+--- a/PaletteLeafEncoding.cs
++++ b/PaletteLeafEncoding.cs
+@@ -123,6 +123,45 @@
+         var count = OctreeCodec.GetVoxelCount(levels);
+         return data.Length == header + 2 + count + entries * EntryWidth &&
+             data.Length <= header + count * Width;
++    }
++
++    // All-one has an invalid LOD for every supported depth, including when
++    // every raw value bit is set. Bounds failures never become a table address.
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    private static ulong ReadStateOrInvalid(ReadOnlySpan<byte> data, int header, int levels,
++        int x, int y, int z)
++    {
++        var index = ((x << levels) + y) * (1 << levels) + z;
++        var count = OctreeCodec.GetVoxelCount(levels);
++        if ((uint)index >= (uint)count) return ulong.MaxValue;
++        var offset = header + 2 + index;
++        if ((uint)offset >= (uint)data.Length) return ulong.MaxValue;
++        var code = data[offset];
++        var entry = header + 2 + count + code * EntryWidth;
++        if ((uint)entry > (uint)data.Length || data.Length - entry < EntryWidth) return ulong.MaxValue;
++        return ReadEntry(data.Slice(entry, EntryWidth));
++    }
++
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    internal static T GetValue(ReadOnlySpan<byte> data, int header, int levels, int x, int y, int z)
++    {
++        if (Width is not (2 or 4)) return GenericOctreeThrowHelper<T>.ThrowMalformed();
++        var word = ReadStateOrInvalid(data, header, levels, x, y, z);
++        if (Lod(word) > (uint)levels) return GenericOctreeThrowHelper<T>.ThrowMalformed();
++        return Value((uint)word);
++    }
++
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    internal static T GetValue(ReadOnlySpan<byte> data, int header, int levels,
++        int x, int y, int z, out int lod)
++    {
++        lod = 0;
++        if (Width is not (2 or 4)) return GenericOctreeThrowHelper<T>.ThrowMalformed();
++        var word = ReadStateOrInvalid(data, header, levels, x, y, z);
++        var stored = Lod(word);
++        if (stored > (uint)levels) return GenericOctreeThrowHelper<T>.ThrowMalformed();
++        lod = (int)stored;
++        return Value((uint)word);
+     }
+ 
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+--- a/VoxelType.cs
++++ b/VoxelType.cs
+@@ -196,6 +196,54 @@
+             _ => ThrowUnsupported<bool>()
+         };
+ 
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    internal static T GetUnchecked(ReadOnlySpan<byte> data, int levels, StorageKind storageKind,
++        int x, int y, int z)
++    {
++        if (storageKind == StorageKind.PackedLeaf)
++        {
++            if (Unsafe.SizeOf<T>() == 2)
++            {
++                var storage = PaletteLeafEncoding<ushort>.GetValue(data, GenericOctreeCodec<ushort>.HeaderSize,
++                    levels, x, y, z);
++                return Unsafe.As<ushort, T>(ref storage);
++            }
++            if (Unsafe.SizeOf<T>() == 4)
++            {
++                var storage = PaletteLeafEncoding<uint>.GetValue(data, GenericOctreeCodec<uint>.HeaderSize,
++                    levels, x, y, z);
++                return Unsafe.As<uint, T>(ref storage);
++            }
++        }
++        if (!TryGetUnchecked(data, levels, storageKind, x, y, z, out var value))
++            return GenericOctreeThrowHelper<T>.ThrowMalformed();
++        return value;
++    }
++
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    internal static T GetUnchecked(ReadOnlySpan<byte> data, int levels, StorageKind storageKind,
++        int x, int y, int z, out int lod)
++    {
++        if (storageKind == StorageKind.PackedLeaf)
++        {
++            if (Unsafe.SizeOf<T>() == 2)
++            {
++                var storage = PaletteLeafEncoding<ushort>.GetValue(data, GenericOctreeCodec<ushort>.HeaderSize,
++                    levels, x, y, z, out lod);
++                return Unsafe.As<ushort, T>(ref storage);
++            }
++            if (Unsafe.SizeOf<T>() == 4)
++            {
++                var storage = PaletteLeafEncoding<uint>.GetValue(data, GenericOctreeCodec<uint>.HeaderSize,
++                    levels, x, y, z, out lod);
++                return Unsafe.As<uint, T>(ref storage);
++            }
++        }
++        if (!TryGetUnchecked(data, levels, storageKind, x, y, z, out var value, out lod))
++            return GenericOctreeThrowHelper<T>.ThrowMalformed();
++        return value;
++    }
++
+     internal static bool TryGet(ReadOnlySpan<byte> data, int levels, StorageKind storageKind,
+         int x, int y, int z, out T value) => TryGetCore(data, levels, storageKind, x, y, z, false, out value);
+ 
