@@ -40,7 +40,7 @@ for path in sorted(root.glob("**/*comparison.json")) + sorted(root.glob("**/*obj
         continue
     if not selected(path.relative_to(root).as_posix()):
         continue
-    p24_normal = path.parent.name == 'p24-confirmation'
+    p24_normal = path.parent.name in {'p24-confirmation', 'p36-normal-screen'}
     if p24_normal and not path.name.endswith('objective_vector.json'):
         # Preserve raw comparison records in the archive; export each new
         # inferential objective once rather than both retained projections.
