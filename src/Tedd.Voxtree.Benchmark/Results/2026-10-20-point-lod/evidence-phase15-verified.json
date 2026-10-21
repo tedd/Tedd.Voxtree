@@ -1,0 +1,23 @@
+{
+  "archive_bytes": 6524640,
+  "manifest_paths": 3391,
+  "unique_blobs": 3185,
+  "catalogs": 3,
+  "metric_rows": 88,
+  "sha256": "ff0ea9f6783fb3bbab80e1f3a5d1ee9fe3623212199d6ea603e7679637ad0fc2",
+  "required_paths": [
+    "p30bulk-screen/catalog-export.json",
+    "p30-hypothesis/disposition-revision-response.json",
+    "p30bulk-audit.json",
+    "p30-native-audit.json",
+    "build-plan-reuse-source/GenericOctreeCodec.cs",
+    "p30-source-review.diff",
+    "bundles/p30bulk/p30bulk.dll",
+    "forcecraft-census-packed-p30census/packed-corpus.json",
+    "p30oracle-output.log",
+    "p30-native-audit-first.py.txt",
+    "k2-audit.json",
+    "k2-hypothesis/disposition-revision-response.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

@@ -165,16 +165,27 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    the redundant external CreateBuildPlan call is removed. The first derived
    audit incorrectly expected an explicit TryBuild call; its script/error are
    preserved and the actual expanded path is audited, without rerunning producers.
-   The fixed88-case timing screen is active; primary >=1.20, all80 guards retained.
-   Close-P30 is queued behind it. No P29 source is combined into this P27 control.
-11. K2 is a prospective metadata-only13+3-bit compact-word projection, queued
-   after original P30 closure. Preserve original Q eligibility and full-value
+   The full88-case/2112-record screen completes correctly/quiescently/joined.
+   All eight >=1.20 primaries pass (1.388..1.670);24/80 other guards are adverse.
+   P30 is inconclusive for adoption; allocation remains identical in primaries.
+   The verified phase15 archive retains all88 comparisons and original audit
+   failure. No P29 source is combined into this P27 control. See REPORT-PHASE15.
+11. K2 metadata-only13+3-bit compact-word projection completes after original
+   P30 closure, hyp-9a1d77e6ce2940bd825b6ca8381eb794, supported for feasibility.
+   Preserve original Q eligibility and full-value
    fallback for raw values>8191; project header+2*N bytes for eligible depth5
    corpus chunks. Require existing maximum capacity, <=2.5 released bytes per
    selected chunk and complete classic encoded-plus-distinct-lookup projection
    <=release assuming future encoded sharing. Report encoded growth separately.
-   No new encoder or timing is claimed. It tests whether one word per cell can
-   address Q's dependent state-table load without P24's four-byte expansion.
+   Actual selection132/142/132, corpus max4514, all bounds pass. Classic encoding
+   projects18659626 bytes versus13693396 release (+36.3%), while conditional
+   encoded-plus-distinct lookup projects44613886 versus48861892 (-8.69%).
+   No encoder/timing/allocation result is claimed. Length parity is validated.
+   COMPACT-LEAF13-FORMAT-PROTOCOL is prepared and unexecuted: register P31 before
+   implementing the distinct R format on complete P30, excluding P29. Published
+   O/v1/v2 fallback stays; unpublished Q/P prototypes may be rejected explicitly.
+   Full capacities/byte/corpus/consumer tests and fresh direct-release normal
+   point confirmation remain. Do not treat projected sharing as implemented.
 
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
