@@ -1,0 +1,16 @@
+{
+  "archive_bytes": 2263045,
+  "manifest_paths": 528,
+  "unique_blobs": 331,
+  "catalogs": 1,
+  "metric_rows": 0,
+  "sha256": "f4c28017b9d0749863d18ab170718c16c306ec07d736f89e696c2dcdd57e4c54",
+  "required_paths": [
+    "p32-prerequisite-audit.json",
+    "p32-native-audit.json",
+    "p32-screen-frozen-dependencies.json",
+    "compact-bounds-source/CompactLeafEncoding.cs",
+    "forcecraft-census-packed-p32census/packed-corpus.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

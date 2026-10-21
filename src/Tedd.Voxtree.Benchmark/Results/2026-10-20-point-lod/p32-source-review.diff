@@ -1,0 +1,16 @@
+--- P31/CompactLeafEncoding.cs
++++ P32/CompactLeafEncoding.cs
+@@ -121,8 +121,11 @@
+         word = 0;
+         if ((uint)index >= (uint)OctreeCodec.GetVoxelCount(levels)) return false;
+         var offset = header + index * 2;
+-        if ((uint)offset > (uint)data.Length || data.Length - offset < 2) return false;
+-        word = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(offset, 2));
++        // Both predicates accept exactly [0, data.Length-2], including short spans.
++        // The complete interval is checked before this exactly two-byte load.
++        if (data.Length < 2 || (uint)offset > (uint)(data.Length - 2)) return false;
++        word = Unsafe.ReadUnaligned<ushort>(ref Unsafe.Add(ref MemoryMarshal.GetReference(data), offset));
++        if (!BitConverter.IsLittleEndian) word = BinaryPrimitives.ReverseEndianness(word);
+         return true;
+     }
+ 

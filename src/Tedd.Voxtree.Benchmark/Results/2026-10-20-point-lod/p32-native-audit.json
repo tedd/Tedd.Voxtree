@@ -1,0 +1,97 @@
+{
+  "native_source_gate_passed": true,
+  "pairedControl": "complete P31",
+  "selectedCallers": [
+    {
+      "file": "p32-native-uint16-owned-get.asm",
+      "sha256": "c05f4ee459401b835c3a4f25161f57ac71e2cff15bd653ea18b9a854c0bb376a",
+      "method": "ForceUInt16Scenario:AfterBatchOwned(int):this (Tier1)",
+      "nativeBytes": 2457,
+      "fixedRspSubtractions": [
+        216
+      ],
+      "compactSites": 1,
+      "example": "lea      ecx, [2*rdx+0x03]\n       add      r14d, -2\n       cmp      ecx, r14d\n       ja       G_M000_IG63\n       movsxd   rcx, ecx\n       movzx    rax, word  ptr [rax+rcx]\n       mov      ecx, eax\n       sar      ecx, 13\n       cmp      ecx, r15d\n       jg       G_M000_IG63\n       and      eax, 0x1FFF\n       mov      word  ptr [rbp-0x60], ax\n       mov      dword ptr [rbp-0x68], ecx\n       mov      r14d, 1\n \nG_M000_IG11:                ;; offset=0x01C0\n       movzx    rax, word  ptr [rbp-0x60]\n       movzx    rcx, r14b\n       test     ecx, ecx\n       je       G_M000_IG65\n \nG_M000_IG12:                ;; offset=0x01D0"
+    },
+    {
+      "file": "p32-native-uint16-owned-lod.asm",
+      "sha256": "f2d296f6b7128f1a3689502e1b3fe46e3336365c54d8afc1df8ea204c4e8a825",
+      "method": "ForceUInt16Scenario:AfterBatchOwned(int):this (Tier1)",
+      "nativeBytes": 2838,
+      "fixedRspSubtractions": [
+        200
+      ],
+      "compactSites": 2,
+      "example": "lea      ecx, [2*rdx+0x03]\n       add      r14d, -2\n       cmp      ecx, r14d\n       ja       G_M000_IG82\n       movsxd   rcx, ecx\n       movzx    rax, word  ptr [rax+rcx]\n       mov      ecx, eax\n       sar      ecx, 13\n       cmp      ecx, r15d\n       jg       G_M000_IG82\n       and      eax, 0x1FFF\n       mov      word  ptr [rbp-0x78], ax\n       mov      dword ptr [rbp-0x40], ecx\n       mov      r14d, 1\n \nG_M000_IG15:                ;; offset=0x01F7\n       movzx    rax, word  ptr [rbp-0x78]\n       movzx    rcx, r14b\n       test     ecx, ecx\n       je       G_M000_IG84\n \nG_M000_IG16:                ;; offset=0x0207"
+    },
+    {
+      "file": "p32-native-uint16-span-get.asm",
+      "sha256": "cb1f58cb2c6c97368120cdc186af92be6875585eeefb3d52bf17a2c37098f158",
+      "method": "ForceUInt16Scenario:AfterBatchSpan(int):this (Tier1)",
+      "nativeBytes": 2580,
+      "fixedRspSubtractions": [
+        184
+      ],
+      "compactSites": 1,
+      "example": "lea      ecx, [2*rdx+0x03]\n       cmp      r14d, 2\n       jl       G_M000_IG78\n       add      r14d, -2\n       cmp      ecx, r14d\n       ja       G_M000_IG78\n       movsxd   rcx, ecx\n       movzx    rcx, word  ptr [rcx+r13]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r15d\n       jg       G_M000_IG78\n       and      ecx, 0x1FFF\n       mov      word  ptr [rbp-0x78], cx\n       mov      dword ptr [rbp-0x80], edx\n       mov      r14d, 1\n \nG_M000_IG11:                ;; offset=0x01ED\n       movzx    rax, word  ptr [rbp-0x78]\n       movzx    rcx, r14b\n       test     ecx, ecx\n       je       G_M000_IG80"
+    },
+    {
+      "file": "p32-native-uint16-span-lod.asm",
+      "sha256": "6aa37a73b9fb521a019eb2a57c3092c4c955ddb812d9986ca85476eaece1e246",
+      "method": "ForceUInt16Scenario:AfterBatchSpan(int):this (Tier1)",
+      "nativeBytes": 2905,
+      "fixedRspSubtractions": [
+        200
+      ],
+      "compactSites": 2,
+      "example": "lea      ecx, [2*rdx+0x03]\n       cmp      r14d, 2\n       jl       G_M000_IG96\n       add      r14d, -2\n       cmp      ecx, r14d\n       ja       G_M000_IG96\n       movsxd   rcx, ecx\n       movzx    rcx, word  ptr [rcx+r13]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r15d\n       jg       G_M000_IG96\n       and      ecx, 0x1FFF\n       mov      word  ptr [rbp-0x90], cx\n       mov      dword ptr [rbp-0x58], edx\n       mov      r14d, 1\n \nG_M000_IG16:                ;; offset=0x0233\n       movzx    rax, word  ptr [rbp-0x90]\n       movzx    rcx, r14b\n       test     ecx, ecx\n       je       G_M000_IG98"
+    },
+    {
+      "file": "p32-native-uint32-owned-get.asm",
+      "sha256": "672d7cbd993018ef55f2b2fa2c5ef4aa71ef4e7c67b507884bbc83d546c9256f",
+      "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1)",
+      "nativeBytes": 3261,
+      "fixedRspSubtractions": [
+        232
+      ],
+      "compactSites": 3,
+      "example": "lea      ecx, [2*rdx+0x02]\n       add      ebp, -2\n       cmp      ecx, ebp\n       ja       G_M000_IG65\n       movsxd   rcx, ecx\n       movzx    rax, word  ptr [rax+rcx]\n       mov      ecx, eax\n       sar      ecx, 13\n       cmp      ecx, r14d\n       jg       G_M000_IG65\n       and      eax, 0x1FFF\n       mov      dword ptr [rsp+0xC0], eax\n       mov      dword ptr [rsp+0xB8], ecx\n       mov      r15d, 1\n \nG_M000_IG10:                ;; offset=0x01E1\n       test     r15d, r15d\n       je       G_M000_IG67\n \nG_M000_IG11:                ;; offset=0x01EA\n       mov      ebp, dword ptr [rsp+0xC0]\n "
+    },
+    {
+      "file": "p32-native-uint32-owned-lod.asm",
+      "sha256": "8c23588438aae28313e5624deaecc97a9663d3d9ae489167d8f04c4e81db99eb",
+      "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1)",
+      "nativeBytes": 3718,
+      "fixedRspSubtractions": [
+        224
+      ],
+      "compactSites": 4,
+      "example": "lea      ecx, [2*rdx+0x02]\n       add      ebp, -2\n       cmp      ecx, ebp\n       ja       G_M000_IG88\n       movsxd   rcx, ecx\n       movzx    rax, word  ptr [rax+rcx]\n       mov      ecx, eax\n       sar      ecx, 13\n       cmp      ecx, r14d\n       jg       G_M000_IG88\n       and      eax, 0x1FFF\n       mov      dword ptr [rsp+0xA0], eax\n       mov      dword ptr [rsp+0xD8], ecx\n       mov      r15d, 1\n \nG_M000_IG15:                ;; offset=0x020A\n       test     r15d, r15d\n       je       G_M000_IG90\n \nG_M000_IG16:                ;; offset=0x0213\n       mov      ebp, dword ptr [rsp+0xA0]\n "
+    },
+    {
+      "file": "p32-native-uint32-span-get.asm",
+      "sha256": "5984b354fb365d572c4c2149ffd98307f111fe416fd6c28a6e791db2ea836ad0",
+      "method": "ForceUInt32Scenario:AfterBatchSpan(int):this (Tier1)",
+      "nativeBytes": 4300,
+      "fixedRspSubtractions": [
+        232
+      ],
+      "compactSites": 5,
+      "example": "lea      ecx, [2*rdx+0x02]\n       cmp      ebp, 2\n       jl       G_M000_IG83\n       add      ebp, -2\n       cmp      ecx, ebp\n       ja       G_M000_IG83\n       movsxd   rcx, ecx\n       movzx    rcx, word  ptr [r15+rcx]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r14d\n       jg       G_M000_IG83\n       and      ecx, 0x1FFF\n       mov      dword ptr [rsp+0xA8], ecx\n       mov      dword ptr [rsp+0xA0], edx\n       mov      r13d, 1\n \nG_M000_IG10:                ;; offset=0x0230\n       test     r13d, r13d\n       je       G_M000_IG85\n \nG_M000_IG11:                ;; offset=0x0239"
+    },
+    {
+      "file": "p32-native-uint32-span-lod.asm",
+      "sha256": "a04a9596fb849bf867b32fffbc1ea1041ada1dcaad6858e0bcb48a11ae306e90",
+      "method": "ForceUInt32Scenario:AfterBatchSpan(int):this (Tier1)",
+      "nativeBytes": 4280,
+      "fixedRspSubtractions": [
+        232
+      ],
+      "compactSites": 5,
+      "example": "lea      ecx, [2*rdx+0x02]\n       cmp      ebp, 2\n       jl       G_M000_IG102\n       add      ebp, -2\n       cmp      ecx, ebp\n       ja       G_M000_IG102\n       movsxd   rcx, ecx\n       movzx    rcx, word  ptr [r15+rcx]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r14d\n       jg       G_M000_IG102\n       and      ecx, 0x1FFF\n       mov      dword ptr [rsp+0x90], ecx\n       mov      dword ptr [rsp+0xC8], edx\n       mov      r13d, 1\n \nG_M000_IG16:                ;; offset=0x0265\n       test     r13d, r13d\n       je       G_M000_IG104\n \nG_M000_IG17:                ;; offset=0x026E"
+    }
+  ],
+  "summarySha256": "6aacda20351c666e1c534689805cddc8b7f836f4a8339d70c22f0e47be72dc70",
+  "mechanism": "Actual R decode contains combined remaining-byte interval compare and exact word load, without the separate slice check. Voxel-index and stored LOD guards remain.",
+  "limits": "Diagnostic optimized code and fixed reservations are not quiet-code identity, total stack, dynamic instruction frequency or measured efficacy. Complete source/semantic gates and the fixed rejection stage still required."
+}

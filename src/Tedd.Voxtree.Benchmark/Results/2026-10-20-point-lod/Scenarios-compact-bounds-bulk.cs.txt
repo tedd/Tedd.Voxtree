@@ -1,0 +1,230 @@
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using Tedd.DotNetLab.Contracts;
+using Tedd.DotNetLab.Harness;
+using Before = Snapshot.Voxtree;
+using After = Tedd.Voxtree;
+FixtureMode.Validation=args[0]=="--validate";
+if(OperatingSystem.IsWindows())Process.GetCurrentProcess().ProcessorAffinity=(nint)4;
+var registry=new ScenarioRegistry();
+foreach(var pattern in new[]{"mixed-u16-air","mixed-u7-air","mixed-u8-air","uniform-u7-empty"})
+foreach(var op in new[]{"construct","build","callerbuild","trybuild","required","fromencoded","copy","validate","count","miss","buildread"})
+{registry.Register(new BulkUInt32Scenario(pattern,op));registry.Register(new BulkUInt16Scenario(pattern,op));}
+foreach(var op in new[]{"count7","miss7","count17","miss17"}){registry.Register(new BulkUInt32Scenario("mixed-u16-air",op));registry.Register(new BulkUInt16Scenario("mixed-u16-air",op));}
+if(args[0]=="--validate"){
+ foreach(var d in registry.Describe()){
+  var scenario=(ISynchronousScenario)registry.Get(d.Id);
+  foreach(var variant in new[]{"baseline","candidate"}){
+   scenario.Prepare(new ScenarioContext(variant,CancellationToken.None));scenario.Reset(new ResetContext(ResetLevel.LogicalState));
+   scenario.ExecuteBatch(2);if(!scenario.Validate().Correct)throw new Exception(d.Id+variant);scenario.Cleanup();
+  }
+  Console.WriteLine(d.Id+" valid");
+ }
+ return;
+}
+var host=new HarnessHost(registry,args[1]);
+if(args[0]=="--harness-owned"||Environment.GetEnvironmentVariable("DOTNET_EnableDiagnostics")=="0")await host.RunOwnedAsync();
+else{
+ Console.WriteLine(Wire.Serialize(host.Target));using var cancel=new CancellationTokenSource();
+ _=Task.Run(async()=>{await Console.In.ReadLineAsync();cancel.Cancel();});await host.ListenAsync(cancel.Token);
+}
+public static class FixtureMode{public static bool Validation;}
+
+public sealed class BulkUInt32Scenario : ISynchronousScenario
+{
+    readonly string pattern,op;
+    readonly uint[] values;
+    readonly byte[] lods;
+    readonly uint[] destination = new uint[32768];
+    readonly byte[] buffer = new byte[After.Octree.GetMaximumSize(5)];
+    Before.Octree before = null!;
+    After.Octree after = null!;
+    byte[] originalBefore = null!,originalAfter = null!;
+    bool baseline,initialized,beforePrimed,afterPrimed;
+    long sum,completed,readFold;
+    int zeros;
+    public BulkUInt32Scenario(string pattern,string op)
+    {
+        this.pattern=pattern;this.op=op;
+        var raw=ForcecraftCorpus.Load(pattern);
+        values=raw.Select(v=>(uint)v).ToArray();lods=ForcecraftCorpus.Lods(raw);
+        zeros=values.Count(v=>v==0);
+        for(int i=0;i<32768;i++)readFold=unchecked(readFold+(long)values[i]+((long)lods[i]<<32));
+    }
+    public ScenarioDescriptor Describe()=>new($"bulk-UInt32-L5-{pattern}-{op}","17",
+        Wire.Hash(new{pattern,op,voxelSha256=ForcecraftCorpus.Hash(pattern),affinity=4,primeMs=3000,buildReads=65536,layout="linear",consumer="complete-public-operation-with-result-fold"}),
+        ResetLevel.LogicalState,ThreadAffinity.Any,false,
+        op=="buildread"?"One owned construction plus 65536 sequential public value/LOD reads":
+        op is "construct" or "fromencoded"?"One owned construction or FromEncoded plus first public Get":
+        "One complete public bulk operation, with returned result or copied element consumed",["baseline","candidate"]);
+    int ExpectedClipped(int endZ,uint wanted){int count=0;
+        for(int x=1;x<31;x++)for(int y=1;y<31;y++)for(int z=1;z<endZ;z++)if((uint)values[(x*32+y)*32+z]==wanted)count++;
+        return count;
+    }
+    void Initialize()
+    {
+        if(initialized)return;
+        before=new Before.Octree(5,values);after=new After.Octree(5,values);
+        originalBefore=before.Data.ToArray();originalAfter=after.Data.ToArray();
+        CheckTrees(); initialized=true;
+    }
+    void CheckTrees()
+    {
+        for(int i=0;i<32768;i++)
+        {
+            int x=i/1024,y=i/32%32,z=i%32;
+            if(before.Get(x,y,z,out int b)!=values[i]||after.Get(x,y,z,out int a)!=values[i]||b!=lods[i]||a!=lods[i])throw new Exception("Bulk dense/LOD oracle");
+        }
+        if(!before.AsSpan().IsWellFormed()||!after.AsSpan().IsWellFormed())throw new Exception("Bulk validation oracle");
+    }
+    public void Prepare(ScenarioContext context)
+    {
+        Initialize();baseline=context.Variant=="baseline";
+        if(!FixtureMode.Validation && !(baseline?beforePrimed:afterPrimed))
+        {
+            var clock=Stopwatch.StartNew();
+            do{ExecuteBatch(1);}while(clock.ElapsedMilliseconds<3000);
+            if(baseline)beforePrimed=true;else afterPrimed=true;
+        }
+    }
+    public void Reset(ResetContext context){sum=completed=0;}
+    public long ExecuteBatch(int count)
+    {
+#if PRIMARY_BASELINE_CALLER
+        AfterBatch(count);
+#else
+        if(baseline)BeforeBatch(count);else AfterBatch(count);
+#endif
+        completed+=count;return count;
+    }
+    [MethodImpl(MethodImplOptions.NoInlining)] void BeforeBatch(int count){switch(op){case "count7":for(int i=0;i<count;i++){sum=unchecked(sum+before.CountMatches(new Before.VoxelBox(1,1,1,31,31,8),Before.VoxelFilter.EqualTo(0)));}return;case "miss7":for(int i=0;i<count;i++){sum=unchecked(sum+before.CountMatches(new Before.VoxelBox(1,1,1,31,31,8),Before.VoxelFilter.EqualTo(65535)));}return;case "count17":for(int i=0;i<count;i++){sum=unchecked(sum+before.CountMatches(new Before.VoxelBox(1,1,1,31,31,18),Before.VoxelFilter.EqualTo(0)));}return;case "miss17":for(int i=0;i<count;i++){sum=unchecked(sum+before.CountMatches(new Before.VoxelBox(1,1,1,31,31,18),Before.VoxelFilter.EqualTo(65535)));}return;case "construct":for(int i=0;i<count;i++){before=new Before.Octree(5,values);sum=unchecked(sum+(long)before.Get(0,0,0));}return;case "build":for(int i=0;i<count;i++){before.Build(values);sum=unchecked(sum+(long)before.Get(0,0,0));}return;case "callerbuild":for(int i=0;i<count;i++){sum=unchecked(sum+Before.Octree.Build(values,5,buffer));}return;case "trybuild":for(int i=0;i<count;i++){if(!Before.Octree.TryBuild(values,5,buffer,out int written))throw new Exception("Build failed");sum=unchecked(sum+written);}return;case "required":for(int i=0;i<count;i++){sum=unchecked(sum+Before.Octree.GetRequiredSize(values,5));}return;case "fromencoded":for(int i=0;i<count;i++){before=Before.Octree.FromEncoded(originalBefore);sum=unchecked(sum+(long)before.Get(0,0,0));}return;case "copy":for(int i=0;i<count;i++){before.CopyTo(destination);sum=unchecked(sum+(long)destination[2047]);}return;case "validate":for(int i=0;i<count;i++){if(!before.AsSpan().IsWellFormed())throw new Exception("Validation failed");sum=unchecked(sum+1);}return;case "count":for(int i=0;i<count;i++){sum=unchecked(sum+before.CountMatches(new Before.VoxelBox(0,0,0,32,32,32),Before.VoxelFilter.EqualTo(0)));}return;case "miss":for(int i=0;i<count;i++){sum=unchecked(sum+before.CountMatches(new Before.VoxelBox(0,0,0,32,32,32),Before.VoxelFilter.EqualTo(65535)));}return;case "buildread":for(int i=0;i<count;i++){before=new Before.Octree(5,values);for(int j=0;j<65536;j++){int p=j&32767;var value=before.Get(p/1024,p/32%32,p%32,out int lod);sum=unchecked(sum+(long)value+((long)lod<<32));}}return;default:throw new Exception("Unknown bulk op");}}
+[MethodImpl(MethodImplOptions.NoInlining)] void AfterBatch(int count){switch(op){case "count7":for(int i=0;i<count;i++){sum=unchecked(sum+after.CountMatches(new After.VoxelBox(1,1,1,31,31,8),After.VoxelFilter.EqualTo(0)));}return;case "miss7":for(int i=0;i<count;i++){sum=unchecked(sum+after.CountMatches(new After.VoxelBox(1,1,1,31,31,8),After.VoxelFilter.EqualTo(65535)));}return;case "count17":for(int i=0;i<count;i++){sum=unchecked(sum+after.CountMatches(new After.VoxelBox(1,1,1,31,31,18),After.VoxelFilter.EqualTo(0)));}return;case "miss17":for(int i=0;i<count;i++){sum=unchecked(sum+after.CountMatches(new After.VoxelBox(1,1,1,31,31,18),After.VoxelFilter.EqualTo(65535)));}return;case "construct":for(int i=0;i<count;i++){after=new After.Octree(5,values);sum=unchecked(sum+(long)after.Get(0,0,0));}return;case "build":for(int i=0;i<count;i++){after.Build(values);sum=unchecked(sum+(long)after.Get(0,0,0));}return;case "callerbuild":for(int i=0;i<count;i++){sum=unchecked(sum+After.Octree.Build(values,5,buffer));}return;case "trybuild":for(int i=0;i<count;i++){if(!After.Octree.TryBuild(values,5,buffer,out int written))throw new Exception("Build failed");sum=unchecked(sum+written);}return;case "required":for(int i=0;i<count;i++){sum=unchecked(sum+After.Octree.GetRequiredSize(values,5));}return;case "fromencoded":for(int i=0;i<count;i++){after=After.Octree.FromEncoded(originalAfter);sum=unchecked(sum+(long)after.Get(0,0,0));}return;case "copy":for(int i=0;i<count;i++){after.CopyTo(destination);sum=unchecked(sum+(long)destination[2047]);}return;case "validate":for(int i=0;i<count;i++){if(!after.AsSpan().IsWellFormed())throw new Exception("Validation failed");sum=unchecked(sum+1);}return;case "count":for(int i=0;i<count;i++){sum=unchecked(sum+after.CountMatches(new After.VoxelBox(0,0,0,32,32,32),After.VoxelFilter.EqualTo(0)));}return;case "miss":for(int i=0;i<count;i++){sum=unchecked(sum+after.CountMatches(new After.VoxelBox(0,0,0,32,32,32),After.VoxelFilter.EqualTo(65535)));}return;case "buildread":for(int i=0;i<count;i++){after=new After.Octree(5,values);for(int j=0;j<65536;j++){int p=j&32767;var value=after.Get(p/1024,p/32%32,p%32,out int lod);sum=unchecked(sum+(long)value+((long)lod<<32));}}return;default:throw new Exception("Unknown bulk op");}}
+    public ValidationResult Validate()
+    {
+        CheckTrees();
+        long expected=op switch{
+            "construct" or "build" or "fromencoded"=>(long)values[0],
+            "callerbuild" or "trybuild" or "required"=>baseline?originalBefore.Length:originalAfter.Length,
+            "copy"=>(long)values[2047],"validate"=>1,"count"=>zeros,"miss"=>values.Count(v=>v==65535),"count7"=>ExpectedClipped(8,0),"miss7"=>ExpectedClipped(8,65535),"count17"=>ExpectedClipped(18,0),"miss17"=>ExpectedClipped(18,65535),
+            "buildread"=>unchecked(readFold*2),_=>throw new Exception("Unknown bulk op")};
+        if(op=="copy"&&!destination.AsSpan().SequenceEqual(values))return new(false);
+        if(op is "callerbuild" or "trybuild")
+        {
+            var original=baseline?originalBefore:originalAfter;
+            if(!buffer.AsSpan(0,original.Length).SequenceEqual(original))return new(false);
+        }
+        return new(sum==unchecked(expected*completed));
+    }
+    public void Cleanup(){}
+}
+
+public sealed class BulkUInt16Scenario : ISynchronousScenario
+{
+    readonly string pattern,op;
+    readonly ushort[] values;
+    readonly byte[] lods;
+    readonly ushort[] destination = new ushort[32768];
+    readonly byte[] buffer = new byte[After.Octree<ushort>.GetMaximumSize(5)];
+    Before.Octree<ushort> before = null!;
+    After.Octree<ushort> after = null!;
+    byte[] originalBefore = null!,originalAfter = null!;
+    bool baseline,initialized,beforePrimed,afterPrimed;
+    long sum,completed,readFold;
+    int zeros;
+    public BulkUInt16Scenario(string pattern,string op)
+    {
+        this.pattern=pattern;this.op=op;
+        var raw=ForcecraftCorpus.Load(pattern);
+        values=raw.Select(v=>(ushort)v).ToArray();lods=ForcecraftCorpus.Lods(raw);
+        zeros=values.Count(v=>v==0);
+        for(int i=0;i<32768;i++)readFold=unchecked(readFold+(long)values[i]+((long)lods[i]<<32));
+    }
+    public ScenarioDescriptor Describe()=>new($"bulk-UInt16-L5-{pattern}-{op}","17",
+        Wire.Hash(new{pattern,op,voxelSha256=ForcecraftCorpus.Hash(pattern),affinity=4,primeMs=3000,buildReads=65536,layout="linear",consumer="complete-public-operation-with-result-fold"}),
+        ResetLevel.LogicalState,ThreadAffinity.Any,false,
+        op=="buildread"?"One owned construction plus 65536 sequential public value/LOD reads":
+        op is "construct" or "fromencoded"?"One owned construction or FromEncoded plus first public Get":
+        "One complete public bulk operation, with returned result or copied element consumed",["baseline","candidate"]);
+    int ExpectedClipped(int endZ,uint wanted){int count=0;
+        for(int x=1;x<31;x++)for(int y=1;y<31;y++)for(int z=1;z<endZ;z++)if((uint)values[(x*32+y)*32+z]==wanted)count++;
+        return count;
+    }
+    void Initialize()
+    {
+        if(initialized)return;
+        before=new Before.Octree<ushort>(5,values);after=new After.Octree<ushort>(5,values);
+        originalBefore=before.Data.ToArray();originalAfter=after.Data.ToArray();
+        CheckTrees(); initialized=true;
+    }
+    void CheckTrees()
+    {
+        for(int i=0;i<32768;i++)
+        {
+            int x=i/1024,y=i/32%32,z=i%32;
+            if(before.Get(x,y,z,out int b)!=values[i]||after.Get(x,y,z,out int a)!=values[i]||b!=lods[i]||a!=lods[i])throw new Exception("Bulk dense/LOD oracle");
+        }
+        if(!before.AsSpan().IsWellFormed()||!after.AsSpan().IsWellFormed())throw new Exception("Bulk validation oracle");
+    }
+    public void Prepare(ScenarioContext context)
+    {
+        Initialize();baseline=context.Variant=="baseline";
+        if(!FixtureMode.Validation && !(baseline?beforePrimed:afterPrimed))
+        {
+            var clock=Stopwatch.StartNew();
+            do{ExecuteBatch(1);}while(clock.ElapsedMilliseconds<3000);
+            if(baseline)beforePrimed=true;else afterPrimed=true;
+        }
+    }
+    public void Reset(ResetContext context){sum=completed=0;}
+    public long ExecuteBatch(int count)
+    {
+#if PRIMARY_BASELINE_CALLER
+        AfterBatch(count);
+#else
+        if(baseline)BeforeBatch(count);else AfterBatch(count);
+#endif
+        completed+=count;return count;
+    }
+    [MethodImpl(MethodImplOptions.NoInlining)] void BeforeBatch(int count){switch(op){case "count7":for(int i=0;i<count;i++){sum=unchecked(sum+before.CountMatches(new Before.VoxelBox(1,1,1,31,31,8),Before.VoxelFilter<ushort>.EqualTo(0)));}return;case "miss7":for(int i=0;i<count;i++){sum=unchecked(sum+before.CountMatches(new Before.VoxelBox(1,1,1,31,31,8),Before.VoxelFilter<ushort>.EqualTo(65535)));}return;case "count17":for(int i=0;i<count;i++){sum=unchecked(sum+before.CountMatches(new Before.VoxelBox(1,1,1,31,31,18),Before.VoxelFilter<ushort>.EqualTo(0)));}return;case "miss17":for(int i=0;i<count;i++){sum=unchecked(sum+before.CountMatches(new Before.VoxelBox(1,1,1,31,31,18),Before.VoxelFilter<ushort>.EqualTo(65535)));}return;case "construct":for(int i=0;i<count;i++){before=new Before.Octree<ushort>(5,values);sum=unchecked(sum+(long)before.Get(0,0,0));}return;case "build":for(int i=0;i<count;i++){before.Build(values);sum=unchecked(sum+(long)before.Get(0,0,0));}return;case "callerbuild":for(int i=0;i<count;i++){sum=unchecked(sum+Before.Octree<ushort>.Build(values,5,buffer));}return;case "trybuild":for(int i=0;i<count;i++){if(!Before.Octree<ushort>.TryBuild(values,5,buffer,out int written))throw new Exception("Build failed");sum=unchecked(sum+written);}return;case "required":for(int i=0;i<count;i++){sum=unchecked(sum+Before.Octree<ushort>.GetRequiredSize(values,5));}return;case "fromencoded":for(int i=0;i<count;i++){before=Before.Octree<ushort>.FromEncoded(originalBefore);sum=unchecked(sum+(long)before.Get(0,0,0));}return;case "copy":for(int i=0;i<count;i++){before.CopyTo(destination);sum=unchecked(sum+(long)destination[2047]);}return;case "validate":for(int i=0;i<count;i++){if(!before.AsSpan().IsWellFormed())throw new Exception("Validation failed");sum=unchecked(sum+1);}return;case "count":for(int i=0;i<count;i++){sum=unchecked(sum+before.CountMatches(new Before.VoxelBox(0,0,0,32,32,32),Before.VoxelFilter<ushort>.EqualTo(0)));}return;case "miss":for(int i=0;i<count;i++){sum=unchecked(sum+before.CountMatches(new Before.VoxelBox(0,0,0,32,32,32),Before.VoxelFilter<ushort>.EqualTo(65535)));}return;case "buildread":for(int i=0;i<count;i++){before=new Before.Octree<ushort>(5,values);for(int j=0;j<65536;j++){int p=j&32767;var value=before.Get(p/1024,p/32%32,p%32,out int lod);sum=unchecked(sum+(long)value+((long)lod<<32));}}return;default:throw new Exception("Unknown bulk op");}}
+[MethodImpl(MethodImplOptions.NoInlining)] void AfterBatch(int count){switch(op){case "count7":for(int i=0;i<count;i++){sum=unchecked(sum+after.CountMatches(new After.VoxelBox(1,1,1,31,31,8),After.VoxelFilter<ushort>.EqualTo(0)));}return;case "miss7":for(int i=0;i<count;i++){sum=unchecked(sum+after.CountMatches(new After.VoxelBox(1,1,1,31,31,8),After.VoxelFilter<ushort>.EqualTo(65535)));}return;case "count17":for(int i=0;i<count;i++){sum=unchecked(sum+after.CountMatches(new After.VoxelBox(1,1,1,31,31,18),After.VoxelFilter<ushort>.EqualTo(0)));}return;case "miss17":for(int i=0;i<count;i++){sum=unchecked(sum+after.CountMatches(new After.VoxelBox(1,1,1,31,31,18),After.VoxelFilter<ushort>.EqualTo(65535)));}return;case "construct":for(int i=0;i<count;i++){after=new After.Octree<ushort>(5,values);sum=unchecked(sum+(long)after.Get(0,0,0));}return;case "build":for(int i=0;i<count;i++){after.Build(values);sum=unchecked(sum+(long)after.Get(0,0,0));}return;case "callerbuild":for(int i=0;i<count;i++){sum=unchecked(sum+After.Octree<ushort>.Build(values,5,buffer));}return;case "trybuild":for(int i=0;i<count;i++){if(!After.Octree<ushort>.TryBuild(values,5,buffer,out int written))throw new Exception("Build failed");sum=unchecked(sum+written);}return;case "required":for(int i=0;i<count;i++){sum=unchecked(sum+After.Octree<ushort>.GetRequiredSize(values,5));}return;case "fromencoded":for(int i=0;i<count;i++){after=After.Octree<ushort>.FromEncoded(originalAfter);sum=unchecked(sum+(long)after.Get(0,0,0));}return;case "copy":for(int i=0;i<count;i++){after.CopyTo(destination);sum=unchecked(sum+(long)destination[2047]);}return;case "validate":for(int i=0;i<count;i++){if(!after.AsSpan().IsWellFormed())throw new Exception("Validation failed");sum=unchecked(sum+1);}return;case "count":for(int i=0;i<count;i++){sum=unchecked(sum+after.CountMatches(new After.VoxelBox(0,0,0,32,32,32),After.VoxelFilter<ushort>.EqualTo(0)));}return;case "miss":for(int i=0;i<count;i++){sum=unchecked(sum+after.CountMatches(new After.VoxelBox(0,0,0,32,32,32),After.VoxelFilter<ushort>.EqualTo(65535)));}return;case "buildread":for(int i=0;i<count;i++){after=new After.Octree<ushort>(5,values);for(int j=0;j<65536;j++){int p=j&32767;var value=after.Get(p/1024,p/32%32,p%32,out int lod);sum=unchecked(sum+(long)value+((long)lod<<32));}}return;default:throw new Exception("Unknown bulk op");}}
+    public ValidationResult Validate()
+    {
+        CheckTrees();
+        long expected=op switch{
+            "construct" or "build" or "fromencoded"=>(long)values[0],
+            "callerbuild" or "trybuild" or "required"=>baseline?originalBefore.Length:originalAfter.Length,
+            "copy"=>(long)values[2047],"validate"=>1,"count"=>zeros,"miss"=>values.Count(v=>v==65535),"count7"=>ExpectedClipped(8,0),"miss7"=>ExpectedClipped(8,65535),"count17"=>ExpectedClipped(18,0),"miss17"=>ExpectedClipped(18,65535),
+            "buildread"=>unchecked(readFold*2),_=>throw new Exception("Unknown bulk op")};
+        if(op=="copy"&&!destination.AsSpan().SequenceEqual(values))return new(false);
+        if(op is "callerbuild" or "trybuild")
+        {
+            var original=baseline?originalBefore:originalAfter;
+            if(!buffer.AsSpan(0,original.Length).SequenceEqual(original))return new(false);
+        }
+        return new(sum==unchecked(expected*completed));
+    }
+    public void Cleanup(){}
+}
+
+public static class ForcecraftCorpus {
+    public static string Hash(string name)=>name switch {"mixed-u16-air"=>"48A799A3EEBA729CB9DCE28F1EA54E9B19A9D46E7AA7CA8F0696E90E0F6F10FB","mixed-u7-air"=>"87DB869D775B6A5525CAA5E55463CCC8F4A0F56F6D6770EC5A336E7F63F421DE","mixed-u8-air"=>"5FFD2CF86EF7B6527F314734C048ADCC08C5924C01D2B9C93ABAF1C6814DB8D7","uniform-u7-empty"=>"DE2F256064A0AF797747C2B97505DC0B9F3DF0DE4F489EAC731C23AE9CA9CC31",_=>throw new ArgumentException(name)};
+    public static ushort[] Load(string name) {
+        var text=name switch {"mixed-u16-air"=>"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","mixed-u7-air"=>"H4sIAAAAAAAC/+3cQQ6AIAwEwNL/P9rEg4nxpBgQO8MHjJeFthABAPCOti8AoE5+t2PZPwDAWun/NIHbac3ZPwAAI/O7Xdb4/QMA8Cx/szO9U/4DgPO//AcA/X/9fwAw/2/+HwAWPv/Lb/8DgGr9/3/W79VDAKiU/v+Z30vzEABQ7v5eug8BALfzKjvzKmPe+T2P5T0EAKhUr3b+B4B682r6/wCw+rz56O8z/w8A8lR+A1DTN+rpoZ4OAMvN08XUbrr8B4AZ9+l63yeQ/wDg/C//AUD/X/8fAML8v3l8APA+AQAAAAAAAAAAAAAAAAAAAHzABgfSe8UAAAEA","mixed-u8-air"=>"H4sIAAAAAAAC/+3QMQ0AAAwDoPr3UK81sWcJSCABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFtVAAAvDeb4mNcAAAEA","uniform-u7-empty"=>"H4sIAAAAAAAC/+3BAQEAAACAkP6v7ggKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAauuOl9cAAAEA",_=>throw new ArgumentException(name)};
+        using var input=new MemoryStream(Convert.FromBase64String(text));
+        using var gzip=new System.IO.Compression.GZipStream(input,System.IO.Compression.CompressionMode.Decompress);
+        var bytes=new byte[65536];gzip.ReadExactly(bytes);if(gzip.ReadByte()!=-1)throw new Exception("Sample size");
+        if(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes))!=Hash(name))throw new Exception("Sample hash");
+        var values=new ushort[32768];for(var i=0;i<values.Length;i++)values[i]=System.Buffers.Binary.BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(i*2));return values;
+    }
+    public static byte[] Lods(ushort[] values) {
+        var lods=new byte[values.Length];
+        void Visit(int x,int y,int z,int level) {
+            var width=1<<level;var first=values[(x*32+y)*32+z];var uniform=true;
+            for(var a=x;a<x+width&&uniform;a++)for(var b=y;b<y+width&&uniform;b++)for(var c=z;c<z+width;c++)if(values[(a*32+b)*32+c]!=first){uniform=false;break;}
+            if(uniform){for(var a=x;a<x+width;a++)for(var b=y;b<y+width;b++)Array.Fill(lods,(byte)level,(a*32+b)*32+z,width);return;}
+            if(level==0)throw new Exception("LOD oracle");var half=width/2;
+            for(var a=0;a<2;a++)for(var b=0;b<2;b++)for(var c=0;c<2;c++)Visit(x+a*half,y+b*half,z+c*half,level-1);
+        }
+        Visit(0,0,0,5);return lods;
+    }
+}

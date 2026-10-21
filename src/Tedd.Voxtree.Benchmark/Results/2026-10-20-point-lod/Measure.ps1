@@ -6,7 +6,9 @@ param(
     [string[]]$SelectedScenarios = @(),
     [string]$Label = 'exploration',
     [ValidatePattern('^[0-9]+$')][string]$Seed = '20261022',
-    [ValidateSet('fixed','scaled','precision','bounded-lifecycle','bounded-point','bounded-consumer','bounded-consumer-v14','bounded-consumer-v16')][string]$Budget = 'fixed',
+    [ValidateRange(1,12)][int]$Blocks = 12,
+    [ValidateRange(0,4)][int]$WarmupBatches = 4,
+    [ValidateSet('fixed','scaled','precision','bounded-lifecycle','bounded-point','bounded-consumer','bounded-consumer-v14','bounded-consumer-v16','bounded-consumer-v17')][string]$Budget = 'fixed',
     [ValidateSet('quiet-validation','cpu-diagnostic')][string]$Profile = 'quiet-validation',
     [string]$JitDisasm = '',
     [string]$JitAssembly = '',
@@ -122,9 +124,13 @@ try {
             if($scenario.version -ne '16' -or $scenario.id -notlike 'bulk-*'){throw 'Version-16 consumer budget requires its frozen compact fixture'}
             $operations=if($scenario.id -like '*-buildread'){2}elseif($scenario.id -match '-(copy|validate|count|miss|count7|miss7|count17|miss17)$'){64}else{16}
         }
+        if ($Budget -eq 'bounded-consumer-v17') {
+            if($scenario.version -ne '17' -or $scenario.id -notlike 'bulk-*'){throw 'Version-17 consumer budget requires its frozen bounds fixture'}
+            $operations=if($scenario.id -like '*-buildread'){2}elseif($scenario.id -match '-(copy|validate|count|miss|count7|miss7|count17|miss17)$'){64}else{16}
+        }
         $plan = Invoke-Lab 'lab.experiment' @{
             action='create_plan';scenario_id=$scenario.id;scenario_version=$scenario.version;input_hash=$scenario.input_hash
-            variants=@('baseline','candidate');blocks=12;operations_per_run=$operations;warmup_batches=4;seed=$Seed
+            variants=@('baseline','candidate');blocks=$Blocks;operations_per_run=$operations;warmup_batches=$WarmupBatches;seed=$Seed
             profile=$Profile;independent_blocks=$false;confirmatory=$false;maximum_duration_seconds=120
             target_runtime_version='10.0.13'
             analysis=@{alpha_family=0.05;family_size=$selected.Count;equivalence_lower_ratio=0.95;equivalence_upper_ratio=1.05;useful_improvement_ratio=0.95;meaningful_regression_ratio=1.05;minimum_blocks=10}
@@ -132,7 +138,7 @@ try {
         $plans += [pscustomobject]@{scenario=$scenario.id;plan=$plan}
     }
     $plans | ConvertTo-Json -Depth 50 | Set-Content -LiteralPath (Join-Path $Workspace "$Label-plans.json")
-    $runBudget = 24 * $selected.Count
+    $runBudget = 2 * $Blocks * $selected.Count
     $grantText = & $dotnetExecutable exec --fx-version 10.0.13 $LabHost grant $Workspace $identity.process_id execute_registered_scenario 3600 $runBudget
     if ($LASTEXITCODE -ne 0) { throw $grantText }
     $grant = $grantText | ConvertFrom-Json

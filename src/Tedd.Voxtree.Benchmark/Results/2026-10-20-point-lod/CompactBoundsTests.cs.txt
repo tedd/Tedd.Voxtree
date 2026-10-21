@@ -1,0 +1,52 @@
+using System.Reflection;
+using Xunit;
+
+namespace Tedd.Voxtree.Tests;
+
+public class CompactBoundsTests
+{
+    delegate bool ReadWord(ReadOnlySpan<byte> data,int header,int levels,int index,out ushort word);
+    static ReadWord Reader(Assembly assembly,string ns,Type valueType)
+    {
+        var type=assembly.GetType(ns+".CompactLeafEncoding`1",true)!.MakeGenericType(valueType);
+        return (ReadWord)type.GetMethod("TryReadWord",BindingFlags.NonPublic|BindingFlags.Static)!.CreateDelegate(typeof(ReadWord));
+    }
+    [Fact]
+    public void EquivalentByteIntervalsCoverShortSpansAndExtremeOffsets()
+    {
+        var lengths=Enumerable.Range(0,1025).Concat(new[]{65535,65536,524290,int.MaxValue-1,int.MaxValue});
+        foreach(int length in lengths){
+            var offsets=new[]{int.MinValue,-2,-1,0,1,2,3,length-2,length-1,length,unchecked(length+1),int.MaxValue};
+            foreach(int offset in offsets){
+                bool old=(uint)offset<=(uint)length && length-offset>=2;
+                bool next=length>=2 && (uint)offset<=(uint)(length-2);
+                bool independent=(long)offset>=0 && (long)offset+2<=length;
+                Assert.Equal(independent,old);Assert.Equal(independent,next);
+            }
+        }
+    }
+    [Theory]
+    [InlineData(false)] [InlineData(true)]
+    public void ActualPrivateReadersMatchByteOracleOnAlignedOddShortAndBoundarySpans(bool narrow)
+    {
+        Type valueType=narrow?typeof(ushort):typeof(uint);
+        var before=Reader(typeof(Control.Voxtree.Octree).Assembly,"Control.Voxtree",valueType);
+        var after=Reader(typeof(Octree).Assembly,"Tedd.Voxtree",valueType);
+        var random=new Random(20261105);
+        var lengths=Enumerable.Range(0,34).Concat(new[]{63,64,65,127,128,129,255,256,257});
+        foreach(int length in lengths)foreach(int alignment in new[]{0,1,2,3}){
+            var backing=new byte[length+8];random.NextBytes(backing);var data=backing.AsSpan(alignment,length);
+            foreach(int levels in new[]{0,3,6,8}){
+                int count=1<<(levels*3);
+                foreach(int header in new[]{int.MinValue,-1,0,1,2,3,4,int.MaxValue})
+                foreach(int index in new[]{int.MinValue,-1,0,1,2,127,255,count-1,count,count+1,int.MaxValue}){
+                    int offset=unchecked(header+index*2);
+                    bool expected=(uint)index<(uint)count && (long)offset>=0 && (long)offset+2<=length;
+                    ushort word=expected?(ushort)(data[offset]|(data[offset+1]<<8)):(ushort)0;
+                    Assert.Equal(expected,before(data,header,levels,index,out ushort old));Assert.Equal(word,old);
+                    Assert.Equal(expected,after(data,header,levels,index,out ushort next));Assert.Equal(word,next);
+                }
+            }
+        }
+    }
+}

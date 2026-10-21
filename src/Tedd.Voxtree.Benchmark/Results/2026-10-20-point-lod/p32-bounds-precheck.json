@@ -1,0 +1,26 @@
+{
+  "gate": "preimplementation retained-code check",
+  "parent": "complete P31, unpromoted",
+  "predictionLead": "The selected LOD path retains explicit index and byte bounds plus a subsequent span-slice check. Test one equivalent byte interval guard and a guarded unaligned word load; retain index and LOD checks.",
+  "evidence": [
+    {
+      "file": "p31-native-uint32-owned-lod.asm",
+      "sha256": "5859a66b85cc9161d8faa83537f01c9d6f92855a0da7577e4a98b74bd7a36a93",
+      "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1)",
+      "lodFallthrough": "IG10..IG17",
+      "calls": [],
+      "compactDecodeBlock": "IG14",
+      "decode": "G_M000_IG14:                ;; offset=0x01AF\n       mov      dword ptr [rsp+0xD0], ecx\n       shlx     ecx, r8d, r10d\n       add      ecx, r9d\n       imul     ecx, r11d\n       add      edx, ecx\n       lea      ecx, [r14+2*r14]\n       mov      r8d, 1\n       shlx     ecx, r8d, ecx\n       cmp      edx, ecx\n       jae      G_M000_IG89\n       lea      ecx, [2*rdx+0x02]\n       cmp      ecx, ebp\n       ja       G_M000_IG89\n       mov      edx, ebp\n       sub      edx, ecx\n       cmp      edx, 2\n       jl       G_M000_IG89\n       mov      edx, ecx\n       add      rdx, 2\n       mov      r8d, ebp\n       cmp      rdx, r8\n       ja       G_M000_IG119\n       add      rax, rcx\n       movzx    rcx, word  ptr [rax]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r14d\n       jg       G_M000_IG89\n       and      ecx, 0x1FFF\n       mov      dword ptr [rsp+0x98], ecx\n       mov      dword ptr [rsp+0xD0], edx\n       mov      r15d, 1\n \n"
+    },
+    {
+      "file": "p31-native-uint16-owned-lod.asm",
+      "sha256": "57719a668d5cea0b9bfe053c7f9289a06000aa6c3f5e984e0f49b205cfea2869",
+      "method": "ForceUInt16Scenario:AfterBatchOwned(int):this (Tier1)",
+      "lodFallthrough": "IG10..IG16",
+      "calls": [],
+      "compactDecodeBlock": "IG14",
+      "decode": "G_M000_IG14:                ;; offset=0x0194\n       mov      dword ptr [rbp-0x40], ecx\n       shlx     ecx, r8d, r10d\n       add      ecx, r9d\n       imul     ecx, r11d\n       add      edx, ecx\n       lea      ecx, [r15+2*r15]\n       mov      r8d, 1\n       shlx     ecx, r8d, ecx\n       cmp      edx, ecx\n       jae      G_M000_IG81\n       lea      ecx, [2*rdx+0x03]\n       cmp      ecx, r14d\n       ja       G_M000_IG81\n       mov      edx, r14d\n       sub      edx, ecx\n       cmp      edx, 2\n       jl       G_M000_IG81\n       mov      edx, ecx\n       add      rdx, 2\n       mov      r8d, r14d\n       cmp      rdx, r8\n       ja       G_M000_IG85\n       add      rax, rcx\n       movzx    rcx, word  ptr [rax]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r15d\n       jg       G_M000_IG81\n       and      ecx, 0x1FFF\n       mov      word  ptr [rbp-0x78], cx\n       mov      dword ptr [rbp-0x40], edx\n       mov      r12d, 1\n \n"
+    }
+  ],
+  "limits": "Static diagnostic fallthrough evidence, not branch-frequency/causal-share/quiet-code identity or a measured speedup. Other operation/error branches are not substituted for this path."
+}

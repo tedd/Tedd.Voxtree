@@ -1,0 +1,45 @@
+{
+  "prerequisitesPassed": true,
+  "sourceDeltaFiles": 1,
+  "sourceOriginSha256": "db207468e5cc0034863c0394f284490047cb14d547063447f8e4b56b301d9814",
+  "sourceReviewSha256": "bb9190182800e96077563aba3b5bad8de20987ff1a050354f801964ca4eec18f",
+  "nativeAuditSha256": "a87bdb46839652e115295565170a517f4460c66533d755379b329d8cb6c06ca5",
+  "protocolSha256": "4a3341de3372301d3076f6410abfd1cb2715d878adf5d7a18ab2842aac408631",
+  "corpusSha256": "a74a3a31419bf0d24c8ac3cfae5b461821a5f17216236827db5daf7fb8e3b4c5",
+  "chunks": 1286,
+  "uniqueArrays": 686,
+  "cells": 42139648,
+  "exactParentBytesAndPayload": true,
+  "frameworkTests": [
+    {
+      "file": "packed-lookup-p32bounds-results\\tedd_T-5950X2_2026-10-21_10_30_58_net10.0.trx",
+      "sha256": "8611ac9c645a3a96d1578639a8d0342f745ea9b67a3a4c9b45ec4c61adcce9e2",
+      "passed": 414
+    },
+    {
+      "file": "packed-lookup-p32bounds-results\\tedd_T-5950X2_2026-10-21_10_30_58_net11.0.trx",
+      "sha256": "fd4fbf49d7350b8212e23dbcc74e27192f5566fdc92c700d8aaa2971ec86f7b0",
+      "passed": 415
+    },
+    {
+      "file": "packed-lookup-p32bounds-results\\tedd_T-5950X2_2026-10-21_10_30_58_net8.0.trx",
+      "sha256": "76ce769949eb42990897d1c34761f7a719fd60fbd39523a89a74c3ad87b238c5",
+      "passed": 413
+    },
+    {
+      "file": "packed-lookup-p32bounds-hwoff-results\\tedd_T-5950X2_2026-10-21_10_34_12_net10.0.trx",
+      "sha256": "48e3a2eed27a1c4e3da28204f7f1583ed7109a8834dba5b1662ebb7bb58c4d33",
+      "passed": 414
+    }
+  ],
+  "writer": {
+    "cases": 378,
+    "cells": 16178022,
+    "capacities": 2920,
+    "correct": true,
+    "control": "published release Snapshot.Voxtree source plus independent dense-to-R oracle",
+    "wire": "canonical R bytes or exact release fallback, including capacity-failure mutations"
+  },
+  "promotionEligible": false,
+  "limits": "Semantic/source/native prerequisites only; guarded unaligned load still requires measured usefulness. P31 remains unpromoted and all release/API guards remain."
+}

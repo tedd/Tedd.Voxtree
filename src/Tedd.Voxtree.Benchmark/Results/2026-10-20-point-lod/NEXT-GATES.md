@@ -203,6 +203,15 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    separately; no P31 promotion, combined patch, hardware-cause inference or
    timing claim is implied. Fresh direct-release normal confirmation remains
    necessary for the eight10x read endpoints and all mandatory API guards.
+   The bounds intervention is now P32, hyp-c9d70e07404c4522816cef68dad9458a,
+   on complete P31. One private checked byte interval/word load changes; index,
+   LOD, validator and format remain. The actual visited P31 LOD fallthrough
+   supports the source experiment. Tests413/414/415 and414 HW-off pass, as do
+   exact P31/release corpus controls, writer capacities and48/96 semantic cases.
+   Eight optimized callers remove the additional slice check. Phase18 retains
+   complete prerequisites and source review. See REPORT-PHASE18. The frozen
+   four-pair rejection stage remains; conditional full families and independent
+   release confirmation are not selected by native code evidence alone.
 
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
