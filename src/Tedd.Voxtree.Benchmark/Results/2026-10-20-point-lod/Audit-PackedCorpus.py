@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 parser=argparse.ArgumentParser();parser.add_argument('task_root',type=Path)
-parser.add_argument('--bundle-label',choices=['p18census','p20census','p22bulk','p23bulk','p24census','p25census'],default='p18census');args=parser.parse_args()
+parser.add_argument('--bundle-label',choices=['p18census','p20census','p22bulk','p23bulk','p24census','p25census','p27setup'],default='p18census');args=parser.parse_args()
 root=args.task_root.resolve()
 if root!=Path('D:/Workspaces/AI/voxtree-point-lod-20261020').resolve():raise SystemExit('Unexpected task root')
 source=root/('forcecraft-census-packed-'+args.bundle_label+'/packed-corpus.json')
@@ -38,6 +38,16 @@ if args.bundle_label in {'p20census','p24census','p25census'}:
     previous=json.loads((root/'packed-corpus-audit.json').read_text())
     assert summary['all_chunks']==previous['all_chunks'] and summary['unique_arrays']==previous['unique_arrays']
     summary['footprint_eligibility_equal_to_p18_census']=True
+if args.bundle_label=='p27setup':
+    projection=json.loads((root/'j1-audit.json').read_text(encoding='utf-8-sig'))
+    for scope,expected_scope in [('all_chunks','all_chunks'),('unique_arrays','unique_arrays_summary')]:
+        actual=summary[scope];expected=projection[expected_scope]
+        for mode,count_key,bytes_key in [('classic','packed_u32','candidateUInt32Bytes'),('narrow','packed_u16','candidateUInt16Bytes'),('wide','packed_generic_u32','candidateGenericUInt32Bytes')]:
+            assert actual[count_key]==expected[mode]['eligible'] and actual[bytes_key]==expected[mode]['projected_selected_bytes']
+        assert actual['candidate_encoded_plus_lookup_payload']==expected['classic_combined']['projected_encoded_plus_distinct_lookup_assuming_shared_new_encoding']
+    summary['footprint_eligibility_equal_to_j1_projection']=True
+    summary['full_value_bits_preserved_without_reserved_value_bits']=True
+    summary['checks']='every chunk/cell; independent LOD; exact J1 selection and encoded/actual distinct lookup payload; owned/span/value/LOD/lookup/FromEncoded; copy, validation, count/any; exact released fallback; old-reader rejection; original row identity'
 if args.bundle_label in {'p22bulk','p23bulk'}:
     previous=json.loads((root/'packed-corpus-audit.json').read_text())
     for row in rows:

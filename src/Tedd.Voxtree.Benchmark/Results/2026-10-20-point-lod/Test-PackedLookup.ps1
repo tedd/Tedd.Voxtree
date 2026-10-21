@@ -5,6 +5,7 @@ param([Parameter(Mandatory)][string]$TaskRoot,[ValidatePattern('^[a-z][a-z0-9-]*
       [switch]$DirectStates,
       [switch]$ByteEncoding,
       [switch]$PackedLeaf,
+      [switch]$PaletteLeaf,
       [switch]$WordStorage)
 $ErrorActionPreference='Stop'
 if([IO.Path]::GetFullPath($TaskRoot).TrimEnd('\') -ne 'D:\Workspaces\AI\voxtree-point-lod-20261020'){throw 'Unexpected task root'}
@@ -20,11 +21,18 @@ if($WordStorage){
     if(-not $text.Contains($anchor)){throw 'Packed-word test expectation anchor changed'}
     $text.Replace($anchor,'values.Length / 2 + values.Length / 16 + 64, lookup.StorageBytes') | Set-Content -LiteralPath $testPath
 }
-if($JointStates -or $DirectStates -or $ByteEncoding -or $PackedLeaf){
+if($JointStates -or $DirectStates -or $ByteEncoding -or $PackedLeaf -or $PaletteLeaf){
     $text=Get-Content -LiteralPath (Join-Path $repo 'src/Tedd.Voxtree.Tests/OctreeLookupTests.cs') -Raw
     $anchor='Assert.Equal(((source.Length - 1) / 7 - 1) * 36, lookup.StorageBytes);'
     if(-not $text.Contains($anchor)){throw 'Original node-payload assertion changed'}
-    if($ByteEncoding -or $PackedLeaf){
+    if($PaletteLeaf){
+        $kind='Assert.Equal(0, encoded[1] & 3);'
+        $payload='if (BitConverter.IsLittleEndian) Assert.Equal(2 + source.Length * sizeof(uint), lookup.StorageBytes);'
+        if(-not $text.Contains($kind) -or -not $text.Contains($payload)){throw 'Original palette lookup assertions changed'}
+        $text=$text.Replace($kind,'Assert.True((encoded[0] == 0x4f && (encoded[1] & 3) == 0) || (encoded[0] == 0x51 && (encoded[1] & 3) == 3));')
+        $text=$text.Replace($payload,'if (encoded[0] == 0x51) Assert.Equal(4 + source.Length + (wide ? 33 : 32) * 8, lookup.StorageBytes); else if (BitConverter.IsLittleEndian) Assert.Equal(2 + source.Length * sizeof(uint), lookup.StorageBytes);')
+        $text=$text.Replace($anchor,'if (tree.Data.Span[0] == 0x51) Assert.Equal(4 + source.Length + 33 * 8, lookup.StorageBytes); else '+$anchor)
+    }elseif($ByteEncoding -or $PackedLeaf){
         $kindAnchor='Assert.Equal(0, encoded[1] & 3);'
         if(-not $text.Contains($kindAnchor)){throw 'Original full-tree encoding assertion changed'}
         $text=$text.Replace($kindAnchor,'Assert.Equal(levels >= 3 && !wide ? 3 : 0, encoded[1] & 3);')
@@ -36,7 +44,7 @@ if($JointStates -or $DirectStates -or $ByteEncoding -or $PackedLeaf){
     $text | Set-Content -LiteralPath (Join-Path $validation 'tests/OctreeLookupTests.cs')
     $excludedTests+=";$repo/src/Tedd.Voxtree.Tests/OctreeLookupTests.cs"
 }
-@{source=$SourceDirectoryName;fixture=$FixtureName;wordStorage=[bool]$WordStorage;jointStates=[bool]$JointStates;directStates=[bool]$DirectStates;byteEncoding=[bool]$ByteEncoding;packedLeaf=[bool]$PackedLeaf;testSha256=(Get-FileHash -LiteralPath (Join-Path $validation 'tests/PackedLookupTests.cs')).Hash;lookupTestsSha256=$(if($JointStates -or $DirectStates -or $ByteEncoding -or $PackedLeaf){(Get-FileHash -LiteralPath (Join-Path $validation 'tests/OctreeLookupTests.cs')).Hash}else{$null})} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $TaskRoot "packed-lookup-test-options-$Label.json")
+@{source=$SourceDirectoryName;fixture=$FixtureName;wordStorage=[bool]$WordStorage;jointStates=[bool]$JointStates;directStates=[bool]$DirectStates;byteEncoding=[bool]$ByteEncoding;packedLeaf=[bool]$PackedLeaf;paletteLeaf=[bool]$PaletteLeaf;testSha256=(Get-FileHash -LiteralPath (Join-Path $validation 'tests/PackedLookupTests.cs')).Hash;lookupTestsSha256=$(if($JointStates -or $DirectStates -or $ByteEncoding -or $PackedLeaf -or $PaletteLeaf){(Get-FileHash -LiteralPath (Join-Path $validation 'tests/OctreeLookupTests.cs')).Hash}else{$null})} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $TaskRoot "packed-lookup-test-options-$Label.json")
 @'
 <Project Sdk="Microsoft.NET.Sdk">
  <PropertyGroup><TargetFrameworks>net11.0;net10.0;netstandard2.1</TargetFrameworks><LangVersion>14.0</LangVersion><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><EnableDefaultCompileItems>false</EnableDefaultCompileItems><UseSharedCompilation>false</UseSharedCompilation><AssemblyName>Tedd.Voxtree</AssemblyName></PropertyGroup>

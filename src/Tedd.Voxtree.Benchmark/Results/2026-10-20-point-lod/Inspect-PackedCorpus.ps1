@@ -1,6 +1,6 @@
 param([Parameter(Mandatory)][string]$TaskRoot,
       [Parameter(Mandatory)][ValidatePattern('^[a-z][a-z0-9-]*$')][string]$Label,
-      [switch]$ReleaseBuilder,[switch]$PackedWordMagic,[switch]$ExactBytes)
+      [switch]$ReleaseBuilder,[switch]$PackedWordMagic,[switch]$ExactBytes,[switch]$PaletteLeaf)
 $ErrorActionPreference='Stop'
 if([IO.Path]::GetFullPath($TaskRoot).TrimEnd('\') -ne 'D:\Workspaces\AI\voxtree-point-lod-20261020'){throw 'Unexpected task root'}
 . (Join-Path $PSScriptRoot 'Host-Lock.ps1')
@@ -30,8 +30,12 @@ try {
         Copy-Item -LiteralPath (Join-Path $TaskRoot "forcecraft-scanner-s2/$name") -Destination (Join-Path $root $name)
     }
     $bundle=(Join-Path $TaskRoot "bundles/$Label").Replace('\','/')
-    if(([int][bool]$ReleaseBuilder+[int][bool]$PackedWordMagic+[int][bool]$ExactBytes) -gt 1){throw 'Census modes are mutually exclusive'}
-    $censusDefine=if($ReleaseBuilder){'<DefineConstants>RELEASE_BUILDER_CENSUS</DefineConstants>'}elseif($PackedWordMagic){'<DefineConstants>P24_PACKED_MAGIC</DefineConstants>'}elseif($ExactBytes){'<DefineConstants>EXACT_PACKED_BYTES</DefineConstants>'}else{''}
+    if(([int][bool]$ReleaseBuilder+[int][bool]$PackedWordMagic+[int][bool]$ExactBytes+[int][bool]$PaletteLeaf) -gt 1){throw 'Census modes are mutually exclusive'}
+    if($PaletteLeaf){
+        $audit=Get-Content -LiteralPath (Join-Path $TaskRoot 'j1-audit.json') -Raw|ConvertFrom-Json
+        if((Get-FileHash -LiteralPath (Join-Path $TaskRoot 'forcecraft-census-palette-j1/palette-states.json')).Hash.ToLowerInvariant() -ne $audit.source_sha256){throw 'J1 projection changed'}
+    }
+    $censusDefine=if($ReleaseBuilder){'<DefineConstants>RELEASE_BUILDER_CENSUS</DefineConstants>'}elseif($PackedWordMagic){'<DefineConstants>P24_PACKED_MAGIC</DefineConstants>'}elseif($ExactBytes){'<DefineConstants>EXACT_PACKED_BYTES</DefineConstants>'}elseif($PaletteLeaf){'<DefineConstants>PALETTE_LEAF_CENSUS</DefineConstants>'}else{''}
     @"
 <Project Sdk="Microsoft.NET.Sdk">
  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><LangVersion>14.0</LangVersion><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><UseSharedCompilation>false</UseSharedCompilation><RollForward>Disable</RollForward><RuntimeFrameworkVersion>10.0.13</RuntimeFrameworkVersion>$censusDefine</PropertyGroup>

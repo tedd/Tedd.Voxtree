@@ -1,0 +1,312 @@
+using System;
+using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace Tedd.Voxtree;
+
+// Q/version3: byte indexes followed by sorted full-value/LOD words.
+internal static class PaletteLeafEncoding<T> where T : unmanaged, IEquatable<T>
+{
+    internal const byte Magic = 0x51;
+    private static readonly int Width = Unsafe.SizeOf<T>();
+    private static readonly int EntryWidth = Width * 2;
+
+    internal static bool TrySelect(ReadOnlySpan<T> source, int levels, DenseVoxelLayout layout,
+        int treeBytes, int denseBytes, int header, out int length)
+    {
+        length = 0;
+        if (Width is not (2 or 4) || levels is < 3 or > 6) return false;
+        var count = OctreeCodec.GetVoxelCount(levels);
+        var minimum = header + 2 + count + EntryWidth;
+        if (minimum > denseBytes || minimum * 4L > treeBytes * 5L) return false;
+        Span<ulong> keys = stackalloc ulong[256];
+        Span<ushort> buckets = stackalloc ushort[512];
+        var states = new StateMap(keys, buckets);
+        if (!Collect(source, 1 << levels, layout, 0, 0, 0, levels, ref states)) return false;
+        var required = header + 2 + count + states.Count * EntryWidth;
+        if (required > denseBytes || required * 4L > treeBytes * 5L) return false;
+        length = required;
+        return true;
+    }
+
+    internal static void Write(ReadOnlySpan<T> source, int levels, DenseVoxelLayout layout,
+        Span<byte> destination, int header)
+    {
+        Span<ulong> keys = stackalloc ulong[256];
+        Span<ushort> buckets = stackalloc ushort[512];
+        var states = new StateMap(keys, buckets);
+        if (!Collect(source, 1 << levels, layout, 0, 0, 0, levels, ref states))
+            throw new InvalidOperationException("Palette state collection changed during encoding.");
+        states.Sort();
+        var count = OctreeCodec.GetVoxelCount(levels);
+        var length = header + 2 + count + states.Count * EntryWidth;
+        destination = destination[..length];
+        destination[0] = Magic;
+        destination[1] = (byte)((Octree.PaletteLeafFormatVersion << 6) | (levels << 2) | 3);
+        if (header == 3) destination[2] = (byte)(Width == 2 ? 1 : 2);
+        BinaryPrimitives.WriteUInt16LittleEndian(destination.Slice(header, 2), (ushort)states.Count);
+        var table = destination[(header + 2 + count)..];
+        for (var i = 0; i < states.Count; i++)
+        {
+            var key = keys[i];
+            var word = (key >> 4) | ((key & 15) << (Width * 8));
+            WriteEntry(table.Slice(i * EntryWidth, EntryWidth), word);
+        }
+        Draw(source, 1 << levels, layout, destination.Slice(header + 2, count),
+            0, 0, 0, levels, ref states);
+    }
+
+    private static bool Collect(ReadOnlySpan<T> source, int side, DenseVoxelLayout layout,
+        int x, int y, int z, int level, ref StateMap states)
+    {
+        var size = 1 << level;
+        if (Uniform(source, side, layout, x, y, z, size))
+            return states.Add(((ulong)Raw(source[DenseVoxel.Index(x, y, z, side, layout)]) << 4) | (uint)level);
+        var half = size >> 1;
+        for (var child = 0; child < 8; child++)
+            if (!Collect(source, side, layout, x + ((child >> 2) & 1) * half,
+                y + ((child >> 1) & 1) * half, z + (child & 1) * half, level - 1, ref states)) return false;
+        return true;
+    }
+
+    private static void Draw(ReadOnlySpan<T> source, int side, DenseVoxelLayout layout,
+        Span<byte> indexes, int x, int y, int z, int level, ref StateMap states)
+    {
+        var size = 1 << level;
+        if (Uniform(source, side, layout, x, y, z, size))
+        {
+            var key = ((ulong)Raw(source[DenseVoxel.Index(x, y, z, side, layout)]) << 4) | (uint)level;
+            var code = states.Find(key);
+            for (var xx = x; xx < x + size; xx++)
+            for (var yy = y; yy < y + size; yy++)
+                indexes.Slice((xx * side + yy) * side + z, size).Fill(code);
+            return;
+        }
+        var half = size >> 1;
+        for (var child = 0; child < 8; child++)
+            Draw(source, side, layout, indexes, x + ((child >> 2) & 1) * half,
+                y + ((child >> 1) & 1) * half, z + (child & 1) * half, level - 1, ref states);
+    }
+
+    private static bool Uniform(ReadOnlySpan<T> source, int side, DenseVoxelLayout layout,
+        int x, int y, int z, int size)
+    {
+        var start = DenseVoxel.Index(x, y, z, side, layout);
+        var value = source[start];
+        if (layout == DenseVoxelLayout.Morton) return Equal(source.Slice(start, size * size * size), value);
+        for (var xx = x; xx < x + size; xx++)
+        for (var yy = y; yy < y + size; yy++)
+            if (!Equal(source.Slice((xx * side + yy) * side + z, size), value)) return false;
+        return true;
+    }
+    private static bool Equal(ReadOnlySpan<T> data, T value)
+    {
+#if NET10_0_OR_GREATER
+        return data.IndexOfAnyExcept(value) < 0;
+#else
+        foreach (var item in data) if (!item.Equals(value)) return false;
+        return true;
+#endif
+    }
+
+    internal static bool TryReadHeader(ReadOnlySpan<byte> data, int header, out int levels)
+    {
+        levels = 0;
+        if (Width is not (2 or 4) || data.Length < header + 2 || data[0] != Magic ||
+            data[1] >> 6 != Octree.PaletteLeafFormatVersion || (data[1] & 3) != 3 ||
+            (header == 3 && data[2] != (Width == 2 ? 1 : 2))) return false;
+        levels = (data[1] >> 2) & 15;
+        if (levels is < 3 or > 6) return false;
+        var entries = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(header, 2));
+        if (entries is < 1 or > 256) return false;
+        var count = OctreeCodec.GetVoxelCount(levels);
+        return data.Length == header + 2 + count + entries * EntryWidth &&
+            data.Length <= header + count * Width;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static bool TryGet(ReadOnlySpan<byte> data, int header, int levels,
+        int x, int y, int z, out T value, out int lod)
+    {
+        value = default; lod = 0;
+        if (Width is not (2 or 4)) return false;
+        var index = ((x << levels) + y) * (1 << levels) + z;
+        if (!TryReadState(data, header, levels, index, out var word)) return false;
+        var stored = Lod(word);
+        if (stored > (uint)levels) return false;
+        value = Value((uint)word); lod = (int)stored;
+        return true;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool TryReadState(ReadOnlySpan<byte> data, int header, int levels, int index, out ulong word)
+    {
+        word = 0;
+        var count = OctreeCodec.GetVoxelCount(levels);
+        if ((uint)index >= (uint)count) return false;
+        var offset = header + 2 + index;
+        if ((uint)offset >= (uint)data.Length) return false;
+        // Capture the index once. A mutable borrowed buffer cannot change the
+        // checked code into an unchecked table address between these operations.
+        var code = data[offset];
+        var entry = header + 2 + count + code * EntryWidth;
+        if ((uint)entry > (uint)data.Length || data.Length - entry < EntryWidth) return false;
+        word = ReadEntry(data.Slice(entry, EntryWidth));
+        return true;
+    }
+
+    internal static bool IsWellFormed(ReadOnlySpan<byte> data, int header, int levels)
+    {
+        if (!TryReadHeader(data, header, out var actual) || actual != levels) return false;
+        var count = OctreeCodec.GetVoxelCount(levels);
+        var entries = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(header, 2));
+        var table = data[(header + 2 + count)..];
+        ulong previous = 0;
+        for (var i = 0; i < entries; i++)
+        {
+            var word = ReadEntry(table.Slice(i * EntryWidth, EntryWidth));
+            var lod = Lod(word);
+            if (lod > (uint)levels) return false;
+            var key = ((ulong)(Width == 2 ? (ushort)word : (uint)word) << 4) | lod;
+            if (i != 0 && key <= previous) return false;
+            previous = key;
+        }
+        Span<byte> used = stackalloc byte[256]; used.Clear();
+        var indexes = data.Slice(header + 2, count);
+        foreach (var code in indexes)
+        {
+            if (code >= entries) return false;
+            used[code] = 1;
+        }
+        for (var i = 0; i < entries; i++) if (used[i] == 0) return false;
+        return ValidateCube(indexes, table, 1 << levels, 0, 0, 0, levels);
+    }
+
+    private static bool ValidateCube(ReadOnlySpan<byte> indexes, ReadOnlySpan<byte> table,
+        int side, int x, int y, int z, int level)
+    {
+        var code = indexes[(x * side + y) * side + z];
+        var lod = Lod(ReadEntry(table.Slice(code * EntryWidth, EntryWidth)));
+        if (lod > (uint)level) return false;
+        if (lod == (uint)level)
+        {
+            var size = 1 << level;
+            for (var xx = x; xx < x + size; xx++)
+            for (var yy = y; yy < y + size; yy++)
+                foreach (var other in indexes.Slice((xx * side + yy) * side + z, size))
+                    if (other != code) return false;
+            return true;
+        }
+        var half = 1 << (level - 1);
+        var first = Width == 2 ? (uint)(ushort)ReadEntry(table.Slice(code * EntryWidth, EntryWidth))
+            : (uint)ReadEntry(table.Slice(code * EntryWidth, EntryWidth));
+        var allSame = true;
+        for (var child = 0; child < 8; child++)
+        {
+            var cx = x + ((child >> 2) & 1) * half;
+            var cy = y + ((child >> 1) & 1) * half;
+            var cz = z + (child & 1) * half;
+            if (!ValidateCube(indexes, table, side, cx, cy, cz, level - 1)) return false;
+            var childCode = indexes[(cx * side + cy) * side + cz];
+            var childWord = ReadEntry(table.Slice(childCode * EntryWidth, EntryWidth));
+            if (Lod(childWord) != (uint)(level - 1) ||
+                (Width == 2 ? (ushort)childWord : (uint)childWord) != first) allSame = false;
+        }
+        // Eight equal uniform children must be represented by their parent.
+        return !allSame;
+    }
+
+    internal static bool IsEmpty(ReadOnlySpan<byte> data, int header)
+    {
+        if (!TryReadHeader(data, header, out var levels)) return false;
+        var count = OctreeCodec.GetVoxelCount(levels);
+        for (var i = 0; i < count; i++)
+            if (!TryReadState(data, header, levels, i, out var word) ||
+                (Width == 2 ? (ushort)word : (uint)word) != 0) return false;
+        return true;
+    }
+
+    internal static void CopyTo(ReadOnlySpan<byte> data, int header, int levels,
+        Span<T> destination, DenseVoxelLayout layout)
+    {
+        var side = 1 << levels;
+        for (var x = 0; x < side; x++)
+        for (var y = 0; y < side; y++)
+        for (var z = 0; z < side; z++)
+        {
+            if (!TryReadState(data, header, levels, (x * side + y) * side + z, out var word))
+                throw new FormatException("The palette index is outside its table.");
+            destination[DenseVoxel.Index(x, y, z, side, layout)] = Value((uint)word);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ulong ReadEntry(ReadOnlySpan<byte> data) => Width == 2
+        ? BinaryPrimitives.ReadUInt32LittleEndian(data) : BinaryPrimitives.ReadUInt64LittleEndian(data);
+    private static void WriteEntry(Span<byte> data, ulong word)
+    {
+        if (Width == 2) BinaryPrimitives.WriteUInt32LittleEndian(data, (uint)word);
+        else BinaryPrimitives.WriteUInt64LittleEndian(data, word);
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static uint Lod(ulong word) => Width == 2 ? (uint)(word >> 16) : (uint)(word >> 32);
+    private static uint Raw(T value) => Width == 2 ? Unsafe.As<T, ushort>(ref value) : Unsafe.As<T, uint>(ref value);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static T Value(uint value)
+    {
+        T result = default;
+        if (Width == 2) Unsafe.As<T, ushort>(ref result) = (ushort)value;
+        else Unsafe.As<T, uint>(ref result) = value;
+        return result;
+    }
+
+    private ref struct StateMap
+    {
+        private Span<ulong> _keys;
+        private Span<ushort> _buckets;
+        internal int Count;
+        internal StateMap(Span<ulong> keys, Span<ushort> buckets)
+        { _keys = keys; _buckets = buckets; Count = 0; _buckets.Clear(); }
+        private static int Hash(ulong key) => (int)(unchecked(key * 11400714819323198485UL) >> 55);
+        internal bool Add(ulong key)
+        {
+            var bucket = Hash(key);
+            while (_buckets[bucket] != 0)
+            {
+                if (_keys[_buckets[bucket] - 1] == key) return true;
+                bucket = (bucket + 1) & 511;
+            }
+            if (Count == 256) return false;
+            _keys[Count] = key; _buckets[bucket] = (ushort)(++Count);
+            return true;
+        }
+        internal void Sort()
+        {
+            for (var i = 1; i < Count; i++)
+            {
+                var key = _keys[i]; var j = i;
+                while (j != 0 && _keys[j - 1] > key) { _keys[j] = _keys[j - 1]; j--; }
+                _keys[j] = key;
+            }
+            _buckets.Clear();
+            for (var i = 0; i < Count; i++)
+            {
+                var bucket = Hash(_keys[i]);
+                while (_buckets[bucket] != 0) bucket = (bucket + 1) & 511;
+                _buckets[bucket] = (ushort)(i + 1);
+            }
+        }
+        internal byte Find(ulong key)
+        {
+            var bucket = Hash(key);
+            while (_buckets[bucket] != 0)
+            {
+                var index = _buckets[bucket] - 1;
+                if (_keys[index] == key) return (byte)index;
+                bucket = (bucket + 1) & 511;
+            }
+            throw new InvalidOperationException("A collected palette state is missing.");
+        }
+    }
+}

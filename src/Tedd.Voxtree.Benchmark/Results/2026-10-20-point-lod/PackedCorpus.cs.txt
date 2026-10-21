@@ -11,10 +11,17 @@ static class PackedCorpus
     static long cells;
     static string root = "";
     static StreamWriter csv = null!;
+#if PALETTE_LEAF_CENSUS
+    static Dictionary<string,JsonElement> PaletteExpected = null!;
+#endif
 
     public static void Begin(string output)
     {
         root = output;
+#if PALETTE_LEAF_CENSUS
+        using (var projection = JsonDocument.Parse(File.ReadAllText(Path.Combine(Directory.GetParent(output)!.FullName,"forcecraft-census-palette-j1/palette-states.json"))))
+            PaletteExpected = projection.RootElement.GetProperty("rows").EnumerateArray().ToDictionary(r=>r.GetProperty("region").GetString()+":"+r.GetProperty("slot").GetInt32(),r=>r.Clone());
+#endif
         csv = new StreamWriter(Path.Combine(root, "packed-chunks.csv"));
         csv.WriteLine("region,slot,sha256,maximum,baseline_u32,candidate_u32,baseline_u16,candidate_u16,baseline_generic_u32,candidate_generic_u32,packed_u32,packed_u16,packed_generic_u32,old_lookup_payload,new_lookup_payload,shared_encoding");
     }
@@ -65,12 +72,24 @@ static class PackedCorpus
         }
         int maximum = small.Max();
         bool packed = Packed(after.Data), packed16 = Packed(after16.Data), packed32 = Packed(after32.Data);
+#if PALETTE_LEAF_CENSUS
+        var expectedPalette=PaletteExpected[region+":"+slot];
+        Require(expectedPalette.GetProperty("hash").GetString()==hash,"Palette projection input binding");
+        CheckPalette(before.Data,after.Data,expectedPalette.GetProperty("classic"),packed);
+        CheckPalette(before16.Data,after16.Data,expectedPalette.GetProperty("narrow"),packed16);
+        CheckPalette(before32.Data,after32.Data,expectedPalette.GetProperty("wide"),packed32);
+        if(packed)Require(!Baseline.OctreeSpan.TryCreate(after.Data.Span,out _),"Released reader rejects Q");
+        if(packed16)Require(!Baseline.OctreeSpan<ushort>.TryCreate(after16.Data.Span,out _),"Released narrow reader rejects Q");
+        if(packed32)Require(!Baseline.OctreeSpan<uint>.TryCreate(after32.Data.Span,out _),"Released wide reader rejects Q");
+#endif
 #if P24_PACKED_MAGIC
         if (packed) Require(after.Data.Span[0] == 0x50 && !Baseline.OctreeSpan.TryCreate(after.Data.Span, out _), "Released UInt32 reader rejects new magic");
         if (packed16) Require(after16.Data.Span[0] == 0x50 && !Baseline.OctreeSpan<ushort>.TryCreate(after16.Data.Span, out _), "Released UInt16 reader rejects new magic");
         if (packed32) Require(after32.Data.Span[0] == 0x50 && !Baseline.OctreeSpan<uint>.TryCreate(after32.Data.Span, out _), "Released generic UInt32 reader rejects new magic");
 #endif
-#if RELEASE_BUILDER_CENSUS || EXACT_PACKED_BYTES
+#if PALETTE_LEAF_CENSUS
+        // Selection, exact projected bytes and every fallback are checked above.
+#elif RELEASE_BUILDER_CENSUS || EXACT_PACKED_BYTES
         Require(before.Data.Span.SequenceEqual(after.Data.Span), "UInt32 exact release bytes");
         Require(before16.Data.Span.SequenceEqual(after16.Data.Span), "UInt16 exact release bytes");
         Require(before32.Data.Span.SequenceEqual(after32.Data.Span), "Generic UInt32 exact release bytes");
@@ -118,6 +137,15 @@ static class PackedCorpus
     }
 
     static bool Packed(ReadOnlyMemory<byte> data) => data.Span[1] >> 6 == 3 && (data.Span[1] & 3) == 3;
+#if PALETTE_LEAF_CENSUS
+    static void CheckPalette(ReadOnlyMemory<byte> before,ReadOnlyMemory<byte> after,JsonElement expected,bool palette)
+    {
+        Require(palette==expected.GetProperty("eligible").GetBoolean(),"Palette eligibility");
+        Require(after.Length==expected.GetProperty("selectedProjection").GetInt32(),"Palette projected bytes");
+        if(palette)Require(after.Span[0]==0x51,"Palette magic");
+        else Require(before.Span.SequenceEqual(after.Span),"Palette exact released fallback");
+    }
+#endif
     static bool Eligible(ReadOnlyMemory<byte> old, int maximum, int width, int header) => (old.Span[1] & 3) == 0 &&
         old.Length * 8L >= header + 32768 * width && maximum <= (width == 2 ? 4095 : 268435455);
     static bool Shares(object lookup, ReadOnlyMemory<byte> encoding)
