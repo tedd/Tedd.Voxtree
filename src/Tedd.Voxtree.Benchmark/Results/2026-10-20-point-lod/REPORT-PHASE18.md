@@ -70,5 +70,8 @@ after a miss. Only a complete pass selects the separate full point48/bulk96
 families with their already frozen budgets/seeds. No source adoption or
 direct-release10x inference follows from either stage alone.
 
+Subsequent phase19 completes and rejects the original four-pair stage. Its
+conditional full families are not selected; see REPORT-PHASE19.
+
 The active workspace D:\Workspaces\AI\voxtree-point-lod-20261020 remains needed.
 No temporary worktree or branch was created.

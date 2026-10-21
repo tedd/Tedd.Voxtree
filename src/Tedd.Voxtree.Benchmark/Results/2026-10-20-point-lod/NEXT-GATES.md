@@ -210,8 +210,18 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    exact P31/release corpus controls, writer capacities and48/96 semantic cases.
    Eight optimized callers remove the additional slice check. Phase18 retains
    complete prerequisites and source review. See REPORT-PHASE18. The frozen
-   four-pair rejection stage remains; conditional full families and independent
-   release confirmation are not selected by native code evidence alone.
+   four-pair rejection stage now completes:48 cases/384 correct,quiescent,joined
+   records. Both UInt32 LOD primaries fail1.10 (0.673/1.073);one other dominant
+   endpoint andtwo other guards fail. P32 is not_supported, so its conditional
+   full families are not selected. All40 steady-read cases observe zero
+   allocation. Phase19 preserves all records and the revised hypothesis; see
+   REPORT-PHASE19. No unsafe reader, source or package is adopted.
+13. Before another point-reader edit, compare optimized callers after Get-first
+   versus LOD-first history on the unchanged paired P32 bundle. Isolated native
+   captures use one operation, while quiet families share the same multi-operation
+   methods and visit Get before LOD. Verify actual LOD branch/call boundaries;
+   do not infer a quiet-code identity, hardware cause or speedup from the
+   diagnostic contrast. The terminal-validator candidate remains separate.
 
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.

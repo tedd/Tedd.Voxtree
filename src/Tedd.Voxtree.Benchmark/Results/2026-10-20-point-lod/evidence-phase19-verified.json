@@ -1,0 +1,15 @@
+{
+  "archive_bytes": 1489162,
+  "manifest_paths": 896,
+  "unique_blobs": 894,
+  "catalogs": 2,
+  "metric_rows": 48,
+  "sha256": "f3b3ff6e888bd09908be9243c9652ffffb991d7f3cba064e492663c261ec6fa7",
+  "required_paths": [
+    "p32point-screen/catalog-export.json",
+    "p32point-audit.json",
+    "p32-disposition.json",
+    "p32-hypothesis/disposition-revision-response.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

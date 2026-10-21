@@ -1,0 +1,154 @@
+{
+  "observedSteadyReadAllocationsAllZero": true,
+  "adverseOtherGuards": 2,
+  "otherGuardCount": 40,
+  "primaryPassed": false,
+  "conditionalFullFamilies": "Not selected by the prospectively specified complete rejection stage",
+  "steadyReadCases": 40,
+  "scope": "P32 complete four-pair rejection stage versus unpromoted P31. No extra samples, full time family, release comparison, normal confirmation or source adoption. No unsafe load burden adopted without measured benefit.",
+  "primary": [
+    {
+      "scenario": "point-ForceUInt32-L5-mixed-u16-air-owned-lod",
+      "primary": true,
+      "dominantOther": false,
+      "speedupThreshold": 1.1,
+      "pointEstimatePassed": false,
+      "descriptive_speedup": 0.6729353388597366,
+      "time": {
+        "metric": "scenario.ns_per_operation",
+        "unit": "ns/operation",
+        "observation_kind": "batch_normalized_mean",
+        "scope": "registered_batch",
+        "policy": {
+          "metric": "scenario.ns_per_operation",
+          "unit": "ns/operation",
+          "observation_kind": "batch_normalized_mean",
+          "direction": "lower_is_better",
+          "scale": "positive_ratio",
+          "equivalence_lower": 0.95,
+          "equivalence_upper": 1.05,
+          "useful_improvement": 0.95,
+          "meaningful_regression": 1.05,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-log-ratio/v2",
+        "availability": "available",
+        "effect_class": "inconclusive",
+        "quality": "descriptive_only",
+        "independent_blocks": 0,
+        "effect": 1.486026876957394,
+        "effect_unit": "ratio",
+        "standard_error": 0.15009016081775708,
+        "standard_error_scale": "log_ratio",
+        "degrees_of_freedom": null,
+        "difference_interval": null,
+        "equivalence_interval": null,
+        "difference_p": null,
+        "tost_p": null,
+        "equivalence_passed": false,
+        "non_inferiority_passed": false,
+        "alpha_family": 0.05,
+        "alpha_local": 0.0010416666666666667,
+        "family_size": 48,
+        "reason_codes": [
+          "insufficient_independent_evidence"
+        ],
+        "assumptions": [
+          "independence_not_established",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_log_costs",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "run_records": 8,
+      "median_ns_per_registered_operation": {
+        "baseline": 6.982302665710449,
+        "candidate": 12.222599983215332
+      },
+      "median_thread_allocated_bytes_per_registered_operation": {
+        "baseline": 0.0,
+        "candidate": 0.0
+      },
+      "every_observed_thread_allocation_zero": {
+        "baseline": true,
+        "candidate": true
+      }
+    },
+    {
+      "scenario": "point-ForceUInt32-L5-mixed-u16-air-span-lod",
+      "primary": true,
+      "dominantOther": false,
+      "speedupThreshold": 1.1,
+      "pointEstimatePassed": false,
+      "descriptive_speedup": 1.0727085278783226,
+      "time": {
+        "metric": "scenario.ns_per_operation",
+        "unit": "ns/operation",
+        "observation_kind": "batch_normalized_mean",
+        "scope": "registered_batch",
+        "policy": {
+          "metric": "scenario.ns_per_operation",
+          "unit": "ns/operation",
+          "observation_kind": "batch_normalized_mean",
+          "direction": "lower_is_better",
+          "scale": "positive_ratio",
+          "equivalence_lower": 0.95,
+          "equivalence_upper": 1.05,
+          "useful_improvement": 0.95,
+          "meaningful_regression": 1.05,
+          "minimum_blocks": 10,
+          "descriptive_only": false
+        },
+        "estimator": "paired-log-ratio/v2",
+        "availability": "available",
+        "effect_class": "inconclusive",
+        "quality": "descriptive_only",
+        "independent_blocks": 0,
+        "effect": 0.932219679448125,
+        "effect_unit": "ratio",
+        "standard_error": 0.15276014969923415,
+        "standard_error_scale": "log_ratio",
+        "degrees_of_freedom": null,
+        "difference_interval": null,
+        "equivalence_interval": null,
+        "difference_p": null,
+        "tost_p": null,
+        "equivalence_passed": false,
+        "non_inferiority_passed": false,
+        "alpha_family": 0.05,
+        "alpha_local": 0.0010416666666666667,
+        "family_size": 48,
+        "reason_codes": [
+          "insufficient_independent_evidence"
+        ],
+        "assumptions": [
+          "independence_not_established",
+          "fixed_family_and_sample_budget",
+          "no_posthoc_exclusions",
+          "t_model_for_paired_log_costs",
+          "intervals_describe_the_declared_estimand_not_distributional_equivalence"
+        ],
+        "run_ids": []
+      },
+      "run_records": 8,
+      "median_ns_per_registered_operation": {
+        "baseline": 5.196976661682129,
+        "candidate": 4.744839668273926
+      },
+      "median_thread_allocated_bytes_per_registered_operation": {
+        "baseline": 0.0,
+        "candidate": 0.0
+      },
+      "every_observed_thread_allocation_zero": {
+        "baseline": true,
+        "candidate": true
+      }
+    }
+  ],
+  "adverseOtherDominant": 1,
+  "state": "not_supported",
+  "promotionEligible": false
+}
