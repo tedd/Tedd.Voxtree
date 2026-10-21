@@ -1,0 +1,52 @@
+// Streaming replay of the original raw trace. Does not execute a target again.
+using System.Globalization;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Microsoft.Diagnostics.Tracing;
+
+string task=@"D:\Workspaces\AI\voxtree-point-lod-20261020";
+string input=Path.Combine(task,"p18-failure-diagnostic-1","observer","exceptions.nettrace");
+string output=Path.Combine(task,"exception-summary-d1-source","summary.json");
+if(File.Exists(output))throw new Exception("Summary exists; preserve prior decode");
+using var old=JsonDocument.Parse(File.ReadAllText(Path.Combine(task,"p18-failure-diagnostic-1","observer","result.json")));
+string hash=Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(input)));
+if(hash!=old.RootElement.GetProperty("traceSha256").GetString())throw new Exception("Raw trace hash mismatch");
+var groups=new Dictionary<(string Type,string HResult,string Message),Stats>();
+long total=0,lost;var pids=new HashSet<int>();
+using(var source=new EventPipeEventSource(input))
+{
+    source.Clr.ExceptionStart+=data=>
+    {
+        string Get(string name)=>Convert.ToString(data.PayloadByName(name),CultureInfo.InvariantCulture)??"";
+        var key=(Get("ExceptionType"),Get("ExceptionHRESULT"),Get("ExceptionMessage"));
+        if(!groups.TryGetValue(key,out var stat))
+        {
+            if(groups.Count>=4096)throw new Exception("Distinct exception group limit; no complete summary");
+            stat=new Stats{Type=key.Item1,HResult=key.Item2,Message=key.Item3,FirstUtc=data.TimeStamp.ToUniversalTime()};groups.Add(key,stat);
+        }
+        stat.Count++;stat.LastUtc=data.TimeStamp.ToUniversalTime();stat.Threads.Add(data.ThreadID);total++;pids.Add(data.ProcessID);
+    };
+    source.Process();lost=source.EventsLost;
+}
+int expectedPid=old.RootElement.GetProperty("binding").GetProperty("targetPid").GetInt32();
+if(pids.Any(pid=>pid!=expectedPid))throw new Exception("Trace process identity differs");
+bool transport=old.RootElement.GetProperty("reason").GetString()=="requested_stop"&&
+    old.RootElement.GetProperty("failure").GetString()==""&&
+    old.RootElement.GetProperty("bytes").GetInt64()==new FileInfo(input).Length;
+var result=new{inputSha256=hash,inputBytes=new FileInfo(input).Length,originalJsonCap=50000,
+    originalJsonTruncated=old.RootElement.GetProperty("truncated").GetBoolean(),
+    originalRecorderComplete=old.RootElement.GetProperty("complete").GetBoolean(),
+    rawTransportEndedNormally=transport,fullEventEnumerationComplete=true,exceptionEvents=total,
+    eventsLost=lost,processIds=pids.Order().ToArray(),
+    groups=groups.Values.OrderByDescending(g=>g.Count).ToArray(),
+    interpretation="Replay recovers all events in the existing raw trace without rerunning sessions. Original capped export/result are unchanged. Reported zero loss is not proof of unobservable runtime events or historic-fault absence."};
+File.WriteAllText(output,JsonSerializer.Serialize(result,new JsonSerializerOptions{WriteIndented=true}));
+Console.WriteLine(JsonSerializer.Serialize(new{exceptionEvents=total,groups=groups.Count,eventsLost=lost,rawTransportEndedNormally=transport,fullEventEnumerationComplete=true}));
+return lost==0&&transport?0:4;
+
+sealed class Stats
+{
+    public string Type{get;init;}="";public string HResult{get;init;}="";public string Message{get;init;}="";
+    public long Count{get;set;}public DateTime FirstUtc{get;init;}public DateTime LastUtc{get;set;}
+    public HashSet<int> Threads{get;set;}=new();
+}

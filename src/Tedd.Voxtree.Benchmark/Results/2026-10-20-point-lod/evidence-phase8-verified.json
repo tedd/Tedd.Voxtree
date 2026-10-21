@@ -1,0 +1,25 @@
+{
+  "archive_bytes": 73131357,
+  "manifest_paths": 40387,
+  "unique_blobs": 33550,
+  "catalogs": 39,
+  "metric_rows": 1050,
+  "sha256": "fa0b0a9b2b9c86f72064e508fc30a617b59619fb56cce065c8acd25a5e509704",
+  "required_paths": [
+    "failure-diagnostic-1-audit.json",
+    "all-workers-quiescent-phase8.json",
+    "p18-failure-diagnostic-1/inputs.json",
+    "p18-failure-diagnostic-1/plans.json",
+    "p18-failure-diagnostic-1/protocol.md",
+    "p18-failure-diagnostic-1/controller-shutdown.json",
+    "p18-failure-diagnostic-1/observer-shutdown.json",
+    "p18-failure-diagnostic-1/observer/exceptions.nettrace",
+    "p18-failure-diagnostic-1/observer/result.json",
+    "p18-failure-diagnostic-1/revision-response.json",
+    "exception-recorder-v2-source/out/Probe.dll",
+    "exception-recorder-v2-source/selftest-proof.json",
+    "exception-summary-d1-source/out/Probe.dll",
+    "exception-summary-d1-source/summary.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

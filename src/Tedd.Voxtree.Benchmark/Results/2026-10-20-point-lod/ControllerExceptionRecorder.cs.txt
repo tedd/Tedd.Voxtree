@@ -1,0 +1,91 @@
+using System.Diagnostics;
+using System.Diagnostics.Tracing;
+using System.Globalization;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Microsoft.Diagnostics.NETCore.Client;
+using Microsoft.Diagnostics.Tracing;
+using Microsoft.Diagnostics.Tracing.Parsers;
+
+if(args.Length!=3)throw new ArgumentException("Expected PID, start ticks, fresh output");
+int pid=int.Parse(args[0],CultureInfo.InvariantCulture);
+long ticks=long.Parse(args[1],CultureInfo.InvariantCulture);
+string output=Path.GetFullPath(args[2]);
+string task=Path.GetFullPath(@"D:\Workspaces\AI\voxtree-point-lod-20261020");
+if(output!=Path.Combine(task,"exception-recorder-v2-source","selftest","evidence")&&
+   output!=Path.Combine(task,"p18-failure-diagnostic-1","observer"))throw new ArgumentException("Unexpected recorder scope");
+if(Directory.Exists(output))throw new ArgumentException("Recorder output already exists");
+for(var p=new DirectoryInfo(output);p is not null;p=p.Parent)
+    if(p.Exists&&(p.Attributes&FileAttributes.ReparsePoint)!=0)throw new ArgumentException("Reparse path");
+using var target=Process.GetProcessById(pid);
+void Verify(){if(target.HasExited||target.StartTime.ToUniversalTime().Ticks!=ticks)throw new Exception("Recorder target identity changed");}
+Verify();Directory.CreateDirectory(output);
+string trace=Path.Combine(output,"exceptions.nettrace"),stopPath=Path.Combine(output,"stop.txt");
+using var lifetime=new CancellationTokenSource(TimeSpan.FromSeconds(3300));
+using var opening=new CancellationTokenSource(TimeSpan.FromSeconds(15));
+using var session=await new DiagnosticsClient(pid).StartEventPipeSessionAsync(
+    new[]{new EventPipeProvider("Microsoft-Windows-DotNETRuntime",EventLevel.Verbose,
+        (long)ClrTraceEventParser.Keywords.Exception)},false,16,opening.Token);
+Verify();
+string entry=Assembly.GetExecutingAssembly().Location;
+var binding=new{recorderPid=Environment.ProcessId,targetPid=pid,targetStartTicks=ticks,
+    runtime=System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription,
+    entrySha256=Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(entry))),
+    provider="Microsoft-Windows-DotNETRuntime",keywords=(long)ClrTraceEventParser.Keywords.Exception,
+    bufferMiB=16,rundown=false,maximumSeconds=3300,maximumBytes=64L*1024*1024,maximumEvents=50000,
+    startedUtc=DateTimeOffset.UtcNow};
+string reason="",failure="";bool stopped=false;long bytes=0;
+using var spoolCancellation=new CancellationTokenSource();
+await using(var file=new FileStream(trace,FileMode.CreateNew,FileAccess.Write,FileShare.Read,65536,true))
+{
+    async Task Spool()
+    {
+        byte[] buffer=new byte[65536];int count;
+        while((count=await session.EventStream.ReadAsync(buffer,spoolCancellation.Token))>0)
+        {
+            bytes+=count;if(bytes>64L*1024*1024)throw new IOException("Recorder byte limit");
+            await file.WriteAsync(buffer.AsMemory(0,count),spoolCancellation.Token);
+        }
+    }
+    Task drain=Spool();
+    string ready=Path.Combine(output,"ready.json");
+    File.WriteAllText(ready+".tmp",JsonSerializer.Serialize(binding));File.Move(ready+".tmp",ready);
+    try
+    {
+        while(!File.Exists(stopPath)&&!target.HasExited&&!drain.IsCompleted&&!lifetime.IsCancellationRequested)
+            await Task.Delay(100);
+        reason=File.Exists(stopPath)?"requested_stop":target.HasExited?"target_exited":lifetime.IsCancellationRequested?"deadline":"stream_ended";
+        using var stop=new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        await session.StopAsync(stop.Token);stopped=true;
+        await drain.WaitAsync(TimeSpan.FromSeconds(10));
+    }
+    catch(Exception e){failure=e.ToString();}
+    finally
+    {
+        if(!stopped){using var stop=new CancellationTokenSource(TimeSpan.FromSeconds(5));try{await session.StopAsync(stop.Token);}catch(Exception e){failure+="\nStop: "+e;}}
+        spoolCancellation.Cancel();try{await drain.WaitAsync(TimeSpan.FromSeconds(5));}catch(Exception e){failure+="\nDrain: "+e;}
+    }
+}
+var rows=new List<object>();long lost=-1;bool truncated=false;
+try
+{
+    using var source=new EventPipeEventSource(trace);
+    source.Clr.ExceptionStart+=data=>
+    {
+        if(rows.Count>=50000){truncated=true;return;}
+        rows.Add(new{data.EventName,data.ProcessID,data.ThreadID,data.TimeStampRelativeMSec,
+            timestampUtc=data.TimeStamp.ToUniversalTime(),
+            payload=data.PayloadNames.ToDictionary(name=>name,name=>Convert.ToString(data.PayloadByName(name),CultureInfo.InvariantCulture))});
+    };
+    source.Process();lost=source.EventsLost;
+}
+catch(Exception e){failure+="\nParse: "+e;}
+File.WriteAllText(Path.Combine(output,"events.json"),JsonSerializer.Serialize(rows,new JsonSerializerOptions{WriteIndented=true}));
+bool complete=reason=="requested_stop"&&failure.Length==0&&lost==0&&!truncated;
+var result=new{binding,reason,failure,bytes,eventCount=rows.Count,eventsLost=lost,truncated,complete,
+    traceSha256=Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(trace))),
+    endedUtc=DateTimeOffset.UtcNow,regime="Controller exception diagnostic; never performance/promotion evidence"};
+File.WriteAllText(Path.Combine(output,"result.json"),JsonSerializer.Serialize(result,new JsonSerializerOptions{WriteIndented=true}));
+Console.WriteLine(JsonSerializer.Serialize(result));
+return complete?0:4;

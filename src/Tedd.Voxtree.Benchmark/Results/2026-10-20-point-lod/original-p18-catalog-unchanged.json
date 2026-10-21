@@ -1,0 +1,9 @@
+{
+  "archive_sha256": "d6c9e57201f7de83c46abeecf749e94a9824bee7b1c99c416ec4fec2fd8e52f6",
+  "frozen_export_sha256": "91b002219a008243ddb0e64792cc2921967a7fbf47811b76c6e5e6d6acf685f4",
+  "tables": 18,
+  "rows": 14278,
+  "all_tables_schemas_columns_rows_identical": true,
+  "access": "SQLite URI mode=ro; no controller/recovery/writer opened on original catalog",
+  "scope": "Original P18 catalog logical contents unchanged against phase-seven frozen export; not a claim about filesystem timestamps"
+}

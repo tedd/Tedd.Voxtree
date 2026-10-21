@@ -2,10 +2,11 @@
 
 Original integration branch: main. Full public-method objective remains active.
 No prototype source is adopted into the production library. Current continuation
-evidence is REPORT-PHASE7.md; earlier failed gates remain retained. P19/P23 are
+evidence is REPORT-PHASE8.md; earlier failed gates remain retained. P19/P23 are
 not_supported; P20/P21/P22 remain inconclusive after their complete screens.
 
-1. Localize the fresh confirmation failure before another normal-build family.
+1. Retain the failed family and strengthen failure details before another
+   independently frozen normal-build decision family.
    Six original cases completed; the seventh failed after 22 completed sessions
    and a later launch without a completed session record. All 166 retained
    sessions passed correctness/quiescence/shutdown checks. Launch PID 6636 has
@@ -22,6 +23,18 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    its caught IOException marker with zero reported loss and joined exit zero.
    Use that primitive only in a new prospectively bounded owned-controller
    diagnostic; the historic family remains failed, not resumed or replaced.
+   D1 now completes its fixed eight-case/192-session diagnostic budget without
+   reproducing the generic failure. All target sessions are correct/quiescent/
+   joined; all D1 timings are excluded from selection/promotion. The observer's
+   original 50,000-row export is truncated (exit 4), but replay of the intact
+   28,194,062-byte raw trace enumerates all 50,173 events with zero reported loss.
+   Four message groups match caught missing optional journal files and absent
+   record probes; none identifies the historic fault. The original catalog's
+   complete 18-table/14,278-row contents are unchanged against its frozen export.
+   Do not repeat D1 or use its formerly missing-case timings as replacement data.
+   Next prepare durable full exception details on an isolated controller's cold
+   failure path, with a controlled functional failure proof. No shared install
+   change or new decision family is implied by D1's unreproduced result.
 2. Preserve the count tradeoffs. P19 scalar specialization fails its UInt16
    primary despite removing general dispatch. P20 validated masked-vector counts
    improve dominant full callers 9.6..181.8x versus P19 but regress short rows.

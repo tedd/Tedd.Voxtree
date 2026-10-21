@@ -1,0 +1,120 @@
+{
+  "inputSha256": "13b796e08a84261cb81cd7e678467b38c206b60087f354f1692bbad8b051f06c",
+  "inputBytes": 28194062,
+  "originalJsonCap": 50000,
+  "originalJsonTruncated": true,
+  "originalRecorderComplete": false,
+  "rawTransportEndedNormally": true,
+  "fullEventEnumerationComplete": true,
+  "exceptionEvents": 50173,
+  "eventsLost": 0,
+  "processIds": [
+    144368
+  ],
+  "groups": [
+    {
+      "Type": "System.IO.FileNotFoundException",
+      "HResult": "-2147024894",
+      "Message": "Could not find file \u0027D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\p18-failure-diagnostic-1\\catalog.sqlite-journal\u0027.",
+      "Count": 19607,
+      "FirstUtc": "2026-10-21T01:17:04.1716437Z",
+      "LastUtc": "2026-10-21T01:30:50.5048516Z",
+      "Threads": [
+        59648,
+        37480,
+        97432,
+        111708,
+        153524,
+        45416,
+        94584,
+        20676,
+        164224,
+        165804,
+        106276,
+        98316,
+        59612,
+        69136,
+        83408,
+        160512
+      ]
+    },
+    {
+      "Type": "System.IO.FileNotFoundException",
+      "HResult": "-2147024894",
+      "Message": "Could not find file \u0027D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\p18-failure-diagnostic-1\\catalog.sqlite-shm\u0027.",
+      "Count": 15184,
+      "FirstUtc": "2026-10-21T01:17:04.1715291Z",
+      "LastUtc": "2026-10-21T01:30:50.5047555Z",
+      "Threads": [
+        59648,
+        37480,
+        97432,
+        111708,
+        153524,
+        45416,
+        94584,
+        164224,
+        165804,
+        20676,
+        98316,
+        106276,
+        59612,
+        69136,
+        83408,
+        160512
+      ]
+    },
+    {
+      "Type": "System.IO.FileNotFoundException",
+      "HResult": "-2147024894",
+      "Message": "Could not find file \u0027D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\p18-failure-diagnostic-1\\catalog.sqlite-wal\u0027.",
+      "Count": 15182,
+      "FirstUtc": "2026-10-21T01:17:04.1713732Z",
+      "LastUtc": "2026-10-21T01:30:50.5046476Z",
+      "Threads": [
+        59648,
+        37480,
+        97432,
+        111708,
+        153524,
+        45416,
+        94584,
+        164224,
+        165804,
+        20676,
+        98316,
+        106276,
+        59612,
+        69136,
+        83408,
+        160512
+      ]
+    },
+    {
+      "Type": "Tedd.DotNetLab.Contracts.LabException",
+      "HResult": "-2146233088",
+      "Message": "Record does not exist.",
+      "Count": 200,
+      "FirstUtc": "2026-10-21T01:17:08.1098666Z",
+      "LastUtc": "2026-10-21T01:30:50.1977204Z",
+      "Threads": [
+        37480,
+        45416,
+        97432,
+        94584,
+        111708,
+        153524,
+        59648,
+        165804,
+        164224,
+        20676,
+        106276,
+        59612,
+        69136,
+        83408,
+        160512
+      ]
+    }
+  ],
+  "interpretation": "Replay recovers all events in the existing raw trace without rerunning sessions. Original capped export/result are unchanged. Reported zero loss is not proof of unobservable runtime events or historic-fault absence."
+}

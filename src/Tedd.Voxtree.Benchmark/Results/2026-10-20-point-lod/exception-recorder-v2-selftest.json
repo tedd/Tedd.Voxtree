@@ -1,0 +1,15 @@
+{
+  "entrySha256": "415D262119CBD8E543D5C28826029B5920E30151D47B6A64D977417F163FB802",
+  "childExitCode": 0,
+  "observerPid": 105192,
+  "markerEvents": 1,
+  "traceSha256": "5f092302c933c4803cef50fdba5a8c25367c935554acc659618b32715d506ca3",
+  "observerJoined": true,
+  "childPid": 158156,
+  "childStartTicks": "639281417376773774",
+  "eventsLost": 0,
+  "observerExitCode": 0,
+  "childJoined": true,
+  "regime": "Actual record-mode self-test; no performance claim",
+  "complete": true
+}
