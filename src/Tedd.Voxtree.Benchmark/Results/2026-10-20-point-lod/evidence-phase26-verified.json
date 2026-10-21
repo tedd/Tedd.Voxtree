@@ -1,0 +1,31 @@
+{
+  "archive_bytes": 3672338,
+  "manifest_paths": 266,
+  "unique_blobs": 228,
+  "catalogs": 1,
+  "metric_rows": 0,
+  "sha256": "7f15bfc8cd6a35974ead7edd4f94225308da99cdcfa47763d0745e06424e7a30",
+  "required_paths": [
+    "p36-prerequisite-audit.json",
+    "p36-model-audit.json",
+    "p36-cache-native.asm",
+    "p36-hypothesis/catalog-export.json",
+    "p36-hypothesis/feasibility-revision-response.json",
+    "bundles/p36world/p36world.dll",
+    "cache-maintenance-source/WorldEntity.cs",
+    "p36-test-binary-bindings.json",
+    "bundles/p36-tests/net8.0/Tests.dll",
+    "bundles/p36-tests/net8.0/Tedd.Voxtree.dll",
+    "bundles/p36-tests/net8.0/Tests.runtimeconfig.json",
+    "bundles/p36-tests/net8.0/Tests.deps.json",
+    "bundles/p36-tests/net10.0/Tests.dll",
+    "bundles/p36-tests/net10.0/Tedd.Voxtree.dll",
+    "bundles/p36-tests/net10.0/Tests.runtimeconfig.json",
+    "bundles/p36-tests/net10.0/Tests.deps.json",
+    "bundles/p36-tests/net11.0/Tests.dll",
+    "bundles/p36-tests/net11.0/Tedd.Voxtree.dll",
+    "bundles/p36-tests/net11.0/Tests.runtimeconfig.json",
+    "bundles/p36-tests/net11.0/Tests.deps.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

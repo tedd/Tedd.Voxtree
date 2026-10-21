@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "counts": {
+    "exhaustive": 149476,
+    "actualSize": 128000
+  },
+  "seed": 20261115,
+  "actualSizeReplacements": 128000,
+  "sourceSha256": "e8d3f1c967fd10d83d72ed1721ec011d455085800c3a68071ad896947c8dcf1f",
+  "lookupSlotsExact": true,
+  "capacity10LogicalSlotAssignments": {
+    "cases": 96000,
+    "candidateMean": 8.390229166666666,
+    "candidateMax": 20,
+    "publishedFullRebuild": 26
+  },
+  "limitations": "Logical table-slot assignments only; excludes other loads, victim scan, dictionary/hash work and cache-entry stores. No timing, traffic, instruction or application-frequency inference."
+}

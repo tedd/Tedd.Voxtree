@@ -308,6 +308,23 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    raw medians. Hot/slow negative-filter ordering remains a separate candidate.
    Complete original API/consumer/memory qualification and10x objective remain.
 
+19. P36 hyp-5819573ab9534be1bdac10805ecbfe0c now passes feasibility only on
+   independent f0772c8 source: backshift deletion plus ordered insertion keeps
+   the exact canonical table/probe counts while AddRecent avoids full rebuild.
+   No fields/read bodies/format or victim policy changes.149,476 exhaustive
+   and128,000 actual-size model replacements pass;408/409/410 tests (including
+   actual colliders, capacities1/10/16, rollover/storage) and48 separate-operation
+   caller oracles pass. Native clears disappear from AddRecent and all eight
+   candidate callers, but bodies grow138–176 bytes with16–32 more fixed rsp
+   bytes. No time inference. Phase26 preserves complete prerequisites and
+   original modules with zero comparative records; see REPORT-PHASE26.
+   Freeze source-selected fresh normal controls and workload/budget/uncertainty/
+   guardrail policies before timing; no four-pair5% equivalence, old data pooling,
+   zero-allocation-model waiver or source adoption. Constructor/mutation/storage/
+   allocation and actual consumer qualification remain. A private AddRecent
+   NoInlining treatment is a separate possible hypothesis, not an implied P36
+   combination. Compact-validator terminal specialization remains separate.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining

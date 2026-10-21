@@ -1,0 +1,280 @@
+{
+  "passed": true,
+  "scope": "P36 feasibility only; no comparative timing or source adoption.",
+  "model": {
+    "passed": true,
+    "counts": {
+      "exhaustive": 149476,
+      "actualSize": 128000
+    },
+    "seed": 20261115,
+    "actualSizeReplacements": 128000,
+    "sourceSha256": "e8d3f1c967fd10d83d72ed1721ec011d455085800c3a68071ad896947c8dcf1f",
+    "lookupSlotsExact": true,
+    "capacity10LogicalSlotAssignments": {
+      "cases": 96000,
+      "candidateMean": 8.390229166666666,
+      "candidateMax": 20,
+      "publishedFullRebuild": 26
+    },
+    "limitations": "Logical table-slot assignments only; excludes other loads, victim scan, dictionary/hash work and cache-entry stores. No timing, traffic, instruction or application-frequency inference."
+  },
+  "sourceFiles": 53,
+  "changedFiles": [
+    "WorldEntity.cs"
+  ],
+  "otherFilesByteIdentical": 52,
+  "sourceReversalExact": true,
+  "fieldsAndReadBodiesUnchanged": true,
+  "compiledSourcesMatch": true,
+  "sourceManifestSha256": "beea3040d33aaeab43904fc15921dafa8fef8193219662c927891dd755d45868",
+  "tests": [
+    {
+      "file": "tedd_T-5950X2_2026-10-21_13_33_51_net10.0.trx",
+      "sha256": "79423ea4626d4e64a805e171871a8cf037bd193cb4a908561d0e036ff87901bf",
+      "count": 409
+    },
+    {
+      "file": "tedd_T-5950X2_2026-10-21_13_33_51_net11.0.trx",
+      "sha256": "3127d00ee5602f637b0fbf6e68a77cc9252a4d90e653cd87d5fff4c28e5d1e37",
+      "count": 410
+    },
+    {
+      "file": "tedd_T-5950X2_2026-10-21_13_33_51_net8.0.trx",
+      "sha256": "423f34c1a7767af73937bd2f03313a4268b97630a7ecdc498098af20990d0d37",
+      "count": 408
+    }
+  ],
+  "callerCases": 48,
+  "arms": 2,
+  "nativeSha256": "3ef86f674bdfe06e45cfb6404651a081b9412b61ac93ed832c58e0179b22d089",
+  "baselineAddRecent": {
+    "method": "Snapshot.Voxtree.RecentChunkMap`1[System.__Canon]:AddRecent(Snapshot.Voxtree.ChunkAddress,int,System.__Canon,Snapshot.Voxtree.RecentChunkMap`1+ResidencyState[System.__Canon]):this (Tier1)",
+    "native_bytes": 578,
+    "listing_availability": "complete",
+    "declared_native_sizes": [
+      578
+    ],
+    "prologue_markers": 1,
+    "rsp_subtractions": [
+      128
+    ],
+    "call_sites": [
+      "call     CORINFO_HELP_ASSIGN_BYREF",
+      "call     CORINFO_HELP_ASSIGN_BYREF",
+      "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+      "call     [System.ThrowHelper:ThrowIndexOutOfRangeException()]",
+      "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]",
+      "call     CORINFO_HELP_RNGCHKFAIL"
+    ]
+  },
+  "candidateAddRecent": {
+    "method": "Tedd.Voxtree.RecentChunkMap`1[System.__Canon]:AddRecent(Tedd.Voxtree.ChunkAddress,int,System.__Canon,Tedd.Voxtree.RecentChunkMap`1+ResidencyState[System.__Canon]):this (Tier1)",
+    "native_bytes": 656,
+    "listing_availability": "complete",
+    "declared_native_sizes": [
+      656
+    ],
+    "prologue_markers": 1,
+    "rsp_subtractions": [
+      120
+    ],
+    "call_sites": [
+      "call     CORINFO_HELP_ASSIGN_BYREF",
+      "call     CORINFO_HELP_ASSIGN_BYREF",
+      "call     CORINFO_HELP_RNGCHKFAIL"
+    ]
+  },
+  "candidateHelpers": [
+    {
+      "method": "Tedd.Voxtree.RecentChunkMap`1[System.__Canon]:RemoveRecentLookup(int):this (Tier1)",
+      "native_bytes": 262,
+      "listing_availability": "complete",
+      "declared_native_sizes": [
+        262
+      ],
+      "prologue_markers": 1,
+      "rsp_subtractions": [
+        32
+      ],
+      "call_sites": [
+        "call     CORINFO_HELP_RNGCHKFAIL"
+      ]
+    },
+    {
+      "method": "Tedd.Voxtree.RecentChunkMap`1[System.__Canon]:InsertRecentLookup(int,int):this (Tier1)",
+      "native_bytes": 111,
+      "listing_availability": "complete",
+      "declared_native_sizes": [
+        111
+      ],
+      "prologue_markers": 1,
+      "rsp_subtractions": [
+        40
+      ],
+      "call_sites": [
+        "call     CORINFO_HELP_RNGCHKFAIL"
+      ]
+    }
+  ],
+  "callers": [
+    {
+      "width": "UInt32",
+      "operation": "Get",
+      "controlMethod": "WorldUInt32:BeforeGet(int):this (Tier1)",
+      "candidateMethod": "WorldUInt32:AfterGet(int):this (Tier1)",
+      "controlBytes": 3693,
+      "candidateBytes": 3862,
+      "controlFixedRsp": [
+        408
+      ],
+      "candidateFixedRsp": [
+        440
+      ],
+      "controlStaticClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateStaticClearSites": []
+    },
+    {
+      "width": "UInt32",
+      "operation": "Lod",
+      "controlMethod": "WorldUInt32:BeforeLod(int):this (Tier1)",
+      "candidateMethod": "WorldUInt32:AfterLod(int):this (Tier1)",
+      "controlBytes": 4146,
+      "candidateBytes": 4284,
+      "controlFixedRsp": [
+        424
+      ],
+      "candidateFixedRsp": [
+        456
+      ],
+      "controlStaticClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateStaticClearSites": []
+    },
+    {
+      "width": "UInt32",
+      "operation": "Chunk",
+      "controlMethod": "WorldUInt32:BeforeChunk(int):this (Tier1)",
+      "candidateMethod": "WorldUInt32:AfterChunk(int):this (Tier1)",
+      "controlBytes": 2668,
+      "candidateBytes": 2814,
+      "controlFixedRsp": [
+        264
+      ],
+      "candidateFixedRsp": [
+        280
+      ],
+      "controlStaticClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateStaticClearSites": []
+    },
+    {
+      "width": "UInt32",
+      "operation": "Topology",
+      "controlMethod": "WorldUInt32:BeforeTopology(int):this (Tier1)",
+      "candidateMethod": "WorldUInt32:AfterTopology(int):this (Tier1)",
+      "controlBytes": 4387,
+      "candidateBytes": 4525,
+      "controlFixedRsp": [
+        456
+      ],
+      "candidateFixedRsp": [
+        472
+      ],
+      "controlStaticClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateStaticClearSites": []
+    },
+    {
+      "width": "UInt16",
+      "operation": "Get",
+      "controlMethod": "WorldUInt16:BeforeGet(int):this (Tier1)",
+      "candidateMethod": "WorldUInt16:AfterGet(int):this (Tier1)",
+      "controlBytes": 3889,
+      "candidateBytes": 4029,
+      "controlFixedRsp": [
+        424
+      ],
+      "candidateFixedRsp": [
+        456
+      ],
+      "controlStaticClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateStaticClearSites": []
+    },
+    {
+      "width": "UInt16",
+      "operation": "Lod",
+      "controlMethod": "WorldUInt16:BeforeLod(int):this (Tier1)",
+      "candidateMethod": "WorldUInt16:AfterLod(int):this (Tier1)",
+      "controlBytes": 4324,
+      "candidateBytes": 4474,
+      "controlFixedRsp": [
+        440
+      ],
+      "candidateFixedRsp": [
+        472
+      ],
+      "controlStaticClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateStaticClearSites": []
+    },
+    {
+      "width": "UInt16",
+      "operation": "Chunk",
+      "controlMethod": "WorldUInt16:BeforeChunk(int):this (Tier1)",
+      "candidateMethod": "WorldUInt16:AfterChunk(int):this (Tier1)",
+      "controlBytes": 2651,
+      "candidateBytes": 2827,
+      "controlFixedRsp": [
+        264
+      ],
+      "candidateFixedRsp": [
+        280
+      ],
+      "controlStaticClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateStaticClearSites": []
+    },
+    {
+      "width": "UInt16",
+      "operation": "Topology",
+      "controlMethod": "WorldUInt16:BeforeTopology(int):this (Tier1)",
+      "candidateMethod": "WorldUInt16:AfterTopology(int):this (Tier1)",
+      "controlBytes": 4545,
+      "candidateBytes": 4700,
+      "controlFixedRsp": [
+        456
+      ],
+      "candidateFixedRsp": [
+        488
+      ],
+      "controlStaticClearSites": [
+        "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+        "call     [System.SpanHelpers:ClearWithReferences(byref,nuint)]"
+      ],
+      "candidateStaticClearSites": []
+    }
+  ],
+  "limitations": [
+    "Static alternative ClearWithReferences/ClearWithoutReferences sites are not two executed clears.",
+    "Source hot reads unchanged; miss-path inlining changes caller layout/register allocation and can still affect hit timing.",
+    "Fixed rsp subtraction is not total stack usage; code size/logical writes do not establish speedup.",
+    "Separate operation methods/version21 form a new epoch; no P34/P35 timing is reused."
+  ]
+}
