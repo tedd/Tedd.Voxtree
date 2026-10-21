@@ -1,0 +1,25 @@
+{
+  "archive_bytes": 7402357,
+  "manifest_paths": 3735,
+  "unique_blobs": 3500,
+  "catalogs": 4,
+  "metric_rows": 104,
+  "sha256": "25e5f3c892e0ba36940b205a22360ea875650ec9a9b03a4348162a0959b14e3f",
+  "required_paths": [
+    "p25bulk-screen/catalog-export.json",
+    "p25-hypothesis/catalog-export.json",
+    "p25-hypothesis/postwriter-revision-response.json",
+    "p24-confirmation/postconfirmation-revision-response.json",
+    "p24-hypothesis/postconfirmation-revision-response.json",
+    "p25bulk-audit.json",
+    "p25-source-review.json",
+    "p25-source-review.diff",
+    "p25oracle-output.log",
+    "p25-writer-native-audit.json",
+    "packed-bottom-up-source/PackedLeafEncoding.cs",
+    "bundles/p25bulk/p25bulk.dll",
+    "forcecraft-census-packed-p25bulk/packed-corpus.json",
+    "forcecraft-census-packed-p25census/packed-corpus.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

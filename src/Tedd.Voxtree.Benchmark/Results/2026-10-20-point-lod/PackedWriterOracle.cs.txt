@@ -84,4 +84,3 @@ void CheckLegacy(int level,int pattern)
     }
     cases++;
 }
-

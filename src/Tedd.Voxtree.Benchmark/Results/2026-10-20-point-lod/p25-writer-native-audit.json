@@ -1,0 +1,109 @@
+{
+  "asm_sha256": "e744df26467bd9745f8899872d81cdd29ce5c04b40d0c75fb88b021ad14f0192",
+  "identity": {
+    "exited": true,
+    "start": "2026-10-21T03:17:24.3610899Z",
+    "regime": "isolated native-only fixture probe; not quiet timing",
+    "pid": 104068,
+    "exitCode": 0,
+    "entrySha256": "AB388A31B092F5FBB1117946794A21C79E5CD7402A707FBDAD7EC6530470C673",
+    "selectedBundleSha256": "361E9045CDCE1BA188FFC2C26C1FFBB745158550EFA4AF097742437B4A28FE39",
+    "selectedBundle": "p25bulk",
+    "sourceSha256": "E3689683BFC9C40071C4379C695CE4517128F2AFE110C62E82E17908DCFF1823",
+    "runtime": "10.0.13",
+    "probeSource": "BuilderProbe.cs.txt",
+    "methods": "*WriteBottomUp* *FillMarked* *BuildOwned* *BuildRoot*",
+    "affinity": 4
+  },
+  "optimized_versions": [
+    {
+      "signature": "Tedd.Voxtree.PackedLeafEncoding`1[uint]:WriteBottomUp(System.ReadOnlySpan`1[uint],int,int,System.Span`1[byte]) (Tier1-OSR)",
+      "native_bytes": 1020,
+      "rsp_subtractions": [
+        136
+      ],
+      "called_targets": [
+        "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+        "Tedd.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int)"
+      ]
+    },
+    {
+      "signature": "Tedd.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int) (Tier1)",
+      "native_bytes": 1107,
+      "rsp_subtractions": [
+        152
+      ],
+      "called_targets": [
+        "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+        "Tedd.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int)"
+      ]
+    },
+    {
+      "signature": "Tedd.Voxtree.PackedLeafEncoding`1[uint]:WriteBottomUp(System.ReadOnlySpan`1[uint],int,int,System.Span`1[byte]) (Tier1-OSR)",
+      "native_bytes": 1031,
+      "rsp_subtractions": [
+        136
+      ],
+      "called_targets": [
+        "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+        "Tedd.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int)"
+      ]
+    },
+    {
+      "signature": "Tedd.Voxtree.PackedLeafEncoding`1[uint]:WriteBottomUp(System.ReadOnlySpan`1[uint],int,int,System.Span`1[byte]) (Tier1)",
+      "native_bytes": 949,
+      "rsp_subtractions": [
+        72
+      ],
+      "called_targets": [
+        "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+        "Tedd.Voxtree.PackedLeafEncoding`1[uint]:FillMarked(System.Span`1[byte],int,int,int,int,int)"
+      ]
+    },
+    {
+      "signature": "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:WriteBottomUp(System.ReadOnlySpan`1[ushort],int,int,System.Span`1[byte]) (Tier1-OSR)",
+      "native_bytes": 1131,
+      "rsp_subtractions": [
+        136
+      ],
+      "called_targets": [
+        "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+        "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:FillMarked(System.Span`1[byte],int,int,int,int,int)"
+      ]
+    },
+    {
+      "signature": "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:FillMarked(System.Span`1[byte],int,int,int,int,int) (Tier1)",
+      "native_bytes": 1304,
+      "rsp_subtractions": [
+        168
+      ],
+      "called_targets": [
+        "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+        "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:FillMarked(System.Span`1[byte],int,int,int,int,int)"
+      ]
+    },
+    {
+      "signature": "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:WriteBottomUp(System.ReadOnlySpan`1[ushort],int,int,System.Span`1[byte]) (Tier1-OSR)",
+      "native_bytes": 1095,
+      "rsp_subtractions": [
+        136
+      ],
+      "called_targets": [
+        "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+        "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:FillMarked(System.Span`1[byte],int,int,int,int,int)"
+      ]
+    },
+    {
+      "signature": "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:WriteBottomUp(System.ReadOnlySpan`1[ushort],int,int,System.Span`1[byte]) (Tier1)",
+      "native_bytes": 1019,
+      "rsp_subtractions": [
+        72
+      ],
+      "called_targets": [
+        "System.ThrowHelper:ThrowArgumentOutOfRangeException()",
+        "Tedd.Voxtree.PackedLeafEncoding`1[ushort]:FillMarked(System.Span`1[byte],int,int,int,int,int)"
+      ]
+    }
+  ],
+  "limits": "Separate native-only diagnostic, not quiet caller identity. Rsp subtractions exclude register pushes, outgoing arguments, callees and recursion depth. No dynamic-frequency, PMU or elapsed-cost attribution."
+}
