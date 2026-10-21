@@ -1,0 +1,458 @@
+{
+  "state": "not_supported",
+  "scope": "H2 differential call-boundary explanation for P32 ratio; history dependence itself is supported",
+  "nativeOnly": true,
+  "timedRuns": 0,
+  "allChecksPassedAndJoined": true,
+  "processStartIdentities": [
+    [
+      146720,
+      "2026-10-21T09:00:43.8905404Z"
+    ],
+    [
+      128572,
+      "2026-10-21T09:01:36.4027965Z"
+    ]
+  ],
+  "bundleSha256": "4c9f47a1e973f45f466c0b8fa98a650883bfdced1b1ec71bf0555d91c5c96ebe",
+  "scheduleSha256": "9d8a07fc5df7a187ed741cdf0452a828d93a31669c8d8b451a83b2cbdd57e069",
+  "summarySha256": "cf729c749aaa23f3e8274b4ab7f689c18dfe3579d70b1324edeedfd841e7d864",
+  "callBoundaryDifferentialBetweenArms": false,
+  "rows": [
+    {
+      "history": "get-first",
+      "width": "UInt32",
+      "access": "owned",
+      "arm": "baseline",
+      "file": "h2-get-first.asm",
+      "sha256": "86ce08291a8877a776b03b8cfebe943be38eed996ff80518d58142853c5e039e",
+      "method": "ForceUInt32Scenario:BeforeBatchOwned(int):this (Tier1)",
+      "nativeBytes": 3310,
+      "fixedRspSubtractions": [
+        232
+      ],
+      "lodDispatcher": "G_M000_IG17",
+      "nextOperationBarrier": "G_M000_IG32",
+      "mappedRoute": [
+        "G_M000_IG18",
+        "G_M000_IG22",
+        "G_M000_IG23",
+        "G_M000_IG24",
+        "G_M000_IG25",
+        "G_M000_IG26",
+        "G_M000_IG27",
+        "G_M000_IG28",
+        "G_M000_IG29"
+      ],
+      "inlineCompactWord": true,
+      "staticCallSitesInMappedRoute": [
+        "call     [Snapshot.Voxtree.Octree:AsSpan():Snapshot.Voxtree.OctreeSpan:this]"
+      ],
+      "routeText": "G_M000_IG18:                ;; offset=0x0269\n       xor      edi, edi\n       jmp      SHORT G_M000_IG22\n \n\nG_M000_IG22:                ;; offset=0x0299\n       cmp      edi, esi\n       jge      G_M000_IG13\n \n\nG_M000_IG23:                ;; offset=0x02A1\n       mov      rdx, gword ptr [rbx+0x20]\n       mov      ebp, dword ptr [rbx+0x80]\n       lea      ecx, [rbp+0x01]\n       mov      dword ptr [rbx+0x80], ecx\n       mov      ecx, ebp\n       and      ecx, 0x3FF\n       cmp      ecx, dword ptr [rdx+0x08]\n       jae      G_M000_IG97\n       mov      ecx, ebp\n       and      ecx, 0x3FF\n       shl      rcx, 4\n       lea      rdx, bword ptr [rdx+rcx+0x10]\n       mov      ebp, dword ptr [rdx]\n       mov      r14d, dword ptr [rdx+0x04]\n       mov      r15d, dword ptr [rdx+0x08]\n       xor      edx, edx\n       mov      dword ptr [rsp+0xE0], edx\n       mov      rcx, gword ptr [rbx+0x48]\n       cmp      byte  ptr [rcx], cl\n       lea      rdx, [rsp+0x98]\n       call     [Snapshot.Voxtree.Octree:AsSpan():Snapshot.Voxtree.OctreeSpan:this]\n       xor      ecx, ecx\n       mov      dword ptr [rsp+0x90], ecx\n \n\nG_M000_IG24:                ;; offset=0x0306\n       mov      dword ptr [rsp+0xE0], ecx\n       mov      r13d, dword ptr [rsp+0xA0]\n       mov      r12d, dword ptr [rsp+0xA8]\n       test     r13d, r13d\n       je       G_M000_IG20\n \n\nG_M000_IG25:                ;; offset=0x0326\n       mov      ecx, 1\n       shlx     ecx, ecx, r12d\n       cmp      ebp, ecx\n       jae      G_M000_IG57\n \n\nG_M000_IG26:                ;; offset=0x0338\n       cmp      r14d, ecx\n       jae      G_M000_IG56\n \n\nG_M000_IG27:                ;; offset=0x0341\n       cmp      r15d, ecx\n       jae      G_M000_IG55\n \n\nG_M000_IG28:                ;; offset=0x034A\n       mov      rdx, bword ptr [rsp+0x98]\n       movzx    r8, byte  ptr [rsp+0xAC]\n       xor      r9d, r9d\n       mov      dword ptr [rsp+0x88], r9d\n       mov      eax, ecx\n       cmp      r8d, 1\n       je       G_M000_IG69\n       cmp      r8d, 2\n       je       G_M000_IG71\n       cmp      r8d, 3\n       jne      G_M000_IG74\n       xor      r8d, r8d\n       mov      dword ptr [rsp+0x90], r8d\n \n\nG_M000_IG29:                ;; offset=0x0391\n       mov      dword ptr [rsp+0xE0], r8d\n       shlx     r8d, ebp, r12d\n       add      r8d, r14d\n       imul     ecx, r8d\n       add      ecx, r15d\n       lea      r8d, [r12+2*r12]\n       mov      r9d, 1\n       shlx     r8d, r9d, r8d\n       cmp      ecx, r8d\n       jae      G_M000_IG73\n       lea      ecx, [2*rcx+0x02]\n       cmp      ecx, r13d\n       ja       G_M000_IG73\n       mov      r8d, r13d\n       sub      r8d, ecx\n       cmp      r8d, 2\n       jl       G_M000_IG73\n       mov      r8d, ecx\n       add      r8, 2\n       mov      r9d, r13d\n       cmp      r8, r9\n       ja       G_M000_IG96\n       add      rdx, rcx\n       movzx    rcx, word  ptr [rdx]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r12d\n       jg       G_M000_IG73\n       and      ecx, 0x1FFF\n       mov      dword ptr [rsp+0x90], ecx\n       mov      dword ptr [rsp+0xE0], edx\n       mov      eax, 1\n \n"
+    },
+    {
+      "history": "get-first",
+      "width": "UInt32",
+      "access": "owned",
+      "arm": "candidate",
+      "file": "h2-get-first.asm",
+      "sha256": "86ce08291a8877a776b03b8cfebe943be38eed996ff80518d58142853c5e039e",
+      "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1)",
+      "nativeBytes": 3261,
+      "fixedRspSubtractions": [
+        232
+      ],
+      "lodDispatcher": "G_M000_IG17",
+      "nextOperationBarrier": "G_M000_IG28",
+      "mappedRoute": [
+        "G_M000_IG18",
+        "G_M000_IG24",
+        "G_M000_IG25",
+        "G_M000_IG26",
+        "G_M000_IG50",
+        "G_M000_IG51",
+        "G_M000_IG52",
+        "G_M000_IG53",
+        "G_M000_IG54"
+      ],
+      "inlineCompactWord": true,
+      "staticCallSitesInMappedRoute": [
+        "call     [Tedd.Voxtree.Octree:AsSpan():Tedd.Voxtree.OctreeSpan:this]"
+      ],
+      "routeText": "G_M000_IG18:                ;; offset=0x0252\n       xor      edi, edi\n       jmp      SHORT G_M000_IG24\n \n\nG_M000_IG24:                ;; offset=0x02C1\n       cmp      edi, esi\n       jge      G_M000_IG13\n \n\nG_M000_IG25:                ;; offset=0x02C9\n       mov      rdx, gword ptr [rbx+0x20]\n       mov      ebp, dword ptr [rbx+0x80]\n       lea      ecx, [rbp+0x01]\n       mov      dword ptr [rbx+0x80], ecx\n       mov      ecx, ebp\n       and      ecx, 0x3FF\n       cmp      ecx, dword ptr [rdx+0x08]\n       jae      G_M000_IG96\n       mov      ecx, ebp\n       and      ecx, 0x3FF\n       shl      rcx, 4\n       lea      rdx, bword ptr [rdx+rcx+0x10]\n       mov      ebp, dword ptr [rdx]\n       mov      r14d, dword ptr [rdx+0x04]\n       mov      r15d, dword ptr [rdx+0x08]\n       xor      edx, edx\n       mov      dword ptr [rsp+0xE0], edx\n       mov      rcx, gword ptr [rbx+0x40]\n       cmp      byte  ptr [rcx], cl\n       lea      rdx, [rsp+0x98]\n       call     [Tedd.Voxtree.Octree:AsSpan():Tedd.Voxtree.OctreeSpan:this]\n       xor      ecx, ecx\n       mov      dword ptr [rsp+0x90], ecx\n \n\nG_M000_IG26:                ;; offset=0x032E\n       mov      dword ptr [rsp+0xE0], ecx\n       cmp      dword ptr [rsp+0xA0], 0\n       jne      G_M000_IG50\n \n\nG_M000_IG50:                ;; offset=0x071F\n       mov      ecx, dword ptr [rsp+0xA8]\n       mov      edx, 1\n       shlx     ecx, edx, ecx\n       cmp      ebp, ecx\n       jae      G_M000_IG22\n \n\nG_M000_IG51:                ;; offset=0x0738\n       cmp      r14d, ecx\n       jae      G_M000_IG21\n \n\nG_M000_IG52:                ;; offset=0x0741\n       cmp      r15d, ecx\n       jae      G_M000_IG20\n \n\nG_M000_IG53:                ;; offset=0x074A\n       mov      r13, bword ptr [rsp+0x98]\n       mov      r12d, dword ptr [rsp+0xA0]\n       mov      eax, dword ptr [rsp+0xA8]\n       mov      dword ptr [rsp+0x8C], eax\n       movzx    rdx, byte  ptr [rsp+0xAC]\n       xor      r8d, r8d\n       mov      dword ptr [rsp+0x80], r8d\n       mov      r10d, ecx\n       cmp      edx, 1\n       je       G_M000_IG68\n       cmp      edx, 2\n       je       G_M000_IG70\n       cmp      edx, 3\n       jne      G_M000_IG73\n       xor      edx, edx\n       mov      dword ptr [rsp+0x90], edx\n \n\nG_M000_IG54:                ;; offset=0x07A2\n       mov      dword ptr [rsp+0xE0], edx\n       shlx     edx, ebp, eax\n       add      edx, r14d\n       imul     ecx, edx\n       add      ecx, r15d\n       lea      edx, [rax+2*rax]\n       mov      r8d, 1\n       shlx     edx, r8d, edx\n       cmp      ecx, edx\n       jae      G_M000_IG72\n       lea      ecx, [2*rcx+0x02]\n       cmp      r12d, 2\n       jl       G_M000_IG72\n       add      r12d, -2\n       cmp      ecx, r12d\n       ja       G_M000_IG72\n       movsxd   rcx, ecx\n       movzx    rcx, word  ptr [rcx+r13]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, eax\n       jg       G_M000_IG72\n       and      ecx, 0x1FFF\n       mov      dword ptr [rsp+0x90], ecx\n       mov      dword ptr [rsp+0xE0], edx\n       mov      r12d, 1\n \n"
+    },
+    {
+      "history": "get-first",
+      "width": "UInt16",
+      "access": "owned",
+      "arm": "baseline",
+      "file": "h2-get-first.asm",
+      "sha256": "86ce08291a8877a776b03b8cfebe943be38eed996ff80518d58142853c5e039e",
+      "method": "ForceUInt16Scenario:BeforeBatchOwned(int):this (Tier1)",
+      "nativeBytes": 2474,
+      "fixedRspSubtractions": [
+        216
+      ],
+      "lodDispatcher": "G_M000_IG17",
+      "nextOperationBarrier": "G_M000_IG31",
+      "mappedRoute": [
+        "G_M000_IG18",
+        "G_M000_IG22",
+        "G_M000_IG23",
+        "G_M000_IG24",
+        "G_M000_IG25",
+        "G_M000_IG26",
+        "G_M000_IG27",
+        "G_M000_IG28",
+        "G_M000_IG29"
+      ],
+      "inlineCompactWord": false,
+      "staticCallSitesInMappedRoute": [
+        "call     [Snapshot.Voxtree.Octree`1[ushort]:AsSpan():Snapshot.Voxtree.OctreeSpan`1[ushort]:this]",
+        "call     [Snapshot.Voxtree.VoxelCodec`1[ushort]:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref,byref):bool]"
+      ],
+      "routeText": "G_M000_IG18:                ;; offset=0x024D\n       xor      edi, edi\n       jmp      SHORT G_M000_IG22\n \n\nG_M000_IG22:                ;; offset=0x0277\n       cmp      edi, esi\n       jge      SHORT G_M000_IG13\n \n\nG_M000_IG23:                ;; offset=0x027B\n       mov      rdx, gword ptr [rbx+0x20]\n       mov      r14d, dword ptr [rbx+0x68]\n       lea      ecx, [r14+0x01]\n       mov      dword ptr [rbx+0x68], ecx\n       mov      ecx, r14d\n       and      ecx, 0x3FF\n       cmp      ecx, dword ptr [rdx+0x08]\n       jae      G_M000_IG82\n       mov      ecx, r14d\n       and      ecx, 0x3FF\n       shl      rcx, 4\n       lea      rdx, bword ptr [rdx+rcx+0x10]\n       mov      r14d, dword ptr [rdx]\n       mov      r15d, dword ptr [rdx+0x04]\n       mov      r13d, dword ptr [rdx+0x08]\n       xor      edx, edx\n       mov      dword ptr [rbp-0x40], edx\n       mov      rcx, gword ptr [rbx+0x48]\n       cmp      byte  ptr [rcx], cl\n       lea      rdx, [rbp-0x88]\n       call     [Snapshot.Voxtree.Octree`1[ushort]:AsSpan():Snapshot.Voxtree.OctreeSpan`1[ushort]:this]\n       xor      ecx, ecx\n       mov      dword ptr [rbp-0x90], ecx\n \n\nG_M000_IG24:                ;; offset=0x02D9\n       mov      dword ptr [rbp-0x40], ecx\n       mov      edx, dword ptr [rbp-0x78]\n       cmp      dword ptr [rbp-0x80], 0\n       je       G_M000_IG20\n \n\nG_M000_IG25:                ;; offset=0x02E9\n       mov      ecx, 1\n       shlx     ecx, ecx, edx\n       cmp      r14d, ecx\n       jae      G_M000_IG52\n \n\nG_M000_IG26:                ;; offset=0x02FC\n       cmp      r15d, ecx\n       jae      G_M000_IG51\n \n\nG_M000_IG27:                ;; offset=0x0305\n       cmp      r13d, ecx\n       jae      G_M000_IG50\n \n\nG_M000_IG28:                ;; offset=0x030E\n       vmovdqu  xmm0, xmmword ptr [rbp-0x88]\n       vmovdqu  xmmword ptr [rbp-0xC8], xmm0\n \n\nG_M000_IG29:                ;; offset=0x031E\n       mov      dword ptr [rsp+0x20], r15d\n       mov      dword ptr [rsp+0x28], r13d\n       lea      rcx, [rbp-0x90]\n       mov      qword ptr [rsp+0x30], rcx\n       lea      rcx, [rbp-0x40]\n       mov      qword ptr [rsp+0x38], rcx\n       lea      rcx, [rbp-0xC8]\n       movzx    r8, byte  ptr [rbp-0x74]\n       mov      r9d, r14d\n       call     [Snapshot.Voxtree.VoxelCodec`1[ushort]:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref,byref):bool]\n       test     eax, eax\n       jne      G_M000_IG19\n \n"
+    },
+    {
+      "history": "get-first",
+      "width": "UInt16",
+      "access": "owned",
+      "arm": "candidate",
+      "file": "h2-get-first.asm",
+      "sha256": "86ce08291a8877a776b03b8cfebe943be38eed996ff80518d58142853c5e039e",
+      "method": "ForceUInt16Scenario:AfterBatchOwned(int):this (Tier1)",
+      "nativeBytes": 2457,
+      "fixedRspSubtractions": [
+        216
+      ],
+      "lodDispatcher": "G_M000_IG17",
+      "nextOperationBarrier": "G_M000_IG28",
+      "mappedRoute": [
+        "G_M000_IG18",
+        "G_M000_IG24",
+        "G_M000_IG25",
+        "G_M000_IG26",
+        "G_M000_IG47",
+        "G_M000_IG48",
+        "G_M000_IG49",
+        "G_M000_IG50",
+        "G_M000_IG51"
+      ],
+      "inlineCompactWord": false,
+      "staticCallSitesInMappedRoute": [
+        "call     [Tedd.Voxtree.Octree`1[ushort]:AsSpan():Tedd.Voxtree.OctreeSpan`1[ushort]:this]",
+        "call     [Tedd.Voxtree.VoxelCodec`1[ushort]:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref,byref):bool]"
+      ],
+      "routeText": "G_M000_IG18:                ;; offset=0x0231\n       xor      edi, edi\n       jmp      SHORT G_M000_IG24\n \n\nG_M000_IG24:                ;; offset=0x029D\n       cmp      edi, esi\n       jge      G_M000_IG13\n \n\nG_M000_IG25:                ;; offset=0x02A5\n       mov      rdx, gword ptr [rbx+0x20]\n       mov      r14d, dword ptr [rbx+0x68]\n       lea      ecx, [r14+0x01]\n       mov      dword ptr [rbx+0x68], ecx\n       mov      ecx, r14d\n       and      ecx, 0x3FF\n       cmp      ecx, dword ptr [rdx+0x08]\n       jae      G_M000_IG81\n       mov      ecx, r14d\n       and      ecx, 0x3FF\n       shl      rcx, 4\n       lea      rdx, bword ptr [rdx+rcx+0x10]\n       mov      r14d, dword ptr [rdx]\n       mov      r15d, dword ptr [rdx+0x04]\n       mov      r13d, dword ptr [rdx+0x08]\n       xor      edx, edx\n       mov      dword ptr [rbp-0x40], edx\n       mov      rcx, gword ptr [rbx+0x40]\n       cmp      byte  ptr [rcx], cl\n       lea      rdx, [rbp-0x88]\n       call     [Tedd.Voxtree.Octree`1[ushort]:AsSpan():Tedd.Voxtree.OctreeSpan`1[ushort]:this]\n       xor      ecx, ecx\n       mov      dword ptr [rbp-0x90], ecx\n \n\nG_M000_IG26:                ;; offset=0x0303\n       mov      dword ptr [rbp-0x40], ecx\n       cmp      dword ptr [rbp-0x80], 0\n       jne      G_M000_IG47\n \n\nG_M000_IG47:                ;; offset=0x0677\n       mov      ecx, dword ptr [rbp-0x78]\n       mov      edx, 1\n       shlx     ecx, edx, ecx\n       cmp      r14d, ecx\n       jae      G_M000_IG22\n \n\nG_M000_IG48:                ;; offset=0x068D\n       cmp      r15d, ecx\n       jae      G_M000_IG21\n \n\nG_M000_IG49:                ;; offset=0x0696\n       cmp      r13d, ecx\n       jae      G_M000_IG20\n \n\nG_M000_IG50:                ;; offset=0x069F\n       vmovdqu  xmm0, xmmword ptr [rbp-0x88]\n       vmovdqu  xmmword ptr [rbp-0xC8], xmm0\n \n\nG_M000_IG51:                ;; offset=0x06AF\n       mov      dword ptr [rsp+0x20], r15d\n       mov      dword ptr [rsp+0x28], r13d\n       lea      rcx, [rbp-0x90]\n       mov      qword ptr [rsp+0x30], rcx\n       lea      rcx, [rbp-0x40]\n       mov      qword ptr [rsp+0x38], rcx\n       lea      rcx, [rbp-0xC8]\n       mov      edx, dword ptr [rbp-0x78]\n       movzx    r8, byte  ptr [rbp-0x74]\n       mov      r9d, r14d\n       call     [Tedd.Voxtree.VoxelCodec`1[ushort]:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref,byref):bool]\n       test     eax, eax\n       jne      G_M000_IG19\n \n"
+    },
+    {
+      "history": "get-first",
+      "width": "UInt32",
+      "access": "span",
+      "arm": "baseline",
+      "file": "h2-get-first.asm",
+      "sha256": "86ce08291a8877a776b03b8cfebe943be38eed996ff80518d58142853c5e039e",
+      "method": "ForceUInt32Scenario:BeforeBatchSpan(int):this (Tier1)",
+      "nativeBytes": 3932,
+      "fixedRspSubtractions": [
+        216
+      ],
+      "lodDispatcher": "G_M000_IG17",
+      "nextOperationBarrier": "G_M000_IG27",
+      "mappedRoute": [
+        "G_M000_IG18",
+        "G_M000_IG19",
+        "G_M000_IG20",
+        "G_M000_IG21",
+        "G_M000_IG22",
+        "G_M000_IG23"
+      ],
+      "inlineCompactWord": true,
+      "staticCallSitesInMappedRoute": [],
+      "routeText": "G_M000_IG18:                ;; offset=0x02B2\n       xor      edi, edi\n \n\nG_M000_IG19:                ;; offset=0x02B4\n       cmp      edi, esi\n       jge      SHORT G_M000_IG13\n \n\nG_M000_IG20:                ;; offset=0x02B8\n       mov      rcx, gword ptr [rbx+0x20]\n       mov      ebp, dword ptr [rbx+0x80]\n       lea      edx, [rbp+0x01]\n       mov      dword ptr [rbx+0x80], edx\n       mov      edx, ebp\n       and      edx, 0x3FF\n       cmp      edx, dword ptr [rcx+0x08]\n       jae      G_M000_IG112\n       mov      edx, ebp\n       and      edx, 0x3FF\n       shl      rdx, 4\n       lea      rcx, bword ptr [rcx+rdx+0x10]\n       mov      r8d, dword ptr [rcx]\n       mov      r9d, dword ptr [rcx+0x04]\n       mov      edx, dword ptr [rcx+0x08]\n       xor      ecx, ecx\n       mov      dword ptr [rsp+0xB8], ecx\n \n\nG_M000_IG21:                ;; offset=0x0300\n       mov      dword ptr [rsp+0x80], ecx\n \n\nG_M000_IG22:                ;; offset=0x0307\n       mov      dword ptr [rsp+0xB8], ecx\n       cmp      dword ptr [rsp+0xC8], 0\n       je       G_M000_IG70\n       mov      ecx, dword ptr [rsp+0xD0]\n       and      ecx, 31\n       mov      eax, 1\n       shlx     eax, eax, ecx\n       cmp      r8d, eax\n       jae      G_M000_IG71\n       cmp      r9d, eax\n       jae      G_M000_IG72\n       cmp      edx, eax\n       jae      G_M000_IG73\n       mov      rbp, bword ptr [rsp+0xC0]\n       mov      r14d, dword ptr [rsp+0xC8]\n       mov      r15d, dword ptr [rsp+0xD0]\n       movzx    r10, byte  ptr [rsp+0xD4]\n       xor      r11d, r11d\n       mov      dword ptr [rsp+0x78], r11d\n       mov      r13d, eax\n       cmp      r10d, 1\n       je       G_M000_IG74\n       cmp      r10d, 2\n       je       G_M000_IG76\n       cmp      r10d, 3\n       jne      G_M000_IG79\n       xor      r10d, r10d\n       mov      dword ptr [rsp+0x80], r10d\n \n\nG_M000_IG23:                ;; offset=0x039F\n       mov      dword ptr [rsp+0xB8], r10d\n       shlx     ecx, r8d, ecx\n       add      ecx, r9d\n       imul     ecx, eax\n       add      edx, ecx\n       lea      ecx, [r15+2*r15]\n       mov      r8d, 1\n       shlx     ecx, r8d, ecx\n       cmp      edx, ecx\n       jae      G_M000_IG78\n       lea      ecx, [2*rdx+0x02]\n       cmp      ecx, r14d\n       ja       G_M000_IG78\n       mov      edx, r14d\n       sub      edx, ecx\n       cmp      edx, 2\n       jl       G_M000_IG78\n       mov      edx, ecx\n       add      rdx, 2\n       mov      r8d, r14d\n       cmp      rdx, r8\n       ja       G_M000_IG111\n       add      rcx, rbp\n       movzx    rcx, word  ptr [rcx]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r15d\n       jg       G_M000_IG78\n       and      ecx, 0x1FFF\n       mov      dword ptr [rsp+0x80], ecx\n       mov      dword ptr [rsp+0xB8], edx\n       mov      r13d, 1\n \n"
+    },
+    {
+      "history": "get-first",
+      "width": "UInt32",
+      "access": "span",
+      "arm": "candidate",
+      "file": "h2-get-first.asm",
+      "sha256": "86ce08291a8877a776b03b8cfebe943be38eed996ff80518d58142853c5e039e",
+      "method": "ForceUInt32Scenario:AfterBatchSpan(int):this (Tier1)",
+      "nativeBytes": 4317,
+      "fixedRspSubtractions": [
+        232
+      ],
+      "lodDispatcher": "G_M000_IG17",
+      "nextOperationBarrier": "G_M000_IG27",
+      "mappedRoute": [
+        "G_M000_IG18",
+        "G_M000_IG19",
+        "G_M000_IG20",
+        "G_M000_IG21",
+        "G_M000_IG22",
+        "G_M000_IG23"
+      ],
+      "inlineCompactWord": true,
+      "staticCallSitesInMappedRoute": [],
+      "routeText": "G_M000_IG18:                ;; offset=0x02A1\n       xor      edi, edi\n \n\nG_M000_IG19:                ;; offset=0x02A3\n       cmp      edi, esi\n       jge      SHORT G_M000_IG13\n \n\nG_M000_IG20:                ;; offset=0x02A7\n       mov      rcx, gword ptr [rbx+0x20]\n       mov      ebp, dword ptr [rbx+0x80]\n       lea      edx, [rbp+0x01]\n       mov      dword ptr [rbx+0x80], edx\n       mov      edx, ebp\n       and      edx, 0x3FF\n       cmp      edx, dword ptr [rcx+0x08]\n       jae      G_M000_IG128\n       mov      edx, ebp\n       and      edx, 0x3FF\n       shl      rdx, 4\n       lea      rcx, bword ptr [rcx+rdx+0x10]\n       mov      r8d, dword ptr [rcx]\n       mov      r9d, dword ptr [rcx+0x04]\n       mov      edx, dword ptr [rcx+0x08]\n       xor      ecx, ecx\n       mov      dword ptr [rsp+0xC8], ecx\n \n\nG_M000_IG21:                ;; offset=0x02EF\n       mov      dword ptr [rsp+0x90], ecx\n \n\nG_M000_IG22:                ;; offset=0x02F6\n       mov      dword ptr [rsp+0xC8], ecx\n       cmp      dword ptr [rsp+0xD8], 0\n       je       G_M000_IG77\n       mov      ecx, dword ptr [rsp+0xE0]\n       and      ecx, 31\n       mov      eax, 1\n       shlx     eax, eax, ecx\n       cmp      r8d, eax\n       jae      G_M000_IG78\n       cmp      r9d, eax\n       jae      G_M000_IG79\n       cmp      edx, eax\n       jae      G_M000_IG80\n       mov      rbp, bword ptr [rsp+0xD0]\n       mov      r14d, dword ptr [rsp+0xD8]\n       mov      r15d, dword ptr [rsp+0xE0]\n       movzx    r10, byte  ptr [rsp+0xE4]\n       xor      r11d, r11d\n       mov      dword ptr [rsp+0x88], r11d\n       mov      r13d, eax\n       cmp      r10d, 1\n       je       G_M000_IG81\n       cmp      r10d, 2\n       je       G_M000_IG83\n       cmp      r10d, 3\n       jne      G_M000_IG86\n       xor      r10d, r10d\n       mov      dword ptr [rsp+0x90], r10d\n \n\nG_M000_IG23:                ;; offset=0x0391\n       mov      dword ptr [rsp+0xC8], r10d\n       shlx     ecx, r8d, ecx\n       add      ecx, r9d\n       imul     ecx, eax\n       add      edx, ecx\n       lea      ecx, [r15+2*r15]\n       mov      r8d, 1\n       shlx     ecx, r8d, ecx\n       cmp      edx, ecx\n       jae      G_M000_IG85\n       lea      ecx, [2*rdx+0x02]\n       cmp      r14d, 2\n       jl       G_M000_IG85\n       add      r14d, -2\n       cmp      ecx, r14d\n       ja       G_M000_IG85\n       movsxd   rcx, ecx\n       movzx    rcx, word  ptr [rcx+rbp]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r15d\n       jg       G_M000_IG85\n       and      ecx, 0x1FFF\n       mov      dword ptr [rsp+0x90], ecx\n       mov      dword ptr [rsp+0xC8], edx\n       mov      r13d, 1\n \n"
+    },
+    {
+      "history": "get-first",
+      "width": "UInt16",
+      "access": "span",
+      "arm": "baseline",
+      "file": "h2-get-first.asm",
+      "sha256": "86ce08291a8877a776b03b8cfebe943be38eed996ff80518d58142853c5e039e",
+      "method": "ForceUInt16Scenario:BeforeBatchSpan(int):this (Tier1)",
+      "nativeBytes": 2909,
+      "fixedRspSubtractions": [
+        200
+      ],
+      "lodDispatcher": "G_M000_IG17",
+      "nextOperationBarrier": "G_M000_IG26",
+      "mappedRoute": [
+        "G_M000_IG18",
+        "G_M000_IG19",
+        "G_M000_IG20",
+        "G_M000_IG21",
+        "G_M000_IG22",
+        "G_M000_IG23"
+      ],
+      "inlineCompactWord": true,
+      "staticCallSitesInMappedRoute": [],
+      "routeText": "G_M000_IG18:                ;; offset=0x0273\n       xor      edi, edi\n \n\nG_M000_IG19:                ;; offset=0x0275\n       cmp      edi, esi\n       jge      SHORT G_M000_IG13\n \n\nG_M000_IG20:                ;; offset=0x0279\n       mov      rcx, gword ptr [rbx+0x20]\n       mov      r14d, dword ptr [rbx+0x68]\n       lea      edx, [r14+0x01]\n       mov      dword ptr [rbx+0x68], edx\n       mov      edx, r14d\n       and      edx, 0x3FF\n       cmp      edx, dword ptr [rcx+0x08]\n       jae      G_M000_IG93\n       mov      edx, r14d\n       and      edx, 0x3FF\n       shl      rdx, 4\n       lea      rcx, bword ptr [rcx+rdx+0x10]\n       mov      r8d, dword ptr [rcx]\n       mov      r9d, dword ptr [rcx+0x04]\n       mov      edx, dword ptr [rcx+0x08]\n       xor      ecx, ecx\n       mov      dword ptr [rbp-0x58], ecx\n \n\nG_M000_IG21:                ;; offset=0x02BB\n       mov      dword ptr [rbp-0x58], ecx\n       cmp      dword ptr [rbp-0x48], 0\n       je       G_M000_IG63\n       mov      ecx, dword ptr [rbp-0x40]\n       and      ecx, 31\n       mov      eax, 1\n       shlx     eax, eax, ecx\n       cmp      r8d, eax\n       jae      G_M000_IG64\n       cmp      r9d, eax\n       jae      G_M000_IG65\n       cmp      edx, eax\n       jae      G_M000_IG66\n       mov      r14, bword ptr [rbp-0x50]\n       mov      r15d, dword ptr [rbp-0x48]\n       mov      r13d, dword ptr [rbp-0x40]\n       movzx    r10, byte  ptr [rbp-0x3C]\n       xor      r11d, r11d\n       mov      dword ptr [rbp-0x90], r11d\n \n\nG_M000_IG22:                ;; offset=0x030D\n       mov      dword ptr [rbp-0x98], r11d\n       mov      r12d, eax\n       cmp      r10d, 1\n       je       G_M000_IG67\n       cmp      r10d, 2\n       je       G_M000_IG71\n       cmp      r10d, 3\n       jne      G_M000_IG74\n       xor      r10d, r10d\n       mov      dword ptr [rbp-0x90], r10d\n \n\nG_M000_IG23:                ;; offset=0x033F\n       mov      dword ptr [rbp-0x58], r10d\n       shlx     ecx, r8d, ecx\n       add      ecx, r9d\n       imul     ecx, eax\n       add      edx, ecx\n       lea      ecx, [r13+2*r13]\n       mov      r8d, 1\n       shlx     ecx, r8d, ecx\n       cmp      edx, ecx\n       jae      G_M000_IG73\n       lea      ecx, [2*rdx+0x03]\n       cmp      ecx, r15d\n       ja       G_M000_IG73\n       mov      edx, r15d\n       sub      edx, ecx\n       cmp      edx, 2\n       jl       G_M000_IG73\n       mov      edx, ecx\n       add      rdx, 2\n       mov      r8d, r15d\n       cmp      rdx, r8\n       ja       G_M000_IG76\n       add      rcx, r14\n       movzx    rcx, word  ptr [rcx]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r13d\n       jg       G_M000_IG73\n       and      ecx, 0x1FFF\n       mov      word  ptr [rbp-0x90], cx\n       mov      dword ptr [rbp-0x58], edx\n       mov      eax, 1\n \n"
+    },
+    {
+      "history": "get-first",
+      "width": "UInt16",
+      "access": "span",
+      "arm": "candidate",
+      "file": "h2-get-first.asm",
+      "sha256": "86ce08291a8877a776b03b8cfebe943be38eed996ff80518d58142853c5e039e",
+      "method": "ForceUInt16Scenario:AfterBatchSpan(int):this (Tier1)",
+      "nativeBytes": 2951,
+      "fixedRspSubtractions": [
+        200
+      ],
+      "lodDispatcher": "G_M000_IG17",
+      "nextOperationBarrier": "G_M000_IG26",
+      "mappedRoute": [
+        "G_M000_IG18",
+        "G_M000_IG19",
+        "G_M000_IG20",
+        "G_M000_IG21",
+        "G_M000_IG22",
+        "G_M000_IG23"
+      ],
+      "inlineCompactWord": true,
+      "staticCallSitesInMappedRoute": [],
+      "routeText": "G_M000_IG18:                ;; offset=0x0265\n       xor      edi, edi\n \n\nG_M000_IG19:                ;; offset=0x0267\n       cmp      edi, esi\n       jge      SHORT G_M000_IG13\n \n\nG_M000_IG20:                ;; offset=0x026B\n       mov      rcx, gword ptr [rbx+0x20]\n       mov      r14d, dword ptr [rbx+0x68]\n       lea      edx, [r14+0x01]\n       mov      dword ptr [rbx+0x68], edx\n       mov      edx, r14d\n       and      edx, 0x3FF\n       cmp      edx, dword ptr [rcx+0x08]\n       jae      G_M000_IG98\n       mov      edx, r14d\n       and      edx, 0x3FF\n       shl      rdx, 4\n       lea      rcx, bword ptr [rcx+rdx+0x10]\n       mov      r8d, dword ptr [rcx]\n       mov      r9d, dword ptr [rcx+0x04]\n       mov      edx, dword ptr [rcx+0x08]\n       xor      ecx, ecx\n       mov      dword ptr [rbp-0x58], ecx\n \n\nG_M000_IG21:                ;; offset=0x02AD\n       mov      dword ptr [rbp-0x58], ecx\n       cmp      dword ptr [rbp-0x48], 0\n       je       G_M000_IG67\n       mov      ecx, dword ptr [rbp-0x40]\n       and      ecx, 31\n       mov      eax, 1\n       shlx     eax, eax, ecx\n       cmp      r8d, eax\n       jae      G_M000_IG68\n       cmp      r9d, eax\n       jae      G_M000_IG69\n       cmp      edx, eax\n       jae      G_M000_IG70\n       mov      r14, bword ptr [rbp-0x50]\n       mov      r15d, dword ptr [rbp-0x48]\n       mov      r13d, dword ptr [rbp-0x40]\n       movzx    r10, byte  ptr [rbp-0x3C]\n       xor      r11d, r11d\n       mov      dword ptr [rbp-0x90], r11d\n \n\nG_M000_IG22:                ;; offset=0x02FF\n       mov      dword ptr [rbp-0x98], r11d\n       mov      r12d, eax\n       cmp      r10d, 1\n       je       G_M000_IG71\n       cmp      r10d, 2\n       je       G_M000_IG75\n       cmp      r10d, 3\n       jne      G_M000_IG78\n       xor      r10d, r10d\n       mov      dword ptr [rbp-0x90], r10d\n \n\nG_M000_IG23:                ;; offset=0x0331\n       mov      dword ptr [rbp-0x58], r10d\n       shlx     ecx, r8d, ecx\n       add      ecx, r9d\n       imul     ecx, eax\n       add      edx, ecx\n       lea      ecx, [r13+2*r13]\n       mov      r8d, 1\n       shlx     ecx, r8d, ecx\n       cmp      edx, ecx\n       jae      G_M000_IG77\n       lea      ecx, [2*rdx+0x03]\n       cmp      r15d, 2\n       jl       G_M000_IG77\n       add      r15d, -2\n       cmp      ecx, r15d\n       ja       G_M000_IG77\n       movsxd   rcx, ecx\n       movzx    rcx, word  ptr [r14+rcx]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r13d\n       jg       G_M000_IG77\n       and      ecx, 0x1FFF\n       mov      word  ptr [rbp-0x90], cx\n       mov      dword ptr [rbp-0x58], edx\n       mov      r15d, 1\n \n"
+    },
+    {
+      "history": "lod-first",
+      "width": "UInt32",
+      "access": "owned",
+      "arm": "baseline",
+      "file": "h2-lod-first.asm",
+      "sha256": "28bd1c6b14a457e12efd021b600158a0d966c377d47538c341ac4efb1c130a76",
+      "method": "ForceUInt32Scenario:BeforeBatchOwned(int):this (Tier1)",
+      "nativeBytes": 3833,
+      "fixedRspSubtractions": [
+        216
+      ],
+      "lodDispatcher": "G_M000_IG09",
+      "nextOperationBarrier": "G_M000_IG18",
+      "mappedRoute": [
+        "G_M000_IG10",
+        "G_M000_IG11",
+        "G_M000_IG12",
+        "G_M000_IG13",
+        "G_M000_IG14"
+      ],
+      "inlineCompactWord": true,
+      "staticCallSitesInMappedRoute": [],
+      "routeText": "G_M000_IG10:                ;; offset=0x00C8\n       xor      edi, edi\n \n\nG_M000_IG11:                ;; offset=0x00CA\n       cmp      edi, esi\n       jge      G_M000_IG34\n \n\nG_M000_IG12:                ;; offset=0x00D2\n       mov      rcx, gword ptr [rbx+0x20]\n       mov      ebp, dword ptr [rbx+0x80]\n       lea      edx, [rbp+0x01]\n       mov      dword ptr [rbx+0x80], edx\n       mov      edx, ebp\n       and      edx, 0x3FF\n       cmp      edx, dword ptr [rcx+0x08]\n       jae      G_M000_IG120\n       shl      rdx, 4\n       lea      rcx, bword ptr [rcx+rdx+0x10]\n       mov      r8d, dword ptr [rcx]\n       mov      r9d, dword ptr [rcx+0x04]\n       mov      edx, dword ptr [rcx+0x08]\n       xor      ecx, ecx\n       mov      dword ptr [rsp+0xD0], ecx\n       mov      rcx, gword ptr [rbx+0x48]\n       mov      rax, gword ptr [rcx+0x08]\n       mov      ebp, dword ptr [rax+0x08]\n       test     ebp, ebp\n       je       G_M000_IG92\n       add      rax, 16\n       mov      r14d, dword ptr [rcx+0x10]\n       cmp      ebp, 1\n       jbe      G_M000_IG120\n       movzx    rcx, byte  ptr [rax+0x01]\n       and      ecx, 3\n       xor      r10d, r10d\n       mov      dword ptr [rsp+0x98], r10d\n \n\nG_M000_IG13:                ;; offset=0x0148\n       mov      dword ptr [rsp+0xD0], r10d\n       mov      r10d, r14d\n       and      r10d, 31\n       mov      r11d, 1\n       shlx     r11d, r11d, r10d\n       cmp      r8d, r11d\n       jae      G_M000_IG82\n       cmp      r9d, r11d\n       jae      G_M000_IG83\n       cmp      edx, r11d\n       jae      G_M000_IG84\n       xor      r15d, r15d\n       mov      dword ptr [rsp+0x90], r15d\n       mov      r15d, r11d\n       cmp      ecx, 1\n       je       G_M000_IG85\n       cmp      ecx, 2\n       je       G_M000_IG87\n       cmp      ecx, 3\n       jne      G_M000_IG90\n       xor      ecx, ecx\n       mov      dword ptr [rsp+0x98], ecx\n \n\nG_M000_IG14:                ;; offset=0x01AF\n       mov      dword ptr [rsp+0xD0], ecx\n       shlx     ecx, r8d, r10d\n       add      ecx, r9d\n       imul     ecx, r11d\n       add      edx, ecx\n       lea      ecx, [r14+2*r14]\n       mov      r8d, 1\n       shlx     ecx, r8d, ecx\n       cmp      edx, ecx\n       jae      G_M000_IG89\n       lea      ecx, [2*rdx+0x02]\n       cmp      ecx, ebp\n       ja       G_M000_IG89\n       mov      edx, ebp\n       sub      edx, ecx\n       cmp      edx, 2\n       jl       G_M000_IG89\n       mov      edx, ecx\n       add      rdx, 2\n       mov      r8d, ebp\n       cmp      rdx, r8\n       ja       G_M000_IG119\n       add      rax, rcx\n       movzx    rcx, word  ptr [rax]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r14d\n       jg       G_M000_IG89\n       and      ecx, 0x1FFF\n       mov      dword ptr [rsp+0x98], ecx\n       mov      dword ptr [rsp+0xD0], edx\n       mov      r15d, 1\n \n"
+    },
+    {
+      "history": "lod-first",
+      "width": "UInt32",
+      "access": "owned",
+      "arm": "candidate",
+      "file": "h2-lod-first.asm",
+      "sha256": "28bd1c6b14a457e12efd021b600158a0d966c377d47538c341ac4efb1c130a76",
+      "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1)",
+      "nativeBytes": 3718,
+      "fixedRspSubtractions": [
+        224
+      ],
+      "lodDispatcher": "G_M000_IG09",
+      "nextOperationBarrier": "G_M000_IG18",
+      "mappedRoute": [
+        "G_M000_IG10",
+        "G_M000_IG11",
+        "G_M000_IG12",
+        "G_M000_IG13",
+        "G_M000_IG14"
+      ],
+      "inlineCompactWord": true,
+      "staticCallSitesInMappedRoute": [],
+      "routeText": "G_M000_IG10:                ;; offset=0x00B7\n       xor      edi, edi\n \n\nG_M000_IG11:                ;; offset=0x00B9\n       cmp      edi, esi\n       jge      G_M000_IG34\n \n\nG_M000_IG12:                ;; offset=0x00C1\n       mov      rcx, gword ptr [rbx+0x20]\n       mov      ebp, dword ptr [rbx+0x80]\n       lea      edx, [rbp+0x01]\n       mov      dword ptr [rbx+0x80], edx\n       mov      edx, ebp\n       and      edx, 0x3FF\n       cmp      edx, dword ptr [rcx+0x08]\n       jae      G_M000_IG119\n       shl      rdx, 4\n       lea      rcx, bword ptr [rcx+rdx+0x10]\n       mov      r8d, dword ptr [rcx]\n       mov      r9d, dword ptr [rcx+0x04]\n       mov      edx, dword ptr [rcx+0x08]\n       xor      ecx, ecx\n       mov      dword ptr [rsp+0xD8], ecx\n       mov      rcx, gword ptr [rbx+0x40]\n       mov      rax, gword ptr [rcx+0x08]\n       mov      ebp, dword ptr [rax+0x08]\n       test     ebp, ebp\n       je       G_M000_IG91\n       add      rax, 16\n       mov      r14d, dword ptr [rcx+0x10]\n       cmp      ebp, 1\n       jbe      G_M000_IG119\n       movzx    rcx, byte  ptr [rax+0x01]\n       and      ecx, 3\n       xor      r10d, r10d\n       mov      dword ptr [rsp+0xA0], r10d\n \n\nG_M000_IG13:                ;; offset=0x0137\n       mov      dword ptr [rsp+0xD8], r10d\n       mov      r10d, r14d\n       and      r10d, 31\n       mov      r11d, 1\n       shlx     r11d, r11d, r10d\n       cmp      r8d, r11d\n       jae      G_M000_IG81\n       cmp      r9d, r11d\n       jae      G_M000_IG82\n       cmp      edx, r11d\n       jae      G_M000_IG83\n       xor      r15d, r15d\n       mov      dword ptr [rsp+0x98], r15d\n       mov      r15d, r11d\n       cmp      ecx, 1\n       je       G_M000_IG84\n       cmp      ecx, 2\n       je       G_M000_IG86\n       cmp      ecx, 3\n       jne      G_M000_IG89\n       xor      ecx, ecx\n       mov      dword ptr [rsp+0xA0], ecx\n \n\nG_M000_IG14:                ;; offset=0x019E\n       mov      dword ptr [rsp+0xD8], ecx\n       shlx     ecx, r8d, r10d\n       add      ecx, r9d\n       imul     ecx, r11d\n       add      edx, ecx\n       lea      ecx, [r14+2*r14]\n       mov      r8d, 1\n       shlx     ecx, r8d, ecx\n       cmp      edx, ecx\n       jae      G_M000_IG88\n       lea      ecx, [2*rdx+0x02]\n       add      ebp, -2\n       cmp      ecx, ebp\n       ja       G_M000_IG88\n       movsxd   rcx, ecx\n       movzx    rax, word  ptr [rax+rcx]\n       mov      ecx, eax\n       sar      ecx, 13\n       cmp      ecx, r14d\n       jg       G_M000_IG88\n       and      eax, 0x1FFF\n       mov      dword ptr [rsp+0xA0], eax\n       mov      dword ptr [rsp+0xD8], ecx\n       mov      r15d, 1\n \n"
+    },
+    {
+      "history": "lod-first",
+      "width": "UInt16",
+      "access": "owned",
+      "arm": "baseline",
+      "file": "h2-lod-first.asm",
+      "sha256": "28bd1c6b14a457e12efd021b600158a0d966c377d47538c341ac4efb1c130a76",
+      "method": "ForceUInt16Scenario:BeforeBatchOwned(int):this (Tier1)",
+      "nativeBytes": 2811,
+      "fixedRspSubtractions": [
+        200
+      ],
+      "lodDispatcher": "G_M000_IG09",
+      "nextOperationBarrier": "G_M000_IG17",
+      "mappedRoute": [
+        "G_M000_IG10",
+        "G_M000_IG11",
+        "G_M000_IG12",
+        "G_M000_IG13",
+        "G_M000_IG14"
+      ],
+      "inlineCompactWord": true,
+      "staticCallSitesInMappedRoute": [],
+      "routeText": "G_M000_IG10:                ;; offset=0x00C1\n       xor      edi, edi\n \n\nG_M000_IG11:                ;; offset=0x00C3\n       cmp      edi, esi\n       jge      G_M000_IG23\n \n\nG_M000_IG12:                ;; offset=0x00CB\n       mov      rcx, gword ptr [rbx+0x20]\n       mov      r14d, dword ptr [rbx+0x68]\n       lea      edx, [r14+0x01]\n       mov      dword ptr [rbx+0x68], edx\n       mov      edx, r14d\n       and      edx, 0x3FF\n       cmp      edx, dword ptr [rcx+0x08]\n       jae      G_M000_IG96\n       shl      rdx, 4\n       lea      rcx, bword ptr [rcx+rdx+0x10]\n       mov      r8d, dword ptr [rcx]\n       mov      r9d, dword ptr [rcx+0x04]\n       mov      edx, dword ptr [rcx+0x08]\n       xor      ecx, ecx\n       mov      dword ptr [rbp-0x40], ecx\n       mov      rcx, gword ptr [rbx+0x48]\n       mov      rax, gword ptr [rcx+0x08]\n       mov      r14d, dword ptr [rax+0x08]\n       test     r14d, r14d\n       je       G_M000_IG84\n       add      rax, 16\n       mov      r15d, dword ptr [rcx+0x10]\n       cmp      r14d, 1\n       jbe      G_M000_IG96\n       movzx    rcx, byte  ptr [rax+0x01]\n       and      ecx, 3\n       xor      r10d, r10d\n       mov      dword ptr [rbp-0x40], r10d\n       mov      r10d, r15d\n       and      r10d, 31\n       mov      r11d, 1\n       shlx     r11d, r11d, r10d\n       cmp      r8d, r11d\n       jae      G_M000_IG72\n       cmp      r9d, r11d\n       jae      G_M000_IG73\n       cmp      edx, r11d\n       jae      G_M000_IG74\n       xor      r13d, r13d\n       mov      dword ptr [rbp-0x78], r13d\n \n\nG_M000_IG13:                ;; offset=0x016D\n       mov      dword ptr [rbp-0x80], r13d\n       mov      r13d, r11d\n       cmp      ecx, 1\n       je       G_M000_IG75\n       cmp      ecx, 2\n       je       G_M000_IG79\n       cmp      ecx, 3\n       jne      G_M000_IG82\n       xor      ecx, ecx\n       mov      dword ptr [rbp-0x78], ecx\n \n\nG_M000_IG14:                ;; offset=0x0194\n       mov      dword ptr [rbp-0x40], ecx\n       shlx     ecx, r8d, r10d\n       add      ecx, r9d\n       imul     ecx, r11d\n       add      edx, ecx\n       lea      ecx, [r15+2*r15]\n       mov      r8d, 1\n       shlx     ecx, r8d, ecx\n       cmp      edx, ecx\n       jae      G_M000_IG81\n       lea      ecx, [2*rdx+0x03]\n       cmp      ecx, r14d\n       ja       G_M000_IG81\n       mov      edx, r14d\n       sub      edx, ecx\n       cmp      edx, 2\n       jl       G_M000_IG81\n       mov      edx, ecx\n       add      rdx, 2\n       mov      r8d, r14d\n       cmp      rdx, r8\n       ja       G_M000_IG85\n       add      rax, rcx\n       movzx    rcx, word  ptr [rax]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r15d\n       jg       G_M000_IG81\n       and      ecx, 0x1FFF\n       mov      word  ptr [rbp-0x78], cx\n       mov      dword ptr [rbp-0x40], edx\n       mov      r12d, 1\n \n"
+    },
+    {
+      "history": "lod-first",
+      "width": "UInt16",
+      "access": "owned",
+      "arm": "candidate",
+      "file": "h2-lod-first.asm",
+      "sha256": "28bd1c6b14a457e12efd021b600158a0d966c377d47538c341ac4efb1c130a76",
+      "method": "ForceUInt16Scenario:AfterBatchOwned(int):this (Tier1)",
+      "nativeBytes": 2838,
+      "fixedRspSubtractions": [
+        200
+      ],
+      "lodDispatcher": "G_M000_IG09",
+      "nextOperationBarrier": "G_M000_IG17",
+      "mappedRoute": [
+        "G_M000_IG10",
+        "G_M000_IG11",
+        "G_M000_IG12",
+        "G_M000_IG13",
+        "G_M000_IG14"
+      ],
+      "inlineCompactWord": true,
+      "staticCallSitesInMappedRoute": [],
+      "routeText": "G_M000_IG10:                ;; offset=0x00C1\n       xor      edi, edi\n \n\nG_M000_IG11:                ;; offset=0x00C3\n       cmp      edi, esi\n       jge      G_M000_IG48\n \n\nG_M000_IG12:                ;; offset=0x00CB\n       mov      rcx, gword ptr [rbx+0x20]\n       mov      r14d, dword ptr [rbx+0x68]\n       lea      edx, [r14+0x01]\n       mov      dword ptr [rbx+0x68], edx\n       mov      edx, r14d\n       and      edx, 0x3FF\n       cmp      edx, dword ptr [rcx+0x08]\n       jae      G_M000_IG97\n       shl      rdx, 4\n       lea      rcx, bword ptr [rcx+rdx+0x10]\n       mov      r8d, dword ptr [rcx]\n       mov      r9d, dword ptr [rcx+0x04]\n       mov      edx, dword ptr [rcx+0x08]\n       xor      ecx, ecx\n       mov      dword ptr [rbp-0x40], ecx\n       mov      rcx, gword ptr [rbx+0x40]\n       mov      rax, gword ptr [rcx+0x08]\n       mov      r14d, dword ptr [rax+0x08]\n       test     r14d, r14d\n       je       G_M000_IG85\n       add      rax, 16\n       mov      r15d, dword ptr [rcx+0x10]\n       cmp      r14d, 1\n       jbe      G_M000_IG97\n       movzx    rcx, byte  ptr [rax+0x01]\n       and      ecx, 3\n       xor      r10d, r10d\n       mov      dword ptr [rbp-0x40], r10d\n       mov      r10d, r15d\n       and      r10d, 31\n       mov      r11d, 1\n       shlx     r11d, r11d, r10d\n       cmp      r8d, r11d\n       jae      G_M000_IG73\n       cmp      r9d, r11d\n       jae      G_M000_IG74\n       cmp      edx, r11d\n       jae      G_M000_IG75\n       xor      r13d, r13d\n       mov      dword ptr [rbp-0x78], r13d\n \n\nG_M000_IG13:                ;; offset=0x016D\n       mov      dword ptr [rbp-0x80], r13d\n       mov      r13d, r11d\n       cmp      ecx, 1\n       je       G_M000_IG76\n       cmp      ecx, 2\n       je       G_M000_IG80\n       cmp      ecx, 3\n       jne      G_M000_IG83\n       xor      ecx, ecx\n       mov      dword ptr [rbp-0x78], ecx\n \n\nG_M000_IG14:                ;; offset=0x0194\n       mov      dword ptr [rbp-0x40], ecx\n       shlx     ecx, r8d, r10d\n       add      ecx, r9d\n       imul     ecx, r11d\n       add      edx, ecx\n       lea      ecx, [r15+2*r15]\n       mov      r8d, 1\n       shlx     ecx, r8d, ecx\n       cmp      edx, ecx\n       jae      G_M000_IG82\n       lea      ecx, [2*rdx+0x03]\n       add      r14d, -2\n       cmp      ecx, r14d\n       ja       G_M000_IG82\n       movsxd   rcx, ecx\n       movzx    rax, word  ptr [rax+rcx]\n       mov      ecx, eax\n       sar      ecx, 13\n       cmp      ecx, r15d\n       jg       G_M000_IG82\n       and      eax, 0x1FFF\n       mov      word  ptr [rbp-0x78], ax\n       mov      dword ptr [rbp-0x40], ecx\n       mov      r14d, 1\n \n"
+    },
+    {
+      "history": "lod-first",
+      "width": "UInt32",
+      "access": "span",
+      "arm": "baseline",
+      "file": "h2-lod-first.asm",
+      "sha256": "28bd1c6b14a457e12efd021b600158a0d966c377d47538c341ac4efb1c130a76",
+      "method": "ForceUInt32Scenario:BeforeBatchSpan(int):this (Tier1)",
+      "nativeBytes": 4345,
+      "fixedRspSubtractions": [
+        232
+      ],
+      "lodDispatcher": "G_M000_IG09",
+      "nextOperationBarrier": "G_M000_IG19",
+      "mappedRoute": [
+        "G_M000_IG10",
+        "G_M000_IG11",
+        "G_M000_IG12",
+        "G_M000_IG13",
+        "G_M000_IG14",
+        "G_M000_IG15"
+      ],
+      "inlineCompactWord": true,
+      "staticCallSitesInMappedRoute": [],
+      "routeText": "G_M000_IG10:                ;; offset=0x010D\n       xor      edi, edi\n \n\nG_M000_IG11:                ;; offset=0x010F\n       cmp      edi, esi\n       jge      G_M000_IG35\n \n\nG_M000_IG12:                ;; offset=0x0117\n       mov      rcx, gword ptr [rbx+0x20]\n       mov      ebp, dword ptr [rbx+0x80]\n       lea      edx, [rbp+0x01]\n       mov      dword ptr [rbx+0x80], edx\n       mov      edx, ebp\n       and      edx, 0x3FF\n       cmp      edx, dword ptr [rcx+0x08]\n       jae      G_M000_IG139\n       shl      rdx, 4\n       lea      rcx, bword ptr [rcx+rdx+0x10]\n       mov      r8d, dword ptr [rcx]\n       mov      r9d, dword ptr [rcx+0x04]\n       mov      edx, dword ptr [rcx+0x08]\n       xor      ecx, ecx\n       mov      dword ptr [rsp+0xC8], ecx\n \n\nG_M000_IG13:                ;; offset=0x0157\n       mov      dword ptr [rsp+0x90], ecx\n \n\nG_M000_IG14:                ;; offset=0x015E\n       mov      dword ptr [rsp+0xC8], ecx\n       mov      ebp, dword ptr [rsp+0xD8]\n       test     ebp, ebp\n       je       G_M000_IG94\n       mov      r14d, dword ptr [rsp+0xE0]\n       mov      ecx, r14d\n       and      ecx, 31\n       mov      eax, 1\n       shlx     eax, eax, ecx\n       cmp      r8d, eax\n       jae      G_M000_IG95\n       cmp      r9d, eax\n       jae      G_M000_IG96\n       cmp      edx, eax\n       jae      G_M000_IG97\n       mov      r15, bword ptr [rsp+0xD0]\n       movzx    r10, byte  ptr [rsp+0xE4]\n       xor      r11d, r11d\n       mov      dword ptr [rsp+0x88], r11d\n       mov      r13d, eax\n       cmp      r10d, 1\n       je       G_M000_IG98\n       cmp      r10d, 2\n       je       G_M000_IG100\n       cmp      r10d, 3\n       jne      G_M000_IG103\n       xor      r10d, r10d\n       mov      dword ptr [rsp+0x90], r10d\n \n\nG_M000_IG15:                ;; offset=0x01EE\n       mov      dword ptr [rsp+0xC8], r10d\n       shlx     ecx, r8d, ecx\n       add      ecx, r9d\n       imul     ecx, eax\n       add      edx, ecx\n       lea      ecx, [r14+2*r14]\n       mov      r8d, 1\n       shlx     ecx, r8d, ecx\n       cmp      edx, ecx\n       jae      G_M000_IG102\n       lea      ecx, [2*rdx+0x02]\n       cmp      ecx, ebp\n       ja       G_M000_IG102\n       mov      edx, ebp\n       sub      edx, ecx\n       cmp      edx, 2\n       jl       G_M000_IG102\n       mov      edx, ecx\n       add      rdx, 2\n       mov      r8d, ebp\n       cmp      rdx, r8\n       ja       G_M000_IG138\n       add      rcx, r15\n       movzx    rcx, word  ptr [rcx]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r14d\n       jg       G_M000_IG102\n       and      ecx, 0x1FFF\n       mov      dword ptr [rsp+0x90], ecx\n       mov      dword ptr [rsp+0xC8], edx\n       mov      r13d, 1\n \n"
+    },
+    {
+      "history": "lod-first",
+      "width": "UInt32",
+      "access": "span",
+      "arm": "candidate",
+      "file": "h2-lod-first.asm",
+      "sha256": "28bd1c6b14a457e12efd021b600158a0d966c377d47538c341ac4efb1c130a76",
+      "method": "ForceUInt32Scenario:AfterBatchSpan(int):this (Tier1)",
+      "nativeBytes": 4280,
+      "fixedRspSubtractions": [
+        232
+      ],
+      "lodDispatcher": "G_M000_IG09",
+      "nextOperationBarrier": "G_M000_IG19",
+      "mappedRoute": [
+        "G_M000_IG10",
+        "G_M000_IG11",
+        "G_M000_IG12",
+        "G_M000_IG13",
+        "G_M000_IG14",
+        "G_M000_IG15"
+      ],
+      "inlineCompactWord": true,
+      "staticCallSitesInMappedRoute": [],
+      "routeText": "G_M000_IG10:                ;; offset=0x010D\n       xor      edi, edi\n \n\nG_M000_IG11:                ;; offset=0x010F\n       cmp      edi, esi\n       jge      G_M000_IG35\n \n\nG_M000_IG12:                ;; offset=0x0117\n       mov      rcx, gword ptr [rbx+0x20]\n       mov      ebp, dword ptr [rbx+0x80]\n       lea      edx, [rbp+0x01]\n       mov      dword ptr [rbx+0x80], edx\n       mov      edx, ebp\n       and      edx, 0x3FF\n       cmp      edx, dword ptr [rcx+0x08]\n       jae      G_M000_IG139\n       shl      rdx, 4\n       lea      rcx, bword ptr [rcx+rdx+0x10]\n       mov      r8d, dword ptr [rcx]\n       mov      r9d, dword ptr [rcx+0x04]\n       mov      edx, dword ptr [rcx+0x08]\n       xor      ecx, ecx\n       mov      dword ptr [rsp+0xC8], ecx\n \n\nG_M000_IG13:                ;; offset=0x0157\n       mov      dword ptr [rsp+0x90], ecx\n \n\nG_M000_IG14:                ;; offset=0x015E\n       mov      dword ptr [rsp+0xC8], ecx\n       mov      ebp, dword ptr [rsp+0xD8]\n       test     ebp, ebp\n       je       G_M000_IG94\n       mov      r14d, dword ptr [rsp+0xE0]\n       mov      ecx, r14d\n       and      ecx, 31\n       mov      eax, 1\n       shlx     eax, eax, ecx\n       cmp      r8d, eax\n       jae      G_M000_IG95\n       cmp      r9d, eax\n       jae      G_M000_IG96\n       cmp      edx, eax\n       jae      G_M000_IG97\n       mov      r15, bword ptr [rsp+0xD0]\n       movzx    r10, byte  ptr [rsp+0xE4]\n       xor      r11d, r11d\n       mov      dword ptr [rsp+0x88], r11d\n       mov      r13d, eax\n       cmp      r10d, 1\n       je       G_M000_IG98\n       cmp      r10d, 2\n       je       G_M000_IG100\n       cmp      r10d, 3\n       jne      G_M000_IG103\n       xor      r10d, r10d\n       mov      dword ptr [rsp+0x90], r10d\n \n\nG_M000_IG15:                ;; offset=0x01EE\n       mov      dword ptr [rsp+0xC8], r10d\n       shlx     ecx, r8d, ecx\n       add      ecx, r9d\n       imul     ecx, eax\n       add      edx, ecx\n       lea      ecx, [r14+2*r14]\n       mov      r8d, 1\n       shlx     ecx, r8d, ecx\n       cmp      edx, ecx\n       jae      G_M000_IG102\n       lea      ecx, [2*rdx+0x02]\n       cmp      ebp, 2\n       jl       G_M000_IG102\n       add      ebp, -2\n       cmp      ecx, ebp\n       ja       G_M000_IG102\n       movsxd   rcx, ecx\n       movzx    rcx, word  ptr [r15+rcx]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r14d\n       jg       G_M000_IG102\n       and      ecx, 0x1FFF\n       mov      dword ptr [rsp+0x90], ecx\n       mov      dword ptr [rsp+0xC8], edx\n       mov      r13d, 1\n \n"
+    },
+    {
+      "history": "lod-first",
+      "width": "UInt16",
+      "access": "span",
+      "arm": "baseline",
+      "file": "h2-lod-first.asm",
+      "sha256": "28bd1c6b14a457e12efd021b600158a0d966c377d47538c341ac4efb1c130a76",
+      "method": "ForceUInt16Scenario:BeforeBatchSpan(int):this (Tier1)",
+      "nativeBytes": 2910,
+      "fixedRspSubtractions": [
+        200
+      ],
+      "lodDispatcher": "G_M000_IG09",
+      "nextOperationBarrier": "G_M000_IG18",
+      "mappedRoute": [
+        "G_M000_IG10",
+        "G_M000_IG11",
+        "G_M000_IG12",
+        "G_M000_IG13",
+        "G_M000_IG14",
+        "G_M000_IG15"
+      ],
+      "inlineCompactWord": true,
+      "staticCallSitesInMappedRoute": [],
+      "routeText": "G_M000_IG10:                ;; offset=0x00FB\n       xor      edi, edi\n \n\nG_M000_IG11:                ;; offset=0x00FD\n       cmp      edi, esi\n       jge      G_M000_IG26\n \n\nG_M000_IG12:                ;; offset=0x0105\n       mov      rcx, gword ptr [rbx+0x20]\n       mov      r14d, dword ptr [rbx+0x68]\n       lea      edx, [r14+0x01]\n       mov      dword ptr [rbx+0x68], edx\n       mov      edx, r14d\n       and      edx, 0x3FF\n       cmp      edx, dword ptr [rcx+0x08]\n       jae      G_M000_IG108\n       shl      rdx, 4\n       lea      rcx, bword ptr [rcx+rdx+0x10]\n       mov      r8d, dword ptr [rcx]\n       mov      r9d, dword ptr [rcx+0x04]\n       mov      edx, dword ptr [rcx+0x08]\n       xor      ecx, ecx\n       mov      dword ptr [rbp-0x58], ecx\n \n\nG_M000_IG13:                ;; offset=0x013E\n       mov      dword ptr [rbp-0x58], ecx\n       mov      r14d, dword ptr [rbp-0x48]\n       test     r14d, r14d\n       je       G_M000_IG81\n       mov      r15d, dword ptr [rbp-0x40]\n       mov      ecx, r15d\n       and      ecx, 31\n       mov      eax, 1\n       shlx     eax, eax, ecx\n       cmp      r8d, eax\n       jae      G_M000_IG82\n       cmp      r9d, eax\n       jae      G_M000_IG83\n       cmp      edx, eax\n       jae      G_M000_IG84\n       mov      r13, bword ptr [rbp-0x50]\n       movzx    r10, byte  ptr [rbp-0x3C]\n       xor      r11d, r11d\n       mov      dword ptr [rbp-0x90], r11d\n \n\nG_M000_IG14:                ;; offset=0x018F\n       mov      dword ptr [rbp-0x98], r11d\n       mov      r12d, eax\n       cmp      r10d, 1\n       je       G_M000_IG85\n       cmp      r10d, 2\n       je       G_M000_IG89\n       cmp      r10d, 3\n       jne      G_M000_IG92\n       xor      r10d, r10d\n       mov      dword ptr [rbp-0x90], r10d\n \n\nG_M000_IG15:                ;; offset=0x01C1\n       mov      dword ptr [rbp-0x58], r10d\n       shlx     ecx, r8d, ecx\n       add      ecx, r9d\n       imul     ecx, eax\n       add      edx, ecx\n       lea      ecx, [r15+2*r15]\n       mov      r8d, 1\n       shlx     ecx, r8d, ecx\n       cmp      edx, ecx\n       jae      G_M000_IG91\n       lea      ecx, [2*rdx+0x03]\n       cmp      ecx, r14d\n       ja       G_M000_IG91\n       mov      edx, r14d\n       sub      edx, ecx\n       cmp      edx, 2\n       jl       G_M000_IG91\n       mov      edx, ecx\n       add      rdx, 2\n       mov      r8d, r14d\n       cmp      rdx, r8\n       ja       G_M000_IG94\n       add      rcx, r13\n       movzx    rcx, word  ptr [rcx]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r15d\n       jg       G_M000_IG91\n       and      ecx, 0x1FFF\n       mov      word  ptr [rbp-0x90], cx\n       mov      dword ptr [rbp-0x58], edx\n       mov      eax, 1\n \n"
+    },
+    {
+      "history": "lod-first",
+      "width": "UInt16",
+      "access": "span",
+      "arm": "candidate",
+      "file": "h2-lod-first.asm",
+      "sha256": "28bd1c6b14a457e12efd021b600158a0d966c377d47538c341ac4efb1c130a76",
+      "method": "ForceUInt16Scenario:AfterBatchSpan(int):this (Tier1)",
+      "nativeBytes": 2905,
+      "fixedRspSubtractions": [
+        200
+      ],
+      "lodDispatcher": "G_M000_IG09",
+      "nextOperationBarrier": "G_M000_IG18",
+      "mappedRoute": [
+        "G_M000_IG10",
+        "G_M000_IG11",
+        "G_M000_IG12",
+        "G_M000_IG13",
+        "G_M000_IG14",
+        "G_M000_IG15"
+      ],
+      "inlineCompactWord": true,
+      "staticCallSitesInMappedRoute": [],
+      "routeText": "G_M000_IG10:                ;; offset=0x00FB\n       xor      edi, edi\n \n\nG_M000_IG11:                ;; offset=0x00FD\n       cmp      edi, esi\n       jge      G_M000_IG26\n \n\nG_M000_IG12:                ;; offset=0x0105\n       mov      rcx, gword ptr [rbx+0x20]\n       mov      r14d, dword ptr [rbx+0x68]\n       lea      edx, [r14+0x01]\n       mov      dword ptr [rbx+0x68], edx\n       mov      edx, r14d\n       and      edx, 0x3FF\n       cmp      edx, dword ptr [rcx+0x08]\n       jae      G_M000_IG111\n       shl      rdx, 4\n       lea      rcx, bword ptr [rcx+rdx+0x10]\n       mov      r8d, dword ptr [rcx]\n       mov      r9d, dword ptr [rcx+0x04]\n       mov      edx, dword ptr [rcx+0x08]\n       xor      ecx, ecx\n       mov      dword ptr [rbp-0x58], ecx\n \n\nG_M000_IG13:                ;; offset=0x013E\n       mov      dword ptr [rbp-0x58], ecx\n       mov      r14d, dword ptr [rbp-0x48]\n       test     r14d, r14d\n       je       G_M000_IG86\n       mov      r15d, dword ptr [rbp-0x40]\n       mov      ecx, r15d\n       and      ecx, 31\n       mov      eax, 1\n       shlx     eax, eax, ecx\n       cmp      r8d, eax\n       jae      G_M000_IG87\n       cmp      r9d, eax\n       jae      G_M000_IG88\n       cmp      edx, eax\n       jae      G_M000_IG89\n       mov      r13, bword ptr [rbp-0x50]\n       movzx    r10, byte  ptr [rbp-0x3C]\n       xor      r11d, r11d\n       mov      dword ptr [rbp-0x90], r11d\n \n\nG_M000_IG14:                ;; offset=0x018F\n       mov      dword ptr [rbp-0x98], r11d\n       mov      r12d, eax\n       cmp      r10d, 1\n       je       G_M000_IG90\n       cmp      r10d, 2\n       je       G_M000_IG94\n       cmp      r10d, 3\n       jne      G_M000_IG97\n       xor      r10d, r10d\n       mov      dword ptr [rbp-0x90], r10d\n \n\nG_M000_IG15:                ;; offset=0x01C1\n       mov      dword ptr [rbp-0x58], r10d\n       shlx     ecx, r8d, ecx\n       add      ecx, r9d\n       imul     ecx, eax\n       add      edx, ecx\n       lea      ecx, [r15+2*r15]\n       mov      r8d, 1\n       shlx     ecx, r8d, ecx\n       cmp      edx, ecx\n       jae      G_M000_IG96\n       lea      ecx, [2*rdx+0x03]\n       cmp      r14d, 2\n       jl       G_M000_IG96\n       add      r14d, -2\n       cmp      ecx, r14d\n       ja       G_M000_IG96\n       movsxd   rcx, ecx\n       movzx    rcx, word  ptr [rcx+r13]\n       mov      edx, ecx\n       sar      edx, 13\n       cmp      edx, r15d\n       jg       G_M000_IG96\n       and      ecx, 0x1FFF\n       mov      word  ptr [rbp-0x90], cx\n       mov      dword ptr [rbp-0x58], edx\n       mov      r14d, 1\n \n"
+    }
+  ],
+  "limits": "Mapped static instruction-group routes for known valid coordinates/R payloads; no sampled call frequency or quiet-code identity. Span AsSpan preamble is outside the per-read loop. Both arms change alike, so common call boundaries do not establish the cause of the time ratio. Native layout/dataflow differ; no hardware attribution or source adoption."
+}

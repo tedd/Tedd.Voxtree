@@ -1,0 +1,623 @@
+{
+  "bundle": "p32point",
+  "bundleSha256": "4c9f47a1e973f45f466c0b8fa98a650883bfdced1b1ec71bf0555d91c5c96ebe",
+  "source": "original P32 first-eight plans and chronological run records",
+  "getFirst": [
+    {
+      "scenario": "point-ForceUInt32-L5-mixed-u16-air-owned-get",
+      "version": "17",
+      "inputHash": "d24d35cf1be51145470768c0e6fa5c2fc9c5de8db6750aae990122fd1fcf097f",
+      "operationCount": 2097152,
+      "warmupBatches": 2,
+      "resetAfterWarmup": true,
+      "runsSourceSha256": "4955a95255d86f21ca0dfe6453fd9718e184bd18c8be523a6d810f46300c73ac",
+      "runs": [
+        {
+          "sourceRunId": "run-dc1ee549d4ad44ba9378def57f98b8a5",
+          "block": 0,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-10570a9c0cb941ac9b5c11404840411f",
+          "block": 0,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-a3a94dc5ab4644f19fffad922b0d5ba1",
+          "block": 1,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-1045cc996ee84b1cb283800095f62813",
+          "block": 1,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-6b85b87d808e4582a70ea2bc5f50db1e",
+          "block": 2,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-38d1bcd973b74135a28db34bc4dbf1e0",
+          "block": 2,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-bef7216959944b32a81dd871faab0b38",
+          "block": 3,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-e83c4763addf4491afdce9d1d70730fc",
+          "block": 3,
+          "variant": "candidate"
+        }
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt16-L5-mixed-u16-air-owned-get",
+      "version": "17",
+      "inputHash": "d24d35cf1be51145470768c0e6fa5c2fc9c5de8db6750aae990122fd1fcf097f",
+      "operationCount": 2097152,
+      "warmupBatches": 2,
+      "resetAfterWarmup": true,
+      "runsSourceSha256": "888deb46fdfdf1a8d5524c091f5e39fee608df85a50cc44fff48c1a0c0973ac4",
+      "runs": [
+        {
+          "sourceRunId": "run-f92afe06d53349eaa0645e6421633d8b",
+          "block": 0,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-bf2dc11b949544ec8dc351b4665e018c",
+          "block": 0,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-7d9c4d75b0334a28a58c5f2d90a5925a",
+          "block": 1,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-301a3a538bad495d8ac0ee6678b6381c",
+          "block": 1,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-c3f5dec71fb64d9590b38169f45f1829",
+          "block": 2,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-4bad21369d31416b9ec9284092862418",
+          "block": 2,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-e43d7fc5293e4394b59b7311a99c98d7",
+          "block": 3,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-0453fed4e71c48799757767bb7162e3f",
+          "block": 3,
+          "variant": "candidate"
+        }
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt32-L5-mixed-u16-air-owned-lod",
+      "version": "17",
+      "inputHash": "102983d69b51f1b7a85382edd8021f3858492f62d5605fcc468ff58a0f4b96b3",
+      "operationCount": 2097152,
+      "warmupBatches": 2,
+      "resetAfterWarmup": true,
+      "runsSourceSha256": "cc645527b5815cc2c8071b4edf97dd53ccb46758ed33cc0b3e690ef454d9ad76",
+      "runs": [
+        {
+          "sourceRunId": "run-c42c375f483744159e51fe3ddca72f00",
+          "block": 0,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-570b62d77e6a485aafba4b216a142c1b",
+          "block": 0,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-b150e0b30c24404ca641fe568a8d951a",
+          "block": 1,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-3d3248afbe534b99a26783d1b1b6b733",
+          "block": 1,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-0e636eb3a76f458081b7845dece2e79d",
+          "block": 2,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-b755259ed7614e459e151bd50724567b",
+          "block": 2,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-d369bdab73b14ab8a9a89b9c1c77673f",
+          "block": 3,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-ae5459625c8d474e9f24ae08b50febff",
+          "block": 3,
+          "variant": "candidate"
+        }
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt16-L5-mixed-u16-air-owned-lod",
+      "version": "17",
+      "inputHash": "102983d69b51f1b7a85382edd8021f3858492f62d5605fcc468ff58a0f4b96b3",
+      "operationCount": 2097152,
+      "warmupBatches": 2,
+      "resetAfterWarmup": true,
+      "runsSourceSha256": "c75ff75fab820d7c6dfd54d218afce7587d1f2d55a4783602a8343e93de99486",
+      "runs": [
+        {
+          "sourceRunId": "run-aa086602f9dd4b58b76d3fb7130c2f1b",
+          "block": 0,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-1682a32d100340fb8a4cbc2375da0b0b",
+          "block": 0,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-efe9a845e44d40e5955366503a7f6be3",
+          "block": 1,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-17a8aa36a58c47688837b67fffbda92a",
+          "block": 1,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-0f3c1b579c3a413fa2b30206d22519f8",
+          "block": 2,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-6747648079b844078135ad2b214d9a76",
+          "block": 2,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-5d8158d9dbd34aed8bbfb9b2a7e6fc1e",
+          "block": 3,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-56880408b1294a14be9ae8f682efd298",
+          "block": 3,
+          "variant": "candidate"
+        }
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt32-L5-mixed-u16-air-span-get",
+      "version": "17",
+      "inputHash": "3e88bda8ed2fb310a112a0abb1fae115b1476351c5f1696c1d61fa41d8dfbc07",
+      "operationCount": 2097152,
+      "warmupBatches": 2,
+      "resetAfterWarmup": true,
+      "runsSourceSha256": "87d488646b48e25d6dec00b8c4d12250a3cf6b2b6253a8a5353961ca863dbfbd",
+      "runs": [
+        {
+          "sourceRunId": "run-22134d0aff1e4e1e82679a1e78b18047",
+          "block": 0,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-e6333307c21440db9d4b2b21d29ae86b",
+          "block": 0,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-3afc08790bab4be88f486003d353dead",
+          "block": 1,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-8c905d7c084143b09059d21d1125589f",
+          "block": 1,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-1b74f35cd37d429e93ffd87ace2ed0d2",
+          "block": 2,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-68bbe2ad127a438a9f306e5ff8a7b6de",
+          "block": 2,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-ff95631b63ef49aaae9548045f777e0d",
+          "block": 3,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-e2407e90e71a40a2802b977c3b02c19a",
+          "block": 3,
+          "variant": "candidate"
+        }
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt16-L5-mixed-u16-air-span-get",
+      "version": "17",
+      "inputHash": "3e88bda8ed2fb310a112a0abb1fae115b1476351c5f1696c1d61fa41d8dfbc07",
+      "operationCount": 2097152,
+      "warmupBatches": 2,
+      "resetAfterWarmup": true,
+      "runsSourceSha256": "1d2f79f4cab644622a8671290d1451fbbc89b30c8174f04dcd50f2796ef2069f",
+      "runs": [
+        {
+          "sourceRunId": "run-60752cd93bdb4472a557949b4f2bcaeb",
+          "block": 0,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-1c36b765724041409ce0da4478c89a0d",
+          "block": 0,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-ed91e18e8d034cd58fe721d2e1bb95ce",
+          "block": 1,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-b3eb282985c9428e9b8f4782c51f73a7",
+          "block": 1,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-f45271b8bfe645d9a92b656330fde5a5",
+          "block": 2,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-a991e84903da4dd9be8dd8fd31f5e994",
+          "block": 2,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-bab8f0bdbdae4b2f8168b0296d7f4882",
+          "block": 3,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-5e85738a573b4a89a926d6675a151342",
+          "block": 3,
+          "variant": "candidate"
+        }
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt32-L5-mixed-u16-air-span-lod",
+      "version": "17",
+      "inputHash": "a5837d484f028ce7a22d6d2fb45e27becc5d1998f38ccd9ce052e34831f72a24",
+      "operationCount": 2097152,
+      "warmupBatches": 2,
+      "resetAfterWarmup": true,
+      "runsSourceSha256": "e322d18bc5d8eaba58ff5cd88b54b088a870626e33773ee3fdcf3a9600e567aa",
+      "runs": [
+        {
+          "sourceRunId": "run-a9d5cb9c424f4477819d92216c856b91",
+          "block": 0,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-650f6a521c3b4822b553b61e70083c38",
+          "block": 0,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-d5965d7d736647ccabf19ae8b4361794",
+          "block": 1,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-3b2541e6eddd4c39b39d654b90e92ffc",
+          "block": 1,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-72f3e77f8581489c9d774bc80731edf7",
+          "block": 2,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-f9c049caeb694888a59f76b87b8e6332",
+          "block": 2,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-e47c6e2ebd074cd3a4b88ec175afc012",
+          "block": 3,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-83c222391922433da9a9c690c14c7031",
+          "block": 3,
+          "variant": "candidate"
+        }
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt16-L5-mixed-u16-air-span-lod",
+      "version": "17",
+      "inputHash": "a5837d484f028ce7a22d6d2fb45e27becc5d1998f38ccd9ce052e34831f72a24",
+      "operationCount": 2097152,
+      "warmupBatches": 2,
+      "resetAfterWarmup": true,
+      "runsSourceSha256": "898bbfea35b6f15e5c144aac74f844097d007b2a242462818c2175b91d432dcf",
+      "runs": [
+        {
+          "sourceRunId": "run-71933a7d9dba412d8c611aa5e3b3c301",
+          "block": 0,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-594227e4e95142a6adac4173d640201a",
+          "block": 0,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-29f8804e993c4b7091798b2734aa4efa",
+          "block": 1,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-ebbb903ffb1f4eb7b46e6e228daf5e8c",
+          "block": 1,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-e2c971383e544233816eef3416afb8f5",
+          "block": 2,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-2323f578d02a4f81909a9f52ad0d1a9b",
+          "block": 2,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-db3a4f0e090c43d9b705e8793cf87786",
+          "block": 3,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-e8227bddc7304a67ae2e56891cc112e6",
+          "block": 3,
+          "variant": "candidate"
+        }
+      ]
+    }
+  ],
+  "lodFirst": [
+    {
+      "scenario": "point-ForceUInt32-L5-mixed-u16-air-owned-lod",
+      "version": "17",
+      "inputHash": "102983d69b51f1b7a85382edd8021f3858492f62d5605fcc468ff58a0f4b96b3",
+      "operationCount": 2097152,
+      "warmupBatches": 2,
+      "resetAfterWarmup": true,
+      "runsSourceSha256": "cc645527b5815cc2c8071b4edf97dd53ccb46758ed33cc0b3e690ef454d9ad76",
+      "runs": [
+        {
+          "sourceRunId": "run-c42c375f483744159e51fe3ddca72f00",
+          "block": 0,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-570b62d77e6a485aafba4b216a142c1b",
+          "block": 0,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-b150e0b30c24404ca641fe568a8d951a",
+          "block": 1,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-3d3248afbe534b99a26783d1b1b6b733",
+          "block": 1,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-0e636eb3a76f458081b7845dece2e79d",
+          "block": 2,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-b755259ed7614e459e151bd50724567b",
+          "block": 2,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-d369bdab73b14ab8a9a89b9c1c77673f",
+          "block": 3,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-ae5459625c8d474e9f24ae08b50febff",
+          "block": 3,
+          "variant": "candidate"
+        }
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt16-L5-mixed-u16-air-owned-lod",
+      "version": "17",
+      "inputHash": "102983d69b51f1b7a85382edd8021f3858492f62d5605fcc468ff58a0f4b96b3",
+      "operationCount": 2097152,
+      "warmupBatches": 2,
+      "resetAfterWarmup": true,
+      "runsSourceSha256": "c75ff75fab820d7c6dfd54d218afce7587d1f2d55a4783602a8343e93de99486",
+      "runs": [
+        {
+          "sourceRunId": "run-aa086602f9dd4b58b76d3fb7130c2f1b",
+          "block": 0,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-1682a32d100340fb8a4cbc2375da0b0b",
+          "block": 0,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-efe9a845e44d40e5955366503a7f6be3",
+          "block": 1,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-17a8aa36a58c47688837b67fffbda92a",
+          "block": 1,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-0f3c1b579c3a413fa2b30206d22519f8",
+          "block": 2,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-6747648079b844078135ad2b214d9a76",
+          "block": 2,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-5d8158d9dbd34aed8bbfb9b2a7e6fc1e",
+          "block": 3,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-56880408b1294a14be9ae8f682efd298",
+          "block": 3,
+          "variant": "candidate"
+        }
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt32-L5-mixed-u16-air-span-lod",
+      "version": "17",
+      "inputHash": "a5837d484f028ce7a22d6d2fb45e27becc5d1998f38ccd9ce052e34831f72a24",
+      "operationCount": 2097152,
+      "warmupBatches": 2,
+      "resetAfterWarmup": true,
+      "runsSourceSha256": "e322d18bc5d8eaba58ff5cd88b54b088a870626e33773ee3fdcf3a9600e567aa",
+      "runs": [
+        {
+          "sourceRunId": "run-a9d5cb9c424f4477819d92216c856b91",
+          "block": 0,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-650f6a521c3b4822b553b61e70083c38",
+          "block": 0,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-d5965d7d736647ccabf19ae8b4361794",
+          "block": 1,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-3b2541e6eddd4c39b39d654b90e92ffc",
+          "block": 1,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-72f3e77f8581489c9d774bc80731edf7",
+          "block": 2,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-f9c049caeb694888a59f76b87b8e6332",
+          "block": 2,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-e47c6e2ebd074cd3a4b88ec175afc012",
+          "block": 3,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-83c222391922433da9a9c690c14c7031",
+          "block": 3,
+          "variant": "candidate"
+        }
+      ]
+    },
+    {
+      "scenario": "point-ForceUInt16-L5-mixed-u16-air-span-lod",
+      "version": "17",
+      "inputHash": "a5837d484f028ce7a22d6d2fb45e27becc5d1998f38ccd9ce052e34831f72a24",
+      "operationCount": 2097152,
+      "warmupBatches": 2,
+      "resetAfterWarmup": true,
+      "runsSourceSha256": "898bbfea35b6f15e5c144aac74f844097d007b2a242462818c2175b91d432dcf",
+      "runs": [
+        {
+          "sourceRunId": "run-71933a7d9dba412d8c611aa5e3b3c301",
+          "block": 0,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-594227e4e95142a6adac4173d640201a",
+          "block": 0,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-29f8804e993c4b7091798b2734aa4efa",
+          "block": 1,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-ebbb903ffb1f4eb7b46e6e228daf5e8c",
+          "block": 1,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-e2c971383e544233816eef3416afb8f5",
+          "block": 2,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-2323f578d02a4f81909a9f52ad0d1a9b",
+          "block": 2,
+          "variant": "candidate"
+        },
+        {
+          "sourceRunId": "run-db3a4f0e090c43d9b705e8793cf87786",
+          "block": 3,
+          "variant": "baseline"
+        },
+        {
+          "sourceRunId": "run-e8227bddc7304a67ae2e56891cc112e6",
+          "block": 3,
+          "variant": "candidate"
+        }
+      ]
+    }
+  ],
+  "timingClaim": false,
+  "limits": "Recorded within-scenario arm order and semantic call sequence; controller/GC/JIT timing and exact quiet code identity are not reproduced."
+}

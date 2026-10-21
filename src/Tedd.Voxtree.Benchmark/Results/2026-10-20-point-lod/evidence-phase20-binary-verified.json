@@ -1,0 +1,15 @@
+{
+  "archive_bytes": 288056,
+  "manifest_paths": 9,
+  "unique_blobs": 9,
+  "catalogs": 0,
+  "metric_rows": 0,
+  "sha256": "197d2bd9bd801f02facfd033f459e33b0a6b4102ef0ad1c8e3e4504eb5487014",
+  "required_paths": [
+    "bundles/h2-probe/H2Probe.dll",
+    "bundles/h2-probe/p32point.dll",
+    "bundles/h2-probe/H2Probe.runtimeconfig.json",
+    "h2-binary-binding.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

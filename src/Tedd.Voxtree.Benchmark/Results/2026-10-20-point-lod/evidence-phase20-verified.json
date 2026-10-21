@@ -1,0 +1,17 @@
+{
+  "archive_bytes": 124326,
+  "manifest_paths": 27,
+  "unique_blobs": 24,
+  "catalogs": 1,
+  "metric_rows": 0,
+  "sha256": "343b5c9708ee6c6bb7964aed435a47fa5104ccdd70066a7be89456555ce8d8f0",
+  "required_paths": [
+    "h2-native-audit.json",
+    "h2-history-schedule.json",
+    "h2-hypothesis/disposition-revision-response.json",
+    "h2-get-first.asm",
+    "h2-lod-first.asm",
+    "point-history-h2-source/Program.cs"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

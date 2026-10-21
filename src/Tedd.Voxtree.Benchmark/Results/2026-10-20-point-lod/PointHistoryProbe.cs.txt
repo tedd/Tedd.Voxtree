@@ -1,0 +1,46 @@
+// Native-only operation-history cut; original paired library and caller bodies.
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Tedd.DotNetLab.Contracts;
+using Tedd.DotNetLab.Harness;
+
+if(args.Length!=2||args[0] is not ("get-first" or "lod-first"))throw new ArgumentException("Expected frozen history and schedule");
+if(OperatingSystem.IsWindows())Process.GetCurrentProcess().ProcessorAffinity=(nint)4;
+var registry=new Dictionary<string,ISynchronousScenario>(StringComparer.Ordinal);
+void Add(ISynchronousScenario scenario)=>registry.Add(scenario.Describe().Id,scenario);
+// Preserve original object registration and literal string identities.
+foreach(var pattern in new[]{"mixed-u16-air","mixed-u7-air","mixed-u8-air","uniform-u7-empty"})
+foreach(var access in new[]{"owned","span"})
+foreach(var op in new[]{"get","lod"}){
+    Add(new ForceUInt32Scenario(5,pattern,access,op));Add(new ForceUInt16Scenario(5,pattern,access,op));
+}
+foreach(var pattern in new[]{"mixed-u16-air","mixed-u7-air","mixed-u8-air","uniform-u7-empty"})
+foreach(var op in new[]{"get","lod","create","lifecycle"})Add(new ForceUInt32Scenario(5,pattern,"compiled",op));
+if(registry.Count!=48)throw new Exception("Original registration changed");
+using var document=JsonDocument.Parse(File.ReadAllText(args[1]));
+string assembly=typeof(ForceUInt32Scenario).Assembly.Location;
+string bundleHash=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(assembly))).ToLowerInvariant();
+if(bundleHash!=document.RootElement.GetProperty("bundleSha256").GetString())throw new Exception("Paired bundle changed");
+var cases=document.RootElement.GetProperty(args[0]=="get-first"?"getFirst":"lodFirst");
+int caseCount=0,runs=0;long declaredReads=0;
+foreach(var item in cases.EnumerateArray()){
+    string id=item.GetProperty("scenario").GetString()!;var scenario=registry[id];var descriptor=scenario.Describe();
+    if(descriptor.Version!=item.GetProperty("version").GetString()||descriptor.InputHash!=item.GetProperty("inputHash").GetString())throw new Exception("Scenario identity changed");
+    int count=item.GetProperty("operationCount").GetInt32(),warmups=item.GetProperty("warmupBatches").GetInt32();
+    foreach(var run in item.GetProperty("runs").EnumerateArray()){
+        string variant=run.GetProperty("variant").GetString()!;
+        scenario.Prepare(new ScenarioContext(variant,CancellationToken.None));
+        try{
+            scenario.Reset(new ResetContext(descriptor.ResetLevel));
+            for(int i=0;i<warmups;i++)if(scenario.ExecuteBatch(count)!=count)throw new Exception("Warmup incomplete");
+            if(item.GetProperty("resetAfterWarmup").GetBoolean())scenario.Reset(new ResetContext(descriptor.ResetLevel));
+            if(scenario.ExecuteBatch(count)!=count||!scenario.Validate().Correct)throw new Exception("History oracle failed");
+            runs++;declaredReads+=count;
+        }finally{scenario.Cleanup();}
+    }
+    caseCount++;Console.WriteLine(id+" valid");
+}
+if(caseCount!=(args[0]=="get-first"?8:4)||runs!=caseCount*8)throw new Exception("Incomplete diagnostic history");
+Console.WriteLine(JsonSerializer.Serialize(new{history=args[0],runtime=RuntimeInformation.FrameworkDescription,architecture=RuntimeInformation.ProcessArchitecture.ToString(),bundleHash,caseCount,runs,declaredReads,correct=true,scope="Declared read batches only, excludes primes/warmups/oracles; no latency/allocation measurement"}));

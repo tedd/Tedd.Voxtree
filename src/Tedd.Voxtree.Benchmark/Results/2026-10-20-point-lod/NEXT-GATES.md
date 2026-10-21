@@ -222,6 +222,19 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    methods and visit Get before LOD. Verify actual LOD branch/call boundaries;
    do not infer a quiet-code identity, hardware cause or speedup from the
    diagnostic contrast. The terminal-validator candidate remains separate.
+   H2 hyp-8c106c363d704c58bdc43f17be35648a now completes both native-only
+   processes, replaying the original prefix/arm order or removing preceding Get.
+   All96 semantic run sequences validate;16 complete final Tier1 callers are
+   mapped. Get-first owned LOD retains AsSpan for both arms, plus a codec call
+   for UInt16; LOD-first owned paths inline both. Span loops have no such calls.
+   H2's differential boundary explanation is not_supported because both arms
+   change alike. History dependence is established, not the cause of P32's ratio.
+   Phase20 plus its immutable binary supplement preserve all sources, captures,
+   schedules, identities and actual probe binaries. See REPORT-PHASE20.
+   Any next snapshot-boundary intervention must use complete P31, excluding P32,
+   verify both histories and preserve atomic publication/error outputs. Do not
+   equate the isolated P28 no-boundary finding with all caller contexts. Fresh
+   direct-release normal qualification and the full public API objective remain.
 
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
