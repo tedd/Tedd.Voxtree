@@ -1,0 +1,92 @@
+{
+  "passed": true,
+  "qualification": "Task-local first-error diagnostic preservation only",
+  "originalTests": 5,
+  "acceptedOperations": 5,
+  "targetLaunches": 28,
+  "retainedMeasuredSessions": 25,
+  "allRetainedMeasurementsCorrectQuiescentExited": true,
+  "distinctTargetIdentities": 28,
+  "originalTargetsNotLive": true,
+  "joinedWorkers": 5,
+  "allScopedGrantUsesMatch": true,
+  "originalUnusedGrantRetained": true,
+  "originalPlansUnchanged": true,
+  "originalSourceFiles": 47,
+  "unchangedOriginalSourceFiles": 46,
+  "changedOriginalSourceFiles": 1,
+  "normalSourceAndBinariesUnchanged": true,
+  "measurementAndCleanupSourceUnchanged": true,
+  "originalStartupAndImplementationFailuresRetained": true,
+  "comparativeTimingRecords": 0,
+  "sourceAdoption": false,
+  "cases": [
+    {
+      "name": "original-masked",
+      "state": "failed",
+      "operation_id": "op-cde397f4a36441788cf79680b583b1b2",
+      "execution_id": "op-cde397f4a36441788cf79680b583b1b2-confirmation",
+      "targetLaunches": 1,
+      "retainedMeasuredSessions": 0,
+      "primaryLogCount": 0,
+      "residualLaunchDirectories": [
+        "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\p39-first-failure\\original-masked\\launches\\normal-session-a806f887c9bf49ca868ab02b98082d8b"
+      ],
+      "allOriginalTargetsNotLive": true,
+      "workerJoined": true
+    },
+    {
+      "name": "logged-masked",
+      "state": "failed",
+      "operation_id": "op-a211b57f4c63480a8882e7d4abd232b2",
+      "execution_id": "op-a211b57f4c63480a8882e7d4abd232b2-confirmation",
+      "targetLaunches": 1,
+      "retainedMeasuredSessions": 0,
+      "primaryLogCount": 1,
+      "residualLaunchDirectories": [
+        "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\p39-first-failure\\logged-masked\\launches\\normal-session-c930626fcb8a4a9da462d9e43e368562"
+      ],
+      "allOriginalTargetsNotLive": true,
+      "workerJoined": true
+    },
+    {
+      "name": "logged-cleanup",
+      "state": "failed",
+      "operation_id": "op-06b26fc2f44446f9985108fb1c593cb5",
+      "execution_id": "op-06b26fc2f44446f9985108fb1c593cb5-confirmation",
+      "targetLaunches": 1,
+      "retainedMeasuredSessions": 1,
+      "primaryLogCount": 0,
+      "residualLaunchDirectories": [
+        "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\p39-first-failure\\logged-cleanup\\launches\\normal-session-a7e13a76a0384b39bc318af7a1672f05"
+      ],
+      "allOriginalTargetsNotLive": true,
+      "workerJoined": true
+    },
+    {
+      "name": "logged-primary",
+      "state": "failed",
+      "operation_id": "op-70a0fc1f82154b828352ca227ea92f1b",
+      "execution_id": "op-70a0fc1f82154b828352ca227ea92f1b-confirmation",
+      "targetLaunches": 1,
+      "retainedMeasuredSessions": 0,
+      "primaryLogCount": 1,
+      "residualLaunchDirectories": [],
+      "allOriginalTargetsNotLive": true,
+      "workerJoined": true
+    },
+    {
+      "name": "logged-success",
+      "state": "completed",
+      "operation_id": "op-af55775d4d4c4c01915ce306baa767de",
+      "execution_id": "op-af55775d4d4c4c01915ce306baa767de-confirmation",
+      "targetLaunches": 24,
+      "retainedMeasuredSessions": 24,
+      "primaryLogCount": 0,
+      "residualLaunchDirectories": [],
+      "allOriginalTargetsNotLive": true,
+      "workerJoined": true
+    }
+  ],
+  "limits": "Controlled deletion handle is our injected cause only. Original intermittent P39N cause remains unresolved. No source-performance equivalence, old timed-process tiers, speedup or adoption inference. Original stopped normal family is not resumed, replaced or pooled."
+}
