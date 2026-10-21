@@ -15,6 +15,8 @@ bool worldCallers = args.Length > 0 && args[0] == "--world-callers";
 if (worldCallers) args = args[1..];
 bool libraryMethods = args.Length > 0 && args[0] == "--library";
 if (libraryMethods) args = args[1..];
+bool compactCallers = args.Length > 0 && args[0] == "--compact-callers";
+if (compactCallers) args = args[1..];
 if (args.Length == 1 && args[0] == "--selftest")
 {
     var a = Audit(Fixture(false, false, 17));
@@ -47,13 +49,16 @@ foreach (var path in args.Skip(1).Select(Path.GetFullPath))
                     .Concat(t.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
                     .Concat(t.TypeInitializer is null ? [] : new MethodBase[] { t.TypeInitializer }).Distinct())
                 .Where(m => m.GetMethodBody() is not null)
-            : assembly.GetTypes().Where(t => worldCallers
+            : assembly.GetTypes().Where(t => compactCallers
+                ? t.Namespace == null && (t.Name == "ClassicCase" || t.Name == "GenericCase`1")
+                : worldCallers
                 ? t.Namespace == null && (t.Name == "WorldUInt32" || t.Name == "WorldUInt16")
                 : countBoundary
                 ? t.Namespace == "Tedd.Voxtree" && (t.Name == "OctreeQueries" || t.Name == "GenericOctreeQueries`1")
                 : t.Namespace == null && t.Name.EndsWith("Scenario", StringComparison.Ordinal))
             .SelectMany(t => t.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
-                .Where(m => worldCallers ? m.Name is "AfterGet" or "AfterLod" or "AfterChunk" or "AfterTopology"
+                .Where(m => compactCallers ? m.Name.StartsWith("Run", StringComparison.Ordinal)
+                    : worldCallers ? m.Name is "AfterGet" or "AfterLod" or "AfterChunk" or "AfterTopology"
                     : countBoundary ? m.Name == "CountPackedVector" : m.Name.StartsWith("AfterBatch", StringComparison.Ordinal)));
         var methods = selected.OrderBy(m => m.DeclaringType!.FullName, StringComparer.Ordinal).ThenBy(m => m.Name, StringComparer.Ordinal)
             .ThenBy(Member, StringComparer.Ordinal).Select(Audit).ToArray();

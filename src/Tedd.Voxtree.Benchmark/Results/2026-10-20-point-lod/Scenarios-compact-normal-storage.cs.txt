@@ -1,0 +1,259 @@
+using System.Diagnostics;
+using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Tedd.DotNetLab.Contracts;
+using Tedd.DotNetLab.Harness;
+using Tedd.Voxtree;
+if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException("Selected Windows fixture");
+Process.GetCurrentProcess().ProcessorAffinity=(nint)4;
+NormalMode.Validation=args[0]=="--validate";
+var cases=CaseCatalog.Create();
+if(args[0]=="--inventory"){
+ Console.WriteLine(JsonSerializer.Serialize(cases.Select(c=>{var d=c.Describe();return new{id=d.Id,version=d.Version,input_hash=d.InputHash,spec=c.Spec,operations=c.Spec.Operations,primary=c.Spec.Primary};})));return;
+}
+if(args[0] is "--validate" or "--code"){
+ foreach(var c in cases){
+  if(args.Length>1&&c.Describe().Id!=args[1])continue;
+  c.Prepare(new ScenarioContext("candidate",CancellationToken.None));
+  if(args[0]=="--code"){c.Reset(new ResetContext(ResetLevel.LogicalState));c.ExecuteBatch(c.Spec.Operations);if(!c.Validate().Correct)throw new Exception("Warmup oracle");}
+  c.Reset(new ResetContext(ResetLevel.LogicalState));c.ExecuteBatch(args[0]=="--code"?c.Spec.Operations:c.Spec.ValidationCount);
+  if(!c.Validate().Correct)throw new Exception(c.Describe().Id+" oracle");
+  var fingerprint=c.Fingerprint();c.Cleanup();Console.WriteLine(JsonSerializer.Serialize(fingerprint));
+ }return;
+}
+var registry=new ScenarioRegistry();foreach(var c in cases)registry.Register(c);
+var host=new HarnessHost(registry,args[1]);
+if(args[0]=="--harness-owned"||Environment.GetEnvironmentVariable("DOTNET_EnableDiagnostics")=="0")await host.RunOwnedAsync();
+else{Console.WriteLine(Wire.Serialize(host.Target));using var stop=new CancellationTokenSource();_=Task.Run(async()=>{await Console.In.ReadLineAsync();stop.Cancel();});await host.ListenAsync(stop.Token);}
+public static class NormalMode{public static bool Validation;}
+public sealed record NormalSpec(string Dataset,string Mode,string Op){
+ public int Levels=>Dataset=="S"?3:5;
+ public string Id=>$"compact-normal-{Mode}-{Dataset}-{Op}";
+ public bool Primary=>(Dataset is "D" or "S")&&(Op is "validate" or "from" or "create")||Dataset=="D"&&(Op is "chunk-new" or "chunk-from" or "chunk-validate");
+ public int ValidationCount=>Op is "get" or "lod" or "lookup-get" or "lookup-lod"?2051:2;
+ public int Operations=>Op switch{
+  "get" or "lod" or "lookup-get" or "lookup-lod"=>4194304,
+  "lifecycle"=>8,"load"=>64,
+  "construct" or "build" or "chunk-update" or "chunk-dense"=>128,
+  "copy"=>Dataset=="F"?4096:256,"count" or "any"=>2048,
+  "validate"=>Dataset is "E" or "F" or "ME"?4194304:Dataset is "S" or "C"?8192:256,
+  "from" or "create"=>Dataset=="E"?262144:Dataset is "S" or "C"?8192:Dataset=="F"?1024:256,
+  "chunk-new" or "chunk-from" or "chunk-validate"=>256,_=>throw new ArgumentException(Op)};
+ public string Source=>Dataset=="D"?ForcecraftCorpus.Hash("mixed-u16-air"):Dataset switch{"S"=>"checker8-z-parity-v1","C"=>"uniform-R32-value7-lod5-v1","E"=>"uniform-O32-value0-lod5-v1","F"=>"dense-O32-z-parity-0-65535-v1","ME"=>"checker-R32-firstword-lod7-v1","ML"=>"checker-R32-lastword-lod7-v1",_=>throw new ArgumentException()};
+ public string Lifecycle=>Mode=="Classic32"?"CreateLookup +65536 compiled value/LOD reads":"FromEncoded +65536 owned value/LOD reads";
+}
+public interface INormalCase:ISynchronousScenario{NormalSpec Spec{get;}object Fingerprint();}
+public static class CaseCatalog{
+ public static INormalCase[] Create(){var result=new List<INormalCase>();
+  foreach(var data in new[]{"D","S","C","E","F","ME","ML"})foreach(var mode in new[]{"Classic32","Generic16","Generic32"}){
+   var ops=data switch{
+    "D"=>new[]{"validate","from","create","lifecycle","get","lod","construct","build","copy","count","any","load","chunk-new","chunk-from","chunk-validate","chunk-update","chunk-dense"},
+    "S"=>new[]{"validate","from","create","get","lod"},"C"=>new[]{"validate","from","create","lifecycle"},"E"=>new[]{"validate","from","create"},
+    "F"=>new[]{"validate","from","get","lod","build","copy"},_=>new[]{"validate"}};
+   foreach(var op in ops.Concat(mode=="Classic32"&&(data is "D" or "S")?new[]{"lookup-get","lookup-lod"}:Array.Empty<string>())){
+    if(op=="create"&&mode!="Classic32")continue;
+    var s=new NormalSpec(data,mode,op);result.Add(mode=="Classic32"?new ClassicCase(s):mode=="Generic16"?new GenericCase<ushort>(s):new GenericCase<uint>(s));
+   }
+  }if(result.Count!=107||result.Count(c=>c.Spec.Primary)!=23)throw new Exception("Fixed family drift");return result.ToArray();
+ }
+}
+public static class InputData{
+ public static ushort[] Values(NormalSpec s){int n=1<<(s.Levels*3);if(s.Dataset=="D")return ForcecraftCorpus.Load("mixed-u16-air");
+  return Enumerable.Range(0,n).Select(i=>s.Dataset switch{"C"=>(ushort)7,"E"=>(ushort)0,"F"=>(ushort)((i&1)==0?0:65535),_=>(ushort)(i&1)}).ToArray();}
+ public static byte[] Lods(ushort[] values,int levels){int side=1<<levels;var result=new byte[values.Length];
+  void Visit(int x,int y,int z,int level){int size=1<<level;ushort first=values[(x*side+y)*side+z];bool same=true;
+   for(int xx=x;xx<x+size&&same;xx++)for(int yy=y;yy<y+size&&same;yy++)for(int zz=z;zz<z+size;zz++)if(values[(xx*side+yy)*side+zz]!=first){same=false;break;}
+   if(same){for(int xx=x;xx<x+size;xx++)for(int yy=y;yy<y+size;yy++)Array.Fill(result,(byte)level,(xx*side+yy)*side+z,size);return;}
+   int half=size>>1;for(int c=0;c<8;c++)Visit(x+((c>>2)&1)*half,y+((c>>1)&1)*half,z+(c&1)*half,level-1);
+  }Visit(0,0,0,levels);return result;
+ }
+ public static byte[] Compact(ushort[] raw,byte[] lods,int levels,int mode){int h=mode==0?2:3;var data=new byte[h+raw.Length*2];data[0]=0x52;data[1]=(byte)(0xc3|(levels<<2));if(h==3)data[2]=(byte)(mode==1?1:2);
+  for(int i=0;i<raw.Length;i++){if(raw[i]>8191)throw new Exception("R range");BinaryPrimitives.WriteUInt16LittleEndian(data.AsSpan(h+i*2,2),(ushort)(raw[i]|(lods[i]<<13)));}return data;}
+ public static byte[] Dense(ushort[] raw,int levels,int mode){int h=mode==0?2:3,w=mode==1?2:4;var data=new byte[h+raw.Length*w];data[0]=0x4f;data[1]=(byte)(((h==2?1:2)<<6)|(levels<<2)|2);if(h==3)data[2]=(byte)(mode==1?1:2);
+  for(int i=0;i<raw.Length;i++)if(w==2)BinaryPrimitives.WriteUInt16LittleEndian(data.AsSpan(h+i*w,2),raw[i]);else BinaryPrimitives.WriteUInt32LittleEndian(data.AsSpan(h+i*w,4),raw[i]);return data;}
+ public static int Index(int j,int count)=>(j*104729+12345)&(count-1);
+ public static string Hash(ReadOnlySpan<byte> bytes)=>Convert.ToHexString(SHA256.HashData(bytes));
+ public static long Expected(long completed,long[] prefix)=>unchecked(completed/1024*prefix[1024]+prefix[(int)(completed%1024)]);
+}
+public sealed class LocalStore{
+ const string Base=@"D:\Workspaces\AI\voxtree-point-lod-20261020\p39-normal-storage";
+ public string Root{get;}readonly string trace,caseId,stamp;readonly string start;
+ public LocalStore(string id){caseId=id;start=Process.GetCurrentProcess().StartTime.ToUniversalTime().Ticks.ToString(System.Globalization.CultureInfo.InvariantCulture);
+  string name=Environment.ProcessId+"-"+start+"-"+Guid.NewGuid().ToString("N");Root=Path.GetFullPath(Path.Combine(Base,name));Check();if(Directory.Exists(Root))throw new Exception("Owned store collision");
+  Directory.CreateDirectory(Root);Directory.CreateDirectory(Path.Combine(Base,"traces"));trace=Path.Combine(Base,"traces",name+".json");stamp=InputData.Hash(File.ReadAllBytes(typeof(CaseCatalog).Assembly.Location));Write("created");}
+ void Check(){string b=Path.GetFullPath(Base)+Path.DirectorySeparatorChar;if(!Path.GetFullPath(Root).StartsWith(b,StringComparison.OrdinalIgnoreCase)||Path.GetFullPath(Root)==Path.GetFullPath(Base))throw new Exception("Store escaped owned root");}
+ public ChunkStorageOptions Options(){Check();return new ChunkStorageOptions(Root){Compression=ChunkCompression.Direct};}
+ public void Ready(){Check();Write("prepared");}
+ void Write(string stage)=>File.WriteAllText(trace,JsonSerializer.Serialize(new{caseId,pid=Environment.ProcessId,startTicks=start,root=Root,stage,entrySha256=stamp}));
+ public void Cleanup(){Check();if(Directory.Exists(Root))Directory.Delete(Root,true);if(Directory.Exists(Root))throw new Exception("Owned store did not clean");Write("cleaned");}
+}
+
+public sealed class ClassicCase :INormalCase{
+ public NormalSpec Spec{get;}
+ readonly int mode;bool initialized;ushort[] raw=null!;byte[] natural=null!,encoded=null!,validEncoded=null!,packet=null!;
+ uint[] values=null!,destination=null!;ReadOnlyMemory<byte>[] channels=null!;Octree tree=null!;OctreeChunk chunk=null!;
+ OctreeLookup lookup=null!;
+ long sum,completed,first,lifeFold;int position,zeros;long[] pointPrefix=null!,lodPrefix=null!;LocalStore? store;ChunkStorageOptions? options;
+ public ClassicCase(NormalSpec s){Spec=s;mode=s.Mode=="Classic32"?0:s.Mode=="Generic16"?1:2;}
+ [MethodImpl(MethodImplOptions.AggressiveInlining)]static uint Value(ushort v)=>v; [MethodImpl(MethodImplOptions.AggressiveInlining)]static uint Raw(uint v)=>v;
+ public ScenarioDescriptor Describe()=>new(Spec.Id,"25",Wire.Hash(new{Spec.Dataset,Spec.Mode,Spec.Op,Spec.Source,Spec.Levels,Spec.Operations,Spec.Lifecycle,primeMs=500,affinity=4,pointMap="(j*104729+12345)&(N-1)",caller="single-library-separate-operation-kernels",load="TryLoadChunkFromStorage-fresh-world",allocation="original-current-thread-absolute-difference"}),ResetLevel.LogicalState,ThreadAffinity.Any,false,Spec.Op=="lifecycle"?Spec.Lifecycle:"One complete public "+Spec.Op+" operation and specified result consumed",["baseline","candidate"]);
+ void Initialize(){if(initialized)return;raw=InputData.Values(Spec);natural=InputData.Lods(raw,Spec.Levels);values=new uint[raw.Length];for(int i=0;i<raw.Length;i++)values[i]=Value(raw[i]);
+  destination=new uint[raw.Length];tree=new Octree(Spec.Levels,values);
+  if(Spec.Dataset=="C")validEncoded=InputData.Compact(raw,natural,Spec.Levels,mode);
+  else if(Spec.Dataset=="F")validEncoded=InputData.Dense(raw,Spec.Levels,mode);
+  else validEncoded=tree.Data.ToArray();
+  if(Spec.Dataset is "D" or "S" or "ME" or "ML"){
+   var reference=InputData.Compact(raw,natural,Spec.Levels,mode);if(!reference.AsSpan().SequenceEqual(validEncoded))throw new Exception("Independent R bytes");
+  }
+  if((Spec.Dataset=="E"||Spec.Dataset=="F")&&validEncoded[0]!=0x4f)throw new Exception("O input");
+  tree=Octree.FromEncoded(validEncoded);encoded=(byte[])validEncoded.Clone();
+  if(Spec.Dataset is "ME" or "ML"){int h=mode==0?2:3,at=Spec.Dataset=="ME"?0:raw.Length-1;BinaryPrimitives.WriteUInt16LittleEndian(encoded.AsSpan(h+at*2,2),0xe000);}
+  channels=new ReadOnlyMemory<byte>[]{validEncoded};chunk=new OctreeChunk(Spec.Levels,channels.AsSpan());packet=new byte[chunk.SerializedLength];if(chunk.CopyEncodedTo(packet)!=packet.Length)throw new Exception("Packet length");
+  lookup=tree.CreateLookup();
+  first=raw[0];zeros=raw.Count(v=>v==0);pointPrefix=new long[1025];lodPrefix=new long[1025];
+  for(int j=0;j<1024;j++){int p=InputData.Index(j,raw.Length);pointPrefix[j+1]=unchecked(pointPrefix[j]+raw[p]);lodPrefix[j+1]=unchecked(lodPrefix[j]+raw[p]+((long)natural[p]<<32));}
+  for(int j=0;j<65536;j++){int p=j&(raw.Length-1);lifeFold=unchecked(lifeFold+raw[p]+((long)natural[p]<<32));}
+  if(Spec.Op=="load"){store=new LocalStore(Spec.Id);options=store.Options();var writer=new WorldEntity(1<<Spec.Levels,1,options);writer.SetChunk(0,0,0,chunk);if(writer.SaveAllChunks()!=1)throw new Exception("Owned packet setup");store.Ready();}
+  initialized=true;CheckState();
+ }
+ void CheckState(){int side=1<<Spec.Levels;
+  for(int i=0;i<raw.Length;i++){var v=tree.Get(i>>(Spec.Levels*2),(i>>Spec.Levels)&(side-1),i&(side-1),out int lod);if(Raw(v)!=raw[i]||lod!=natural[i])throw new Exception("Independent value/LOD");}
+  if(!tree.AsSpan().IsWellFormed()||!new OctreeChunkSpan(packet).IsWellFormed())throw new Exception("Owned invariant");
+  if(chunk.Levels!=Spec.Levels||chunk.ChannelCount!=1||!chunk.GetChannelData(0).Span.SequenceEqual(validEncoded))throw new Exception("Channel mutation");
+  if(lookup.StorageBytes!=(Spec.Dataset=="E"?4:validEncoded.Length))throw new Exception("Independent snapshot size");
+  bool valid=new OctreeSpan(encoded).IsWellFormed();if(valid!=(Spec.Dataset is not("ME" or "ML")))throw new Exception("Malformed oracle");
+ }
+ public void Prepare(ScenarioContext c){if(c.Variant is not("baseline" or "candidate"))throw new Exception("Variant");Initialize();if(!NormalMode.Validation){var sw=Stopwatch.StartNew();do{ExecuteBatch(1);}while(sw.ElapsedMilliseconds<500);}}
+ public void Reset(ResetContext c){sum=completed=0;position=0;}
+ public long ExecuteBatch(int count){switch(Spec.Op){
+  case "validate":RunValidate(count);break;case "from":RunFrom(count);break;case "get":RunGet(count);break;case "lod":RunLod(count);break;
+  case "construct":RunConstruct(count);break;case "build":RunBuild(count);break;case "copy":RunCopy(count);break;case "count":RunCount(count);break;case "any":RunAny(count);break;
+  case "lifecycle":RunLifecycle(count);break;case "load":RunLoad(count);break;
+  case "chunk-new":RunChunkNew(count);break;case "chunk-from":RunChunkFrom(count);break;case "chunk-validate":RunChunkValidate(count);break;case "chunk-update":RunChunkUpdate(count);break;case "chunk-dense":RunChunkDense(count);break;
+  case "create":RunCreate(count);break;case "lookup-get":RunLookupGet(count);break;case "lookup-lod":RunLookupLod(count);break;
+  default:throw new Exception("Unsupported exported operation");}completed+=count;return count;}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunValidate(int n){for(int i=0;i<n;i++)sum=unchecked(sum+(new OctreeSpan(encoded).IsWellFormed()?1:0));}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunFrom(int n){for(int i=0;i<n;i++){tree=Octree.FromEncoded(encoded);sum=unchecked(sum+Raw(tree.Get(0,0,0)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunGet(int n){int l=Spec.Levels,mask=(1<<l)-1;for(int i=0;i<n;i++){int p=InputData.Index(position++&1023,raw.Length);sum=unchecked(sum+Raw(tree.Get(p>>(l*2),(p>>l)&mask,p&mask)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunLod(int n){int l=Spec.Levels,mask=(1<<l)-1;for(int i=0;i<n;i++){int p=InputData.Index(position++&1023,raw.Length);var v=tree.Get(p>>(l*2),(p>>l)&mask,p&mask,out int lod);sum=unchecked(sum+Raw(v)+((long)lod<<32));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunConstruct(int n){for(int i=0;i<n;i++){tree=new Octree(Spec.Levels,values);sum=unchecked(sum+Raw(tree.Get(0,0,0)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunBuild(int n){for(int i=0;i<n;i++){tree.Build(values);sum=unchecked(sum+Raw(tree.Get(0,0,0)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunCopy(int n){for(int i=0;i<n;i++){tree.CopyTo(destination);sum=unchecked(sum+Raw(destination[17]));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunCount(int n){int side=1<<Spec.Levels;for(int i=0;i<n;i++)sum=unchecked(sum+tree.CountMatches(new VoxelBox(0,0,0,side,side,side),VoxelFilter.EqualTo(Value(0))));}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunAny(int n){int side=1<<Spec.Levels;for(int i=0;i<n;i++)sum=unchecked(sum+(tree.Any(new VoxelBox(0,0,0,side,side,side),VoxelFilter.EqualTo(Value(8191)))?1:0));}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunLoad(int n){for(int i=0;i<n;i++){var reader=new WorldEntity(1<<Spec.Levels,1,options!);if(!reader.TryLoadChunkFromStorage(0,0,0,out var loaded))throw new Exception("Owned load missing");chunk=loaded!;sum=unchecked(sum+Raw(chunk.GetChannel(0).Get(0,0,0)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunChunkNew(int n){for(int i=0;i<n;i++){chunk=new OctreeChunk(Spec.Levels,channels.AsSpan());sum=unchecked(sum+Raw(chunk.GetChannel(0).Get(0,0,0)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunChunkFrom(int n){for(int i=0;i<n;i++){chunk=OctreeChunk.FromEncoded(packet);sum=unchecked(sum+Raw(chunk.GetChannel(0).Get(0,0,0)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunChunkValidate(int n){for(int i=0;i<n;i++)sum=unchecked(sum+(new OctreeChunkSpan(packet).IsWellFormed()?1:0));}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunChunkUpdate(int n){for(int i=0;i<n;i++){chunk=chunk.WithDenseChannel(0,values);sum=unchecked(sum+Raw(chunk.GetChannel(0).Get(0,0,0)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunChunkDense(int n){for(int i=0;i<n;i++){chunk=OctreeChunk.FromDense(Spec.Levels,1,values);sum=unchecked(sum+Raw(chunk.GetChannel(0).Get(0,0,0)));}}
+ 
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunCreate(int n){for(int i=0;i<n;i++){lookup=tree.CreateLookup();sum=unchecked(sum+lookup.StorageBytes);}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunLookupGet(int n){int l=Spec.Levels,mask=(1<<l)-1;for(int i=0;i<n;i++){int p=InputData.Index(position++&1023,raw.Length);sum=unchecked(sum+lookup.Get(p>>(l*2),(p>>l)&mask,p&mask));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunLookupLod(int n){int l=Spec.Levels,mask=(1<<l)-1;for(int i=0;i<n;i++){int p=InputData.Index(position++&1023,raw.Length);var v=lookup.Get(p>>(l*2),(p>>l)&mask,p&mask,out int lod);sum=unchecked(sum+v+((long)lod<<32));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunLifecycle(int n){int l=Spec.Levels,mask=(1<<l)-1;for(int i=0;i<n;i++){lookup=tree.CreateLookup();for(int j=0;j<65536;j++){int p=j&(raw.Length-1);var v=lookup.Get(p>>(l*2),(p>>l)&mask,p&mask,out int lod);sum=unchecked(sum+v+((long)lod<<32));}}}
+
+ public ValidationResult Validate(){CheckState();long expected=Spec.Op switch{
+  "get" or "lookup-get"=>InputData.Expected(completed,pointPrefix),"lod" or "lookup-lod"=>InputData.Expected(completed,lodPrefix),
+  "validate"=>Spec.Dataset is "ME" or "ML"?0:completed,"chunk-validate"=>completed,"count"=>unchecked(completed*zeros),"any"=>0,
+  "copy"=>unchecked(completed*raw[17]),"create"=>unchecked(completed*(Spec.Dataset=="E"?4:validEncoded.Length)),"lifecycle"=>unchecked(completed*lifeFold),_=>unchecked(completed*first)};
+  return new ValidationResult(sum==expected);}
+ public object Fingerprint()=>new{id=Spec.Id,inputHash=Describe().InputHash,rawSha256=InputData.Hash(System.Runtime.InteropServices.MemoryMarshal.AsBytes(raw.AsSpan())),validEncodedSha256=InputData.Hash(validEncoded),inputEncodedSha256=InputData.Hash(encoded),packetSha256=InputData.Hash(packet),sum,completed,primary=Spec.Primary,operations=Spec.Operations};
+ public void Cleanup(){store?.Cleanup();}
+}
+
+public sealed class GenericCase<T>:INormalCase where T:unmanaged {
+ public NormalSpec Spec{get;}
+ readonly int mode;bool initialized;ushort[] raw=null!;byte[] natural=null!,encoded=null!,validEncoded=null!,packet=null!;
+ T[] values=null!,destination=null!;ReadOnlyMemory<byte>[] channels=null!;Octree<T> tree=null!;OctreeChunk<T> chunk=null!;
+ 
+ long sum,completed,first,lifeFold;int position,zeros;long[] pointPrefix=null!,lodPrefix=null!;LocalStore? store;ChunkStorageOptions? options;
+ public GenericCase(NormalSpec s){Spec=s;mode=s.Mode=="Classic32"?0:s.Mode=="Generic16"?1:2;if(typeof(T)!=typeof(ushort)&&typeof(T)!=typeof(uint))throw new ArgumentException("Selected fixture types only");}
+ [MethodImpl(MethodImplOptions.AggressiveInlining)]static T Value(ushort v){T r=default;if(Unsafe.SizeOf<T>()==2)Unsafe.As<T,ushort>(ref r)=v;else Unsafe.As<T,uint>(ref r)=v;return r;} [MethodImpl(MethodImplOptions.AggressiveInlining)]static uint Raw(T v)=>Unsafe.SizeOf<T>()==2?Unsafe.As<T,ushort>(ref v):Unsafe.As<T,uint>(ref v);
+ public ScenarioDescriptor Describe()=>new(Spec.Id,"25",Wire.Hash(new{Spec.Dataset,Spec.Mode,Spec.Op,Spec.Source,Spec.Levels,Spec.Operations,Spec.Lifecycle,primeMs=500,affinity=4,pointMap="(j*104729+12345)&(N-1)",caller="single-library-separate-operation-kernels",load="TryLoadChunkFromStorage-fresh-world",allocation="original-current-thread-absolute-difference"}),ResetLevel.LogicalState,ThreadAffinity.Any,false,Spec.Op=="lifecycle"?Spec.Lifecycle:"One complete public "+Spec.Op+" operation and specified result consumed",["baseline","candidate"]);
+ void Initialize(){if(initialized)return;raw=InputData.Values(Spec);natural=InputData.Lods(raw,Spec.Levels);values=new T[raw.Length];for(int i=0;i<raw.Length;i++)values[i]=Value(raw[i]);
+  destination=new T[raw.Length];tree=new Octree<T>(Spec.Levels,values);
+  if(Spec.Dataset=="C")validEncoded=InputData.Compact(raw,natural,Spec.Levels,mode);
+  else if(Spec.Dataset=="F")validEncoded=InputData.Dense(raw,Spec.Levels,mode);
+  else validEncoded=tree.Data.ToArray();
+  if(Spec.Dataset is "D" or "S" or "ME" or "ML"){
+   var reference=InputData.Compact(raw,natural,Spec.Levels,mode);if(!reference.AsSpan().SequenceEqual(validEncoded))throw new Exception("Independent R bytes");
+  }
+  if((Spec.Dataset=="E"||Spec.Dataset=="F")&&validEncoded[0]!=0x4f)throw new Exception("O input");
+  tree=Octree<T>.FromEncoded(validEncoded);encoded=(byte[])validEncoded.Clone();
+  if(Spec.Dataset is "ME" or "ML"){int h=mode==0?2:3,at=Spec.Dataset=="ME"?0:raw.Length-1;BinaryPrimitives.WriteUInt16LittleEndian(encoded.AsSpan(h+at*2,2),0xe000);}
+  channels=new ReadOnlyMemory<byte>[]{validEncoded};chunk=new OctreeChunk<T>(Spec.Levels,channels.AsSpan());packet=new byte[chunk.SerializedLength];if(chunk.CopyEncodedTo(packet)!=packet.Length)throw new Exception("Packet length");
+  
+  first=raw[0];zeros=raw.Count(v=>v==0);pointPrefix=new long[1025];lodPrefix=new long[1025];
+  for(int j=0;j<1024;j++){int p=InputData.Index(j,raw.Length);pointPrefix[j+1]=unchecked(pointPrefix[j]+raw[p]);lodPrefix[j+1]=unchecked(lodPrefix[j]+raw[p]+((long)natural[p]<<32));}
+  for(int j=0;j<65536;j++){int p=j&(raw.Length-1);lifeFold=unchecked(lifeFold+raw[p]+((long)natural[p]<<32));}
+  if(Spec.Op=="load"){store=new LocalStore(Spec.Id);options=store.Options();var writer=new WorldEntity<T>(1<<Spec.Levels,1,options);writer.SetChunk(0,0,0,chunk);if(writer.SaveAllChunks()!=1)throw new Exception("Owned packet setup");store.Ready();}
+  initialized=true;CheckState();
+ }
+ void CheckState(){int side=1<<Spec.Levels;
+  for(int i=0;i<raw.Length;i++){var v=tree.Get(i>>(Spec.Levels*2),(i>>Spec.Levels)&(side-1),i&(side-1),out int lod);if(Raw(v)!=raw[i]||lod!=natural[i])throw new Exception("Independent value/LOD");}
+  if(!tree.AsSpan().IsWellFormed()||!new OctreeChunkSpan<T>(packet).IsWellFormed())throw new Exception("Owned invariant");
+  if(chunk.Levels!=Spec.Levels||chunk.ChannelCount!=1||!chunk.GetChannelData(0).Span.SequenceEqual(validEncoded))throw new Exception("Channel mutation");
+  
+  bool valid=new OctreeSpan<T>(encoded).IsWellFormed();if(valid!=(Spec.Dataset is not("ME" or "ML")))throw new Exception("Malformed oracle");
+ }
+ public void Prepare(ScenarioContext c){if(c.Variant is not("baseline" or "candidate"))throw new Exception("Variant");Initialize();if(!NormalMode.Validation){var sw=Stopwatch.StartNew();do{ExecuteBatch(1);}while(sw.ElapsedMilliseconds<500);}}
+ public void Reset(ResetContext c){sum=completed=0;position=0;}
+ public long ExecuteBatch(int count){switch(Spec.Op){
+  case "validate":RunValidate(count);break;case "from":RunFrom(count);break;case "get":RunGet(count);break;case "lod":RunLod(count);break;
+  case "construct":RunConstruct(count);break;case "build":RunBuild(count);break;case "copy":RunCopy(count);break;case "count":RunCount(count);break;case "any":RunAny(count);break;
+  case "lifecycle":RunLifecycle(count);break;case "load":RunLoad(count);break;
+  case "chunk-new":RunChunkNew(count);break;case "chunk-from":RunChunkFrom(count);break;case "chunk-validate":RunChunkValidate(count);break;case "chunk-update":RunChunkUpdate(count);break;case "chunk-dense":RunChunkDense(count);break;
+  
+  default:throw new Exception("Unsupported exported operation");}completed+=count;return count;}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunValidate(int n){for(int i=0;i<n;i++)sum=unchecked(sum+(new OctreeSpan<T>(encoded).IsWellFormed()?1:0));}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunFrom(int n){for(int i=0;i<n;i++){tree=Octree<T>.FromEncoded(encoded);sum=unchecked(sum+Raw(tree.Get(0,0,0)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunGet(int n){int l=Spec.Levels,mask=(1<<l)-1;for(int i=0;i<n;i++){int p=InputData.Index(position++&1023,raw.Length);sum=unchecked(sum+Raw(tree.Get(p>>(l*2),(p>>l)&mask,p&mask)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunLod(int n){int l=Spec.Levels,mask=(1<<l)-1;for(int i=0;i<n;i++){int p=InputData.Index(position++&1023,raw.Length);var v=tree.Get(p>>(l*2),(p>>l)&mask,p&mask,out int lod);sum=unchecked(sum+Raw(v)+((long)lod<<32));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunConstruct(int n){for(int i=0;i<n;i++){tree=new Octree<T>(Spec.Levels,values);sum=unchecked(sum+Raw(tree.Get(0,0,0)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunBuild(int n){for(int i=0;i<n;i++){tree.Build(values);sum=unchecked(sum+Raw(tree.Get(0,0,0)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunCopy(int n){for(int i=0;i<n;i++){tree.CopyTo(destination);sum=unchecked(sum+Raw(destination[17]));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunCount(int n){int side=1<<Spec.Levels;for(int i=0;i<n;i++)sum=unchecked(sum+tree.CountMatches(new VoxelBox(0,0,0,side,side,side),VoxelFilter<T>.EqualTo(Value(0))));}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunAny(int n){int side=1<<Spec.Levels;for(int i=0;i<n;i++)sum=unchecked(sum+(tree.Any(new VoxelBox(0,0,0,side,side,side),VoxelFilter<T>.EqualTo(Value(8191)))?1:0));}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunLoad(int n){for(int i=0;i<n;i++){var reader=new WorldEntity<T>(1<<Spec.Levels,1,options!);if(!reader.TryLoadChunkFromStorage(0,0,0,out var loaded))throw new Exception("Owned load missing");chunk=loaded!;sum=unchecked(sum+Raw(chunk.GetChannel(0).Get(0,0,0)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunChunkNew(int n){for(int i=0;i<n;i++){chunk=new OctreeChunk<T>(Spec.Levels,channels.AsSpan());sum=unchecked(sum+Raw(chunk.GetChannel(0).Get(0,0,0)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunChunkFrom(int n){for(int i=0;i<n;i++){chunk=OctreeChunk<T>.FromEncoded(packet);sum=unchecked(sum+Raw(chunk.GetChannel(0).Get(0,0,0)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunChunkValidate(int n){for(int i=0;i<n;i++)sum=unchecked(sum+(new OctreeChunkSpan<T>(packet).IsWellFormed()?1:0));}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunChunkUpdate(int n){for(int i=0;i<n;i++){chunk=chunk.WithDenseChannel(0,values);sum=unchecked(sum+Raw(chunk.GetChannel(0).Get(0,0,0)));}}
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunChunkDense(int n){for(int i=0;i<n;i++){chunk=OctreeChunk<T>.FromDense(Spec.Levels,1,values);sum=unchecked(sum+Raw(chunk.GetChannel(0).Get(0,0,0)));}}
+ 
+ [MethodImpl(MethodImplOptions.NoInlining)]void RunLifecycle(int n){int l=Spec.Levels,mask=(1<<l)-1;for(int i=0;i<n;i++){tree=Octree<T>.FromEncoded(encoded);for(int j=0;j<65536;j++){int p=j&(raw.Length-1);var v=tree.Get(p>>(l*2),(p>>l)&mask,p&mask,out int lod);sum=unchecked(sum+Raw(v)+((long)lod<<32));}}}
+
+ public ValidationResult Validate(){CheckState();long expected=Spec.Op switch{
+  "get" or "lookup-get"=>InputData.Expected(completed,pointPrefix),"lod" or "lookup-lod"=>InputData.Expected(completed,lodPrefix),
+  "validate"=>Spec.Dataset is "ME" or "ML"?0:completed,"chunk-validate"=>completed,"count"=>unchecked(completed*zeros),"any"=>0,
+  "copy"=>unchecked(completed*raw[17]),"create"=>throw new Exception("No generic compiled lookup"),"lifecycle"=>unchecked(completed*lifeFold),_=>unchecked(completed*first)};
+  return new ValidationResult(sum==expected);}
+ public object Fingerprint()=>new{id=Spec.Id,inputHash=Describe().InputHash,rawSha256=InputData.Hash(System.Runtime.InteropServices.MemoryMarshal.AsBytes(raw.AsSpan())),validEncodedSha256=InputData.Hash(validEncoded),inputEncodedSha256=InputData.Hash(encoded),packetSha256=InputData.Hash(packet),sum,completed,primary=Spec.Primary,operations=Spec.Operations};
+ public void Cleanup(){store?.Cleanup();}
+}
+
+public static class ForcecraftCorpus {
+    public static string Hash(string name)=>name switch {"mixed-u16-air"=>"48A799A3EEBA729CB9DCE28F1EA54E9B19A9D46E7AA7CA8F0696E90E0F6F10FB","mixed-u7-air"=>"87DB869D775B6A5525CAA5E55463CCC8F4A0F56F6D6770EC5A336E7F63F421DE","mixed-u8-air"=>"5FFD2CF86EF7B6527F314734C048ADCC08C5924C01D2B9C93ABAF1C6814DB8D7","uniform-u7-empty"=>"DE2F256064A0AF797747C2B97505DC0B9F3DF0DE4F489EAC731C23AE9CA9CC31",_=>throw new ArgumentException(name)};
+    public static ushort[] Load(string name) {
+        var text=name switch {"mixed-u16-air"=>"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","mixed-u7-air"=>"H4sIAAAAAAAC/+3cQQ6AIAwEwNL/P9rEg4nxpBgQO8MHjJeFthABAPCOti8AoE5+t2PZPwDAWun/NIHbac3ZPwAAI/O7Xdb4/QMA8Cx/szO9U/4DgPO//AcA/X/9fwAw/2/+HwAWPv/Lb/8DgGr9/3/W79VDAKiU/v+Z30vzEABQ7v5eug8BALfzKjvzKmPe+T2P5T0EAKhUr3b+B4B682r6/wCw+rz56O8z/w8A8lR+A1DTN+rpoZ4OAMvN08XUbrr8B4AZ9+l63yeQ/wDg/C//AUD/X/8fAML8v3l8APA+AQAAAAAAAAAAAAAAAAAAAHzABgfSe8UAAAEA","mixed-u8-air"=>"H4sIAAAAAAAC/+3QMQ0AAAwDoPr3UK81sWcJSCABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFtVAAAvDeb4mNcAAAEA","uniform-u7-empty"=>"H4sIAAAAAAAC/+3BAQEAAACAkP6v7ggKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAauuOl9cAAAEA",_=>throw new ArgumentException(name)};
+        using var input=new MemoryStream(Convert.FromBase64String(text));
+        using var gzip=new System.IO.Compression.GZipStream(input,System.IO.Compression.CompressionMode.Decompress);
+        var bytes=new byte[65536];gzip.ReadExactly(bytes);if(gzip.ReadByte()!=-1)throw new Exception("Sample size");
+        if(Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes))!=Hash(name))throw new Exception("Sample hash");
+        var values=new ushort[32768];for(var i=0;i<values.Length;i++)values[i]=System.Buffers.Binary.BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(i*2));return values;
+    }
+    public static byte[] Lods(ushort[] values) {
+        var lods=new byte[values.Length];
+        void Visit(int x,int y,int z,int level) {
+            var width=1<<level;var first=values[(x*32+y)*32+z];var uniform=true;
+            for(var a=x;a<x+width&&uniform;a++)for(var b=y;b<y+width&&uniform;b++)for(var c=z;c<z+width;c++)if(values[(a*32+b)*32+c]!=first){uniform=false;break;}
+            if(uniform){for(var a=x;a<x+width;a++)for(var b=y;b<y+width;b++)Array.Fill(lods,(byte)level,(a*32+b)*32+z,width);return;}
+            if(level==0)throw new Exception("LOD oracle");var half=width/2;
+            for(var a=0;a<2;a++)for(var b=0;b<2;b++)for(var c=0;c<2;c++)Visit(x+a*half,y+b*half,z+c*half,level-1);
+        }
+        Visit(0,0,0,5);return lods;
+    }
+}

@@ -416,6 +416,22 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    old ratios/families cannot be pooled, expanded or treated as original-release
    qualification. Full original-baseline public10x scope remains open.
 
+25. P39N hyp-c412d580dcd4479f86219a441f723c25 freezes the first107-case
+   fresh-normal P39/P31-local family,23 targets/84 guards,12 paired blocks and
+   2568 sessions, before timing. Version25 one-library modules match35 caller
+   IL/flags,55 source files and all1235 unchanged library bodies;107 semantic
+   cases/module and six private storage cleanups pass. Original version24 load
+   failure and identities are retained, corrected before plans/grants. Actual
+   native callers show code/frame growth; FromEncoded Tier1 caller coverage
+   remains unavailable. Phase32 verifies525paths/184blobs/onecatalog/zero time
+   rows. See REPORT-PHASE32 and COMPACT-TERMINAL-NORMAL-PROTOCOL.
+   Execute only frozen plans once, wait on Global\Tedd.DotNetLab.Measurement.v1
+   through controller admission, retain all accepted IDs and joined results.
+   Run all statistical misses; stop execution failure. Classify only frozen
+   usable intervals; no allocation waiver, pooling, extra samples or adoption.
+   Independent original-release/real-consumer/full API/memory/format/allocation
+   and original10x qualifications remain open; goal stays active.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining

@@ -1,0 +1,74 @@
+[
+  {
+    "sha256": "1C9E6417EFC492D8FC920B69740F9A76527D960D00C037CB9ED3120AA1920805",
+    "record": {
+      "caseId": "compact-normal-Generic32-D-load",
+      "pid": 105164,
+      "startTicks": "639281947915115402",
+      "root": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\p39-normal-storage\\105164-639281947915115402-37d6225da5f8402190f0e29934ccdfa9",
+      "stage": "cleaned",
+      "entrySha256": "16DDDBF41259144E1828ADA9ACA1B8F18E23FCACBB4C0A1AE8AF9AB071C7BA30"
+    },
+    "file": "105164-639281947915115402-37d6225da5f8402190f0e29934ccdfa9.json"
+  },
+  {
+    "sha256": "164AD05D2E9FD60B4F127CAC5C28DEF7730581AFB5F73D0537736DE722EC385D",
+    "record": {
+      "caseId": "compact-normal-Generic16-D-load",
+      "pid": 105164,
+      "startTicks": "639281947915115402",
+      "root": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\p39-normal-storage\\105164-639281947915115402-3bdbdfa5bc444ab6b67fb9becbec28d1",
+      "stage": "cleaned",
+      "entrySha256": "16DDDBF41259144E1828ADA9ACA1B8F18E23FCACBB4C0A1AE8AF9AB071C7BA30"
+    },
+    "file": "105164-639281947915115402-3bdbdfa5bc444ab6b67fb9becbec28d1.json"
+  },
+  {
+    "sha256": "F93274FD36206A75583518CFA58C29951B80310785C6E401922C49F0634FD4A2",
+    "record": {
+      "caseId": "compact-normal-Classic32-D-load",
+      "pid": 105164,
+      "startTicks": "639281947915115402",
+      "root": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\p39-normal-storage\\105164-639281947915115402-e602cc5d95e94120af5a0428e2e11c40",
+      "stage": "cleaned",
+      "entrySha256": "16DDDBF41259144E1828ADA9ACA1B8F18E23FCACBB4C0A1AE8AF9AB071C7BA30"
+    },
+    "file": "105164-639281947915115402-e602cc5d95e94120af5a0428e2e11c40.json"
+  },
+  {
+    "sha256": "0804299616F4BD5DE2A58F445E6C1119D6C4449766BCE8E4EBAA21BDD6B40E7E",
+    "record": {
+      "caseId": "compact-normal-Generic32-D-load",
+      "pid": 79868,
+      "startTicks": "639281947890686193",
+      "root": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\p39-normal-storage\\79868-639281947890686193-22e4cff60c224829b8f18d853e6c5397",
+      "stage": "cleaned",
+      "entrySha256": "C02E2E42D1692C8DDADC5B95F26BF14ED013DFC99E509F5ED058C00639E9E30B"
+    },
+    "file": "79868-639281947890686193-22e4cff60c224829b8f18d853e6c5397.json"
+  },
+  {
+    "sha256": "A8F32E4873A7DCBB93C5E70DD2FA36E9A230DD0828517AF9831A24141E5F14D1",
+    "record": {
+      "caseId": "compact-normal-Classic32-D-load",
+      "pid": 79868,
+      "startTicks": "639281947890686193",
+      "root": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\p39-normal-storage\\79868-639281947890686193-58fe797cbb8d4be8bacee342c7a0f519",
+      "stage": "cleaned",
+      "entrySha256": "C02E2E42D1692C8DDADC5B95F26BF14ED013DFC99E509F5ED058C00639E9E30B"
+    },
+    "file": "79868-639281947890686193-58fe797cbb8d4be8bacee342c7a0f519.json"
+  },
+  {
+    "sha256": "9D7B241E9217CDD8CB8FFA8BF1C87E524C5833375D69ADDEEA305886C5A54A0F",
+    "record": {
+      "caseId": "compact-normal-Generic16-D-load",
+      "pid": 79868,
+      "startTicks": "639281947890686193",
+      "root": "D:\\Workspaces\\AI\\voxtree-point-lod-20261020\\p39-normal-storage\\79868-639281947890686193-8b328b67a27d4fb092439b353d2f2dca",
+      "stage": "cleaned",
+      "entrySha256": "C02E2E42D1692C8DDADC5B95F26BF14ED013DFC99E509F5ED058C00639E9E30B"
+    },
+    "file": "79868-639281947890686193-8b328b67a27d4fb092439b353d2f2dca.json"
+  }
+]
