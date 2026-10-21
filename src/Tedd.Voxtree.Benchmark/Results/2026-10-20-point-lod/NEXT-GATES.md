@@ -102,6 +102,22 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    declared assumptions, but neither that subset nor point estimates establish
    the full public API objective. Retain the broader catalogue.
 
+7. P27 implements the separately discriminated Q/version3 byte palette. Initial
+   .NET8/10/11 and hardware-off suites,48 point/88 complete-operation oracles,
+   and the full1286-chunk census pass. Actual payload matches J1 exactly,
+   including40,325,678 classic encoded-plus-distinct-lookup bytes. Its fixed
+   48-point and88-consumer screens are running; close every original case and
+   retain adverse guards before revising its hypothesis or selecting a source.
+   The first eight primary estimates include UInt32 owned Get9.954x and
+   owned LOD8.287x, below10x. Do not promote from the other six passing estimates.
+8. P28 is prepared, unexecuted, conditional on verified P27 closure. It changes
+   only the two owned LOD getter boundaries, retaining a single volatile array
+   snapshot, exception/output order and exact P27 format/codecs. Its prospective
+   two-case10% primary and full48-case screen remain separate from a future
+   direct-release10x confirmation. No inherited-ratio multiplication. New tests
+   check unbuilt/built out-state, coordinate precedence and generic publication;
+   execute both parent and candidate under host admission before timing.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining
