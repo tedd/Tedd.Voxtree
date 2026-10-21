@@ -14,7 +14,7 @@ for(int pattern=0;pattern<9;pattern++)
     Check<ulong>(level,pattern,v=>(ulong)v<<32|v);
     Check<UInt128>(level,pattern,v=>(UInt128)v<<96|v);
 }
-Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(new{cases,cells,capacities,correct=true,control="complete P24",wire="byte-for-byte including capacity-failure mutations"}));
+Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(new{cases,cells,capacities,correct=true,control="selected Snapshot.Voxtree bundle source",wire="byte-for-byte including capacity-failure mutations"}));
 
 uint Value(int i,int count,int pattern)=>pattern switch{
     0=>127,1=>i==0?128u:127u,2=>i==count-1?16384u:127u,
