@@ -1,0 +1,19 @@
+{
+  "archive_bytes": 2445349,
+  "manifest_paths": 995,
+  "unique_blobs": 983,
+  "catalogs": 2,
+  "metric_rows": 40,
+  "sha256": "63e9e3804a5636e93ba0e820390f1eddf20ba5aae2a3c5af51082d0aea533e46",
+  "required_paths": [
+    "p34world-screen/catalog-export.json",
+    "p34-hypothesis/catalog-export.json",
+    "p34-world-stage-audit.json",
+    "p34-prerequisite-audit.json",
+    "p34-world-native.asm",
+    "bundles/p34world/p34world.dll",
+    "world-recent-source/WorldEntity.cs",
+    "p34-hypothesis/disposition-revision-response.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

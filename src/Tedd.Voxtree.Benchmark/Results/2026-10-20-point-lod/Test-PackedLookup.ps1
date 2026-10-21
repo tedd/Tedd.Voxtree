@@ -9,13 +9,14 @@ param([Parameter(Mandatory)][string]$TaskRoot,[ValidatePattern('^[a-z][a-z0-9-]*
       [switch]$PackedLeaf,
       [switch]$PaletteLeaf,
       [switch]$CompactLeaf,
-      [switch]$WordStorage)
+      [switch]$WordStorage,
+      [switch]$PublishedFormat)
 $ErrorActionPreference='Stop'
 if([IO.Path]::GetFullPath($TaskRoot).TrimEnd('\') -ne 'D:\Workspaces\AI\voxtree-point-lod-20261020'){throw 'Unexpected task root'}
 $repo=(Resolve-Path (Join-Path $PSScriptRoot '../../../..')).Path.Replace('\','/')
 $validation=Join-Path $TaskRoot "packed-lookup-validation-$Label"
 New-Item -ItemType Directory -Path $validation,(Join-Path $validation 'tests') -Force | Out-Null
-$excludedTests="$repo/src/Tedd.Voxtree.Tests/CompiledLeafGridTests.cs"
+$excludedTests=if($PublishedFormat){''}else{"$repo/src/Tedd.Voxtree.Tests/CompiledLeafGridTests.cs"}
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot $FixtureName) -Destination (Join-Path $validation 'tests/PackedLookupTests.cs')
 if($ExtraFixtureName){
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $ExtraFixtureName) -Destination (Join-Path $validation 'tests/ExtraReadTests.cs')

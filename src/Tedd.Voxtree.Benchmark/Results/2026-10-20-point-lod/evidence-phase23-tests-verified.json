@@ -1,0 +1,24 @@
+{
+  "archive_bytes": 2407171,
+  "manifest_paths": 61,
+  "unique_blobs": 29,
+  "catalogs": 0,
+  "metric_rows": 0,
+  "sha256": "ef54914a0f791a67b5a64d77af6be22dcfa7707c9d14886ac057c2d22f05527f",
+  "required_paths": [
+    "p34-test-binary-bindings.json",
+    "bundles/p34-tests/net8.0/Tests.dll",
+    "bundles/p34-tests/net8.0/Tedd.Voxtree.dll",
+    "bundles/p34-tests/net8.0/Tests.runtimeconfig.json",
+    "bundles/p34-tests/net8.0/Tests.deps.json",
+    "bundles/p34-tests/net10.0/Tests.dll",
+    "bundles/p34-tests/net10.0/Tedd.Voxtree.dll",
+    "bundles/p34-tests/net10.0/Tests.runtimeconfig.json",
+    "bundles/p34-tests/net10.0/Tests.deps.json",
+    "bundles/p34-tests/net11.0/Tests.dll",
+    "bundles/p34-tests/net11.0/Tedd.Voxtree.dll",
+    "bundles/p34-tests/net11.0/Tests.runtimeconfig.json",
+    "bundles/p34-tests/net11.0/Tests.deps.json"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

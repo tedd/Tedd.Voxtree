@@ -1,0 +1,94 @@
+--- f0772c8/WorldEntity.cs
++++ P34/WorldEntity.cs
+@@ -377,6 +377,7 @@
+     private readonly CacheEntry[] _recent;
+     private readonly int[] _lookup = new int[LookupSize];
+     private int _recentCount;
++    private int _lastRecentIndex = -1;
+     private ulong _access;
+     private long _estimatedBytes;
+ 
+@@ -397,6 +398,17 @@
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     internal bool TryGetValue(ChunkCoordinate coordinate, out TChunk? value)
+     {
++        if ((uint)_lastRecentIndex < (uint)_recentCount)
++        {
++            ref var last = ref _recent[_lastRecentIndex];
++            if (last.LodLevel == 0 && last.Coordinate == coordinate)
++            {
++                last.State!.LastAccessSequence = last.Access = ++_access;
++                value = last.Value;
++                return true;
++            }
++        }
++
+         var hash = coordinate.GetHashCode() & int.MaxValue;
+         var slot = hash & LookupMask;
+         for (var probe = 0; probe < LookupSize; probe++)
+@@ -406,6 +418,7 @@
+             ref var entry = ref _recent[recentIndex];
+             if (entry.Hash == hash && entry.LodLevel == 0 && entry.Coordinate == coordinate)
+             {
++                _lastRecentIndex = recentIndex;
+                 entry.State!.LastAccessSequence = entry.Access = ++_access;
+                 value = entry.Value;
+                 return true;
+@@ -429,6 +442,17 @@
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     internal bool TryGetValue(ChunkAddress address, out TChunk? value)
+     {
++        if ((uint)_lastRecentIndex < (uint)_recentCount)
++        {
++            ref var last = ref _recent[_lastRecentIndex];
++            if (last.LodLevel == address.LodLevel && last.Coordinate == address.Coordinate)
++            {
++                last.State!.LastAccessSequence = last.Access = ++_access;
++                value = last.Value;
++                return true;
++            }
++        }
++
+         var hash = address.GetHashCode() & int.MaxValue;
+         var slot = hash & LookupMask;
+         for (var probe = 0; probe < LookupSize; probe++)
+@@ -439,6 +463,7 @@
+             if (entry.Hash == hash && entry.LodLevel == address.LodLevel &&
+                 entry.Coordinate == address.Coordinate)
+             {
++                _lastRecentIndex = recentIndex;
+                 entry.State!.LastAccessSequence = entry.Access = ++_access;
+                 value = entry.Value;
+                 return true;
+@@ -493,6 +518,7 @@
+         var hash = address.GetHashCode() & int.MaxValue;
+         if (TryFindRecent(address, hash, out var index))
+         {
++            _lastRecentIndex = index;
+             _recent[index].Value = value;
+             _recent[index].State = state;
+             _recent[index].Access = state.LastAccessSequence;
+@@ -509,6 +535,7 @@
+         _residency.Remove(address);
+         var hash = address.GetHashCode() & int.MaxValue;
+         if (!TryFindRecent(address, hash, out var index)) return true;
++        _lastRecentIndex = -1;
+         _recentCount--;
+         if (index != _recentCount) _recent[index] = _recent[_recentCount];
+         _recent[_recentCount] = default;
+@@ -523,6 +550,7 @@
+         _residency.Clear();
+         Array.Clear(_recent, 0, _recent.Length);
+         Array.Clear(_lookup, 0, _lookup.Length);
++        _lastRecentIndex = -1;
+         _recentCount = 0;
+         _access = 0;
+         _estimatedBytes = 0;
+@@ -597,6 +625,7 @@
+             for (var candidate = 1; candidate < _recentCount; candidate++)
+                 if (_recent[candidate].Access < _recent[index].Access) index = candidate;
+         }
++        _lastRecentIndex = index;
+         _recent[index] = new CacheEntry(address, hash, value, state);
+         RebuildLookup();
+     }

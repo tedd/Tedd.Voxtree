@@ -1,0 +1,118 @@
+{
+  "passed": true,
+  "sourceChanged": [
+    "WorldEntity.cs"
+  ],
+  "sourceManifestSha256": "8c6f7e96396b6408deb5d9d05bbbb436bdd6f1220f8b474d498f4a972de7d5e3",
+  "nativeSha256": "0cf413232d06a2cea476de8b16ba3f574ad34e2919013ecc774f56c972722c97",
+  "tests": [
+    {
+      "file": "tedd_T-5950X2_2026-10-21_12_22_37_net8.0.trx",
+      "sha256": "a500e359aed602a160020e0be08f34e1c37cd5807de7df9e6db57f3d2b44aa1e",
+      "count": 398
+    },
+    {
+      "file": "tedd_T-5950X2_2026-10-21_12_22_38_net10.0.trx",
+      "sha256": "1bc6d888d1efbd5bb039df54edc04b8db75e14910baf87750d62bf987650b62b",
+      "count": 399
+    },
+    {
+      "file": "tedd_T-5950X2_2026-10-21_12_22_38_net11.0.trx",
+      "sha256": "445e9549c3cfca9f391257f5bbf6f22e8b186f3498ad495e1e950930ba6b9b68",
+      "count": 400
+    }
+  ],
+  "scenarios": 40,
+  "arms": 2,
+  "nativeWitnesses": [
+    {
+      "method": "WorldUInt32:BeforeBatch(int):this (Tier1)",
+      "nativeBytes": 6377,
+      "fixedRspSubtractions": [
+        1000
+      ],
+      "shortcutRoutes": []
+    },
+    {
+      "method": "WorldUInt32:AfterBatch(int):this (Tier1)",
+      "nativeBytes": 7367,
+      "fixedRspSubtractions": [
+        1192
+      ],
+      "shortcutRoutes": [
+        {
+          "methodStartLine": 10179,
+          "exactHitRoute": "       mov      ecx, dword ptr [rax+0x54]\n       cmp      ecx, dword ptr [rax+0x50]\n       jae      G_M000_IG131\n       mov      rdx, gword ptr [rax+0x30]\n       cmp      ecx, dword ptr [rdx+0x08]\n       jae      G_M000_IG199\n       imul     rcx, rcx, 56\n       lea      rcx, bword ptr [rdx+rcx+0x10]\n       cmp      dword ptr [rcx+0x18], 0\n       jne      G_M000_IG130\n \nG_M000_IG13:                ;; offset=0x0182\n       mov      rdx, qword ptr [rcx+0x20]\n       mov      r8, qword ptr [rcx+0x28]\n       mov      r10, qword ptr [rcx+0x30]\n       mov      r9, qword ptr [rbp-0x88]\n       mov      r11, qword ptr [rbp-0x80]\n       mov      rsi, qword ptr [rbp-0x78]\n       cmp      rdx, r9\n       jne      G_M000_IG129\n       cmp      r8, r11\n       jne      G_M000_IG128\n       cmp      r10, rsi\n       jne      G_M000_IG127\n       mov      rdx, gword ptr [rcx+0x08]\n       mov      r8, qword ptr [rax+0x40]\n       inc      r8\n       mov      qword ptr [rax+0x40], r8\n       mov      qword ptr [rcx+0x10], r8\n       mov      qword ptr [rdx+0x10], r8",
+          "coordinateEqualsCall": false,
+          "note": "Valid bounds and equal LOD/coordinates; follows outlined true-Equals edge where present, stopping after three sequence stores before hash/probe."
+        },
+        {
+          "methodStartLine": 10179,
+          "exactHitRoute": "       mov      edx, dword ptr [r10+0x54]\n       cmp      edx, dword ptr [r10+0x50]\n       jae      G_M000_IG37\n \nG_M000_IG55:                ;; offset=0x0728\n       mov      rdx, gword ptr [r10+0x30]\n       mov      ecx, dword ptr [r10+0x54]\n       cmp      ecx, dword ptr [rdx+0x08]\n       jae      G_M000_IG199\n       imul     rcx, rcx, 56\n       lea      r9, bword ptr [rdx+rcx+0x10]\n       mov      bword ptr [rbp-0x4A0], r9\n       mov      edx, dword ptr [r9+0x18]\n       cmp      edx, dword ptr [rbp-0x348]\n       jne      G_M000_IG37\n \nG_M000_IG56:                ;; offset=0x0759\n       mov      rdx, qword ptr [r9+0x20]\n       mov      rcx, qword ptr [r9+0x28]\n       mov      r11, qword ptr [r9+0x30]\n       mov      r13, qword ptr [rbp-0x340]\n       mov      qword ptr [rbp-0x408], r13\n       mov      r13, qword ptr [rbp-0x338]\n       mov      qword ptr [rbp-0x410], r13\n       mov      r13, qword ptr [rbp-0x330]\n       mov      qword ptr [rbp-0x368], rdx\n       mov      qword ptr [rbp-0x360], rcx\n       mov      qword ptr [rbp-0x358], r11\n       mov      rdx, qword ptr [rbp-0x408]\n       mov      qword ptr [rbp-0x428], rdx\n       mov      rdx, qword ptr [rbp-0x410]\n       mov      qword ptr [rbp-0x420], rdx\n       mov      qword ptr [rbp-0x418], r13\n       lea      rdx, [rbp-0x428]\n       lea      rcx, [rbp-0x368]\n       call     [Tedd.Voxtree.ChunkCoordinate:Equals(Tedd.Voxtree.ChunkCoordinate):bool:this]\n       test     eax, eax\n       je       G_M000_IG37\n \nG_M000_IG57:                ;; offset=0x07DC\n       mov      r13, bword ptr [rbp-0x4A0]\n       mov      rcx, gword ptr [r13+0x08]\n       mov      rax, gword ptr [rbp-0x490]\n       mov      rdx, qword ptr [rax+0x40]\n       inc      rdx\n       mov      qword ptr [rax+0x40], rdx\n       mov      qword ptr [r13+0x10], rdx\n       mov      qword ptr [rcx+0x10], rdx",
+          "coordinateEqualsCall": true,
+          "note": "Valid bounds and equal LOD/coordinates; follows outlined true-Equals edge where present, stopping after three sequence stores before hash/probe."
+        },
+        {
+          "methodStartLine": 10179,
+          "exactHitRoute": "       mov      edx, dword ptr [r12+0x54]\n       cmp      edx, dword ptr [r12+0x50]\n       jae      G_M000_IG82\n \nG_M000_IG80:                ;; offset=0x0B58\n       mov      rdx, gword ptr [r12+0x30]\n       mov      ecx, dword ptr [r12+0x54]\n       cmp      ecx, dword ptr [rdx+0x08]\n       jae      G_M000_IG199\n       imul     rcx, rcx, 56\n       lea      rax, bword ptr [rdx+rcx+0x10]\n       mov      bword ptr [rbp-0x478], rax\n       mov      edx, dword ptr [rax+0x18]\n       cmp      edx, dword ptr [rbp-0x1B0]\n       jne      SHORT G_M000_IG82\n \nG_M000_IG81:                ;; offset=0x0B86\n       mov      rdx, qword ptr [rax+0x20]\n       mov      rcx, qword ptr [rax+0x28]\n       mov      r8, qword ptr [rax+0x30]\n       mov      r10, qword ptr [rbp-0x1A8]\n       mov      r9, qword ptr [rbp-0x1A0]\n       mov      r11, qword ptr [rbp-0x198]\n       mov      qword ptr [rbp-0x1D0], rdx\n       mov      qword ptr [rbp-0x1C8], rcx\n       mov      qword ptr [rbp-0x1C0], r8\n       mov      qword ptr [rbp-0x428], r10\n       mov      qword ptr [rbp-0x420], r9\n       mov      qword ptr [rbp-0x418], r11\n       lea      rdx, [rbp-0x428]\n       lea      rcx, [rbp-0x1D0]\n       call     [Tedd.Voxtree.ChunkCoordinate:Equals(Tedd.Voxtree.ChunkCoordinate):bool:this]\n       test     eax, eax\n       jne      G_M000_IG119\nG_M000_IG119:                ;; offset=0x10C9\n       mov      r15, bword ptr [rbp-0x478]\n       mov      rcx, gword ptr [r15+0x08]\n       mov      rax, qword ptr [r12+0x40]\n       inc      rax\n       mov      qword ptr [r12+0x40], rax\n       mov      qword ptr [r15+0x10], rax\n       mov      qword ptr [rcx+0x10], rax",
+          "coordinateEqualsCall": true,
+          "note": "Valid bounds and equal LOD/coordinates; follows outlined true-Equals edge where present, stopping after three sequence stores before hash/probe."
+        },
+        {
+          "methodStartLine": 10179,
+          "exactHitRoute": "       mov      edx, dword ptr [r14+0x54]\n       cmp      edx, dword ptr [r14+0x50]\n       jae      G_M000_IG109\n \nG_M000_IG107:                ;; offset=0x0ECF\n       mov      rdx, gword ptr [r14+0x30]\n       mov      ecx, dword ptr [r14+0x54]\n       cmp      ecx, dword ptr [rdx+0x08]\n       jae      G_M000_IG199\n       imul     rcx, rcx, 56\n       lea      r15, bword ptr [rdx+rcx+0x10]\n       mov      edx, dword ptr [r15+0x18]\n       cmp      edx, dword ptr [rbp-0x268]\n       jne      SHORT G_M000_IG109\n \nG_M000_IG108:                ;; offset=0x0EF5\n       mov      rdx, qword ptr [r15+0x20]\n       mov      rcx, qword ptr [r15+0x28]\n       mov      rax, qword ptr [r15+0x30]\n       mov      r8, qword ptr [rbp-0x260]\n       mov      r10, qword ptr [rbp-0x258]\n       mov      r9, qword ptr [rbp-0x250]\n       mov      qword ptr [rbp-0x280], rdx\n       mov      qword ptr [rbp-0x278], rcx\n       mov      qword ptr [rbp-0x270], rax\n       mov      qword ptr [rbp-0x428], r8\n       mov      qword ptr [rbp-0x420], r10\n       mov      qword ptr [rbp-0x418], r9\n       lea      rdx, [rbp-0x428]\n       lea      rcx, [rbp-0x280]\n       call     [Tedd.Voxtree.ChunkCoordinate:Equals(Tedd.Voxtree.ChunkCoordinate):bool:this]\n       test     eax, eax\n       jne      G_M000_IG67\nG_M000_IG67:                ;; offset=0x08CC\n       mov      rcx, gword ptr [r15+0x08]\n       mov      rax, qword ptr [r14+0x40]\n       inc      rax\n       mov      qword ptr [r14+0x40], rax\n       mov      qword ptr [r15+0x10], rax\n       mov      qword ptr [rcx+0x10], rax",
+          "coordinateEqualsCall": true,
+          "note": "Valid bounds and equal LOD/coordinates; follows outlined true-Equals edge where present, stopping after three sequence stores before hash/probe."
+        }
+      ]
+    },
+    {
+      "method": "WorldUInt16:BeforeBatch(int):this (Tier1)",
+      "nativeBytes": 6575,
+      "fixedRspSubtractions": [
+        1016
+      ],
+      "shortcutRoutes": []
+    },
+    {
+      "method": "WorldUInt16:AfterBatch(int):this (Tier1)",
+      "nativeBytes": 7566,
+      "fixedRspSubtractions": [
+        1208
+      ],
+      "shortcutRoutes": [
+        {
+          "methodStartLine": 20493,
+          "exactHitRoute": "       mov      ecx, dword ptr [rax+0x54]\n       cmp      ecx, dword ptr [rax+0x50]\n       jae      G_M000_IG137\n       mov      rdx, gword ptr [rax+0x30]\n       cmp      ecx, dword ptr [rdx+0x08]\n       jae      G_M000_IG208\n       imul     rcx, rcx, 56\n       lea      rcx, bword ptr [rdx+rcx+0x10]\n       cmp      dword ptr [rcx+0x18], 0\n       jne      G_M000_IG136\n \nG_M000_IG13:                ;; offset=0x0181\n       mov      rdx, qword ptr [rcx+0x20]\n       mov      r8, qword ptr [rcx+0x28]\n       mov      r10, qword ptr [rcx+0x30]\n       mov      r9, qword ptr [rbp-0x88]\n       mov      r11, qword ptr [rbp-0x80]\n       mov      rsi, qword ptr [rbp-0x78]\n       cmp      rdx, r9\n       jne      G_M000_IG135\n       cmp      r8, r11\n       jne      G_M000_IG134\n       cmp      r10, rsi\n       jne      G_M000_IG133\n       mov      rdx, gword ptr [rcx+0x08]\n       mov      r8, qword ptr [rax+0x40]\n       inc      r8\n       mov      qword ptr [rax+0x40], r8\n       mov      qword ptr [rcx+0x10], r8\n       mov      qword ptr [rdx+0x10], r8",
+          "coordinateEqualsCall": false,
+          "note": "Valid bounds and equal LOD/coordinates; follows outlined true-Equals edge where present, stopping after three sequence stores before hash/probe."
+        },
+        {
+          "methodStartLine": 20493,
+          "exactHitRoute": "       mov      edx, dword ptr [r10+0x54]\n       cmp      edx, dword ptr [r10+0x50]\n       jae      G_M000_IG41\n \nG_M000_IG60:                ;; offset=0x076E\n       mov      rdx, gword ptr [r10+0x30]\n       mov      ecx, dword ptr [r10+0x54]\n       cmp      ecx, dword ptr [rdx+0x08]\n       jae      G_M000_IG208\n       imul     rcx, rcx, 56\n       lea      r9, bword ptr [rdx+rcx+0x10]\n       mov      bword ptr [rbp-0x4A8], r9\n       mov      edx, dword ptr [r9+0x18]\n       cmp      edx, dword ptr [rbp-0x358]\n       jne      G_M000_IG41\n \nG_M000_IG61:                ;; offset=0x079F\n       mov      rdx, qword ptr [r9+0x20]\n       mov      rcx, qword ptr [r9+0x28]\n       mov      r11, qword ptr [r9+0x30]\n       mov      r13, qword ptr [rbp-0x350]\n       mov      qword ptr [rbp-0x410], r13\n       mov      r13, qword ptr [rbp-0x348]\n       mov      qword ptr [rbp-0x418], r13\n       mov      r13, qword ptr [rbp-0x340]\n       mov      qword ptr [rbp-0x378], rdx\n       mov      qword ptr [rbp-0x370], rcx\n       mov      qword ptr [rbp-0x368], r11\n       mov      rdx, qword ptr [rbp-0x410]\n       mov      qword ptr [rbp-0x430], rdx\n       mov      rdx, qword ptr [rbp-0x418]\n       mov      qword ptr [rbp-0x428], rdx\n       mov      qword ptr [rbp-0x420], r13\n       lea      rdx, [rbp-0x430]\n       lea      rcx, [rbp-0x378]\n       call     [Tedd.Voxtree.ChunkCoordinate:Equals(Tedd.Voxtree.ChunkCoordinate):bool:this]\n       test     eax, eax\n       je       G_M000_IG41\n \nG_M000_IG62:                ;; offset=0x0822\n       mov      r13, bword ptr [rbp-0x4A8]\n       mov      rcx, gword ptr [r13+0x08]\n       mov      rax, gword ptr [rbp-0x498]\n       mov      rdx, qword ptr [rax+0x40]\n       inc      rdx\n       mov      qword ptr [rax+0x40], rdx\n       mov      qword ptr [r13+0x10], rdx\n       mov      qword ptr [rcx+0x10], rdx",
+          "coordinateEqualsCall": true,
+          "note": "Valid bounds and equal LOD/coordinates; follows outlined true-Equals edge where present, stopping after three sequence stores before hash/probe."
+        },
+        {
+          "methodStartLine": 20493,
+          "exactHitRoute": "       mov      edx, dword ptr [r12+0x54]\n       cmp      edx, dword ptr [r12+0x50]\n       jae      G_M000_IG88\n \nG_M000_IG86:                ;; offset=0x0B8B\n       mov      rdx, gword ptr [r12+0x30]\n       mov      ecx, dword ptr [r12+0x54]\n       cmp      ecx, dword ptr [rdx+0x08]\n       jae      G_M000_IG208\n       imul     rcx, rcx, 56\n       lea      rax, bword ptr [rdx+rcx+0x10]\n       mov      bword ptr [rbp-0x480], rax\n       mov      edx, dword ptr [rax+0x18]\n       cmp      edx, dword ptr [rbp-0x1C8]\n       jne      SHORT G_M000_IG88\n \nG_M000_IG87:                ;; offset=0x0BB9\n       mov      rdx, qword ptr [rax+0x20]\n       mov      rcx, qword ptr [rax+0x28]\n       mov      r8, qword ptr [rax+0x30]\n       mov      r10, qword ptr [rbp-0x1C0]\n       mov      r9, qword ptr [rbp-0x1B8]\n       mov      r11, qword ptr [rbp-0x1B0]\n       mov      qword ptr [rbp-0x1E8], rdx\n       mov      qword ptr [rbp-0x1E0], rcx\n       mov      qword ptr [rbp-0x1D8], r8\n       mov      qword ptr [rbp-0x430], r10\n       mov      qword ptr [rbp-0x428], r9\n       mov      qword ptr [rbp-0x420], r11\n       lea      rdx, [rbp-0x430]\n       lea      rcx, [rbp-0x1E8]\n       call     [Tedd.Voxtree.ChunkCoordinate:Equals(Tedd.Voxtree.ChunkCoordinate):bool:this]\n       test     eax, eax\n       jne      G_M000_IG125\nG_M000_IG125:                ;; offset=0x10FD\n       mov      r15, bword ptr [rbp-0x480]\n       mov      rcx, gword ptr [r15+0x08]\n       mov      rax, qword ptr [r12+0x40]\n       inc      rax\n       mov      qword ptr [r12+0x40], rax\n       mov      qword ptr [r15+0x10], rax\n       mov      qword ptr [rcx+0x10], rax",
+          "coordinateEqualsCall": true,
+          "note": "Valid bounds and equal LOD/coordinates; follows outlined true-Equals edge where present, stopping after three sequence stores before hash/probe."
+        },
+        {
+          "methodStartLine": 20493,
+          "exactHitRoute": "       mov      edx, dword ptr [r14+0x54]\n       cmp      edx, dword ptr [r14+0x50]\n       jae      G_M000_IG115\n \nG_M000_IG113:                ;; offset=0x0F03\n       mov      rdx, gword ptr [r14+0x30]\n       mov      ecx, dword ptr [r14+0x54]\n       cmp      ecx, dword ptr [rdx+0x08]\n       jae      G_M000_IG208\n       imul     rcx, rcx, 56\n       lea      r15, bword ptr [rdx+rcx+0x10]\n       mov      edx, dword ptr [r15+0x18]\n       cmp      edx, dword ptr [rbp-0x278]\n       jne      SHORT G_M000_IG115\n \nG_M000_IG114:                ;; offset=0x0F29\n       mov      rdx, qword ptr [r15+0x20]\n       mov      rcx, qword ptr [r15+0x28]\n       mov      rax, qword ptr [r15+0x30]\n       mov      r8, qword ptr [rbp-0x270]\n       mov      r10, qword ptr [rbp-0x268]\n       mov      r9, qword ptr [rbp-0x260]\n       mov      qword ptr [rbp-0x290], rdx\n       mov      qword ptr [rbp-0x288], rcx\n       mov      qword ptr [rbp-0x280], rax\n       mov      qword ptr [rbp-0x430], r8\n       mov      qword ptr [rbp-0x428], r10\n       mov      qword ptr [rbp-0x420], r9\n       lea      rdx, [rbp-0x430]\n       lea      rcx, [rbp-0x290]\n       call     [Tedd.Voxtree.ChunkCoordinate:Equals(Tedd.Voxtree.ChunkCoordinate):bool:this]\n       test     eax, eax\n       jne      G_M000_IG72\nG_M000_IG72:                ;; offset=0x0912\n       mov      rcx, gword ptr [r15+0x08]\n       mov      rax, qword ptr [r14+0x40]\n       inc      rax\n       mov      qword ptr [r14+0x40], rax\n       mov      qword ptr [r15+0x10], rax\n       mov      qword ptr [rcx+0x10], rax",
+          "coordinateEqualsCall": true,
+          "note": "Valid bounds and equal LOD/coordinates; follows outlined true-Equals edge where present, stopping after three sequence stores before hash/probe."
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Diagnostic repeated-case Get-first history, not the complete quiet-family native identity.",
+    "Full caller bodies grow; fixed rsp subtraction is not total stack usage.",
+    "No timing, PMU, application frequency or speedup inference."
+  ],
+  "firstTestIssue": "p34world compilation rejected nonexistent AllChunks before execution; corrected ResidentChunks in fresh p34world2 fixture; source unchanged.",
+  "importIssue": "text/markdown importer rejected before hypothesis submission; protocol JSON imported into same catalog after verified rejection."
+}

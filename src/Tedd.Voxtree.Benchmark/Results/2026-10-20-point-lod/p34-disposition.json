@@ -1,0 +1,10 @@
+{
+  "primaryPassed": true,
+  "failedGuardCount": 13,
+  "normalConfirmation": false,
+  "scope": "Exploratory last-entry shortcut on published f0772c8; conditional fresh confirmation only if every stage gate passes; no adoption or complete10x claim.",
+  "promotionEligible": false,
+  "allObservedAllocationsZero": true,
+  "stagePassed": false,
+  "state": "not_supported"
+}

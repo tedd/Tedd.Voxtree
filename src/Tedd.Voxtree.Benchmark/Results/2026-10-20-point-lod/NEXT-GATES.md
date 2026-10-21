@@ -258,6 +258,24 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    WorldEntity.TryGetLod, other public families, direct-release10x confirmation
    and complete API/consumer/memory qualification remain in the full objective.
 
+16. P34 hyp-a90a2c53184c49e4bd3be68e4a666abe independently tests an exact
+   last-entry shortcut on complete published f0772c8, excluding P24–P33.
+   Full source reversal,398/399/400 tests,40 two-arm semantic cases and eight
+   optimized success routes pass. The complete fixed40-case/320-record stage
+   is correct,quiescent,joined and observes zero read allocations. All six
+   repeated get/lod/chunk primaries pass1.10 (1.715–2.850), but13 of34 guards
+   fail1.05. P34 is not_supported; no conditional normal confirmation or source
+   adoption. Full callers grow about1KB and reserve192 more fixed stack bytes;
+   several LOD routes retain Equals calls. These do not establish timing causes.
+   Phase23 and phase23-tests retain the complete stage and original test modules;
+   see REPORT-PHASE23. Consider a separately proved conservative seen-LOD bit
+   filter on f0772c8 to eliminate never-loaded-layer hash/miss work. Set/Clear
+   maintain its bits; removal may conservatively leave false positives. Prove
+   no false negatives, storage fallthrough, level aliases and exact timestamps
+   before implementation. It is not implemented/measured and must exclude P34.
+   Direct coordinate-component comparisons and hot/slow splitting are separate
+   candidates, not implied combinations. The full public10x objective remains.
+
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.
 After completed integration and verified worker shutdown, preserve remaining

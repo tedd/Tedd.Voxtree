@@ -1,0 +1,20 @@
+{
+  "sourceEquivalentAfterRemovingHint": true,
+  "exactDelta": "One hint field, two checked full-address hit paths, two successful lookup updates, Set/AddRecent updates and Remove/Clear invalidations; all other source text exactly published after newline normalization.",
+  "normalizedDiffSha256": "a9850a4e5bc3618bacaef45b4b32be93d26d0a5df910cfdb8aafbffe8c844a69",
+  "consumerPath": "D:\\SourceCode\\Tedd.Forcecraft10\\src\\Tedd.Forcecraft.Common\\Models\\Lod\\LodTopologyIndex.cs",
+  "consumerSha256": "a814128fdeba9a38da10d16e0afff8ca3d7a71dffc4991dd4fc1f75e6c69c30e",
+  "consumerDeclaration": "private readonly Tedd.Voxtree.WorldEntity<byte> _tree = new(1, 1);",
+  "consumerTryGetOwner": "    public bool TryGetOwner(ChunkId position, out LodNode owner)\n    {\n#if PERF_LOD || PERF_LOD_SCHEDULE\n        using var measurement = Telemetry.Measure(TopologyLookup);\n#endif\n        // Voxtree's recent-address cache is mutable even on reads; serialize readers as well as updates.\n        lock (_gate)\n            for (var level = 0; level <= LodPolicy.MaxSupportedLevel; level++)\n                if (_tree.TryGetLod(level, 0, position.X, position.Y, position.Z, out var resolution))\n                {\n                    owner = LodNode.Covering(resolution - 1, position);\n                    return true;\n                }\n        owner = default;\n        return false;\n    }\n\n",
+  "consumerLimitations": "Current source uses byte values, one channel, side1 and an application lock. The fixture uses UInt32/UInt16 and two channels, levels0..7, and public TryGetLod searches without that application lock. It is a synthetic contrast, not an end-to-end or observed-frequency replay. Real-world immutable region corpus is not consumed in P34 because the affected map is tested independently of voxel compression.",
+  "nativeAuditCorrection": "Initial prerequisite audit assumed linear success fallthrough; actual Equals-true edges may be outlined. Original audit source retained; corrected control-flow trace uses the same native capture, without producer rerun.",
+  "registry": [
+    "A03 repeated invariant calculation",
+    "A09 exact common case",
+    "M22 clustered keys/access",
+    "C02 dependency chain",
+    "C18 emitted call visibility",
+    "C19 branch transitions",
+    "R03 PGO/history"
+  ]
+}
