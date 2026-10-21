@@ -1,0 +1,23 @@
+{
+  "archive_bytes": 5392344,
+  "manifest_paths": 2157,
+  "unique_blobs": 1955,
+  "catalogs": 2,
+  "metric_rows": 48,
+  "sha256": "ec871fbfa4280b07af92ba2e545a33ddc5546e80a0919a45e5ed0f8f8c451df1",
+  "required_paths": [
+    "p29point-screen/catalog-export.json",
+    "p29-hypothesis/disposition-revision-response.json",
+    "p29point-audit.json",
+    "p29-native-gate.json",
+    "palette-return-source/PaletteLeafEncoding.cs",
+    "p29-source-review.diff",
+    "bundles/p29point/p29point.dll",
+    "forcecraft-census-packed-p29census/packed-corpus.json",
+    "p29census-packed-corpus-identity.json",
+    "p29-precheck-UInt32-owned-get.asm",
+    "p27contracts-OwnedLodSnapshotTests.cs.txt",
+    "packed-lookup-validation-p29sem/tests/ExtraReadTests.cs"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

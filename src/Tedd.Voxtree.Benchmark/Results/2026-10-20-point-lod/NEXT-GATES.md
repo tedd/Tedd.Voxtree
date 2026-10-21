@@ -141,11 +141,12 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    The matched native gate removes temporary output stores/reload and success
    propagation after the state load. Whole owned Get caller size3336->3237
    bytes, fixed rsp subtraction232->248. These facts establish no timing gain.
-   Its fixed48-case screen is running, with four UInt32 >=1.10 primaries and
-   44 original guards. Initial owned/span value-only estimates are1.317/1.165;
-   LOD1.057/0.998 misses the primary. Complete every original case and preserve
-   all adverse guards. Close-P29 is queued behind that exact run and includes
-   the previously unarchived p27contracts and P29 precheck evidence.
+   Its fixed48-case/1152-record screen is complete, correct, quiescent and joined.
+   Owned/span value-only estimates are1.317/1.165; LOD1.057/0.998 misses the
+   four-case >=1.10 primary, with20/44 adverse guards. The hypothesis is
+   not_supported. The verified phase14 archive includes all48 new comparisons,
+   original failures/adverse data, p27contracts and P29 precheck evidence.
+   See REPORT-PHASE14. No source is adopted; ratios are never multiplied.
 10. A simple write-legacy-first palette builder is invalid: corpus region
    DefaultWorld/r.4.488.1.region slot5447, hashDBC87DF99E06B3E001A3BFB1C37958BF2AC36B3415EF27EDE6883FF6FF261DBB,
    encodes34116 released bytes but33300 palette bytes. Speculative legacy
@@ -155,6 +156,10 @@ not_supported; P20/P21/P22 remain inconclusive after their complete screens.
    in the common validated writer, eliminating its second measurement on tree
    fallback. Public caller-buffer paths must still compute their own plan;
    no caller-data cache, speculative tail write or new writer policy is implied.
+   BUILD-PLAN-REUSE-PROTOCOL and Prepare-BuildPlanReuse.py are prepared, unexecuted.
+   Register P30 before generating its source. Its eight constructor/owned-Build
+   primaries require actual legacy tree storage and >=1.20 gain; all80 other
+   complete-operation guards remain. Do not combine P29 into its P27 control.
 
 Task scratch remains D:\Workspaces\AI\voxtree-point-lod-20261020 while work
 continues. It holds immutable region copies and source/binary/control inputs.

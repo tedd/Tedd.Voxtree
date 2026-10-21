@@ -1,0 +1,2609 @@
+{
+  "observer": "External target JIT diagnostics; not quiet timing",
+  "limitations": [
+    "Listings come from isolated diagnostic processes, while screens accumulate scenario/JIT/PGO history.",
+    "Concurrent/incomplete listings may have missing or multiple size markers; those entries do not establish method size or call ownership.",
+    "Fixed rsp subtraction is not total stack usage or a causal time fraction.",
+    "Native bytes and call-site changes do not establish hardware bottlenecks or promotion."
+  ],
+  "listings": [
+    {
+      "file": "p29-UInt32-owned-get-code.asm",
+      "sha256": "28748695e77684ca839952dc352de2323a43f3a258659128d730b9685d93a1c6",
+      "methods": [
+        {
+          "method": "System.Buffers.SearchValues:TryGetSingleRange[char](System.ReadOnlySpan`1[char],byref,byref):bool (Tier0-FullOpts)",
+          "native_bytes": 390,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            390
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56,
+            256
+          ],
+          "call_sites": [
+            "call     [System.Numerics.INumber`1[char]:Min(char,char):char]",
+            "call     [System.Numerics.INumber`1[char]:Max(char,char):char]",
+            "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+            "call     [System.SpanHelpers:NonPackedContainsValueType[byte](byref,byte,int):bool]",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_NEWARR_1_VC",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "(dynamicClass):levelsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):patternGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):accessGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):opGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):voxelSha256Getter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):seedGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):pointsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):lifecycleReadsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):affinityGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):primeMsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):formatExperimentGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):consumerGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatchOwned(int):this (Tier1-OSR)",
+          "native_bytes": 849,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            849
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            152
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatchOwned(int):this (Tier1-OSR)",
+          "native_bytes": 786,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            786
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            152
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.Octree:Get(int,int,int):uint:this (Tier1)",
+          "native_bytes": 613,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            613
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            104
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:GetStorageKindUnchecked(System.ReadOnlySpan`1[byte]):byte (Tier1)",
+          "native_bytes": 31,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            31
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref):bool (Tier1)",
+          "native_bytes": 468,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            468
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            88
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 489,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            489
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            80
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.PaletteLeafEncoding`1[uint]:TryGet(System.ReadOnlySpan`1[byte],int,int,int,int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 189,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            189
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:GetVoxelCount(int):int (Tier1)",
+          "native_bytes": 14,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            14
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [],
+          "call_sites": []
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatch(int):this (Tier1)",
+          "native_bytes": 136,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            136
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [ForceUInt32Scenario:BeforeBatchOwned(int):this]",
+            "call     [ForceUInt32Scenario:BeforeBatchCompiled(int):this]",
+            "call     [ForceUInt32Scenario:BeforeBatchSpan(int):this]"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatchOwned(int):this (Tier1)",
+          "native_bytes": 3336,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            3336
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            232
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Snapshot.Voxtree.Octree:AsSpan():Snapshot.Voxtree.OctreeSpan:this]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Snapshot.Voxtree.Octree:TryGet(int,int,int,byref):bool:this]",
+            "call     [Snapshot.Voxtree.Octree:AsSpan():Snapshot.Voxtree.OctreeSpan:this]",
+            "call     [Snapshot.Voxtree.OctreeSpan:Get(int,int,int,byref):uint:this]",
+            "call     [Snapshot.Voxtree.Octree:TryGet(int,int,int,byref,byref):bool:this]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1-OSR)",
+          "native_bytes": 821,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            821
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            152
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:GetStorageKindUnchecked(System.ReadOnlySpan`1[byte]):byte (Tier1)",
+          "native_bytes": 31,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            31
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.Octree:Get(int,int,int):uint:this (Tier1)",
+          "native_bytes": 607,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            607
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            88
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PaletteLeafEncoding`1[uint]:ReadStateOrInvalid(System.ReadOnlySpan`1[byte],int,int,int,int,int):ulong (Tier1)",
+          "native_bytes": 145,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            145
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:GetVoxelCount(int):int (Tier1)",
+          "native_bytes": 14,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            14
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [],
+          "call_sites": []
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:GetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int):uint (Tier1)",
+          "native_bytes": 233,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            233
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            72
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PaletteLeafEncoding`1[uint]:GetValue(System.ReadOnlySpan`1[byte],int,int,int,int,int):uint (Tier1)",
+          "native_bytes": null,
+          "listing_availability": "ambiguous_or_incomplete",
+          "declared_native_sizes": [],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": []
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1-OSR)",
+          "native_bytes": null,
+          "listing_availability": "ambiguous_or_incomplete",
+          "declared_native_sizes": [
+            728,
+            161
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            152
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatch(int):this (Tier1)",
+          "native_bytes": 136,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            136
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [ForceUInt32Scenario:AfterBatchOwned(int):this]",
+            "call     [ForceUInt32Scenario:AfterBatchCompiled(int):this]",
+            "call     [ForceUInt32Scenario:AfterBatchSpan(int):this]"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1)",
+          "native_bytes": 3237,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            3237
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            248
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.Octree:AsSpan():Tedd.Voxtree.OctreeSpan:this]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Tedd.Voxtree.Octree:TryGet(int,int,int,byref):bool:this]",
+            "call     [Tedd.Voxtree.Octree:AsSpan():Tedd.Voxtree.OctreeSpan:this]",
+            "call     [Tedd.Voxtree.OctreeSpan:Get(int,int,int,byref):uint:this]",
+            "call     [Tedd.Voxtree.Octree:TryGet(int,int,int,byref,byref):bool:this]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "p29-UInt32-owned-lod-code.asm",
+      "sha256": "4e634482675f4df6090f11419c7774933862677f9ce165579809c580d5d98bd3",
+      "methods": [
+        {
+          "method": "System.Buffers.SearchValues:TryGetSingleRange[char](System.ReadOnlySpan`1[char],byref,byref):bool (Tier0-FullOpts)",
+          "native_bytes": 390,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            390
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56,
+            256
+          ],
+          "call_sites": [
+            "call     [System.Numerics.INumber`1[char]:Min(char,char):char]",
+            "call     [System.Numerics.INumber`1[char]:Max(char,char):char]",
+            "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+            "call     [System.SpanHelpers:NonPackedContainsValueType[byte](byref,byte,int):bool]",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_NEWARR_1_VC",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "(dynamicClass):levelsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):patternGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):accessGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):opGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):voxelSha256Getter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):seedGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):pointsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):lifecycleReadsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):affinityGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):primeMsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):formatExperimentGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):consumerGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatchOwned(int):this (Tier1-OSR)",
+          "native_bytes": 936,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            936
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [CORINFO_HELP_STRCNS]",
+            "call     [System.InvalidOperationException:.ctor(System.String):this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatchOwned(int):this (Tier1-OSR)",
+          "native_bytes": 887,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            887
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [CORINFO_HELP_STRCNS]",
+            "call     [System.InvalidOperationException:.ctor(System.String):this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.Octree:Get(int,int,int,byref):uint:this (Tier1)",
+          "native_bytes": 669,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            669
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            96
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [CORINFO_HELP_STRCNS]",
+            "call     [System.InvalidOperationException:.ctor(System.String):this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:GetStorageKindUnchecked(System.ReadOnlySpan`1[byte]):byte (Tier1)",
+          "native_bytes": 31,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            31
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeSpan:Get(int,int,int,byref):uint:this (Tier1)",
+          "native_bytes": 605,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            605
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            88
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 489,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            489
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            80
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.PaletteLeafEncoding`1[uint]:TryGet(System.ReadOnlySpan`1[byte],int,int,int,int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 189,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            189
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:GetVoxelCount(int):int (Tier1)",
+          "native_bytes": 14,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            14
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [],
+          "call_sites": []
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatch(int):this (Tier1)",
+          "native_bytes": 136,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            136
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [ForceUInt32Scenario:BeforeBatchOwned(int):this]",
+            "call     [ForceUInt32Scenario:BeforeBatchCompiled(int):this]",
+            "call     [ForceUInt32Scenario:BeforeBatchSpan(int):this]"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatchOwned(int):this (Tier1)",
+          "native_bytes": 3876,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            3876
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            216
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Snapshot.Voxtree.Octree:TryGet(int,int,int,byref,byref):bool:this]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.Octree:AsSpan():Snapshot.Voxtree.OctreeSpan:this]",
+            "call     [Snapshot.Voxtree.OctreeSpan:Get(int,int,int,byref):uint:this]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [CORINFO_HELP_STRCNS]",
+            "call     [System.InvalidOperationException:.ctor(System.String):this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1-OSR)",
+          "native_bytes": 880,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            880
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [CORINFO_HELP_STRCNS]",
+            "call     [System.InvalidOperationException:.ctor(System.String):this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:GetStorageKindUnchecked(System.ReadOnlySpan`1[byte]):byte (Tier1)",
+          "native_bytes": 31,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            31
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeSpan:Get(int,int,int,byref):uint:this (Tier1)",
+          "native_bytes": 568,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            568
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            96
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:GetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref):uint (Tier1)",
+          "native_bytes": 491,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            491
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            96
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PaletteLeafEncoding`1[uint]:GetValue(System.ReadOnlySpan`1[byte],int,int,int,int,int,byref):uint (Tier1)",
+          "native_bytes": 183,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            183
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            32
+          ],
+          "call_sites": [
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PaletteLeafEncoding`1[uint]:ReadStateOrInvalid(System.ReadOnlySpan`1[byte],int,int,int,int,int):ulong (Tier1)",
+          "native_bytes": 145,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            145
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:GetVoxelCount(int):int (Tier1)",
+          "native_bytes": 14,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            14
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [],
+          "call_sites": []
+        },
+        {
+          "method": "Tedd.Voxtree.Octree:Get(int,int,int,byref):uint:this (Tier1)",
+          "native_bytes": 647,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            647
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            96
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [CORINFO_HELP_STRCNS]",
+            "call     [System.InvalidOperationException:.ctor(System.String):this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatch(int):this (Tier1)",
+          "native_bytes": 136,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            136
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [ForceUInt32Scenario:AfterBatchOwned(int):this]",
+            "call     [ForceUInt32Scenario:AfterBatchCompiled(int):this]",
+            "call     [ForceUInt32Scenario:AfterBatchSpan(int):this]"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1-OSR)",
+          "native_bytes": 854,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            854
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [CORINFO_HELP_STRCNS]",
+            "call     [System.InvalidOperationException:.ctor(System.String):this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatchOwned(int):this (Tier1)",
+          "native_bytes": 3135,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            3135
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            200
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.Octree:TryGet(int,int,int,byref):bool:this]",
+            "call     [Tedd.Voxtree.Octree:TryGet(int,int,int,byref,byref):bool:this]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+            "call     [Tedd.Voxtree.Octree:AsSpan():Tedd.Voxtree.OctreeSpan:this]",
+            "call     [Tedd.Voxtree.OctreeSpan:Get(int,int,int,byref):uint:this]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowUnbuilt():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [CORINFO_HELP_STRCNS]",
+            "call     [System.InvalidOperationException:.ctor(System.String):this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "p29-UInt32-span-get-code.asm",
+      "sha256": "e9f74b7b1c461a9fcd8a02a809f949ea70c95b730215467a5091b5b34cf17f13",
+      "methods": [
+        {
+          "method": "System.Buffers.SearchValues:TryGetSingleRange[char](System.ReadOnlySpan`1[char],byref,byref):bool (Tier0-FullOpts)",
+          "native_bytes": 390,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            390
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56,
+            256
+          ],
+          "call_sites": [
+            "call     [System.Numerics.INumber`1[char]:Min(char,char):char]",
+            "call     [System.Numerics.INumber`1[char]:Max(char,char):char]",
+            "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+            "call     [System.SpanHelpers:NonPackedContainsValueType[byte](byref,byte,int):bool]",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_NEWARR_1_VC",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "(dynamicClass):levelsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):patternGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):accessGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):opGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):voxelSha256Getter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):seedGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):pointsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):lifecycleReadsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):affinityGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):primeMsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):formatExperimentGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):consumerGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatchSpan(int):this (Tier1-OSR)",
+          "native_bytes": 850,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            850
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatchSpan(int):this (Tier1-OSR)",
+          "native_bytes": 787,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            787
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            152
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeSpan:Get(int,int,int):uint:this (Tier1)",
+          "native_bytes": 595,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            595
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            96
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref):bool (Tier1)",
+          "native_bytes": 468,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            468
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            88
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 489,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            489
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            80
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.PaletteLeafEncoding`1[uint]:TryGet(System.ReadOnlySpan`1[byte],int,int,int,int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 189,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            189
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:GetVoxelCount(int):int (Tier1)",
+          "native_bytes": 14,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            14
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [],
+          "call_sites": []
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatch(int):this (Tier1)",
+          "native_bytes": 125,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            125
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [ForceUInt32Scenario:BeforeBatchSpan(int):this]",
+            "call     [System.String:Equals(System.String,System.String):bool]",
+            "call     [ForceUInt32Scenario:BeforeBatchCompiled(int):this]",
+            "call     [ForceUInt32Scenario:BeforeBatchOwned(int):this]"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatchSpan(int):this (Tier1)",
+          "native_bytes": 3958,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            3958
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            216
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGet(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeSpan:Get(int,int,int,byref):uint:this]",
+            "call     [Snapshot.Voxtree.OctreeSpan:Contains(int,int,int):bool:this]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [CORINFO_HELP_STRCNS]",
+            "call     [System.InvalidOperationException:.ctor(System.String):this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:GetStorageKindUnchecked(System.ReadOnlySpan`1[byte]):byte (Tier1)",
+          "native_bytes": 31,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            31
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatchSpan(int):this (Tier1-OSR)",
+          "native_bytes": 796,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            796
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PaletteLeafEncoding`1[uint]:ReadStateOrInvalid(System.ReadOnlySpan`1[byte],int,int,int,int,int):ulong (Tier1)",
+          "native_bytes": 145,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            145
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:GetVoxelCount(int):int (Tier1)",
+          "native_bytes": 14,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            14
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [],
+          "call_sites": []
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeSpan:Get(int,int,int):uint:this (Tier1)",
+          "native_bytes": 386,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            386
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            88
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:GetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int):uint (Tier1)",
+          "native_bytes": 233,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            233
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            72
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PaletteLeafEncoding`1[uint]:GetValue(System.ReadOnlySpan`1[byte],int,int,int,int,int):uint (Tier1)",
+          "native_bytes": 161,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            161
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:GetStorageKindUnchecked(System.ReadOnlySpan`1[byte]):byte (Tier1)",
+          "native_bytes": 31,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            31
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatchSpan(int):this (Tier1-OSR)",
+          "native_bytes": 738,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            738
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            168
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatch(int):this (Tier1)",
+          "native_bytes": 125,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            125
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [ForceUInt32Scenario:AfterBatchSpan(int):this]",
+            "call     [System.String:Equals(System.String,System.String):bool]",
+            "call     [ForceUInt32Scenario:AfterBatchCompiled(int):this]",
+            "call     [ForceUInt32Scenario:AfterBatchOwned(int):this]"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatchSpan(int):this (Tier1)",
+          "native_bytes": 3797,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            3797
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            216
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeSpan:Contains(int,int,int):bool:this]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGet(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeSpan:Get(int,int,int,byref):uint:this]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [CORINFO_HELP_STRCNS]",
+            "call     [System.InvalidOperationException:.ctor(System.String):this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "p29-UInt32-span-lod-code.asm",
+      "sha256": "2f4aadc7add6032aa5ca7f71605ea4a82bc4c80e0a0492f360cac8ab3ea81905",
+      "methods": [
+        {
+          "method": "System.Buffers.SearchValues:TryGetSingleRange[char](System.ReadOnlySpan`1[char],byref,byref):bool (Tier0-FullOpts)",
+          "native_bytes": 390,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            390
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            56,
+            256
+          ],
+          "call_sites": [
+            "call     [System.Numerics.INumber`1[char]:Min(char,char):char]",
+            "call     [System.Numerics.INumber`1[char]:Max(char,char):char]",
+            "call     [System.SpanHelpers:ClearWithoutReferences(byref,nuint)]",
+            "call     [System.SpanHelpers:NonPackedContainsValueType[byte](byref,byte,int):bool]",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_FAIL_FAST",
+            "call     CORINFO_HELP_NEWARR_1_VC",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "(dynamicClass):levelsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):patternGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):accessGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):opGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):voxelSha256Getter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):seedGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):pointsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):lifecycleReadsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):affinityGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):primeMsGetter(System.Object):int (FullOpts)",
+          "native_bytes": 48,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            48
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):formatExperimentGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "(dynamicClass):consumerGetter(System.Object):System.String (FullOpts)",
+          "native_bytes": 49,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            49
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [CORINFO_HELP_CHKCASTCLASS]"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatchSpan(int):this (Tier1-OSR)",
+          "native_bytes": 881,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            881
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatchSpan(int):this (Tier1-OSR)",
+          "native_bytes": 829,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            829
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            152
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeSpan:Get(int,int,int,byref):uint:this (Tier1)",
+          "native_bytes": 605,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            605
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            88
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:TryGetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 489,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            489
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            80
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.PaletteLeafEncoding`1[uint]:TryGet(System.ReadOnlySpan`1[byte],int,int,int,int,int,byref,byref):bool (Tier1)",
+          "native_bytes": 189,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            189
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:GetVoxelCount(int):int (Tier1)",
+          "native_bytes": 14,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            14
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [],
+          "call_sites": []
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatch(int):this (Tier1)",
+          "native_bytes": 125,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            125
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [ForceUInt32Scenario:BeforeBatchSpan(int):this]",
+            "call     [System.String:Equals(System.String,System.String):bool]",
+            "call     [ForceUInt32Scenario:BeforeBatchCompiled(int):this]",
+            "call     [ForceUInt32Scenario:BeforeBatchOwned(int):this]"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:BeforeBatchSpan(int):this (Tier1)",
+          "native_bytes": 4382,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            4382
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            232
+          ],
+          "call_sites": [
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Snapshot.Voxtree.OctreeSpan:Contains(int,int,int):bool:this]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeSpan:Get(int,int,int,byref):uint:this]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [CORINFO_HELP_STRCNS]",
+            "call     [System.InvalidOperationException:.ctor(System.String):this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Snapshot.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Snapshot.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Snapshot.Voxtree.OctreeCodec:GetStorageKindUnchecked(System.ReadOnlySpan`1[byte]):byte (Tier1)",
+          "native_bytes": 31,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            31
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatchSpan(int):this (Tier1-OSR)",
+          "native_bytes": 842,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            842
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            136
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeSpan:Get(int,int,int,byref):uint:this (Tier1)",
+          "native_bytes": 554,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            554
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            96
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:GetUnchecked(System.ReadOnlySpan`1[byte],int,byte,int,int,int,byref):uint (Tier1)",
+          "native_bytes": 491,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            491
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            96
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PaletteLeafEncoding`1[uint]:GetValue(System.ReadOnlySpan`1[byte],int,int,int,int,int,byref):uint (Tier1)",
+          "native_bytes": 183,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            183
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            32
+          ],
+          "call_sites": [
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.PaletteLeafEncoding`1[uint]:ReadStateOrInvalid(System.ReadOnlySpan`1[byte],int,int,int,int,int):ulong (Tier1)",
+          "native_bytes": 145,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            145
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]"
+          ]
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:GetVoxelCount(int):int (Tier1)",
+          "native_bytes": 14,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            14
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [],
+          "call_sites": []
+        },
+        {
+          "method": "Tedd.Voxtree.OctreeCodec:GetStorageKindUnchecked(System.ReadOnlySpan`1[byte]):byte (Tier1)",
+          "native_bytes": 31,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            31
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatchSpan(int):this (Tier1-OSR)",
+          "native_bytes": 813,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            813
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            152
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatch(int):this (Tier1)",
+          "native_bytes": 125,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            125
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            40
+          ],
+          "call_sites": [
+            "call     [ForceUInt32Scenario:AfterBatchSpan(int):this]",
+            "call     [System.String:Equals(System.String,System.String):bool]",
+            "call     [ForceUInt32Scenario:AfterBatchCompiled(int):this]",
+            "call     [ForceUInt32Scenario:AfterBatchOwned(int):this]"
+          ]
+        },
+        {
+          "method": "ForceUInt32Scenario:AfterBatchSpan(int):this (Tier1)",
+          "native_bytes": 4277,
+          "listing_availability": "complete",
+          "declared_native_sizes": [
+            4277
+          ],
+          "prologue_markers": 1,
+          "rsp_subtractions": [
+            232
+          ],
+          "call_sites": [
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeSpan:Contains(int,int,int):bool:this]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Tedd.Voxtree.OctreeSpan:Get(int,int,int,byref):uint:this]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [CORINFO_HELP_STRCNS]",
+            "call     [System.InvalidOperationException:.ctor(System.String):this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowInvalidView():uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowCoordinate(System.String,int):uint]",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     CORINFO_HELP_NEWSFAST",
+            "call     [System.Exception:.ctor():this]",
+            "call     CORINFO_HELP_THROW",
+            "call     [Tedd.Voxtree.GenericOctreeThrowHelper`1[uint]:ThrowMalformed():uint]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryReadVarUInt(System.ReadOnlySpan`1[byte],byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeCodec:TryGetTreeUnchecked(System.ReadOnlySpan`1[byte],int,int,int,int,byref,byref):bool]",
+            "call     [Tedd.Voxtree.OctreeThrowHelper:ThrowMalformed():uint]",
+            "call     [System.ThrowHelper:ThrowArgumentOutOfRangeException()]",
+            "call     CORINFO_HELP_RNGCHKFAIL"
+          ]
+        }
+      ]
+    }
+  ]
+}
