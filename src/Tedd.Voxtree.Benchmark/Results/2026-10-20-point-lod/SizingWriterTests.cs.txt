@@ -1,0 +1,95 @@
+using Tedd.Voxtree;
+using Xunit;
+
+public class LinearLeafCases
+{
+    [Fact]
+    public void EveryStorageWidthPreservesLinearMortonBytesAndCapacity()
+    {
+        Check<byte>(i => (byte)(i * 37));
+        Check<ushort>(i => (ushort)(i * 129));
+        Check<uint>(i => (uint)i * 0x10203041u);
+        Check<ulong>(i => (ulong)i * 0x1020304050607081ul);
+#if NET8_0_OR_GREATER
+        Check<UInt128>(i => ((UInt128)(uint)i << 120) | (uint)(i * 129));
+#endif
+    }
+
+    static void Check<T>(Func<int,T> value) where T:unmanaged
+    {
+        for(int level=1;level<=3;level++)
+        foreach(int mode in new[]{0,1,2,3})
+        {
+            int count=1<<(level*3);
+            var input=new T[count];
+            for(int i=0;i<count;i++)input[i]=value(mode switch{0=>1,1=>i==0?2:1,2=>i==count-1?2:1,_=>i%9});
+            var morton=new T[count];
+            DenseVoxel<T>.Convert(input,morton,level,DenseVoxelLayout.Linear,DenseVoxelLayout.Morton);
+            var linear=new Octree<T>(level,input);
+            var other=new Octree<T>(level);other.Build(morton,DenseVoxelLayout.Morton);
+            Assert.Equal(linear.Data.ToArray(),other.Data.ToArray());
+            int required=Octree<T>.GetRequiredSize(input,level);
+            Assert.Equal(linear.Data.Length,required);
+            var exact=Enumerable.Repeat((byte)0xA5,required+1).ToArray();
+            Assert.True(Octree<T>.TryBuild(input,level,exact.AsSpan(0,required),out int written));
+            Assert.Equal(required,written);
+            Assert.Equal(linear.Data.ToArray(),exact.AsSpan(0,written).ToArray());
+            Assert.Equal((byte)0xA5,exact[^1]);
+            var shortBuffer=Enumerable.Repeat((byte)0xA5,required-1).ToArray();
+            Assert.False(Octree<T>.TryBuild(input,level,shortBuffer,out written));
+            Assert.Equal(0,written);
+            var output=new T[count];linear.CopyTo(output);Assert.Equal(input,output);
+        }
+    }
+
+    [Fact]
+    public void LegacyLinearAndMortonPreserveVarintBoundaryBytes()
+    {
+        foreach(uint value in new uint[]{0,127,128,16383,16384,uint.MaxValue})
+        {
+            var input=Enumerable.Repeat(value,64).ToArray();input[0]=value^1;input[^1]=value^2;
+            var morton=new uint[64];DenseVoxel.Convert(input,morton,2,DenseVoxelLayout.Linear,DenseVoxelLayout.Morton);
+            var linear=new Octree(2,input);var other=new Octree(2);other.Build(morton,DenseVoxelLayout.Morton);
+            Assert.Equal(linear.Data.ToArray(),other.Data.ToArray());
+        }
+    }
+}
+
+
+public class SizingWriterCases
+{
+    [Fact]
+    public void EveryBitBoundaryPreservesSizeAndMortonBytes()
+    {
+        Check<byte>(8,v=>(byte)v);
+        Check<ushort>(16,v=>(ushort)v);
+        Check<uint>(32,v=>(uint)v);
+        Check<ulong>(64,v=>(ulong)v);
+        Check<UInt128>(128,v=>v);
+    }
+    static void Check<T>(int width,Func<UInt128,T> map) where T:unmanaged
+    {
+        var values=new HashSet<UInt128>{0,1};
+        for(int bit=0;bit<width;bit++)
+        {
+            UInt128 value=(UInt128)1<<bit;
+            values.Add(value-1);values.Add(value);values.Add(value+1);
+        }
+        foreach(var raw in values)
+        foreach(int level in new[]{0,1,2})
+        foreach(bool uniform in new[]{true,false})
+        {
+            int length=1<<(3*level);
+            var input=Enumerable.Repeat(map(raw),length).ToArray();
+            if(!uniform)input[^1]=map(raw^1);
+            var morton=new T[length];
+            DenseVoxel<T>.Convert(input,morton,level,DenseVoxelLayout.Linear,DenseVoxelLayout.Morton);
+            var tree=new Octree<T>(level,input);var other=new Octree<T>(level);other.Build(morton,DenseVoxelLayout.Morton);
+            Assert.Equal(tree.Data.ToArray(),other.Data.ToArray());
+            Assert.Equal(tree.EncodedLength,Octree<T>.GetRequiredSize(input,level));
+            var buffer=new byte[tree.EncodedLength];
+            Assert.True(Octree<T>.TryBuild(input,level,buffer,out int written));
+            Assert.Equal(tree.EncodedLength,written);Assert.Equal(tree.Data.ToArray(),buffer);
+        }
+    }
+}

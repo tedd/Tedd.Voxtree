@@ -1,0 +1,40 @@
+using Tedd.Voxtree;
+using Xunit;
+
+public class SizingWriterCases
+{
+    [Fact]
+    public void EveryBitBoundaryPreservesSizeAndMortonBytes()
+    {
+        Check<byte>(8,v=>(byte)v);
+        Check<ushort>(16,v=>(ushort)v);
+        Check<uint>(32,v=>(uint)v);
+        Check<ulong>(64,v=>(ulong)v);
+        Check<UInt128>(128,v=>v);
+    }
+    static void Check<T>(int width,Func<UInt128,T> map) where T:unmanaged
+    {
+        var values=new HashSet<UInt128>{0,1};
+        for(int bit=0;bit<width;bit++)
+        {
+            UInt128 value=(UInt128)1<<bit;
+            values.Add(value-1);values.Add(value);values.Add(value+1);
+        }
+        foreach(var raw in values)
+        foreach(int level in new[]{0,1,2})
+        foreach(bool uniform in new[]{true,false})
+        {
+            int length=1<<(3*level);
+            var input=Enumerable.Repeat(map(raw),length).ToArray();
+            if(!uniform)input[^1]=map(raw^1);
+            var morton=new T[length];
+            DenseVoxel<T>.Convert(input,morton,level,DenseVoxelLayout.Linear,DenseVoxelLayout.Morton);
+            var tree=new Octree<T>(level,input);var other=new Octree<T>(level);other.Build(morton,DenseVoxelLayout.Morton);
+            Assert.Equal(tree.Data.ToArray(),other.Data.ToArray());
+            Assert.Equal(tree.EncodedLength,Octree<T>.GetRequiredSize(input,level));
+            var buffer=new byte[tree.EncodedLength];
+            Assert.True(Octree<T>.TryBuild(input,level,buffer,out int written));
+            Assert.Equal(tree.EncodedLength,written);Assert.Equal(tree.Data.ToArray(),buffer);
+        }
+    }
+}

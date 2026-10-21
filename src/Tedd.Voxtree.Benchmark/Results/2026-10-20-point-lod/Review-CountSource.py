@@ -3,7 +3,7 @@ import argparse,difflib,hashlib,json
 from pathlib import Path
 
 parser=argparse.ArgumentParser();parser.add_argument('task_root',type=Path)
-parser.add_argument('--labels',nargs='+',choices=['p19','p20','p21','p22'],default=['p19','p20']);args=parser.parse_args()
+parser.add_argument('--labels',nargs='+',choices=['p19','p20','p21','p22','p23'],default=['p19','p20']);args=parser.parse_args()
 root=args.task_root.resolve()
 if root!=Path('D:/Workspaces/AI/voxtree-point-lod-20261020').resolve():raise SystemExit('Unexpected task root')
 normalize=lambda b:b.decode('utf-8-sig').replace('\r\n','\n').rstrip('\n')+'\n'
@@ -11,7 +11,8 @@ sha=lambda b:hashlib.sha256(b).hexdigest()
 for label,control,selected,expected in [('p19','leaf-helper-inline-source','packed-count-source',{'OctreeQueries.cs','GenericOctreeQueries.cs'}),
         ('p20','packed-count-source','packed-count-vector-source',{'OctreeQueries.cs','GenericOctreeQueries.cs','VoxelFilter.cs','VoxelFilter.Generic.cs'}),
         ('p21','packed-count-vector-source','packed-count-boundary-source',{'OctreeQueries.cs','GenericOctreeQueries.cs'}),
-        ('p22','p22-release-source','linear-leaf-source',{'OctreeCodec.cs','GenericOctreeCodec.cs'})]:
+        ('p22','p22-release-source','linear-leaf-source',{'OctreeCodec.cs','GenericOctreeCodec.cs'}),
+        ('p23','p23-release-source','sizing-writer-source',{'OctreeCodec.cs','GenericOctreeCodec.cs','StorageInteger.cs'})]:
     if label not in args.labels:continue
     output=root/(label+'-source-review.json');patch=root/(label+'-source-review.diff')
     if output.exists() or patch.exists():raise SystemExit('Preserve existing source review')

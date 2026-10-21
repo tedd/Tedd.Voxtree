@@ -1,0 +1,16 @@
+[
+  {
+    "EventName": "Exception/Start",
+    "ProcessID": 20216,
+    "ThreadID": 105788,
+    "TimeStampRelativeMSec": 8.2397,
+    "payload": {
+      "ExceptionType": "System.IO.IOException",
+      "ExceptionMessage": "Voxtree.ExceptionCapture.caught.v1",
+      "ExceptionEIP": "0",
+      "ExceptionHRESULT": "-2146232800",
+      "ExceptionFlags": "CLSCompliant",
+      "ClrInstanceID": "9"
+    }
+  }
+]

@@ -2,8 +2,8 @@
 
 Original integration branch: main. Full public-method objective remains active.
 No prototype source is adopted into the production library. Current continuation
-evidence is REPORT-PHASE6.md; earlier failed gates remain retained. P19 is
-not_supported; P20/P21 remain inconclusive after complete 88/96/96-case screens.
+evidence is REPORT-PHASE7.md; earlier failed gates remain retained. P19/P23 are
+not_supported; P20/P21/P22 remain inconclusive after their complete screens.
 
 1. Localize the fresh confirmation failure before another normal-build family.
    Six original cases completed; the seventh failed after 22 completed sessions
@@ -17,6 +17,11 @@ not_supported; P20/P21 remain inconclusive after complete 88/96/96-case screens.
    The installed source records a launch only after staging returns; cleanup
    can replace an earlier exception. Remaining launch files alone cannot
    localize the fault to staging, startup or cleanup.
+   The original 3,311,022-byte stderr log has no exception/error/failed search
+   matches. The separate EventPipe synthetic observer self-test now captures
+   its caught IOException marker with zero reported loss and joined exit zero.
+   Use that primitive only in a new prospectively bounded owned-controller
+   diagnostic; the historic family remains failed, not resumed or replaced.
 2. Preserve the count tradeoffs. P19 scalar specialization fails its UInt16
    primary despite removing general dispatch. P20 validated masked-vector counts
    improve dominant full callers 9.6..181.8x versus P19 but regress short rows.
@@ -43,9 +48,20 @@ not_supported; P20/P21 remain inconclusive after complete 88/96/96-case screens.
    but eight of 38 mandatory guards are adverse. Retain its byte-preserving
    fork, do not adopt it or combine epochs. Parent native frames remain large,
    and the new UInt16 leaf is 2304 bytes with a 160-byte fixed subtraction.
-   A sizing-only writer shortcut is still a separate, unimplemented hypothesis.
+   P22 does not include the separate sizing-only writer shortcut tested by P23.
    P22's complete 1,286-chunk/42,139,648-cell census passes with exact release
    bytes and unchanged encoded/lookup payload for all three encoder APIs.
+   P23 now tests that shortcut separately on f0772c8. All 88 cases/2,112 records
+   and the complete corpus pass semantics, but all six sizing primaries miss
+   and 11/42 guards are adverse: not_supported. LZCNT is emitted, while ordinary
+   writers lose WriteByte inlining and UInt16's writer grows to 263 bytes/64
+   fixed stack subtraction. Do not assume fewer measured bytes means less
+   complete-call time. A cold-path boundary or small-token specialization needs
+   a separate controlled source study; neither is implemented or selected.
+   P23's queued census retained P22-named shared text. The sidecar audit proves
+   label-normalized instructions and actual project/DLL/result binding to P23;
+   keep the original text. Queued closing/self-test drivers now reject a source
+   file changed during admission, with a real two-process proof retained.
 4. Preserve the full-corpus result: 1,286 chunks, 686 unique arrays, all 42,139,648
    cells checked; UInt32/UInt16 eligibility 517/574. Combined UInt32 encoded plus
    distinct lookup payload grows from 48,861,892 to 71,567,508 bytes. The selected

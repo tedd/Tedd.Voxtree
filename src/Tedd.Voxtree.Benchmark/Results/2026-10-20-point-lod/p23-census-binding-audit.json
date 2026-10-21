@@ -1,0 +1,12 @@
+{
+  "frozen_archive_sha256": "d6c9e57201f7de83c46abeecf749e94a9824bee7b1c99c416ec4fec2fd8e52f6",
+  "actual_frozen_instruction_label": "P22 / p22bulk",
+  "actual_bundle": "p23bulk",
+  "bundle_sha256": "1735c1c0b5ed1091c92069da3df95890b03588329256ccbda1e2f5a20fadc176",
+  "frozen_instructions_sha256": "91f014e1c4f486f347aa3ae8df28460a430fa55d7479ef6992000dedb1e925f5",
+  "project_sha256": "a04418af46fff12bfdc09f0e12f4c51a514282f83700db5ac4c1c7847dfd0791",
+  "result_sha256": "15934c0d3aa1764408b8fe44591c1956bbdc32043730af6b8ee50a0ceccdaaf2",
+  "instructions_identical_after_label_substitution": true,
+  "actual_project_and_result_bound_to_p23": true,
+  "interpretation": "Queued closure used the earlier P22-named shared census text. Actual project, binary and all checks bind P23. Preserve original frozen text; corrected driver/instructions do not retroactively replace it. Performance protocol/results are unchanged."
+}

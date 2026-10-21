@@ -1,0 +1,334 @@
+{
+  "label": "p23",
+  "control_source": "p23-release-source",
+  "selected_source": "sizing-writer-source",
+  "changed_files": [
+    "GenericOctreeCodec.cs",
+    "OctreeCodec.cs",
+    "StorageInteger.cs"
+  ],
+  "candidate_snapshot_matched": true,
+  "control_snapshot_matched_after_namespace_mapping": true,
+  "normalization": "UTF-8 BOM, CRLF and terminal newlines only; raw hashes separately retained",
+  "source_manifest": [
+    {
+      "file": "ChunkCompressionCodec.cs",
+      "control_sha256": "f496cd74a4d7bf95b56fcedd41d50d50ee7629b98baa1f8db16e66cd4fa48a92",
+      "candidate_sha256": "f496cd74a4d7bf95b56fcedd41d50d50ee7629b98baa1f8db16e66cd4fa48a92",
+      "normalized_changed": false
+    },
+    {
+      "file": "ChunkStorage.cs",
+      "control_sha256": "8cc0306e8e54a4a2491a0ee014b79b670d83ed311e759dad3b701eea57698fd4",
+      "candidate_sha256": "8cc0306e8e54a4a2491a0ee014b79b670d83ed311e759dad3b701eea57698fd4",
+      "normalized_changed": false
+    },
+    {
+      "file": "DeferredChunkStore.Generic.cs",
+      "control_sha256": "1e6131871ebd3140907ca5c8137c692cb8870213ac5c070eb035ff917c592a98",
+      "candidate_sha256": "1e6131871ebd3140907ca5c8137c692cb8870213ac5c070eb035ff917c592a98",
+      "normalized_changed": false
+    },
+    {
+      "file": "DeferredChunkStore.cs",
+      "control_sha256": "900232ed9bfa8c6f91ec419332b045edcda01fe8c7f524c9f9771dc8b96641c8",
+      "candidate_sha256": "900232ed9bfa8c6f91ec419332b045edcda01fe8c7f524c9f9771dc8b96641c8",
+      "normalized_changed": false
+    },
+    {
+      "file": "DeferredOctreeChunk.Generic.cs",
+      "control_sha256": "b8ffa5fb19542cf56a0a95e840c3344a44201779afdf037ebf1f69b0e75e17f4",
+      "candidate_sha256": "b8ffa5fb19542cf56a0a95e840c3344a44201779afdf037ebf1f69b0e75e17f4",
+      "normalized_changed": false
+    },
+    {
+      "file": "DeferredOctreeChunk.cs",
+      "control_sha256": "fbcbee8ea1fad0bd3a7c5caea6ccd92f58785e3fb2275cf848905f900b830545",
+      "candidate_sha256": "fbcbee8ea1fad0bd3a7c5caea6ccd92f58785e3fb2275cf848905f900b830545",
+      "normalized_changed": false
+    },
+    {
+      "file": "DenseVoxel.Generic.Api.cs",
+      "control_sha256": "5c5518afb0e544079cf8a39b4b52b20b113ac1f27c6ce06908bfc46f1a5667e3",
+      "candidate_sha256": "5c5518afb0e544079cf8a39b4b52b20b113ac1f27c6ce06908bfc46f1a5667e3",
+      "normalized_changed": false
+    },
+    {
+      "file": "DenseVoxelLayout.Generic.cs",
+      "control_sha256": "8996e683e5e57df78a11392dedfd6d48176b4ccf2f043931ca48c3a1bd0054f2",
+      "candidate_sha256": "8996e683e5e57df78a11392dedfd6d48176b4ccf2f043931ca48c3a1bd0054f2",
+      "normalized_changed": false
+    },
+    {
+      "file": "DenseVoxelLayout.cs",
+      "control_sha256": "1bbeaffc0afe304fe38d3fc72be91f03717459d2ead4675659d868d96dd2f0a1",
+      "candidate_sha256": "1bbeaffc0afe304fe38d3fc72be91f03717459d2ead4675659d868d96dd2f0a1",
+      "normalized_changed": false
+    },
+    {
+      "file": "GenericOctreeCodec.cs",
+      "control_sha256": "3949b48dc51dc46f9ba6ea1fcb3d3a1dc0a5cac461b2f1c1a245263ea8899ea5",
+      "candidate_sha256": "a9b552e57dff17dcd761268a0bad425bc46730eef2c4ede497e5b47fff307160",
+      "normalized_changed": true
+    },
+    {
+      "file": "GenericOctreeQueries.cs",
+      "control_sha256": "5887a7402fbd114fc7a70d95c905d1e417258ca33d6417f9b86dab6e1da0d3d4",
+      "candidate_sha256": "5887a7402fbd114fc7a70d95c905d1e417258ca33d6417f9b86dab6e1da0d3d4",
+      "normalized_changed": false
+    },
+    {
+      "file": "HotOctreeChunk.Generic.cs",
+      "control_sha256": "8bc42be4ac660c389dcdb64ba86167d58c3f9a142cda12d85aa8e564801236bd",
+      "candidate_sha256": "8bc42be4ac660c389dcdb64ba86167d58c3f9a142cda12d85aa8e564801236bd",
+      "normalized_changed": false
+    },
+    {
+      "file": "HotOctreeChunk.cs",
+      "control_sha256": "1dca94d984da0c46d75ed722db037508aa9fa67b656fd333aba08afb0a4721d1",
+      "candidate_sha256": "1dca94d984da0c46d75ed722db037508aa9fa67b656fd333aba08afb0a4721d1",
+      "normalized_changed": false
+    },
+    {
+      "file": "MaskedVoxelSearch.cs",
+      "control_sha256": "712cdba9e7573c73fe8c98552c3616e3570ed6afeb353ee6f605225a9f7d1983",
+      "candidate_sha256": "712cdba9e7573c73fe8c98552c3616e3570ed6afeb353ee6f605225a9f7d1983",
+      "normalized_changed": false
+    },
+    {
+      "file": "Octree.Blocks.cs",
+      "control_sha256": "f54847afe7baead88989b320c7dfa087940e1096366514802c953c58377f86ae",
+      "candidate_sha256": "f54847afe7baead88989b320c7dfa087940e1096366514802c953c58377f86ae",
+      "normalized_changed": false
+    },
+    {
+      "file": "Octree.Generic.Queries.cs",
+      "control_sha256": "1cad9faf387cc7fa06238979458c52325790f445ddbb57fab327b499e5fb5ec9",
+      "candidate_sha256": "1cad9faf387cc7fa06238979458c52325790f445ddbb57fab327b499e5fb5ec9",
+      "normalized_changed": false
+    },
+    {
+      "file": "Octree.Generic.cs",
+      "control_sha256": "7ab77f4ebab2b46dbf78e42fdc2295e56747d073cd7b586b97d7199f2dc2a995",
+      "candidate_sha256": "7ab77f4ebab2b46dbf78e42fdc2295e56747d073cd7b586b97d7199f2dc2a995",
+      "normalized_changed": false
+    },
+    {
+      "file": "Octree.Search.cs",
+      "control_sha256": "df4dde17c01734c1b9a9d923dd289cb9f61bf4500774ea89da7608ca06206761",
+      "candidate_sha256": "df4dde17c01734c1b9a9d923dd289cb9f61bf4500774ea89da7608ca06206761",
+      "normalized_changed": false
+    },
+    {
+      "file": "Octree.cs",
+      "control_sha256": "33a4d20edef4195608df76f777e42e5b7548cab2223d660c7fae47994a6e4b41",
+      "candidate_sha256": "33a4d20edef4195608df76f777e42e5b7548cab2223d660c7fae47994a6e4b41",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeChunk.Generic.cs",
+      "control_sha256": "95f90780f8e2eb59a8019973db234046171fe18958d6f3e5e7d280a8e4a950de",
+      "candidate_sha256": "95f90780f8e2eb59a8019973db234046171fe18958d6f3e5e7d280a8e4a950de",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeChunk.cs",
+      "control_sha256": "2b9996fd4e5ada0975c3f7d27e551cfece866d4284dc4bb26122f69540f03676",
+      "candidate_sha256": "2b9996fd4e5ada0975c3f7d27e551cfece866d4284dc4bb26122f69540f03676",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeChunkSpan.cs",
+      "control_sha256": "a2eba7b8a7647715e0ec464edd35c9542e050f38a90d072dc17850d71370e3e1",
+      "candidate_sha256": "a2eba7b8a7647715e0ec464edd35c9542e050f38a90d072dc17850d71370e3e1",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeCodec.cs",
+      "control_sha256": "03fa6fe6542db019ac10581ecc7d13076e650d7d8e86c025db1ed6a2b5dc9d95",
+      "candidate_sha256": "e927e80a341330fc9b5337b05b335f42ece487dc1661de7a2679a3eb4b770c89",
+      "normalized_changed": true
+    },
+    {
+      "file": "OctreeLookup.cs",
+      "control_sha256": "d8ccaa92923340090c070abecaa1d57ee33e255637c5c840a926686a64bfdf0a",
+      "candidate_sha256": "d8ccaa92923340090c070abecaa1d57ee33e255637c5c840a926686a64bfdf0a",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeNeighborhood.Generic.cs",
+      "control_sha256": "99fb1e6e283a38920145cf664a0af5216fbae436454b4d4399aca5dd44b3b92a",
+      "candidate_sha256": "99fb1e6e283a38920145cf664a0af5216fbae436454b4d4399aca5dd44b3b92a",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeNeighborhoodCache.cs",
+      "control_sha256": "2a38928936710a83bc39951586cfcacc934663aa92c4bacd5dbfa76b5890dc4c",
+      "candidate_sha256": "2a38928936710a83bc39951586cfcacc934663aa92c4bacd5dbfa76b5890dc4c",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeNeighborhoodSpan.cs",
+      "control_sha256": "c7852f7925c85133456479fbca2600537e516fc15baea97ceb61ed59c4f3d839",
+      "candidate_sha256": "c7852f7925c85133456479fbca2600537e516fc15baea97ceb61ed59c4f3d839",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeQueries.cs",
+      "control_sha256": "eb91f61245c568cac3eb9b8c41dd9a345b987f3d77a6e8744a1495b2e3905f1f",
+      "candidate_sha256": "eb91f61245c568cac3eb9b8c41dd9a345b987f3d77a6e8744a1495b2e3905f1f",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeSpan.Search.cs",
+      "control_sha256": "f61673300e68a2efb8e8d6299d13e0411d9708c23affd68cd57d8c02f17f6cf6",
+      "candidate_sha256": "f61673300e68a2efb8e8d6299d13e0411d9708c23affd68cd57d8c02f17f6cf6",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeSpan.cs",
+      "control_sha256": "1d1b61281b16ff9ef8cc95f12173ad2e89d9719d0ed71fa29ef17f9a785686ce",
+      "candidate_sha256": "1d1b61281b16ff9ef8cc95f12173ad2e89d9719d0ed71fa29ef17f9a785686ce",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeThrowHelper.cs",
+      "control_sha256": "bd481fc9b44b86975a730e814c3b85fc7ec513585f817507596bc4fbe720591f",
+      "candidate_sha256": "bd481fc9b44b86975a730e814c3b85fc7ec513585f817507596bc4fbe720591f",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeWorld.Generic.Hot.cs",
+      "control_sha256": "95874e4ffc7137318508e32231d5fd653617b72204b8d8ea578f21542ff63b31",
+      "candidate_sha256": "95874e4ffc7137318508e32231d5fd653617b72204b8d8ea578f21542ff63b31",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeWorld.Generic.cs",
+      "control_sha256": "eb8bf4bca44a65d888fb4701f43f486ec7a1873feb2f557391ea16ef25e7c371",
+      "candidate_sha256": "eb8bf4bca44a65d888fb4701f43f486ec7a1873feb2f557391ea16ef25e7c371",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeWorld.Hot.cs",
+      "control_sha256": "0b285ab8c7cc96e350e5fa303d34037249b3c0b5116c4908982bb442176c12b2",
+      "candidate_sha256": "0b285ab8c7cc96e350e5fa303d34037249b3c0b5116c4908982bb442176c12b2",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeWorld.Queries.cs",
+      "control_sha256": "97d2d6dda62193385cd9da9aabd81afc73420fd725edfd2f424d46569b4da94b",
+      "candidate_sha256": "97d2d6dda62193385cd9da9aabd81afc73420fd725edfd2f424d46569b4da94b",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeWorld.Threading.cs",
+      "control_sha256": "c62ae7b56dbb674839c8fa47dc7819218d77b08086ec80bc0ac89f80fddb4e4b",
+      "candidate_sha256": "c62ae7b56dbb674839c8fa47dc7819218d77b08086ec80bc0ac89f80fddb4e4b",
+      "normalized_changed": false
+    },
+    {
+      "file": "OctreeWorld.cs",
+      "control_sha256": "4ed6043940f50518e4bb4e58b6b614f3aeec2f32424da0f68195351f74dfdfb5",
+      "candidate_sha256": "4ed6043940f50518e4bb4e58b6b614f3aeec2f32424da0f68195351f74dfdfb5",
+      "normalized_changed": false
+    },
+    {
+      "file": "PackedVoxelSearch.cs",
+      "control_sha256": "1fd629ce66273f1e488e6d7e3dba5d51643c6bdb0b2714f13c1eb602e746f2a1",
+      "candidate_sha256": "1fd629ce66273f1e488e6d7e3dba5d51643c6bdb0b2714f13c1eb602e746f2a1",
+      "normalized_changed": false
+    },
+    {
+      "file": "PartialVoxelEdits.cs",
+      "control_sha256": "dac199a1f929446c320aea157b41ef1dd8378c846c9df41e02a36d41dab24fbb",
+      "candidate_sha256": "dac199a1f929446c320aea157b41ef1dd8378c846c9df41e02a36d41dab24fbb",
+      "normalized_changed": false
+    },
+    {
+      "file": "SideChannelCollection.cs",
+      "control_sha256": "1091058cda7edc9f6760a25d971f5ff8b7619ccd0eb1e9a66dbfbc367b5426d9",
+      "candidate_sha256": "1091058cda7edc9f6760a25d971f5ff8b7619ccd0eb1e9a66dbfbc367b5426d9",
+      "normalized_changed": false
+    },
+    {
+      "file": "SparseVoxelEdits.cs",
+      "control_sha256": "22f4b5ea8be057e91c9b40c932d7121f71c90d65b089bd395e53b57e59809760",
+      "candidate_sha256": "22f4b5ea8be057e91c9b40c932d7121f71c90d65b089bd395e53b57e59809760",
+      "normalized_changed": false
+    },
+    {
+      "file": "StorageInteger.cs",
+      "control_sha256": "99b0d399b2f2ab3801757b59e193a47fbb5010db12b69c7f5983ac0af00d2ad1",
+      "candidate_sha256": "09a223ad1a060073240cdf24b5d1018f88397420fd720ec05c3f93c3a972e407",
+      "normalized_changed": true
+    },
+    {
+      "file": "VoxelBox.cs",
+      "control_sha256": "fefd278311a5a0ce01f46f961ddac912d51cff9f4c1a3ede0062bb53e628b969",
+      "candidate_sha256": "fefd278311a5a0ce01f46f961ddac912d51cff9f4c1a3ede0062bb53e628b969",
+      "normalized_changed": false
+    },
+    {
+      "file": "VoxelFilter.Generic.cs",
+      "control_sha256": "a58fda5df0166793e85c4adeaa1864dff432c2e392055c974fb004a7bcca1edd",
+      "candidate_sha256": "a58fda5df0166793e85c4adeaa1864dff432c2e392055c974fb004a7bcca1edd",
+      "normalized_changed": false
+    },
+    {
+      "file": "VoxelFilter.cs",
+      "control_sha256": "55a9e7a16c6eeda574cb4ebf1b20421e0cf1e789b5c5e4f820ade7c6dfe5a829",
+      "candidate_sha256": "55a9e7a16c6eeda574cb4ebf1b20421e0cf1e789b5c5e4f820ade7c6dfe5a829",
+      "normalized_changed": false
+    },
+    {
+      "file": "VoxelHit.cs",
+      "control_sha256": "a7fed6dab9e01d6fa483d25203cd7444bfea7bb6d1fa4906dc612678452ef1a1",
+      "candidate_sha256": "a7fed6dab9e01d6fa483d25203cd7444bfea7bb6d1fa4906dc612678452ef1a1",
+      "normalized_changed": false
+    },
+    {
+      "file": "VoxelType.cs",
+      "control_sha256": "91ff17ee400a1d7358321aa96cd551518e7c927bf764f2b9586a276f2caa911b",
+      "candidate_sha256": "91ff17ee400a1d7358321aa96cd551518e7c927bf764f2b9586a276f2caa911b",
+      "normalized_changed": false
+    },
+    {
+      "file": "WorldEntity.Generic.Hot.cs",
+      "control_sha256": "63b46b079e3621542985713c77cf599742e5d874fe0b6decbfc65f0bfb5c36ef",
+      "candidate_sha256": "63b46b079e3621542985713c77cf599742e5d874fe0b6decbfc65f0bfb5c36ef",
+      "normalized_changed": false
+    },
+    {
+      "file": "WorldEntity.Generic.Storage.cs",
+      "control_sha256": "35f319dc42b1d5b26dfaeb7b16358fc3ff4d63704ffd7ad067322a5ac25a6674",
+      "candidate_sha256": "35f319dc42b1d5b26dfaeb7b16358fc3ff4d63704ffd7ad067322a5ac25a6674",
+      "normalized_changed": false
+    },
+    {
+      "file": "WorldEntity.Generic.cs",
+      "control_sha256": "c895b9dacd04722207dbaae054d8ed30b2e325875754182d9b28ee6293f99bc4",
+      "candidate_sha256": "c895b9dacd04722207dbaae054d8ed30b2e325875754182d9b28ee6293f99bc4",
+      "normalized_changed": false
+    },
+    {
+      "file": "WorldEntity.Hot.cs",
+      "control_sha256": "78565e1a519f5697b462b7e51210b0d29d3fa875ea2aff2ab27e01537d56be5d",
+      "candidate_sha256": "78565e1a519f5697b462b7e51210b0d29d3fa875ea2aff2ab27e01537d56be5d",
+      "normalized_changed": false
+    },
+    {
+      "file": "WorldEntity.Storage.cs",
+      "control_sha256": "656e7c5f6a071906e262d25e6dd32ddb4de3a68d8337b3ea83ff19b37ec037ab",
+      "candidate_sha256": "656e7c5f6a071906e262d25e6dd32ddb4de3a68d8337b3ea83ff19b37ec037ab",
+      "normalized_changed": false
+    },
+    {
+      "file": "WorldEntity.cs",
+      "control_sha256": "560ce5a8fb6cfdf5487e7b92c2180ebc3a3f333f09aa686320657c6471a96baf",
+      "candidate_sha256": "560ce5a8fb6cfdf5487e7b92c2180ebc3a3f333f09aa686320657c6471a96baf",
+      "normalized_changed": false
+    }
+  ],
+  "review_diff_sha256": "9c2bf0a915dfef2284613ae92d0dcfe57d482ce708ef83a8255b14f534514cde"
+}

@@ -102,6 +102,8 @@ with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compre
                 include = True
             if parts[0].startswith(('packed-corpus-', 'footprint-', 'count-body-')) and 'out' in parts[1:-1] and path.suffix == '.dll':
                 include = True
+            if parts[0].startswith('exception-capture-') and path.suffix in {'.dll', '.nettrace'}:
+                include = True
         if parts[0] == "bundles":
             include = path.suffix in {".dll", ".json"}
         if parts[0].endswith("-results"):

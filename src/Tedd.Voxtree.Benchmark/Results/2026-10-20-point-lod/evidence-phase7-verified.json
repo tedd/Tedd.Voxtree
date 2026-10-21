@@ -1,0 +1,27 @@
+{
+  "archive_bytes": 70771634,
+  "manifest_paths": 40065,
+  "unique_blobs": 33260,
+  "catalogs": 38,
+  "metric_rows": 1050,
+  "sha256": "d6c9e57201f7de83c46abeecf749e94a9824bee7b1c99c416ec4fec2fd8e52f6",
+  "required_paths": [
+    "p23bulk-audit.json",
+    "p23bulk-audit-corpus.json",
+    "p23-source-review.json",
+    "p23-source-review.diff",
+    "p23-source-origin.json",
+    "p23-frozen-protocol.txt",
+    "p23-census-protocol.txt",
+    "p23oracle-output.log",
+    "native-summary-phase7-builders.json",
+    "all-workers-quiescent-phase7.json",
+    "p23-hypothesis/postsizing-revision-response.json",
+    "p23bulk-screen/p23bulk-shutdown.json",
+    "forcecraft-census-packed-p23bulk/packed-corpus.json",
+    "p18normal-controller-log-audit.json",
+    "exception-capture-selftest-source/evidence/exceptions.nettrace",
+    "exception-capture-selftest-source/out/Probe.dll"
+  ],
+  "validation": "CRC, unique mappings, every blob length/hash, catalog tables and required evidence passed"
+}

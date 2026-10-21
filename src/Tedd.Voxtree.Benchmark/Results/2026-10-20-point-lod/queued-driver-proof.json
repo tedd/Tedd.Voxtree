@@ -1,0 +1,31 @@
+{
+  "proof": {
+    "cases": [
+      {
+        "pid": 129016,
+        "rejected": false,
+        "admitted": true,
+        "changed": false,
+        "initialDriverSha256": "0A3A6773CE87DB35894ED36165C014DF1EB3C2E502200E1673ADE8CEA3AEBDCA",
+        "joined": true,
+        "finalDriverSha256": "0A3A6773CE87DB35894ED36165C014DF1EB3C2E502200E1673ADE8CEA3AEBDCA",
+        "exitCode": 0
+      },
+      {
+        "pid": 96964,
+        "rejected": true,
+        "admitted": false,
+        "changed": true,
+        "initialDriverSha256": "0A3A6773CE87DB35894ED36165C014DF1EB3C2E502200E1673ADE8CEA3AEBDCA",
+        "joined": true,
+        "finalDriverSha256": "435A374D6AA379B72CE2ED4063A60737FFED81677CCB04F5AA79CD63E54E06D1",
+        "exitCode": 0
+      }
+    ],
+    "interpretation": "Real queued child processes exercise the host helper: unchanged source admitted, mutated source rejected before its body; no benchmark data.",
+    "hostHelperSha256": "31ABC3E4FB6F5452903F3B1F4C7714B7792051D594E4940DF2E1FCB05737F996"
+  },
+  "archive_bytes": 5524,
+  "archive_sha256": "410d57cbcfb734a1e9314362f1f2f1f7ffbc432b64f4492bc02cf6cc825e560c",
+  "all_entries_verified": true
+}

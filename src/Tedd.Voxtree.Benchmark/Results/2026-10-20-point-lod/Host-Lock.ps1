@@ -1,10 +1,12 @@
 function Enter-VoxtreePerformanceHost {
-    param([switch]$ControllerAdmission, [switch]$MeasurementOnly)
+    param([switch]$ControllerAdmission, [switch]$MeasurementOnly, [string]$DriverPath='')
     if ($ControllerAdmission -and $MeasurementOnly) { throw 'Admission modes are mutually exclusive.' }
     # Controllers acquire the measurement mutex on their own dedicated thread.
     # Holding it here while awaiting a controller operation would deadlock.
     $leases = [Collections.Generic.List[Threading.Mutex]]::new()
     try {
+        $driverHash=if($DriverPath){(Get-FileHash -LiteralPath $DriverPath -Algorithm SHA256).Hash}else{$null}
+        if($DriverPath){Write-Host "Queued driver SHA256: $driverHash"}
         $names = if ($MeasurementOnly) { @() } else { @('Global\Tedd.RTree.PerformanceHost','Global\Tedd.Voxtree.Performance.v1') }
         if (-not $ControllerAdmission) { $names += 'Global\Tedd.DotNetLab.Measurement.v1' }
         foreach ($name in $names) {
@@ -22,6 +24,9 @@ function Enter-VoxtreePerformanceHost {
                 if ($waited % 30 -eq 0) { Write-Host "Waiting for shared performance host: $name" }
             }
             $leases.Add($gate)
+        }
+        if($DriverPath -and (Get-FileHash -LiteralPath $DriverPath -Algorithm SHA256).Hash -ne $driverHash){
+            throw 'queued_driver_changed: source changed while waiting for host admission; refuse execution.'
         }
         return ,$leases
     } catch {

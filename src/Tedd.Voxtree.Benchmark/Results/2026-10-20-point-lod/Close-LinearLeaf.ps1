@@ -3,7 +3,7 @@ $ErrorActionPreference='Stop'
 if([IO.Path]::GetFullPath($TaskRoot).TrimEnd('\') -ne 'D:\Workspaces\AI\voxtree-point-lod-20261020'){throw 'Unexpected task root'}
 . (Join-Path $PSScriptRoot 'Host-Lock.ps1')
 # Wait behind the complete original pipeline; do not interleave its timed arms.
-$leases=Enter-VoxtreePerformanceHost
+$leases=Enter-VoxtreePerformanceHost -DriverPath $PSCommandPath
 try {
     $shutdown=Get-Content -LiteralPath (Join-Path $TaskRoot 'p22bulk-screen/p22bulk-shutdown.json') -Raw|ConvertFrom-Json
     if(-not $shutdown.targetExited -or -not $shutdown.controllerExited -or $shutdown.targetExitCode -ne 0){throw 'Original family not joined'}

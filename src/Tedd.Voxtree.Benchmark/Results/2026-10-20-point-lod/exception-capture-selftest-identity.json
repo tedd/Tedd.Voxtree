@@ -1,0 +1,13 @@
+{
+  "pid": 20216,
+  "startTicks": 639281407308498539,
+  "runtime": ".NET 10.0.13",
+  "entrySha256": "aacde75ab633f9f6ea4005f3475eb0636d033503e4321f0b34aacd920b89c995",
+  "traceSha256": "1f9c05c31aa2731114c5397573bac200caac81086846fceb3280d1c6caa500a6",
+  "eventCount": 1,
+  "eventsLost": 0,
+  "markerFound": true,
+  "joined": true,
+  "exitCode": 0,
+  "regime": "Synthetic exception observer self-test only; no timing or original-fault reproduction"
+}

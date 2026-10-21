@@ -1,0 +1,100 @@
+--- a/src/Tedd.Voxtree/GenericOctreeCodec.cs
++++ b/src/Tedd.Voxtree/GenericOctreeCodec.cs
+@@ -869,6 +869,10 @@
+ 
+         internal bool WriteValue(TStorage value)
+         {
++#if NET10_0_OR_GREATER
++            if (_measureOnly)
++                return AdvanceMeasured(StorageInteger<TStorage>.VarIntLength(value));
++#endif
+             while (StorageInteger<TStorage>.HasMoreThanSevenBits(value))
+             {
+                 if (!WriteByte((byte)(StorageInteger<TStorage>.LowByte(value) | 0x80))) return false;
+@@ -877,8 +881,28 @@
+             return WriteByte(StorageInteger<TStorage>.LowByte(value));
+         }
+ 
++#if NET10_0_OR_GREATER
++        [MethodImpl(MethodImplOptions.AggressiveInlining)]
++        private bool AdvanceMeasured(int length)
++        {
++            var available = _limit - Position;
++            if (available < length)
++            {
++                // Match the original byte loop's position even on failure.
++                Position += Math.Max(0, available);
++                return false;
++            }
++            Position += length;
++            return true;
++        }
++#endif
++
+         internal bool WriteVarUInt(uint value)
+         {
++#if NET10_0_OR_GREATER
++            if (_measureOnly)
++                return AdvanceMeasured(System.Numerics.BitOperations.Log2(value | 1u) / 7 + 1);
++#endif
+             while (value >= 0x80)
+             {
+                 if (!WriteByte((byte)(value | 0x80))) return false;
+--- a/src/Tedd.Voxtree/OctreeCodec.cs
++++ b/src/Tedd.Voxtree/OctreeCodec.cs
+@@ -1009,8 +1009,28 @@
+             return true;
+         }
+ 
++#if NET10_0_OR_GREATER
++        [MethodImpl(MethodImplOptions.AggressiveInlining)]
++        private bool AdvanceMeasured(int length)
++        {
++            var available = _limit - Position;
++            if (available < length)
++            {
++                // Match the original byte loop's position even on failure.
++                Position += Math.Max(0, available);
++                return false;
++            }
++            Position += length;
++            return true;
++        }
++#endif
++
+         internal bool WriteVarUInt(uint value)
+         {
++#if NET10_0_OR_GREATER
++            if (_measureOnly)
++                return AdvanceMeasured(System.Numerics.BitOperations.Log2(value | 1u) / 7 + 1);
++#endif
+             while (value >= 0x80)
+             {
+                 if (!WriteByte((byte)(value | 0x80)))
+--- a/src/Tedd.Voxtree/StorageInteger.cs
++++ b/src/Tedd.Voxtree/StorageInteger.cs
+@@ -8,6 +8,24 @@
+ {
+     internal static readonly int BitCount = Unsafe.SizeOf<T>() * 8;
+     internal static readonly int MaximumVarIntBytes = (BitCount + 6) / 7;
++
++#if NET10_0_OR_GREATER
++    [MethodImpl(MethodImplOptions.AggressiveInlining)]
++    internal static int VarIntLength(T value)
++    {
++        int bits;
++        if (Unsafe.SizeOf<T>() == 16)
++        {
++            var wide = Unsafe.As<T, VoxelUInt128>(ref value);
++            bits = wide.High != 0
++                ? 128 - System.Numerics.BitOperations.LeadingZeroCount(wide.High)
++                : 64 - System.Numerics.BitOperations.LeadingZeroCount(wide.Low);
++        }
++        else
++            bits = 64 - System.Numerics.BitOperations.LeadingZeroCount(ToUInt64(value));
++        return Math.Max(1, (bits + 6) / 7);
++    }
++#endif
+ 
+     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+     internal static bool HasMoreThanSevenBits(T value)

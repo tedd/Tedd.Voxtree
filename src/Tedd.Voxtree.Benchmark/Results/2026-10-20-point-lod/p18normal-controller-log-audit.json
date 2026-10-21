@@ -1,0 +1,14 @@
+{
+  "original_operation_id": "op-eda90bea36b04b04bfd40548c9ad1cf5",
+  "terminal": "failed",
+  "failure_code": "confirmation_failed",
+  "controller_log_bytes": 3311022,
+  "controller_log_sha256": "cb182e3cbfb55845b6329b470b09bdf56ee6c53138f5ee063173864df15d428c",
+  "exception_error_failed_line_numbers": [],
+  "search_availability": "no_details_found_by_text_search",
+  "inspected_source_revision": "9c23369",
+  "source_raw_sha256": "c307226cb2e3970dd80d1dd81d3ac9747638332dbfcbeac680c1b1551dc214ff",
+  "source_matches_revision_after_newlines": true,
+  "launch_record_follows_completed_staging": true,
+  "interpretation": "No retained detailed exception; launch establishes staging returned. Generic handler and finally cleanup do not localize the historic fault. No retry, replacement, new timing sample or inference of successful completion."
+}

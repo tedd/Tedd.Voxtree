@@ -6,11 +6,11 @@ import json
 from pathlib import Path
 
 parser=argparse.ArgumentParser();parser.add_argument('task_root',type=Path)
-parser.add_argument('--bundle-label',choices=['p18census','p20census','p22bulk'],default='p18census');args=parser.parse_args()
+parser.add_argument('--bundle-label',choices=['p18census','p20census','p22bulk','p23bulk'],default='p18census');args=parser.parse_args()
 root=args.task_root.resolve()
 if root!=Path('D:/Workspaces/AI/voxtree-point-lod-20261020').resolve():raise SystemExit('Unexpected task root')
 source=root/('forcecraft-census-packed-'+args.bundle_label+'/packed-corpus.json')
-output=root/('packed-corpus-audit.json' if args.bundle_label=='p18census' else args.bundle_label+('-audit-corpus.json' if args.bundle_label=='p22bulk' else '-audit.json'))
+output=root/('packed-corpus-audit.json' if args.bundle_label=='p18census' else args.bundle_label+('-audit-corpus.json' if args.bundle_label in {'p22bulk','p23bulk'} else '-audit.json'))
 if output.exists():raise SystemExit('Preserve existing audit')
 value=json.loads(source.read_text(encoding='utf-8-sig'));rows=value['rows']
 assert value['allChecksPassed'] and len(rows)==1286 and value['cells']==1286*32768
@@ -38,7 +38,7 @@ if args.bundle_label=='p20census':
     previous=json.loads((root/'packed-corpus-audit.json').read_text())
     assert summary['all_chunks']==previous['all_chunks'] and summary['unique_arrays']==previous['unique_arrays']
     summary['footprint_eligibility_equal_to_p18_census']=True
-if args.bundle_label=='p22bulk':
+if args.bundle_label in {'p22bulk','p23bulk'}:
     previous=json.loads((root/'packed-corpus-audit.json').read_text())
     for row in rows:
         assert not any(row[k] for k in ['packedUInt32','packedUInt16','packedGenericUInt32'])

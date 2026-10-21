@@ -1,0 +1,86 @@
+// Observer self-test only. Future controller capture needs its own frozen study.
+using System.Diagnostics;
+using System.Diagnostics.Tracing;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Microsoft.Diagnostics.NETCore.Client;
+using Microsoft.Diagnostics.Tracing;
+using Microsoft.Diagnostics.Tracing.Parsers;
+
+const string marker="Voxtree.ExceptionCapture.caught.v1";
+if(args.Length==1&&args[0]=="--throw-child")
+{
+    var self=Process.GetCurrentProcess();
+    Console.WriteLine(JsonSerializer.Serialize(new{pid=self.Id,startTicks=self.StartTime.ToUniversalTime().Ticks}));
+    if(await Console.In.ReadLineAsync()!="throw")return 2;
+    try{throw new IOException(marker);}catch(IOException){}
+    Console.WriteLine("caught");
+    return await Console.In.ReadLineAsync()=="shutdown"?0:3;
+}
+if(args.Length!=1)throw new ArgumentException("Expected dedicated output directory");
+string output=Path.GetFullPath(args[0]);
+string task=Path.GetFullPath(@"D:\Workspaces\AI\voxtree-point-lod-20261020");
+if(output!=Path.Combine(task,"exception-capture-selftest-source","evidence")||Directory.Exists(output))
+    throw new ArgumentException("Require fresh task-owned evidence directory");
+Directory.CreateDirectory(output);
+string entry=Assembly.GetExecutingAssembly().Location;
+var start=new ProcessStartInfo(Environment.ProcessPath!){UseShellExecute=false,CreateNoWindow=true,
+    RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true};
+foreach(string arg in new[]{"exec","--fx-version","10.0.13",entry,"--throw-child"})start.ArgumentList.Add(arg);
+start.Environment["TEMP"]=Path.Combine(task,"temp");start.Environment["TMP"]=Path.Combine(task,"temp");
+start.Environment["DOTNET_EnableDiagnostics"]="1";
+using var child=Process.Start(start)??throw new Exception("Owned child did not start");
+var errors=child.StandardError.ReadToEndAsync();
+using var deadline=new CancellationTokenSource(TimeSpan.FromSeconds(30));
+EventPipeSession? session=null;Task? drain=null;bool stopped=false;
+string trace=Path.Combine(output,"exceptions.nettrace");
+try
+{
+    string line=await child.StandardOutput.ReadLineAsync(deadline.Token)??throw new Exception("No readiness");
+    using var ready=JsonDocument.Parse(line);
+    if(ready.RootElement.GetProperty("pid").GetInt32()!=child.Id||
+       ready.RootElement.GetProperty("startTicks").GetInt64()!=child.StartTime.ToUniversalTime().Ticks)
+        throw new Exception("Owned identity mismatch");
+    session=await new DiagnosticsClient(child.Id).StartEventPipeSessionAsync(
+        new[]{new EventPipeProvider("Microsoft-Windows-DotNETRuntime",EventLevel.Verbose,
+            (long)ClrTraceEventParser.Keywords.Exception)},false,16,deadline.Token);
+    await using(var file=new FileStream(trace,FileMode.CreateNew,FileAccess.Write,FileShare.Read,65536,true))
+    {
+        drain=session.EventStream.CopyToAsync(file,deadline.Token);
+        await child.StandardInput.WriteLineAsync("throw");await child.StandardInput.FlushAsync();
+        if(await child.StandardOutput.ReadLineAsync(deadline.Token)!="caught")throw new Exception("No caught marker");
+        await session.StopAsync(deadline.Token);stopped=true;await drain;
+    }
+    await child.StandardInput.WriteLineAsync("shutdown");child.StandardInput.Close();
+    await child.WaitForExitAsync(deadline.Token);
+    string stderr=await errors;if(child.ExitCode!=0||stderr.Length!=0)throw new Exception("Owned child failed");
+    var rows=new List<object>();bool found=false;long lost;
+    using(var source=new EventPipeEventSource(trace))
+    {
+        source.Clr.ExceptionStart+=data=>
+        {
+            var payload=data.PayloadNames.ToDictionary(name=>name,name=>Convert.ToString(data.PayloadByName(name)));
+            if(data.ProcessID==child.Id&&payload.Values.Any(value=>value?.Contains(marker)==true))found=true;
+            rows.Add(new{data.EventName,data.ProcessID,data.ThreadID,data.TimeStampRelativeMSec,payload});
+        };
+        source.Process();lost=source.EventsLost;
+    }
+    File.WriteAllText(Path.Combine(output,"events.json"),JsonSerializer.Serialize(rows,new JsonSerializerOptions{WriteIndented=true}));
+    var identity=new{pid=child.Id,startTicks=ready.RootElement.GetProperty("startTicks").GetInt64(),
+        runtime=System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription,
+        entrySha256=Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(entry))),
+        traceSha256=Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(trace))),
+        eventCount=rows.Count,eventsLost=lost,markerFound=found,joined=child.HasExited,exitCode=child.ExitCode,
+        regime="Synthetic exception observer self-test only; no timing or original-fault reproduction"};
+    File.WriteAllText(Path.Combine(output,"identity.json"),JsonSerializer.Serialize(identity,new JsonSerializerOptions{WriteIndented=true}));
+    if(!found||lost!=0)throw new Exception("Exception observer did not qualify");
+    Console.WriteLine(JsonSerializer.Serialize(identity));
+}
+finally
+{
+    if(!child.HasExited){child.Kill(true);await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));}
+    if(session is not null){if(!stopped){using var stop=new CancellationTokenSource(TimeSpan.FromSeconds(5));try{await session.StopAsync(stop.Token);}catch(Exception){}}session.Dispose();}
+    if(drain is not null){try{await drain;}catch(Exception){}}
+}
+return 0;
